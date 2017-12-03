@@ -1,36 +1,39 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.3.1'
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-
-jar {
-    baseName = 'gs-spring-boot'
-    version =  '0.1.0'
-}
-
 repositories {
     mavenCentral()
+    jcenter()
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    // tag::actuator[]
     compile("org.springframework.boot:spring-boot-starter-actuator")
-    // end::actuator[]
-    // tag::tests[]
     testCompile("org.springframework.boot:spring-boot-starter-test")
-    // end::tests[]
 }
 
+war {
+    baseName = 'mly-auth'
+    version =  '1.0.0'
+}
