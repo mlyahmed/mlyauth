@@ -1,5 +1,15 @@
 task wrapper(type: Wrapper) {
     gradleVersion = '4.3.1'
+
+    doLast() {
+        def gradleOpts = "-Xmx2024m"
+        def gradleBatOpts = "$gradleOpts -XX:MaxHeapSize=256m"
+        File wrapperFile = file("gradlew")
+        wrapperFile.text = wrapperFile.text.replace("DEFAULT_JVM_OPTS=", "GRADLE_OPTS=\"$gradleOpts \$GRADLE_OPTS\"\nDEFAULT_JVM_OPTS=")
+        File wrapperBatFile = file("gradlew.bat")
+        wrapperBatFile.text = wrapperBatFile.text.replace("set DEFAULT_JVM_OPTS=", "set GRADLE_OPTS=$gradleBatOpts %GRADLE_OPTS%\nset DEFAULT_JVM_OPTS=")
+    }
+
 }
 
 apply plugin: 'java'
@@ -7,7 +17,6 @@ apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
-
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -35,5 +44,35 @@ dependencies {
 
 war {
     baseName = 'mly-auth'
-    version =  '1.0.0'
 }
+
+task Task1 {
+    doFirst {
+        println "Task1 : First I do this."
+    }
+
+    doLast {
+        println "Task1 : Then I do this"
+    }
+}
+
+task Task2 {
+    description "This is a task 2"
+    dependsOn Task1
+
+    doFirst {
+        println "Task2 : First I do this."
+    }
+
+    doLast {
+        println "Task2 : Then I do this"
+    }
+}
+
+task Task3 {
+    doLast {
+        println "Task 3"
+    }
+}
+
+Task2.finalizedBy Task3
