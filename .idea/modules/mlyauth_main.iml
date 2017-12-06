@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="mlyauth:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="1.0.1-SNAPSHOT" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="mlyauth:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="mlyahmed" external.system.module.type="sourceSet" external.system.module.version="1.0.1-SNAPSHOT" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Spring" name="Spring">
       <configuration />
     </facet>
-    <facet type="web" name="Web Gradle : mly-auth-1.0.1-SNAPSHOT.war">
+    <facet type="web" name="Web">
       <configuration>
-        <webroots>
-          <root url="file://$MODULE_DIR$/../../src/main/webapp" relative="/" />
-        </webroots>
+        <webroots />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/../../out/production/classes" />
     <exclude-output />
-    <option name="createStubs" value="true" />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />

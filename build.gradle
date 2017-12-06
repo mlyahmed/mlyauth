@@ -12,28 +12,34 @@ task wrapper(type: Wrapper) {
 
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
+    }
+}
+
+
 apply plugin: 'java'
-apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'com.palantir.docker'
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
-    }
-}
-
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
@@ -42,37 +48,12 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
-war {
+jar {
     baseName = 'mly-auth'
 }
 
-task Task1 {
-    doFirst {
-        println "Task1 : First I do this."
-    }
-
-    doLast {
-        println "Task1 : Then I do this"
-    }
+docker {
+    name "${project.group}/${jar.baseName}"
+    files jar.archivePath
+    buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
-
-task Task2 {
-    description "This is a task 2"
-    dependsOn Task1
-
-    doFirst {
-        println "Task2 : First I do this."
-    }
-
-    doLast {
-        println "Task2 : Then I do this"
-    }
-}
-
-task Task3 {
-    doLast {
-        println "Task 3"
-    }
-}
-
-Task2.finalizedBy Task3
