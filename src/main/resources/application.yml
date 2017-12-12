@@ -1,0 +1,21 @@
+spring:
+    application:
+        name: mlyauth
+    jpa:
+        database: HSQL
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+server:
+    port: 16666
+
+logging:
+  file: logs/mlyauth.log
+
+info:
+    build:
+        artifact: blaze-demo-api
+        name: MlyAuth
+        description: Moulay Authentication
+        version: 1.0
