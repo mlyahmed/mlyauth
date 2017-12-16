@@ -9,7 +9,7 @@ Scenario: A Connected user can navigate to a registered application
   When mlyahmed navigates to Policy
   Then mlyahmed is posted to Policy
 
-
+@Skip
 Scenario: A connected to user couldn't navigate to a registered application if he is not assigned to
   Given Policy is not asigned to ahmed
   When ahmed navigates to Policy

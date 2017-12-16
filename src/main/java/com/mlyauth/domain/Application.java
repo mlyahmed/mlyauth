@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Application {
 
     @Id
+    @GeneratedValue
     @Column(name = "ID", nullable = false)
     private long id;
 
