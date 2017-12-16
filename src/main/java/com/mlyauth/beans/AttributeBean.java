@@ -2,19 +2,19 @@ package com.mlyauth.beans;
 
 import com.mlyauth.constants.AttributeCategory;
 
-import java.util.Objects;
-
 import static com.mlyauth.constants.AttributeCategory.AUTHENTICATION;
 
-public class AttributeBean {
+public class AttributeBean implements Cloneable{
 
     public final static AttributeBean BASIC_AUTH_USERNAME = new AttributeBean("Auth:Basic:Username", AUTHENTICATION);
     public final static AttributeBean BASIC_AUTH_PASSWORD = new AttributeBean("Auth:Basic:Password", AUTHENTICATION);
     public final static AttributeBean BASIC_AUTH_ENDPOINT = new AttributeBean("Auth:Basic:EndPoint", AUTHENTICATION);
 
     private String code;
+    private String alias;
     private AttributeCategory category;
     private String defaultValue;
+    private String value;
     private boolean mandatory;
 
     public AttributeBean(){
@@ -40,47 +40,66 @@ public class AttributeBean {
         return code;
     }
 
-    public void setCode(String code) {
+    public AttributeBean setCode(String code) {
         this.code = code;
+        return this;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public AttributeBean setAlias(String alias) {
+        this.alias = alias;
+        return this;
     }
 
     public AttributeCategory getCategory() {
         return category;
     }
 
-    public void setCategory(AttributeCategory category) {
+    public AttributeBean setCategory(AttributeCategory category) {
         this.category = category;
+        return this;
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(String defaultValue) {
+    public AttributeBean setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+        return this;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public AttributeBean setValue(String value) {
+        this.value = value;
+        return this;
     }
 
     public boolean isMandatory() {
         return mandatory;
     }
 
-    public void setMandatory(boolean mandatory) {
+    public AttributeBean setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+        return this;
     }
 
     public static AttributeBean createAuthAttr(String code){
         return new AttributeBean(code, AUTHENTICATION);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(code, ((AttributeBean) o).code);
+    public AttributeBean clone() {
+        try {
+            return (AttributeBean) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException();
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(code);
-    }
 }

@@ -1,17 +1,27 @@
-package com.mlyauth.beans;
+package com.mlyauth.domain;
 
 import com.mlyauth.constants.AuthAspectType;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import javax.persistence.*;
 
-public class ApplicationBean {
+@Entity
+@Table(name="APPLICATION")
+public class Application {
 
+    @Id
+    @Column(name = "ID", nullable = false)
     private long id;
+
+
+    @Column(name = "APP_NAME", nullable = false, unique = true)
     private String appname;
+
+    @Column(name = "TITLE", nullable = false)
     private String title;
-    private AuthAspectType authAspect = AuthAspectType.UNDEFINED;
-    private Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
+
+    @Column(name = "AUTH_ASPECT", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AuthAspectType authAspect;
 
 
     public long getId() {
@@ -44,13 +54,5 @@ public class ApplicationBean {
 
     public void setAuthAspect(AuthAspectType authAspect) {
         this.authAspect = authAspect;
-    }
-
-    public Map<String, AttributeBean> getAuthSettings() {
-        return authSettings;
-    }
-
-    public void setAuthSettings(Map<String, AttributeBean> authSettings) {
-        this.authSettings = authSettings;
     }
 }

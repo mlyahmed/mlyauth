@@ -3,7 +3,7 @@ package com.mlyauth.beans;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AuthEntity {
+public abstract class AuthEntityBean {
 
     private Map<AttributeBean, String> attributes = new HashMap<>();
 

@@ -7,7 +7,7 @@ Background: context
 Scenario: A Connected user can navigate to a registered application
   Given Policy has the basic authentication aspect
   When mlyahmed navigates to Policy
-  Then mlyahmed is connected to Policy
+  Then mlyahmed is posted to Policy
 
 
 Scenario: A connected to user couldn't navigate to a registered application if he is not assigned to

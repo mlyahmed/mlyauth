@@ -5,7 +5,7 @@ import com.mlyauth.constants.AuthAspectType;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class AuthAspectBean extends AuthEntity{
+public class AuthAspectBean extends AuthEntityBean {
 
     private AuthAspectType type;
     private Collection<AttributeBean> settings = new HashSet<>();

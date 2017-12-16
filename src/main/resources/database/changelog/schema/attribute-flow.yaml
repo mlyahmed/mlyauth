@@ -4,7 +4,7 @@ databaseChangeLog:
       author: mlyahmed
       changes:
         - createTable:
-            tableName: ATTRIBUTE_MAP
+            tableName: ATTRIBUTE_FLOW
             columns:
               - column:
                   name: FROM_ENTITY_ID
@@ -41,13 +41,13 @@ databaseChangeLog:
       author: mlyahmed
       changes:
         - addForeignKeyConstraint:
-            baseTableName: ATTRIBUTE_MAP
+            baseTableName: ATTRIBUTE_FLOW
             baseColumnNames: FROM_ENTITY_ATTR_CODE
             referencedTableName: ATTRIBUTE_CATALOG
             referencedColumnNames: CODE
             constraintName: from_attr_2_code
         - addForeignKeyConstraint:
-            baseTableName: ATTRIBUTE_MAP
+            baseTableName: ATTRIBUTE_FLOW
             baseColumnNames: TO_ENTITY_ATTR_CODE
             referencedTableName: ATTRIBUTE_CATALOG
             referencedColumnNames: CODE
