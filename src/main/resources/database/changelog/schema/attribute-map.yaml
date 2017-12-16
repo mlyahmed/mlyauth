@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: ATTRIBUTE_MAP
+            columns:
+              - column:
+                  name: FROM_ENTITY_ID
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: FROM_ENTITY_TYPE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: FROM_ENTITY_ATTR_CODE
+                  type: varchar(200)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: TO_ENTITY_ID
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TO_ENTITY_TYPE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TO_ENTITY_ATTR_CODE
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: ATTRIBUTE_MAP
+            baseColumnNames: FROM_ENTITY_ATTR_CODE
+            referencedTableName: ATTRIBUTE_CATALOG
+            referencedColumnNames: CODE
+            constraintName: from_attr_2_code
+        - addForeignKeyConstraint:
+            baseTableName: ATTRIBUTE_MAP
+            baseColumnNames: TO_ENTITY_ATTR_CODE
+            referencedTableName: ATTRIBUTE_CATALOG
+            referencedColumnNames: CODE
+            constraintName: to_attr_2_code

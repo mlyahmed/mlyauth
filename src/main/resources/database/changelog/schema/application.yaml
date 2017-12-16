@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: APPLICATION
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: APP_NAME
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: AUTH_ASPECT
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TITLE
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+      - addForeignKeyConstraint:
+          baseTableName: APPLICATION
+          baseColumnNames: AUTH_ASPECT
+          referencedTableName: AUTH_ASPECT
+          referencedColumnNames: TYPE
+          constraintName: app_aspect_2_aspect

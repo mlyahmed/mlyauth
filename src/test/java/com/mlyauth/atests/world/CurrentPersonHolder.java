@@ -1,0 +1,28 @@
+package com.mlyauth.atests.world;
+
+import com.mlyauth.beans.PersonBean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("cucumber-glue")
+public class CurrentPersonHolder {
+
+    private PersonBean currentPerson;
+
+    public PersonBean getCurrentPerson() {
+        return currentPerson;
+    }
+
+    public void setCurrentPerson(PersonBean currentPerson) {
+        this.currentPerson = currentPerson;
+    }
+
+    public String getUsername(){
+        return (currentPerson != null) ? currentPerson.getUsername() :  null;
+    }
+
+    public String getPassword(){
+        return (currentPerson != null) ? String.valueOf(currentPerson.getPassword()) : null;
+    }
+}

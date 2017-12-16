@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: PERSON
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: USERNAME
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: PASSWORD
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: FIRSTNAME
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: LASTNAME
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: EMAIL
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+                    unique: true

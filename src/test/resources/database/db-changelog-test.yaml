@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: database/db-changelog.yaml
+  - include:
+      file: database/examples/person-examples.sql

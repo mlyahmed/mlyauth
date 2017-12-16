@@ -1,3 +1,13 @@
 spring:
     jpa:
         database: HSQL
+    h2:
+      console:
+        enabled: true
+
+logging:
+  file: logs/mlyauth-test.log
+  level: all
+
+liquibase:
+  change-log: classpath:database/db-changelog-test.yaml

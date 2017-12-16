@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: ENTITY_ATTR
+            columns:
+              - column:
+                  name: ENTITY_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ENTITY_TYPE
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ATTR_CODE
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ATTR_VALUE
+                  type: CLOB
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addUniqueConstraint:
+            tableName: ENTITY_ATTR
+            columnNames: ENTITY_ID, ENTITY_TYPE, ATTR_CODE
+            constraintName: entity_attr_uniq
+  - changeSet:
+      id: 3
+      author: mlyahmed
+      changes:
+      - addForeignKeyConstraint:
+          referencedTableName: ATTRIBUTE_CATALOG
+          referencedColumnNames: CODE
+          baseColumnNames: ATTR_CODE
+          baseTableName: ENTITY_ATTR
+          constraintName: entity_attr_2_code

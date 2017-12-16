@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: ATTRIBUTE_CATALOG
+            columns:
+              - column:
+                  name: CODE
+                  type: varchar(200)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: CATEGORY
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: DEFAULT_VALUE
+                  type: varchar(500)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: TITLE
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: DESCRIPTION
+                  type: varchar(500)
+                  constraints:
+                    nullable: true

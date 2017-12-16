@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: database/changelog/schema/attribute-catalog.yaml
+  - include:
+      file: database/changelog/schema/auth-aspect.yaml
+  - include:
+      file: database/changelog/schema/person.yaml
+  - include:
+      file: database/changelog/schema/application.yaml
+  - include:
+      file: database/changelog/schema/entity-attribute.yaml
+  - include:
+      file: database/changelog/schema/attribute-map.yaml
+  - include:
+      file: database/changelog/data/attribute-catalog-init.sql
+  - include:
+      file: database/changelog/data/auth-aspect-init.sql
+  - include:
+      file: database/changelog/data/person-init.sql

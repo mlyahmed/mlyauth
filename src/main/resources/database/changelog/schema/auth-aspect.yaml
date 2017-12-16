@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: AUTH_ASPECT
+            columns:
+              - column:
+                  name: TYPE
+                  type: varchar(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: TITLE
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: DESCRIPTION
+                  type: varchar(500)
+                  constraints:
+                    nullable: true

@@ -1,21 +1,39 @@
 spring:
     application:
         name: mlyauth
+    security:
+        username: blaze
+        password: Q1w2e3r4
+        role: ADMIN
+    profiles:
+      active: mysql
     jpa:
-        database: HSQL
         show-sql: true
         hibernate:
             ddl-auto: update
             naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        properties:
+            jadira:
+                usertype:
+                    autoRegisterUserTypes: true
 server:
     port: 16666
 
 logging:
   file: logs/mlyauth.log
+  level: info
 
 info:
     build:
-        artifact: blaze-demo-api
+        artifact: mly-auth
         name: MlyAuth
         description: Moulay Authentication
         version: 1.0
+
+management:
+  security:
+    enabled: false
+
+liquibase:
+  change-log: classpath:database/db-changelog.yaml
+  drop-first: true
