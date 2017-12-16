@@ -73,7 +73,7 @@ public class MlyAuthSteps extends AbstractStep {
     public void application_has_the_basic_authentication_aspect(String appname) throws Exception {
         final ApplicationBean application = applicationHolder.getApplication(appname);
         Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
-        authSettings.put(BASIC_AUTH_ENDPOINT.getCode(), BASIC_AUTH_ENDPOINT.clone().setAlias("authurl").setValue("https://uat-sgi-policy01.prima-solutions.com/primainsure/j_spring_security_check"));
+        authSettings.put(BASIC_AUTH_ENDPOINT.getCode(), BASIC_AUTH_ENDPOINT.clone().setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
         authSettings.put(BASIC_AUTH_USERNAME.getCode(), BASIC_AUTH_USERNAME.clone().setAlias("j_username").setValue("gestF"));
         authSettings.put(BASIC_AUTH_PASSWORD.getCode(), BASIC_AUTH_PASSWORD.clone().setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
@@ -91,9 +91,15 @@ public class MlyAuthSteps extends AbstractStep {
     @Then("^(.+) is posted to (.+)")
     public void user_is_connected_to_app(String username, String appname) throws Exception {
         resultActionHolder.getResultActions()
-                .andExpect(status().is(HttpStatus.FOUND.value()))
+                .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(forwardedUrl("/route/navigate/post"))
-                .andExpect(request().attribute(BASIC_AUTH_ENDPOINT.getCode(), hasProperty("alias", Matchers.equalTo("authurl"))));
+                .andExpect(request().attribute(BASIC_AUTH_ENDPOINT.getCode(), hasProperty("alias", Matchers.equalTo("authurl"))))
+                .andExpect(request().attribute(BASIC_AUTH_ENDPOINT.getCode(), hasProperty("value", Matchers.equalTo("https://localhost/j_spring_security_check"))))
+                .andExpect(request().attribute(BASIC_AUTH_USERNAME.getCode(), hasProperty("alias", Matchers.equalTo("j_username"))))
+                .andExpect(request().attribute(BASIC_AUTH_USERNAME.getCode(), hasProperty("value", Matchers.equalTo("gestF"))))
+                .andExpect(request().attribute(BASIC_AUTH_PASSWORD.getCode(), hasProperty("alias", Matchers.equalTo("j_password"))))
+                .andExpect(request().attribute(BASIC_AUTH_PASSWORD.getCode(), hasProperty("value", Matchers.equalTo("gestF"))))
+        ;
     }
 
     @Given("^(.+) is not asigned to (.+)")
