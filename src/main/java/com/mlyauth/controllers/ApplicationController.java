@@ -21,6 +21,7 @@ public class ApplicationController {
         Application app = new Application();
         BeanUtils.copyProperties(application, app);
         app = applicationDAO.save(app);
+        application.setId(app.getId());
         return application;
     }
 

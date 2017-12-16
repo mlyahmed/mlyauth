@@ -28,12 +28,9 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class MlyAuthSteps extends AbstractStep {
+public class MlyAuthSteps extends AbstractStepsDef{
 
     final ObjectMapper mapper = new ObjectMapper();
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Autowired
     private ApplicationsHolder applicationHolder;

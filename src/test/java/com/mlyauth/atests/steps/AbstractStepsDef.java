@@ -7,5 +7,5 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
-public abstract class AbstractStep {
+public abstract class AbstractStepsDef {
 }
