@@ -11,12 +11,7 @@ spring:
         show-sql: true
         hibernate:
             ddl-auto: validate
-            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
             use-new-id-generator-mappings: true
-        properties:
-            jadira:
-                usertype:
-                    autoRegisterUserTypes: true
 server:
     port: 16666
 
