@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: IDS_SEQUENCES
+            columns:
+              - column:
+                  name: SEQUENCENAME
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: SEQUENCEVALUE
+                  type: bigint
+                  constraints:
+                    nullable: false

@@ -3,14 +3,16 @@ package com.mlyauth.domain;
 import com.mlyauth.constants.AuthAspectType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name="APPLICATION")
-public class Application {
+public class Application  implements Serializable {
 
     @Id
-    @GeneratedValue
     @Column(name = "ID", nullable = false)
+    @TableGenerator(name = "APPLICATION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", valueColumnName = "SEQUENCEVALUE", pkColumnValue = "APPLICATION_ID", initialValue = 9999, allocationSize=1)
+    @GeneratedValue(generator = "APPLICATION_ID", strategy = GenerationType.TABLE)
     private long id;
 
 

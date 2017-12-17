@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: PERSON_APPLICATION
+            columns:
+              - column:
+                  name: PERSON_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: APPLICATION_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: PERSON_APPLICATION
+            baseColumnNames: PERSON_ID
+            referencedTableName: PERSON
+            referencedColumnNames: ID
+            constraintName: person_app_fk_person_id
+        - addForeignKeyConstraint:
+            baseTableName: PERSON_APPLICATION
+            baseColumnNames: APPLICATION_ID
+            referencedTableName: APPLICATION
+            referencedColumnNames: ID
+            constraintName: person_app_fk_application_id
+        - addUniqueConstraint:
+            tableName: PERSON_APPLICATION
+            columnNames: PERSON_ID, APPLICATION_ID
+            constraintName: person_application_uniq

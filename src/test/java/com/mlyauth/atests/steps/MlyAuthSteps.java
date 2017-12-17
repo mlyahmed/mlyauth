@@ -9,14 +9,12 @@ import com.mlyauth.beans.ApplicationBean;
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.AuthAspectType;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.hamcrest.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.LinkedHashMap;
@@ -24,6 +22,7 @@ import java.util.Map;
 
 import static com.mlyauth.beans.AttributeBean.*;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,7 +44,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
     @Autowired
     private ResultActionHolder resultActionHolder;
 
-    @Given("^(.+), (.+) is a new person withe (.+) as username and (.+) as email$")
+    @Given("^(.+), (.+) is a new person with (.+) as username and (.+) as email$")
     public void an_existed_person_withe_username_and_email(String firstname, String lastname, String username, String email) throws Exception {
         PersonBean person = new PersonBean();
         person.setFirstname(firstname);
@@ -82,7 +81,6 @@ public class MlyAuthSteps extends AbstractStepsDef{
     @When("^(.+) navigates to (.+)$")
     public void user_navigate_to_app(String username, String appname) throws Exception {
         resultActionHolder.setResultActions(restHelper.performGet("/route/navigate/to/"+appname));
-
     }
 
     @Then("^(.+) is posted to (.+)")
@@ -99,14 +97,24 @@ public class MlyAuthSteps extends AbstractStepsDef{
         ;
     }
 
+    @Given("^(.+) is asigned to (.+)")
+    public void app_is_asigned_to_user(String appname, String username) throws Exception {
+        currentPersonHolder.getCurrentPerson().getApplications().add(appname);
+        restHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+    }
+
     @Given("^(.+) is not asigned to (.+)")
     public void app_is_not_asigned_to_user(String appname, String username) throws Exception {
-        throw new PendingException();
+        currentPersonHolder.getCurrentPerson().getApplications().remove(appname);
+        restHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Then("^(.+) error$")
     public void app_not_assigned_error(String errorCode) throws Exception {
-        throw new PendingException();
+        resultActionHolder.getResultActions()
+                .andExpect(status().is(HttpStatus.FORBIDDEN.value()))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.[0].code").value(errorCode));
     }
 
 

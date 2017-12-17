@@ -30,7 +30,7 @@ public class ApplicationController {
     public @ResponseBody ApplicationBean updateApplication(@RequestBody ApplicationBean application) {
         Application app = applicationDAO.findByAppname(application.getAppname());
         BeanUtils.copyProperties(application, app);
-        app = applicationDAO.save(app);
+        applicationDAO.save(app);
         return application;
     }
 

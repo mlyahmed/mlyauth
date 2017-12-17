@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
+      file: database/changelog/schema/id-sequence.yaml
+  - include:
       file: database/changelog/schema/attribute-catalog.yaml
   - include:
       file: database/changelog/schema/auth-aspect.yaml
@@ -8,9 +10,14 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/application.yaml
   - include:
+      file: database/changelog/schema/person-application.yaml
+  - include:
       file: database/changelog/schema/entity-attribute.yaml
   - include:
       file: database/changelog/schema/attribute-flow.yaml
+
+  - include:
+      file: database/changelog/data/id-sequence-init.sql
   - include:
       file: database/changelog/data/attribute-catalog-init.sql
   - include:

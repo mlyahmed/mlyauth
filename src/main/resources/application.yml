@@ -10,8 +10,9 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: update
+            ddl-auto: validate
             naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+            use-new-id-generator-mappings: true
         properties:
             jadira:
                 usertype:

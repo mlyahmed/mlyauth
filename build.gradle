@@ -67,7 +67,7 @@ dependencies {
     compile("joda-time:joda-time:2.2")
     compile("com.jayway.jsonpath:json-path:2.0.0")
     compile("org.liquibase:liquibase-core:3.5.3")
-    testCompile("org.hsqldb:hsqldb")
+    testCompile("com.h2database:h2")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("io.cucumber:cucumber-java:2.3.0")
     testCompile("io.cucumber:cucumber-junit:2.3.0")
