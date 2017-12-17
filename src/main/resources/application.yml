@@ -1,10 +1,6 @@
 spring:
     application:
         name: mlyauth
-    security:
-        username: blaze
-        password: Q1w2e3r4
-        role: ADMIN
     profiles:
       active: mysql
     jpa:
