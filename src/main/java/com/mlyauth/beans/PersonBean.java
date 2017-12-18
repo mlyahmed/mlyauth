@@ -13,28 +13,35 @@ public class PersonBean {
     private char[] password;
     private Collection<String> applications = new LinkedHashSet<>();
 
+    public static PersonBean newInstance(){
+        return new PersonBean();
+    }
+
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public PersonBean setFirstname(String firstname) {
         this.firstname = firstname;
+        return this;
     }
 
     public String getLastname() {
         return lastname;
     }
 
-    public void setLastname(String lastname) {
+    public PersonBean setLastname(String lastname) {
         this.lastname = lastname;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public PersonBean setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getUsername() {
@@ -65,7 +72,8 @@ public class PersonBean {
         return id;
     }
 
-    public void setId(long id) {
+    public PersonBean setId(long id) {
         this.id = id;
+        return this;
     }
 }
