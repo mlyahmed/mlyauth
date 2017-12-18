@@ -2,9 +2,11 @@ package com.mlyauth.mappers;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
+import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class PersonMapper implements IDomainMapper<Person, PersonBean>{
 
@@ -20,7 +22,10 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
     }
 
     private HashSet<String> applicationsToCodes(Person person) {
-        return person.getApplications() == null ? new HashSet<>() : Sets.newHashSet("Policy");
+        return Sets.newHashSet(person.getApplications().stream()
+                .filter(app -> app.getAppname() != null)
+                .map(Application::getAppname)
+                .collect(Collectors.toSet()));
     }
 
     @Override

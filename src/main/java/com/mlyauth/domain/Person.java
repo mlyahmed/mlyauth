@@ -1,5 +1,7 @@
 package com.mlyauth.domain;
 
+import com.google.common.collect.Sets;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -82,7 +84,7 @@ public class Person  implements Serializable {
     }
 
     public Set<Application> getApplications() {
-        return applications;
+        return applications == null ? Sets.newHashSet() : applications;
     }
 
     public void setApplications(Set<Application> applications) {

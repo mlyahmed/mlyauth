@@ -91,10 +91,28 @@ public class PersonMapperTest {
     }
 
     @Test
-    public void when_map_to_bean_then_map_applications_to_codes(){
+    public void when_map_to_bean_and_one_application_then_map_application_to_code() {
         person.setApplications(Sets.newHashSet(Application.newInstance().setAppname("Policy")));
         final PersonBean bean = mapper.toBean(person);
         assertThat(bean, notNullValue());
         assertThat(bean.getApplications(), equalTo(Sets.newHashSet("Policy")));
+    }
+
+    @Test
+    public void when_map_to_bean_and_application_code_then_map_application_to_empty() {
+        person.setApplications(Sets.newHashSet(Application.newInstance().setAppname(null)));
+        final PersonBean bean = mapper.toBean(person);
+        assertThat(bean, notNullValue());
+        assertThat(bean.getApplications(), equalTo(Sets.newHashSet()));
+    }
+
+    @Test
+    public void when_map_to_bean_then_map_applications_to_codes() {
+        final Application app1 = Application.newInstance().setAppname("Policy");
+        final Application app2 = Application.newInstance().setAppname("Claims");
+        person.setApplications(Sets.newHashSet(app1, app2));
+        final PersonBean bean = mapper.toBean(person);
+        assertThat(bean, notNullValue());
+        assertThat(bean.getApplications(), equalTo(Sets.newHashSet("Policy", "Claims")));
     }
 }
