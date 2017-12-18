@@ -1,6 +1,8 @@
 package com.mlyauth.mappers;
 
+import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
+import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -10,8 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import java.util.Collections;
+
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)
@@ -59,4 +62,39 @@ public class PersonMapperTest {
         assertThat(bean.getEmail(), equalTo(email));
     }
 
+    @DataProvider
+    public static Object[] passwords() {
+        // @formatter:off
+        return new Object[] {
+                "password",
+                "pwd",
+                "drowssap",
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("passwords")
+    public void when_map_to_bean_then_do_not_map_password(String password){
+        person.setPassword(password.toCharArray());
+        final PersonBean bean = mapper.toBean(person);
+        assertThat(bean, notNullValue());
+        assertThat(bean.getPassword(), nullValue());
+    }
+
+    @Test
+    public void when_map_to_bean_and_applications_is_null_then_map_applications_to_empty(){
+        person.setApplications(null);
+        final PersonBean bean = mapper.toBean(person);
+        assertThat(bean, notNullValue());
+        assertThat(bean.getApplications(), equalTo(Collections.emptySet()));
+    }
+
+    @Test
+    public void when_map_to_bean_then_map_applications_to_codes(){
+        person.setApplications(Sets.newHashSet(Application.newInstance().setAppname("Policy")));
+        final PersonBean bean = mapper.toBean(person);
+        assertThat(bean, notNullValue());
+        assertThat(bean.getApplications(), equalTo(Sets.newHashSet("Policy")));
+    }
 }

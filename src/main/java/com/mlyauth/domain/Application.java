@@ -27,6 +27,10 @@ public class Application  implements Serializable {
     private AuthAspectType authAspect;
 
 
+    public static Application newInstance(){
+        return new Application();
+    }
+
     public long getId() {
         return id;
     }
@@ -39,8 +43,9 @@ public class Application  implements Serializable {
         return appname;
     }
 
-    public void setAppname(String appname) {
+    public Application setAppname(String appname) {
         this.appname = appname;
+        return this;
     }
 
     public String getTitle() {

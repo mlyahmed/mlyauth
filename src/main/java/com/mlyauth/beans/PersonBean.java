@@ -64,8 +64,9 @@ public class PersonBean {
         return applications;
     }
 
-    public void setApplications(Collection<String> applications) {
+    public PersonBean setApplications(Collection<String> applications) {
         this.applications = applications;
+        return this;
     }
 
     public long getId() {
