@@ -29,7 +29,7 @@ public class Person  implements Serializable {
     private String username;
 
     @Column(name = "PASSWORD", nullable = false)
-    private char[] password;
+    private String password;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(name = "PERSON_APPLICATION", joinColumns = @JoinColumn(name = "PERSON_ID"), inverseJoinColumns = @JoinColumn(name = "APPLICATION_ID"))
@@ -75,11 +75,11 @@ public class Person  implements Serializable {
         this.username = username;
     }
 
-    public char[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(char[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

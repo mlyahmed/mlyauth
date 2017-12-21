@@ -1,7 +1,7 @@
 package com.mlyauth.atests.steps;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mlyauth.atests.domain.RestHelper;
+import com.mlyauth.atests.domain.RestTestHelper;
 import com.mlyauth.atests.world.ApplicationsHolder;
 import com.mlyauth.atests.world.CurrentPersonHolder;
 import com.mlyauth.atests.world.ResultActionHolder;
@@ -38,7 +38,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
     private CurrentPersonHolder currentPersonHolder;
 
     @Autowired
-    private RestHelper restHelper;
+    private RestTestHelper restTestHelper;
 
 
     @Autowired
@@ -52,7 +52,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
         person.setUsername(username);
         person.setEmail(email);
         person.setPassword("password".toCharArray());
-        final ResultActions resultActions = restHelper.performPost("/domain/person", person).andExpect(status().is(CREATED.value()));
+        final ResultActions resultActions = restTestHelper.performPost("/domain/person", person).andExpect(status().is(CREATED.value()));
         currentPersonHolder.setCurrentPerson(mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), PersonBean.class));
     }
 
@@ -61,7 +61,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
         ApplicationBean application = new ApplicationBean();
         application.setAppname(appname);
         application.setTitle(appname);
-        final ResultActions resultActions = restHelper.performPost("/domain/application", application).andExpect(status().is(CREATED.value()));
+        final ResultActions resultActions = restTestHelper.performPost("/domain/application", application).andExpect(status().is(CREATED.value()));
         applicationHolder.addApplication(mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), ApplicationBean.class));
     }
 
@@ -74,13 +74,13 @@ public class MlyAuthSteps extends AbstractStepsDef{
         authSettings.put(BASIC_AUTH_PASSWORD.getCode(), BASIC_AUTH_PASSWORD.clone().setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
         application.setAuthAspect(AuthAspectType.AUTH_BASIC);
-        restHelper.performPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
     }
 
 
     @When("^(.+) navigates to (.+)$")
     public void user_navigate_to_app(String username, String appname) throws Exception {
-        resultActionHolder.setResultActions(restHelper.performGet("/route/navigate/to/"+appname));
+        resultActionHolder.setResultActions(restTestHelper.performGet("/route/navigate/to/" + appname));
     }
 
     @Then("^(.+) is posted to (.+)")
@@ -100,13 +100,13 @@ public class MlyAuthSteps extends AbstractStepsDef{
     @Given("^(.+) is asigned to (.+)")
     public void app_is_asigned_to_user(String appname, String username) throws Exception {
         currentPersonHolder.getCurrentPerson().getApplications().add(appname);
-        restHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Given("^(.+) is not asigned to (.+)")
     public void app_is_not_asigned_to_user(String appname, String username) throws Exception {
         currentPersonHolder.getCurrentPerson().getApplications().remove(appname);
-        restHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Then("^(.+) error$")

@@ -74,6 +74,7 @@ dependencies {
     testCompile("io.cucumber:cucumber-spring:2.3.0")
     testCompile("io.cucumber:cucumber-jvm:2.3.0")
     testCompile("junit:junit:4.12")
+    testCompile("pl.pragmatists:JUnitParams:1.1.1")
     testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
     testCompile("org.springframework.restdocs:spring-restdocs-restassured")
     testCompile("org.springframework.security:spring-security-test")

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
@@ -33,8 +34,8 @@ public class NavigationController {
     public ResponseEntity newApplication(@PathVariable String appname, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final String username = authentication.getPrincipal().toString();
-        final Person person = personDAO.findByUsername(username);
+        final UserDetails userdetails = (UserDetails) authentication.getPrincipal();
+        final Person person = personDAO.findByUsername(userdetails.getUsername());
         Collection<Application> applications = person.getApplications();
         if(applications.stream().noneMatch(app -> app.getAppname().equals(appname)))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Arrays.asList(new AuthError("APP_NOT_ASSIGNED", "")));

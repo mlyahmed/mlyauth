@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -22,12 +23,15 @@ public class PersonController {
     @Autowired
     private ApplicationDAO applicationDAO;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody PersonBean newPerson(@RequestBody PersonBean person) {
         Person pers = new Person();
         BeanUtils.copyProperties(person, pers);
+        pers.setPassword(passwordEncoder.encode(String.valueOf(person.getPassword())));
         pers = personDAO.save(pers);
         person.setId(pers.getId());
         return person;

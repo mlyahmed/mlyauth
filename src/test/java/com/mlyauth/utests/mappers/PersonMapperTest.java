@@ -1,9 +1,10 @@
-package com.mlyauth.mappers;
+package com.mlyauth.utests.mappers;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
+import com.mlyauth.mappers.PersonMapper;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -76,7 +77,7 @@ public class PersonMapperTest {
     @Test
     @UseDataProvider("passwords")
     public void when_map_to_bean_then_do_not_map_password(String password){
-        person.setPassword(password.toCharArray());
+        person.setPassword(password);
         final PersonBean bean = mapper.toBean(person);
         assertThat(bean, notNullValue());
         assertThat(bean.getPassword(), nullValue());

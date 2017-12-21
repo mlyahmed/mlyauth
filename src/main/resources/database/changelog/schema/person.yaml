@@ -20,7 +20,7 @@ databaseChangeLog:
                     unique: true
               - column:
                   name: PASSWORD
-                  type: varchar(250)
+                  type: varchar(200)
                   constraints:
                     nullable: false
               - column:

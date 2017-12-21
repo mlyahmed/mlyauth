@@ -48,16 +48,18 @@ public class PersonBean {
         return username;
     }
 
-    public void setUsername(String username) {
+    public PersonBean setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     public char[] getPassword() {
         return password;
     }
 
-    public void setPassword(char[] password) {
+    public PersonBean setPassword(char[] password) {
         this.password = password;
+        return this;
     }
 
     public Collection<String> getApplications() {

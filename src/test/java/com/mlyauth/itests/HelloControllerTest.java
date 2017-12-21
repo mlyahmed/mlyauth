@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-public class HelloControllerTest extends AbstractIntegrationTest{
+public class HelloControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @Component
 @Scope("cucumber-glue")
-public class RestHelper {
+public class RestTestHelper {
 
     final ObjectMapper mapper = new ObjectMapper();
 

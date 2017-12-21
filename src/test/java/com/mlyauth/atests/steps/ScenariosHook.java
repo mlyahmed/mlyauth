@@ -1,5 +1,7 @@
 package com.mlyauth.atests.steps;
 
+import com.mlyauth.atests.world.CurrentPersonHolder;
+import com.mlyauth.beans.PersonBean;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,12 @@ public class ScenariosHook {
     @Autowired
     private PlatformTransactionManager txMgr;
 
+    @Autowired
+    private CurrentPersonHolder currentPersonHolder;
+
     @Before
     public void markTheTransaction() {
+        currentPersonHolder.setCurrentPerson(PersonBean.newInstance().setUsername("root").setPassword("root".toCharArray()));
         txStatus = txMgr.getTransaction(new DefaultTransactionDefinition());
     }
 
