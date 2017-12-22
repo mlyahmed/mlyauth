@@ -11,3 +11,4 @@ out
 .project
 .gradle
 logs
+dist
