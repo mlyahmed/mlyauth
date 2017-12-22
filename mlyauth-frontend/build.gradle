@@ -19,7 +19,6 @@ task npmClean(type: Delete) {
 
 task copyArtifactsToBackend(type: Copy){
   File target = new File(rootProject.project(":mlyauth-backend").buildDir, 'resources/main/static');
-  println("copyArtifactsToBackend : " + target.getAbsolutePath())
   from "dist"
   into target.getAbsolutePath()
 }

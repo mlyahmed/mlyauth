@@ -24,3 +24,7 @@ databaseChangeLog:
       file: database/changelog/data/auth-aspect-init.sql
   - include:
       file: database/changelog/data/person-init.sql
+  - include:
+      file: database/changelog/data/application-init.sql
+  - include:
+      file: database/changelog/data/application-person-init.sql

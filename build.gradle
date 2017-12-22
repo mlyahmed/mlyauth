@@ -21,11 +21,3 @@ repositories {
 allprojects {
     apply plugin: 'idea'
 }
-
-project(':mlyauth-backend'){
-
-}
-
-project(':mlyauth-frontend'){
-
-}

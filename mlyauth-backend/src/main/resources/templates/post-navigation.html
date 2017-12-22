@@ -4,34 +4,26 @@
 <head>
     <title>Navigate</title>
 </head>
-<body>
+<body onload="document.forms[0].submit()">
 
-<form id="post-navigation-form" name="post-navigation-form"
-      action="https://uat-sgi-policy01.prima-solutions.com/primainsure/vb/business/commun/login.jsp" method="post">
-    <div><label> User Name : <input type="text" name="j_username" value="gestF" disabled="disabled"/> </label></div>
-    <div><label> Password: <input type="password" name="j_password" value="gestF" disabled="disabled"/> </label></div>
-    <div><input type="submit" value="Navigate"/></div>
+<noscript>
+    <p>
+        <strong>Note:</strong> Since your browser does not support JavaScript,
+        you must press the Continue button once to proceed.
+    </p>
+</noscript>
+
+<form id="post-navigation-form" name="post-navigation-form" action="https://localhost/j_spring_security_check"
+      method="POST">
+    <input type="hidden" name="username" value="dfdfd" disabled="disabled"/>
+    <input type="hidden" name="password" value="dfdf" disabled="disabled"/>
+    <noscript>
+        <div>
+            <input type="submit" value="Continue"/>
+        </div>
+    </noscript>
 </form>
 </body>
 
-<script type="text/javascript">
-    window.onload = function () {
-        var auto = setTimeout(function () {
-            autoRefresh();
-        }, 100);
-
-        function submitform() {
-            document.forms["post-navigation-form"].submit();
-        }
-
-        function autoRefresh() {
-            clearTimeout(auto);
-            auto = setTimeout(function () {
-                submitform();
-                autoRefresh();
-            }, 100);
-        }
-    }
-</script>
 
 </html>
