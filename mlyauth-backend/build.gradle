@@ -3,35 +3,23 @@ buildscript {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath("org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.4.2")
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
-        classpath("org.springframework:springloaded:1.2.6.RELEASE")
-        classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.7")
-        classpath("gradle.plugin.org.liquibase:liquibase-gradle-plugin:1.2.4")
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://repo.spring.io/milestone' }
     }
 }
 
-
-apply plugin: 'java'
-apply plugin: 'org.unbroken-dome.test-sets'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.springframework.boot'
-apply plugin: "org.asciidoctor.convert"
-apply plugin: "org.liquibase.gradle"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-configurations {
-    cucumberRuntime {
-        extendsFrom testRuntime
-    }
+plugins {
+    id "java"
+    id "jacoco"
+    id "org.unbroken-dome.test-sets" version "1.4.2"
+    id "io.spring.dependency-management" version "1.0.4.RELEASE"
+    id "org.springframework.boot" version "1.5.9.RELEASE"
+    id "org.asciidoctor.convert" version "1.5.7"
+    id "org.liquibase.gradle" version "1.2.4"
 }
+
+ext["snippetsDir"] = new File (project.buildDir ,"generated-snippets")
+ext["spring-restdocs.version"] = "2.0.0.RELEASE"
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -56,53 +44,60 @@ dependencies {
     testCompile("junit:junit:4.12")
     testCompile("pl.pragmatists:JUnitParams:1.1.1")
     testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
-    testCompile("org.springframework.restdocs:spring-restdocs-restassured")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.0.RELEASE")
+    testCompile("org.springframework.restdocs:spring-restdocs-restassured")
+    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
 }
 
-ext {
-    snippetsDir = file('build/generated-snippets')
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testRuntime
+    }
 }
 
-testSets {
-    apidoc { dirName = 'doc' }
+jacoco {
+    toolVersion = "0.7.9"
+    reportsDir = file("$buildDir/coverage")
 }
 
-bootRepackage {
-    mainClass = 'com.mlyauth.Main'
-}
-
-test {
-    outputs.dir snippetsDir
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination file("${buildDir}/reports/coverage/html")
+    }
 }
 
 asciidoctor {
-    attributes 'snippets': snippetsDir
-    inputs.dir snippetsDir
-    outputDir "build/asciidoc"
-    dependsOn test
-    sourceDir 'src/doc/asciidoc'
-}
+    def docAttributes = [:]
+    docAttributes.put("generated-snippets", project.ext["snippetsDir"])
 
-jar {
-    dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
-    baseName = project.name
+    attributes docAttributes
+    outputDir "build/apidoc"
+    inputs.dir project.ext["snippetsDir"]
+    sourceDir  "src/test/resources/apidoc"
 }
+asciidoctor.dependsOn(test)
 
-task validateExamples() {
-    dependsOn assemble, compileTestJava
-    doLast {
-        javaexec {
-            main = "cucumber.api.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = ['--plugin', 'pretty', '--glue', 'com.mlyauth.atests', '--tags', '~@Skip', 'src/test/resources/features']
-        }
-    }
+task installApiDoc(type: Copy){
+    File target = new File(project.buildDir, "resources/main/static/apidoc")
+    project.mkdir(target)
+    from "${asciidoctor.outputDir}/html5"
+    into  target.getAbsolutePath()
+}
+installApiDoc.dependsOn(asciidoctor)
+jar.dependsOn(installApiDoc)
+
+
+test.finalizedBy(jacocoTestReport)
+test {
+    outputs.dir snippetsDir
 }
 
 task runAll {}
