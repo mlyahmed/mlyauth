@@ -1,0 +1,31 @@
+= MlyAuth API Documentation
+:linkattrs:
+:nofooter:
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Sommaire
+:toclevels: 5
+:sectlinks:
+:numbered:
+
+[introduction]
+= Introduction
+MlyAuth REST API.
+
+[Person]
+= Person Creation
+include::{generated-snippets}/post-person-ok/request-fields.adoc[]
+
+include::{generated-snippets}/post-person-ok/curl-request.adoc[]
+
+include::{generated-snippets}/post-person-ok/http-request.adoc[]
+
+include::{generated-snippets}/post-person-ok/request-body.adoc[]
+
+include::{generated-snippets}/post-person-ok/response-fields.adoc[]
+
+include::{generated-snippets}/post-person-ok/http-response.adoc[]
+
+include::{generated-snippets}/post-person-ok/response-body.adoc[]
