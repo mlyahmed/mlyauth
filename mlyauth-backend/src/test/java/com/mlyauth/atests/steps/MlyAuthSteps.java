@@ -47,12 +47,12 @@ public class MlyAuthSteps extends AbstractStepsDef{
 
     @Given("^(.+), (.+) is a new person with (.+) as username and (.+) as email$")
     public void an_existed_person_withe_username_and_email(String firstname, String lastname, String username, String email) throws Exception {
-        PersonBean person = new PersonBean();
-        person.setFirstname(firstname);
-        person.setLastname(lastname);
-        person.setUsername(username);
-        person.setEmail(email);
-        person.setPassword("password".toCharArray());
+        PersonBean person = PersonBean.newInstance()
+                .setFirstname(firstname)
+                .setLastname(lastname)
+                .setUsername(username)
+                .setEmail(email)
+                .setPassword("password".toCharArray());
         final ResultActions resultActions = restTestHelper.performPost("/domain/person", person).andExpect(status().is(CREATED.value()));
         currentPersonHolder.setCurrentPerson(mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), PersonBean.class));
     }

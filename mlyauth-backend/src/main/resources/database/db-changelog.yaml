@@ -17,14 +17,14 @@ databaseChangeLog:
       file: database/changelog/schema/attribute-flow.yaml
 
   - include:
-      file: database/changelog/data/id-sequence-init.sql
+      file: database/changelog/data/init/id-sequence.sql
   - include:
-      file: database/changelog/data/attribute-catalog-init.sql
+      file: database/changelog/data/init/attribute-catalog.sql
   - include:
-      file: database/changelog/data/auth-aspect-init.sql
+      file: database/changelog/data/init/auth-aspect.sql
   - include:
-      file: database/changelog/data/person-init.sql
+      file: database/changelog/data/init/person.sql
   - include:
-      file: database/changelog/data/application-init.sql
+      file: database/changelog/data/init/application.sql
   - include:
-      file: database/changelog/data/application-person-init.sql
+      file: database/changelog/data/init/application-person.sql

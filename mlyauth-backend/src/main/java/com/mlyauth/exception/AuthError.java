@@ -10,6 +10,10 @@ public class AuthError {
         this.message = message;
     }
 
+    public static AuthError newInstance(String code) {
+        return new AuthError(code, "");
+    }
+
     public String getCode() {
         return code;
     }

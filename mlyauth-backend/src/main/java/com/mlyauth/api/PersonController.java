@@ -4,13 +4,16 @@ import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
+import com.mlyauth.exception.AuthError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 @RestController
@@ -26,15 +29,19 @@ public class PersonController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody PersonBean newPerson(@RequestBody PersonBean person) {
+    public ResponseEntity newPerson(@RequestBody PersonBean person) {
+
+        if (personDAO.findByUsername(person.getUsername()) != null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Arrays.asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
+
         Person pers = new Person();
         BeanUtils.copyProperties(person, pers);
         pers.setPassword(passwordEncoder.encode(String.valueOf(person.getPassword())));
         pers = personDAO.save(pers);
         person.setId(pers.getId());
-        return person;
+        return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
