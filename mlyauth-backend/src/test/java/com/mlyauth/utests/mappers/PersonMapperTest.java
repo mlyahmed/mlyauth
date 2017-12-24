@@ -3,6 +3,7 @@ package com.mlyauth.utests.mappers;
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.mappers.PersonMapper;
@@ -34,6 +35,9 @@ public class PersonMapperTest {
 
     @Mock
     private ApplicationDAO applicationDAO;
+
+    @Mock
+    private PersonDAO personDAO;
 
     @InjectMocks
     private PersonMapper mapper;

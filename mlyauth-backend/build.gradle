@@ -22,6 +22,7 @@ ext["snippetsDir"] = new File (project.buildDir ,"generated-snippets")
 ext["spring-restdocs.version"] = "2.0.0.RELEASE"
 
 dependencies {
+    compile("javax.inject:javax.inject:1")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-devtools")
     compile("org.springframework.boot:spring-boot-starter-jdbc")

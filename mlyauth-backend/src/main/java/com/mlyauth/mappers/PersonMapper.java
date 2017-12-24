@@ -5,19 +5,19 @@ import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+@Named
 public class PersonMapper implements IDomainMapper<Person, PersonBean>{
 
 
-    @Autowired
+    @Inject
     private ApplicationDAO applicationDAO;
 
     @Override

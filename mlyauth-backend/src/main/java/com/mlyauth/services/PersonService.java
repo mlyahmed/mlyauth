@@ -1,47 +1,47 @@
 package com.mlyauth.services;
 
 import com.mlyauth.beans.PersonBean;
-import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
-import com.mlyauth.exception.AuthError;
-import com.mlyauth.exception.AuthException;
 import com.mlyauth.mappers.PersonMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mlyauth.validators.IPersonValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@Service
+@Named
 public class PersonService implements IPersonService {
 
-    @Autowired
+    @Inject
     private PersonDAO personDAO;
 
-    @Autowired
-    private ApplicationDAO applicationDAO;
 
-    @Autowired
+    @Inject
     private PasswordEncoder passwordEncoder;
 
 
-    @Autowired
+    @Inject
     private PersonMapper personMapper;
 
+    @Inject
+    private IPersonValidator personValidator;
 
+    @Override
     public PersonBean createPerson(PersonBean bean) {
-
-        if (bean == null)
-            throw AuthException.newInstance();
-
-        if (personDAO.findByUsername(bean.getUsername()) != null)
-            throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
-
+        personValidator.validate(bean);
         Person person = personMapper.toEntity(bean);
         person.setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword())));
         person = personDAO.save(person);
         return personMapper.toBean(person);
+    }
+
+    @Override
+    public PersonBean updatePerson(PersonBean bean) {
+        Person pers = personMapper.toEntity(bean);
+        pers.setPassword(personDAO.findOne(bean.getId()).getPassword());
+        pers = personDAO.save(pers);
+        return personMapper.toBean(pers);
     }
 
 }
