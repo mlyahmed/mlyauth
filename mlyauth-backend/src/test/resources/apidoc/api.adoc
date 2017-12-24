@@ -12,10 +12,16 @@
 
 [introduction]
 = Introduction
-MlyAuth REST API.
+This book aims to present the reachable resources exposed by MlyAuth and how to interact with.
 
-[Person]
-= Person Creation
+
+[Resources]
+= Resources
+== Person
+=== Create A New Person
+To create a new person, a `POST` HTTP must be sent with all the required fields.
+
+
 include::{generated-snippets}/post-person-ok/request-fields.adoc[]
 
 include::{generated-snippets}/post-person-ok/curl-request.adoc[]
@@ -29,3 +35,8 @@ include::{generated-snippets}/post-person-ok/response-fields.adoc[]
 include::{generated-snippets}/post-person-ok/http-response.adoc[]
 
 include::{generated-snippets}/post-person-ok/response-body.adoc[]
+
+=== Get A Person
+=== Get All People
+=== Update A Person
+=== Delete A Person

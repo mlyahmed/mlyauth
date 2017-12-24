@@ -78,8 +78,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
                 fieldWithPath("firstname").type(JsonFieldType.STRING).description("Firstname"),
                 fieldWithPath("lastname").type(JsonFieldType.STRING).description("Lastname"),
                 fieldWithPath("username").type(JsonFieldType.STRING).description("Username"),
-                fieldWithPath("email").type(JsonFieldType.STRING).description("email"),
-                fieldWithPath("password").type(JsonFieldType.STRING).description("password")
+                fieldWithPath("email").type(JsonFieldType.STRING).description("email")
         );
 
         result.andDo(document("post-person-ok", requestDescription, responseDescription));

@@ -54,7 +54,9 @@ public class MlyAuthSteps extends AbstractStepsDef{
                 .setEmail(email)
                 .setPassword("password".toCharArray());
         final ResultActions resultActions = restTestHelper.performPost("/domain/person", person).andExpect(status().is(CREATED.value()));
-        currentPersonHolder.setCurrentPerson(mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), PersonBean.class));
+        person = mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), PersonBean.class);
+        person.setPassword("password".toCharArray());
+        currentPersonHolder.setCurrentPerson(person);
     }
 
     @Given("^(.+) is a registered Application$")

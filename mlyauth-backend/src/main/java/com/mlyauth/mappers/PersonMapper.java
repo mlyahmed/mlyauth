@@ -2,13 +2,23 @@ package com.mlyauth.mappers;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
+import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class PersonMapper implements IDomainMapper<Person, PersonBean>{
+
+
+    @Autowired
+    private ApplicationDAO applicationDAO;
 
     @Override
     public PersonBean toBean(Person person) {
@@ -17,11 +27,12 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
                 .setId(person.getId())
                 .setFirstname(person.getFirstname())
                 .setLastname(person.getLastname())
+                .setUsername(person.getUsername())
                 .setEmail(person.getEmail())
-                .setApplications(applicationsToCodes(person));
+                .setApplications(applicationsToAppnames(person));
     }
 
-    private HashSet<String> applicationsToCodes(Person person) {
+    private HashSet<String> applicationsToAppnames(Person person) {
         return Sets.newHashSet(person.getApplications().stream()
                 .filter(app -> app.getAppname() != null)
                 .map(Application::getAppname)
@@ -30,7 +41,19 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
 
     @Override
     public Person toEntity(PersonBean bean) {
-        return null;
+        return bean == null ? null : Person.newInstance()
+                .setId(bean.getId())
+                .setFirstname(bean.getFirstname())
+                .setLastname(bean.getLastname())
+                .setUsername(bean.getUsername())
+                .setEmail(bean.getEmail())
+                .setApplications(appnamesToApplications(bean.getApplications()));
     }
 
+
+    private Set<Application> appnamesToApplications(Collection<String> appnames) {
+        if (appnames == null || appnames.isEmpty())
+            return Sets.newHashSet();
+        return appnames.stream().map(appname -> applicationDAO.findByAppname(appname)).collect(Collectors.toSet());
+    }
 }

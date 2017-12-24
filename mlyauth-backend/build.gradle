@@ -36,6 +36,12 @@ dependencies {
     compile("joda-time:joda-time:2.2")
     compile("com.jayway.jsonpath:json-path:2.0.0")
     compile("org.liquibase:liquibase-core:3.5.3")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.springframework.security:spring-security-test")
+    testCompile("org.springframework.restdocs:spring-restdocs-restassured")
+    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
     testCompile("com.h2database:h2")
     testCompile("io.cucumber:cucumber-java:2.3.0")
     testCompile("io.cucumber:cucumber-junit:2.3.0")
@@ -44,11 +50,8 @@ dependencies {
     testCompile("junit:junit:4.12")
     testCompile("pl.pragmatists:JUnitParams:1.1.1")
     testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("org.springframework.security:spring-security-test")
-    testCompile("org.springframework.restdocs:spring-restdocs-restassured")
-    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
+    testCompile("org.mockito:mockito-core:2.13.0")
+    testCompile("org.hamcrest:hamcrest-all:1.3")
 }
 
 
