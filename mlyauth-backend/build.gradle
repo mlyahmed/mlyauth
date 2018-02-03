@@ -30,6 +30,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE'
     compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4")
     compile("io.rest-assured:rest-assured:3.0.3")
     compile("io.rest-assured:json-schema-validator:3.0.3")
@@ -37,6 +38,11 @@ dependencies {
     compile("joda-time:joda-time:2.2")
     compile("com.jayway.jsonpath:json-path:2.0.0")
     compile("org.liquibase:liquibase-core:3.5.3")
+
+
+
+
+
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")

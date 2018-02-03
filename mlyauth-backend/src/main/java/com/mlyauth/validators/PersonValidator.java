@@ -16,11 +16,14 @@ public class PersonValidator implements IPersonValidator {
     private PersonDAO personDAO;
 
     @Override
-    public void validate(PersonBean bean) {
+    public void validateNewPerson(PersonBean bean) {
         if (bean == null)
-            throw AuthException.newInstance();
+            throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_IS_NULL")));
 
         if (personDAO.findByUsername(bean.getUsername()) != null)
             throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
+
+        if (bean.getEmail() == null)
+            throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("EMAIL_INVALID")));
     }
 }

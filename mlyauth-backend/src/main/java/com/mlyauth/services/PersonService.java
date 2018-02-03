@@ -2,7 +2,6 @@ package com.mlyauth.services;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.PersonDAO;
-import com.mlyauth.domain.Person;
 import com.mlyauth.mappers.PersonMapper;
 import com.mlyauth.validators.IPersonValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,10 +15,8 @@ public class PersonService implements IPersonService {
     @Inject
     private PersonDAO personDAO;
 
-
     @Inject
     private PasswordEncoder passwordEncoder;
-
 
     @Inject
     private PersonMapper personMapper;
@@ -29,19 +26,19 @@ public class PersonService implements IPersonService {
 
     @Override
     public PersonBean createPerson(PersonBean bean) {
-        personValidator.validate(bean);
-        Person person = personMapper.toEntity(bean);
-        person.setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword())));
-        person = personDAO.save(person);
-        return personMapper.toBean(person);
+        personValidator.validateNewPerson(bean);
+        return personMapper.toBean(
+                personDAO.save(personMapper.toEntity(bean)
+                        .setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword()))))
+        );
     }
 
     @Override
     public PersonBean updatePerson(PersonBean bean) {
-        Person pers = personMapper.toEntity(bean);
-        pers.setPassword(personDAO.findOne(bean.getId()).getPassword());
-        pers = personDAO.save(pers);
-        return personMapper.toBean(pers);
+        return personMapper.toBean(
+                personDAO.save(personMapper.toEntity(bean)
+                        .setPassword(personDAO.findOne(bean.getId()).getPassword()))
+        );
     }
 
 }

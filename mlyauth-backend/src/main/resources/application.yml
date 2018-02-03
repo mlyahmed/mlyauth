@@ -6,8 +6,11 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: validate
+            ddl-auto: validateNewPerson
             use-new-id-generator-mappings: true
+saml:
+    idps-metadata-dir : /sso/saml/idps-metadata
+
 server:
     port: 16666
 

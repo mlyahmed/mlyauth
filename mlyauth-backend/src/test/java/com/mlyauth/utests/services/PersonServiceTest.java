@@ -25,7 +25,7 @@ public class PersonServiceTest {
 
     @Test(expected = AuthException.class)
     public void when_validation_is_ko_then_error() {
-        Mockito.doThrow(AuthException.newInstance()).when(personValidator).validate(Mockito.any());
+        Mockito.doThrow(AuthException.newInstance()).when(personValidator).validateNewPerson(Mockito.any());
         personService.createPerson(null);
     }
 
