@@ -13,6 +13,10 @@ public class PrimaWebSSOProfileConsumerImpl extends WebSSOProfileConsumerImpl {
 
     public SAMLCredential processAuthenticationResponse(SAMLMessageContext context) throws SAMLException, org.opensaml.xml.security.SecurityException, ValidationException, DecryptionException {
         verify(context);
+        this.setIncludeAllAttributes(true);
+        this.setResponseSkew(60); // 10 mn
+        this.setMaxAuthenticationAge(72000); // 20 hours
+        this.setMaxAssertionTime(3000); // 50 mn
         return super.processAuthenticationResponse(context);
     }
 
