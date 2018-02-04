@@ -81,6 +81,7 @@ public class SAMLSPMetadataIT extends AbstractIntegrationTest {
         sigValidator.validate(metadata.getSignature());
     }
 
+
     @Test
     public void the_SP_entity_id_must_be_defined() throws Exception {
         String content = when_get_sp_metadata();
