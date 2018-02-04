@@ -3,8 +3,6 @@ package com.mlyauth.security.saml;
 import liquibase.util.file.FilenameUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
@@ -15,7 +13,6 @@ import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -38,8 +35,6 @@ import org.springframework.security.saml.metadata.*;
 import org.springframework.security.saml.parser.ParserPoolHolder;
 import org.springframework.security.saml.processor.HTTPPostBinding;
 import org.springframework.security.saml.processor.SAMLProcessorImpl;
-import org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer;
-import org.springframework.security.saml.trust.httpclient.TLSProtocolSocketFactory;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 import org.springframework.security.saml.util.VelocityFactory;
 import org.springframework.security.saml.websso.*;
@@ -74,7 +69,6 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
     private File idpsMetadataDir;
 
 
-    private java.util.Timer backgroundTaskTimer;
     private MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager;
 
     @Bean
@@ -84,14 +78,11 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
 
     @PostConstruct
     public void init() {
-        this.backgroundTaskTimer = new java.util.Timer(true);
         this.multiThreadedHttpConnectionManager = new MultiThreadedHttpConnectionManager();
     }
 
     @PreDestroy
     public void destroy() {
-        this.backgroundTaskTimer.purge();
-        this.backgroundTaskTimer.cancel();
         this.multiThreadedHttpConnectionManager.shutdown();
     }
 
@@ -170,31 +161,6 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
         return new JKSKeyManager(storeFile, "Bourso$17", passwords, "sgi.prima-solutions.com");
     }
 
-    @Bean
-    public TLSProtocolConfigurer tlsProtocolConfigurer() {
-        return new TLSProtocolConfigurer();
-    }
-
-    @Bean
-    public ProtocolSocketFactory socketFactory() {
-        return new TLSProtocolSocketFactory(keyManager(), null, "default");
-    }
-
-    @Bean
-    public Protocol socketFactoryProtocol() {
-        return new Protocol("https", socketFactory(), 443);
-    }
-
-    @Bean
-    public MethodInvokingFactoryBean socketFactoryInitialization() {
-        MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
-        methodInvokingFactoryBean.setTargetClass(Protocol.class);
-        methodInvokingFactoryBean.setTargetMethod("registerProtocol");
-        Object[] args = {"https", socketFactoryProtocol()};
-        methodInvokingFactoryBean.setArguments(args);
-        return methodInvokingFactoryBean;
-    }
-
 
     @Bean
     public ExtendedMetadata extendedMetadata() {
@@ -208,7 +174,11 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @Qualifier("metadata")
     public MetadataManager metadata() throws Exception {
-        return new CachingMetadataManager(idpMetadata());
+        final CachingMetadataManager cachingMetadataManager = new CachingMetadataManager(idpMetadata());
+        cachingMetadataManager.setDefaultExtendedMetadata(extendedMetadata());
+        cachingMetadataManager.setKeyManager(keyManager());
+        cachingMetadataManager.refreshMetadata();
+        return cachingMetadataManager;
     }
 
 
@@ -352,7 +322,7 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
         return entryPoint;
     }
 
-    @Bean
+    @Bean("samlFilter")
     public FilterChainProxy samlFilter() throws Exception {
         List<SecurityFilterChain> chains = new ArrayList<>();
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/sp/logout/**"), samlLogoutFilter()));
@@ -366,8 +336,8 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/saml/sp/**").httpBasic().authenticationEntryPoint(samlEntryPoint());
-        http.addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class);
-        http.addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
+                .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
         http.csrf().disable();
     }
 
