@@ -14,7 +14,10 @@ server:
 
 logging:
   file: logs/mlyauth.log
-  level: all
+  level:
+    ROOT: INFO
+    org.springframework.core: INFO
+    org.springframework.security.saml: INFO
 
 info:
     build:

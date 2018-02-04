@@ -13,7 +13,6 @@ import org.opensaml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.xml.Configuration;
-import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.encryption.EncryptionConstants;
 import org.opensaml.xml.encryption.EncryptionException;
 import org.opensaml.xml.encryption.EncryptionParameters;
@@ -81,48 +80,69 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     private AuthnStatement assertionAuthnStatement;
     private Conditions assertionConditions;
     private Audience assertionAudience;
+    private ResultActions resultActions;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
-
+        given_testing_idp_metadata();
+        given_response();
+        given_assertion();
     }
 
     @Test
     public void when_post_null_Then_Error() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT));
-        resultActions.andExpect(forwardedUrl("/error.html"))
-                .andExpect(unauthenticated())
-                .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", equalToIgnoringCase("Incoming SAML message is invalid"))));
+        resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT));
+        then_error();
 
     }
 
-
-    //    When POST true assertion then OK
     @Test
-    public void when_post_an_true_assertion_from_a_defined_idp_then_OK() throws Exception {
-        given_idp_metadata();
-        given_response();
+    public void when_post_an_true_response_from_a_defined_idp_then_OK() throws Exception {
         given_response_is_success();
-        given_assertion();
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
         given_assertnion_is_encrypted();
         given_response_is_signed();
-
-        ResultActions resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
-                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
-
+        when_post_response();
         resultActions
                 .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
                 .andExpect(redirectedUrl("/home.html"));
-
     }
 
-    private void given_idp_metadata() throws SecurityException, MetadataProviderException {
-        final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+    @Test
+    public void when_post_a_true_response_from_undefined_idp_then_error() throws Exception {
+        given_response_is_success();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        and_the_response_issuer_is_undefined();
+        given_assertnion_is_encrypted();
+        given_response_is_signed();
+        when_post_response();
+        then_error();
+    }
+
+    @Test
+    public void when_post_a_false_response_then_error() throws Exception {
+        given_response_is_false();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        given_assertnion_is_encrypted();
+        given_response_is_signed();
+        when_post_response();
+        then_error();
+    }
+
+    private void and_the_response_issuer_is_undefined() {
+        artifactResponse.getIssuer().setValue("undefined");
+        response.getIssuer().setValue("undefined");
+        assertion.getIssuer().setValue("undefined");
+    }
+
+    private void given_testing_idp_metadata() throws SecurityException, MetadataProviderException {
         EntityDescriptor metadata = OpenSAMLUtils.buildSAMLObject(EntityDescriptor.class);
         metadata.setEntityID(TESTING_IDP_ENTITY_ID);
         IDPSSODescriptor spSSODescriptor = OpenSAMLUtils.buildSAMLObject(IDPSSODescriptor.class);
@@ -140,6 +160,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         spSSODescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
         metadata.getRoleDescriptors().add(spSSODescriptor);
         metadataManager.addMetadataProvider(new MetadataMemoryProvider(metadata));
+        metadataManager.setRefreshCheckInterval(0);
         metadataManager.refreshMetadata();
     }
 
@@ -168,6 +189,17 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         StatusCode statusCode = OpenSAMLUtils.buildSAMLObject(StatusCode.class);
         statusCode.setValue(StatusCode.SUCCESS_URI);
         responseStatus.setStatusCode(statusCode);
+        response.setStatus(responseStatus);
+    }
+
+    private void given_response_is_false() {
+        responseStatus = OpenSAMLUtils.buildSAMLObject(Status.class);
+        StatusCode statusCode = OpenSAMLUtils.buildSAMLObject(StatusCode.class);
+        StatusMessage statusMessage = OpenSAMLUtils.buildSAMLObject(StatusMessage.class);
+        statusCode.setValue(StatusCode.AUTHN_FAILED_URI);
+        statusMessage.setMessage("Failed");
+        responseStatus.setStatusCode(statusCode);
+        responseStatus.setStatusMessage(statusMessage);
         response.setStatus(responseStatus);
     }
 
@@ -242,12 +274,24 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         Signer.signObject(signature);
     }
 
+    private void when_post_response() throws Exception {
+        resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
+                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
+    }
+
+    private void then_error() throws Exception {
+        resultActions.andExpect(forwardedUrl("/error.html"))
+                .andExpect(unauthenticated())
+                .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", notNullValue())));
+    }
+
+
+
 
 //    When POST true assertion and error on attributes then error
 
-
+    //    When REDIRECT, true or false, assertion then error
+    //    When PAOS assertion then error
 //    when POST false assertion then error
-//    When REDIRECT, true or false, assertion then error
-//    When PAOS assertion then error
-
 }
