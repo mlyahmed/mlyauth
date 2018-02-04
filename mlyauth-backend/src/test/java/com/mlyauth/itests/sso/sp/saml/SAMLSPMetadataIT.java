@@ -37,15 +37,21 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public class SAMLSPMetadataIT extends AbstractIntegrationTest {
 
     public static final String SP_ENTITY_ID = "primainsure4sgi";
+
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
+
     @Autowired
     private Filter samlFilter;
+
     @Autowired
     private Filter metadataGeneratorFilter;
+
     @Autowired
     private WebApplicationContext wac;
+
     private MockMvc mockMvc;
+
     @Autowired
     private KeyManager keyManeger;
 
