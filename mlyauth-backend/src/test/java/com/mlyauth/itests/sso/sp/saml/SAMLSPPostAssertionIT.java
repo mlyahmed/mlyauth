@@ -33,8 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
 
-import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -200,7 +199,9 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
                 .contentType(APPLICATION_FORM_URLENCODED_VALUE)
                 .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
 
-        resultActions.andExpect(redirectedUrl("/home.html"));
+        resultActions.andExpect(redirectedUrl("/home.html"))
+                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()));
+        ;
 
     }
 
