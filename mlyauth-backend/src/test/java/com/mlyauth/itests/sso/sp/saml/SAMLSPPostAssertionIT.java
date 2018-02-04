@@ -11,16 +11,21 @@ import org.opensaml.saml2.encryption.Encrypter;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml2.metadata.KeyDescriptor;
+import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.encryption.EncryptionConstants;
+import org.opensaml.xml.encryption.EncryptionException;
 import org.opensaml.xml.encryption.EncryptionParameters;
 import org.opensaml.xml.encryption.KeyEncryptionParameters;
+import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
 import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +51,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     public static final String TESTING_IDP_ENTITY_ID = "testingIDP";
     public static final String SP_ENTITY_ID = "primainsure4sgi";
     public static final String SP_ASSERTION_CONSUMER_ENDPOINT = "http://localhost/saml/sp/SSO";
+    public static final String SP_SSO_ENDPOINT = "/saml/sp/SSO";
 
     @Autowired
     private Filter samlFilter;
@@ -66,6 +72,16 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
 
+    private ArtifactResponse artifactResponse;
+    private Response response;
+    private Status responseStatus;
+    private Assertion assertion;
+    private Subject assertionSubject;
+    private SubjectConfirmation subjectConfirmation;
+    private AuthnStatement assertionAuthnStatement;
+    private Conditions assertionConditions;
+    private Audience assertionAudience;
+
     @Before
     public void setup() {
         this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
@@ -74,7 +90,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
 
     @Test
     public void when_post_null_Then_Error() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/saml/sp/SSO"));
+        ResultActions resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT));
         resultActions.andExpect(forwardedUrl("/error.html"))
                 .andExpect(unauthenticated())
                 .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", equalToIgnoringCase("Incoming SAML message is invalid"))));
@@ -85,7 +101,27 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     //    When POST true assertion then OK
     @Test
     public void when_post_an_true_assertion_from_a_defined_idp_then_OK() throws Exception {
+        given_idp_metadata();
+        given_response();
+        given_response_is_success();
+        given_assertion();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        given_assertnion_is_encrypted();
+        given_response_is_signed();
 
+        ResultActions resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
+                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
+
+        resultActions
+                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
+                .andExpect(redirectedUrl("/home.html"));
+
+    }
+
+    private void given_idp_metadata() throws SecurityException, MetadataProviderException {
         final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
         EntityDescriptor metadata = OpenSAMLUtils.buildSAMLObject(EntityDescriptor.class);
         metadata.setEntityID(TESTING_IDP_ENTITY_ID);
@@ -105,9 +141,10 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         metadata.getRoleDescriptors().add(spSSODescriptor);
         metadataManager.addMetadataProvider(new MetadataMemoryProvider(metadata));
         metadataManager.refreshMetadata();
+    }
 
-
-        ArtifactResponse artifactResponse = OpenSAMLUtils.buildSAMLObject(ArtifactResponse.class);
+    private void given_response() {
+        artifactResponse = OpenSAMLUtils.buildSAMLObject(ArtifactResponse.class);
         Issuer issuer = OpenSAMLUtils.buildSAMLObject(Issuer.class);
         issuer.setValue(TESTING_IDP_ENTITY_ID);
         artifactResponse.setIssuer(issuer);
@@ -115,66 +152,75 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         artifactResponse.setDestination(SP_ASSERTION_CONSUMER_ENDPOINT);
         artifactResponse.setID(OpenSAMLUtils.generateRandomId());
 
-        Status status = OpenSAMLUtils.buildSAMLObject(Status.class);
-        StatusCode statusCode = OpenSAMLUtils.buildSAMLObject(StatusCode.class);
-        statusCode.setValue(StatusCode.SUCCESS_URI);
-        status.setStatusCode(statusCode);
-        //artifactResponse.setStatus(status);
 
-
-        Response response = OpenSAMLUtils.buildSAMLObject(Response.class);
+        response = OpenSAMLUtils.buildSAMLObject(Response.class);
         response.setDestination(SP_ASSERTION_CONSUMER_ENDPOINT);
         response.setIssueInstant(new DateTime());
         response.setID(OpenSAMLUtils.generateRandomId());
         Issuer issuer2 = OpenSAMLUtils.buildSAMLObject(Issuer.class);
         issuer2.setValue(TESTING_IDP_ENTITY_ID);
         response.setIssuer(issuer2);
-        response.setStatus(status);
         artifactResponse.setMessage(response);
+    }
 
-        Assertion assertion = OpenSAMLUtils.buildSAMLObject(Assertion.class);
+    private void given_response_is_success() {
+        responseStatus = OpenSAMLUtils.buildSAMLObject(Status.class);
+        StatusCode statusCode = OpenSAMLUtils.buildSAMLObject(StatusCode.class);
+        statusCode.setValue(StatusCode.SUCCESS_URI);
+        responseStatus.setStatusCode(statusCode);
+        response.setStatus(responseStatus);
+    }
+
+    private void given_assertion() {
+        assertion = OpenSAMLUtils.buildSAMLObject(Assertion.class);
         Issuer issuer3 = OpenSAMLUtils.buildSAMLObject(Issuer.class);
         issuer3.setValue(TESTING_IDP_ENTITY_ID);
         assertion.setIssuer(issuer3);
         assertion.setIssueInstant(new DateTime());
         assertion.setID(OpenSAMLUtils.generateRandomId());
+    }
 
-        Subject subject = OpenSAMLUtils.buildSAMLObject(Subject.class);
+    private void given_assertion_subject() {
+        assertionSubject = OpenSAMLUtils.buildSAMLObject(Subject.class);
         NameID nameID = OpenSAMLUtils.buildSAMLObject(NameID.class);
         nameID.setFormat(NameIDType.TRANSIENT);
-        subject.setNameID(nameID);
+        assertionSubject.setNameID(nameID);
         nameID.setValue("ahmed.elidrissi.attach@gmail.com");
 
-        SubjectConfirmation subjectConfirmation = OpenSAMLUtils.buildSAMLObject(SubjectConfirmation.class);
+        subjectConfirmation = OpenSAMLUtils.buildSAMLObject(SubjectConfirmation.class);
         subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
         SubjectConfirmationData subjectConfirmationData = OpenSAMLUtils.buildSAMLObject(SubjectConfirmationData.class);
         subjectConfirmationData.setInResponseTo(SP_ENTITY_ID);
         subjectConfirmationData.setNotOnOrAfter(new DateTime().plusDays(2));
         subjectConfirmationData.setRecipient(SP_ASSERTION_CONSUMER_ENDPOINT);
         subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
-        subject.getSubjectConfirmations().add(subjectConfirmation);
-        assertion.setSubject(subject);
+        assertionSubject.getSubjectConfirmations().add(subjectConfirmation);
+        assertion.setSubject(assertionSubject);
+    }
 
-        AuthnStatement authnStatement = OpenSAMLUtils.buildSAMLObject(AuthnStatement.class);
+    private void given_assertion_auth_statement() {
+        assertionAuthnStatement = OpenSAMLUtils.buildSAMLObject(AuthnStatement.class);
         AuthnContext authnContext = OpenSAMLUtils.buildSAMLObject(AuthnContext.class);
         AuthnContextClassRef authnContextClassRef = OpenSAMLUtils.buildSAMLObject(AuthnContextClassRef.class);
         authnContextClassRef.setAuthnContextClassRef(AuthnContext.PASSWORD_AUTHN_CTX);
         authnContext.setAuthnContextClassRef(authnContextClassRef);
-        authnStatement.setAuthnContext(authnContext);
-        authnStatement.setAuthnInstant(new DateTime());
-        assertion.getAuthnStatements().add(authnStatement);
+        assertionAuthnStatement.setAuthnContext(authnContext);
+        assertionAuthnStatement.setAuthnInstant(new DateTime());
+        assertion.getAuthnStatements().add(assertionAuthnStatement);
+    }
 
-
-        Conditions conditions = OpenSAMLUtils.buildSAMLObject(Conditions.class);
-        conditions.setNotOnOrAfter(new DateTime().plusDays(2));
+    private void given_assertion_audience() {
+        assertionConditions = OpenSAMLUtils.buildSAMLObject(Conditions.class);
+        assertionConditions.setNotOnOrAfter(new DateTime().plusDays(2));
         AudienceRestriction audienceRestriction = OpenSAMLUtils.buildSAMLObject(AudienceRestriction.class);
-        Audience audience = OpenSAMLUtils.buildSAMLObject(Audience.class);
-        audience.setAudienceURI(SP_ENTITY_ID);
-        audienceRestriction.getAudiences().add(audience);
-        conditions.getAudienceRestrictions().add(audienceRestriction);
-        ;
-        assertion.setConditions(conditions);
+        assertionAudience = OpenSAMLUtils.buildSAMLObject(Audience.class);
+        assertionAudience.setAudienceURI(SP_ENTITY_ID);
+        audienceRestriction.getAudiences().add(assertionAudience);
+        assertionConditions.getAudienceRestrictions().add(audienceRestriction);
+        assertion.setConditions(assertionConditions);
+    }
 
+    private void given_assertnion_is_encrypted() throws EncryptionException {
         EncryptionParameters encryptionParameters = new EncryptionParameters();
         encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
         KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
@@ -184,8 +230,9 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
         EncryptedAssertion encryptedAssertion = encrypter.encrypt(assertion);
         response.getEncryptedAssertions().add(encryptedAssertion);
+    }
 
-
+    private void given_response_is_signed() throws MarshallingException, SignatureException {
         Signature signature = OpenSAMLUtils.buildSAMLObject(Signature.class);
         signature.setSigningCredential(keyManeger.getDefaultCredential());
         signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
@@ -193,16 +240,6 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         response.setSignature(signature);
         Configuration.getMarshallerFactory().getMarshaller(response).marshall(response);
         Signer.signObject(signature);
-
-
-        ResultActions resultActions = mockMvc.perform(post("/saml/sp/SSO")
-                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
-
-        resultActions.andExpect(redirectedUrl("/home.html"))
-                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()));
-        ;
-
     }
 
 
