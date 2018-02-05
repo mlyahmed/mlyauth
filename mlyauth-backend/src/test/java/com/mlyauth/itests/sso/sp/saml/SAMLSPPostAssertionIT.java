@@ -85,6 +85,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     private Conditions assertionConditions;
     private Audience assertionAudience;
     private ResultActions resultActions;
+    private AttributeStatement attributeStatement;
 
     @Before
     public void setup() throws Exception {
@@ -114,11 +115,6 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         then_authenticated();
     }
 
-    private void then_authenticated() throws Exception {
-        resultActions
-                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
-                .andExpect(redirectedUrl("/home.html"));
-    }
 
     @Test
     public void when_post_a_true_response_from_undefined_idp_then_error() throws Exception {
@@ -262,7 +258,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     }
 
     private void given_assertion_attributes() {
-        AttributeStatement attributeStatement = OpenSAMLUtils.buildSAMLObject(AttributeStatement.class);
+        attributeStatement = OpenSAMLUtils.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
         attributes.add(buildAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "BVCG15487"));
         attributes.add(buildAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
@@ -308,6 +304,13 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
                 .contentType(APPLICATION_FORM_URLENCODED_VALUE)
                 .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
+    }
+
+
+    private void then_authenticated() throws Exception {
+        resultActions
+                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
+                .andExpect(redirectedUrl("/home.html"));
     }
 
     private void then_error() throws Exception {
