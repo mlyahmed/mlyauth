@@ -15,8 +15,9 @@ public class PrimaSPMetadataDisplayFilter extends MetadataDisplayFilter {
         try {
             org.springframework.security.saml.context.SAMLMessageContext context = contextProvider.getLocalEntity(request, response);
             String entityId = context.getLocalEntityId();
-            response.setContentType("application/samlmetadata+xml"); // SAML_Meta, 4.1.1 - line 1235
-            response.addHeader("Content-Disposition", "attachment; filename=\"prima_saml_metadata.xml\"");
+//            response.setContentType("application/samlmetadata+xml"); // SAML_Meta, 4.1.1 - line 1235
+//            response.addHeader("Content-Disposition", "attachment; filename=\"prima_saml_metadata.xml\"");
+            response.setContentType("application/xml"); // SAML_Meta, 4.1.1 - line 1235
             displayMetadata(entityId, response.getWriter());
         } catch (MetadataProviderException e) {
             throw new ServletException("Error initializing metadata", e);

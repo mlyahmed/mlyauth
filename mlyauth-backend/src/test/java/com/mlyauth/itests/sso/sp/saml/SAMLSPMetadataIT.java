@@ -114,7 +114,7 @@ public class SAMLSPMetadataIT extends AbstractIntegrationTest {
     private String when_get_sp_metadata() throws Exception {
         ResultActions resultActions = mockMvc.perform(get("/saml/sp/metadata"));
         MvcResult result = resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType("application/samlmetadata+xml"))
+                .andExpect(content().contentType("application/xml"))
                 .andReturn();
 
         return result.getResponse().getContentAsString();

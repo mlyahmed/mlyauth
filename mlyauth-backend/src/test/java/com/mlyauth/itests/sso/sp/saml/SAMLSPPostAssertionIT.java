@@ -18,8 +18,6 @@ import org.opensaml.xml.encryption.EncryptionException;
 import org.opensaml.xml.encryption.EncryptionParameters;
 import org.opensaml.xml.encryption.KeyEncryptionParameters;
 import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.schema.impl.XSStringBuilder;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
@@ -260,23 +258,14 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
     private void given_assertion_attributes() {
         attributeStatement = OpenSAMLUtils.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
-        attributes.add(buildAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "BVCG15487"));
-        attributes.add(buildAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
-        attributes.add(buildAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
-        attributes.add(buildAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
-        attributes.add(buildAttribute(SAML_RESPONSE_APP.getCode(), "policy"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "BVCG15487"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "policy"));
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
-    private Attribute buildAttribute(String attName, String attValue) {
-        Attribute attribute = OpenSAMLUtils.buildSAMLObject(Attribute.class);
-        attribute.setName(attName);
-        XSStringBuilder stringBuilder = (XSStringBuilder) Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
-        XSString value = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
-        value.setValue(attValue);
-        attribute.getAttributeValues().add(value);
-        return attribute;
-    }
 
     private void given_assertnion_is_encrypted() throws EncryptionException {
         EncryptionParameters encryptionParameters = new EncryptionParameters();

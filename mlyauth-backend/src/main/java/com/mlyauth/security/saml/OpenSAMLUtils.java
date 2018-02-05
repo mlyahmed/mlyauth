@@ -2,9 +2,13 @@ package com.mlyauth.security.saml;
 
 import org.opensaml.Configuration;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.io.Marshaller;
+import org.opensaml.xml.schema.XSString;
+import org.opensaml.xml.schema.impl.XSStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -49,6 +53,16 @@ public class OpenSAMLUtils {
         }
     }
 
+
+    public static Attribute buildStringAttribute(String attName, String attValue) {
+        Attribute attribute = OpenSAMLUtils.buildSAMLObject(Attribute.class);
+        attribute.setName(attName);
+        XSStringBuilder stringBuilder = (XSStringBuilder) org.opensaml.xml.Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
+        XSString value = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
+        value.setValue(attValue);
+        attribute.getAttributeValues().add(value);
+        return attribute;
+    }
 
     public static String toString(XMLObject xmlObject) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

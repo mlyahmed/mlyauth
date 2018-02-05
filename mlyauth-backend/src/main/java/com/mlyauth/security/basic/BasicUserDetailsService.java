@@ -1,7 +1,8 @@
-package com.mlyauth.security;
+package com.mlyauth.security.basic;
 
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
+import com.mlyauth.security.PrimaUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

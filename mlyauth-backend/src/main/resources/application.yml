@@ -16,6 +16,7 @@ logging:
   file: logs/mlyauth.log
   level:
     ROOT: INFO
+    org.opensaml: INFO
     org.springframework.core: INFO
     org.springframework.security.saml: INFO
 

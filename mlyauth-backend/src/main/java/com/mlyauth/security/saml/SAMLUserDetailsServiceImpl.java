@@ -15,6 +15,8 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_CLIENT_ID;
+
 @Service
 public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 
@@ -23,10 +25,12 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
         Assert.notNull(credential, "SAML Credential is null");
-        Assert.notEmpty(credential.getAttributes(), "SAML Credential Attributes List is empty");
-
+        Assert.notEmpty(credential.getAttributes(), "SAML Credential : Attributes List is empty");
         logAttributes(credential);
-        return new PrimaUser(credential.getNameID().getValue(), "<abc123>", true, true, true, true, new ArrayList<GrantedAuthority>());
+
+        Assert.notNull(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()), "SAML Credential : The clientId attribute is undefined");
+
+        return new PrimaUser("aaaaa", "<abc123>", true, true, true, true, new ArrayList<GrantedAuthority>());
     }
 
     private void logAttributes(SAMLCredential samlCredential) {
