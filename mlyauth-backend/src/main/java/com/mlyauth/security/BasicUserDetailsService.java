@@ -17,7 +17,7 @@ public class BasicUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final Person person = personDAO.findByUsername(username);
-        return person == null ? null : new UserDetailsImpl(person);
+        return person == null ? null : new PrimaUser(person);
     }
 
 }

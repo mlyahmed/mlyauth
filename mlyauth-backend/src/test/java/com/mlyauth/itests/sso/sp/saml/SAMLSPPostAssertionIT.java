@@ -18,6 +18,8 @@ import org.opensaml.xml.encryption.EncryptionException;
 import org.opensaml.xml.encryption.EncryptionParameters;
 import org.opensaml.xml.encryption.KeyEncryptionParameters;
 import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.schema.XSString;
+import org.opensaml.xml.schema.impl.XSStringBuilder;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
@@ -36,7 +38,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
+import java.util.List;
 
+import static com.mlyauth.beans.AttributeBean.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -103,9 +107,14 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
+        given_assertion_attributes();
         given_assertnion_is_encrypted();
         given_response_is_signed();
         when_post_response();
+        then_authenticated();
+    }
+
+    private void then_authenticated() throws Exception {
         resultActions
                 .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
                 .andExpect(redirectedUrl("/home.html"));
@@ -250,6 +259,27 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         audienceRestriction.getAudiences().add(assertionAudience);
         assertionConditions.getAudienceRestrictions().add(audienceRestriction);
         assertion.setConditions(assertionConditions);
+    }
+
+    private void given_assertion_attributes() {
+        AttributeStatement attributeStatement = OpenSAMLUtils.buildSAMLObject(AttributeStatement.class);
+        final List<Attribute> attributes = attributeStatement.getAttributes();
+        attributes.add(buildAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "BVCG15487"));
+        attributes.add(buildAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
+        attributes.add(buildAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
+        attributes.add(buildAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
+        attributes.add(buildAttribute(SAML_RESPONSE_APP.getCode(), "policy"));
+        assertion.getAttributeStatements().add(attributeStatement);
+    }
+
+    private Attribute buildAttribute(String attName, String attValue) {
+        Attribute attribute = OpenSAMLUtils.buildSAMLObject(Attribute.class);
+        attribute.setName(attName);
+        XSStringBuilder stringBuilder = (XSStringBuilder) Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
+        XSString value = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
+        value.setValue(attValue);
+        attribute.getAttributeValues().add(value);
+        return attribute;
     }
 
     private void given_assertnion_is_encrypted() throws EncryptionException {
