@@ -139,6 +139,32 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         then_error();
     }
 
+
+    @Test
+    public void when_post_a_true_response_not_signed_then_error() throws Exception {
+        given_response_is_success();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        given_assertion_valid_attributes();
+        given_assertnion_is_encrypted();
+        when_post_response();
+        then_error();
+    }
+
+
+    @Test
+    public void when_post_an_true_response_not_encrypted_then_error() throws Exception {
+        given_response_is_success();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        given_assertion_valid_attributes();
+        given_response_is_signed();
+        when_post_response();
+        then_error();
+    }
+
     private void and_the_response_issuer_is_undefined() {
         artifactResponse.getIssuer().setValue("undefined");
         response.getIssuer().setValue("undefined");
@@ -310,8 +336,6 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
 
 
 
-
-//    When POST true assertion and error on attributes then error
 
     //    When REDIRECT, true or false, assertion then error
     //    When PAOS assertion then error
