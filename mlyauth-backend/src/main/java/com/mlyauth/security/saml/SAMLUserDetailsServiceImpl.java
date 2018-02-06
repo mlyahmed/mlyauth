@@ -1,18 +1,19 @@
 package com.mlyauth.security.saml;
 
+import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.domain.Person;
 import com.mlyauth.security.PrimaUser;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.schema.impl.XSStringImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_CLIENT_ID;
@@ -23,6 +24,9 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(SAMLUserDetailsServiceImpl.class);
 
 
+    @Autowired
+    private PersonDAO personDAO;
+
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
         Assert.notNull(credential, "SAML Credential is null");
         Assert.notEmpty(credential.getAttributes(), "SAML Credential : Attributes List is empty");
@@ -30,7 +34,11 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 
         Assert.notNull(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()), "SAML Credential : The clientId attribute is undefined");
 
-        return new PrimaUser("aaaaa", "<abc123>", true, true, true, true, new ArrayList<GrantedAuthority>());
+        final Person person = personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()));
+        Assert.notNull(person, "SAML Credential : Person Not Found");
+
+
+        return new PrimaUser(person);
     }
 
     private void logAttributes(SAMLCredential samlCredential) {

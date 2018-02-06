@@ -106,7 +106,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_attributes();
+        given_assertion_valid_attributes();
         given_assertnion_is_encrypted();
         given_response_is_signed();
         when_post_response();
@@ -255,10 +255,10 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         assertion.setConditions(assertionConditions);
     }
 
-    private void given_assertion_attributes() {
+    private void given_assertion_valid_attributes() {
         attributeStatement = OpenSAMLUtils.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "BVCG15487"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "9000")); //See person-examples.sql
         attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
         attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
         attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));

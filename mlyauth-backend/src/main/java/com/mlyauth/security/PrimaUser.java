@@ -24,4 +24,7 @@ public class PrimaUser extends User {
     }
 
 
+    public Person getPerson() {
+        return person;
+    }
 }

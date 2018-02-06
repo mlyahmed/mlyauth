@@ -46,9 +46,9 @@ public class PersonMapperTest {
     public static Object[] properties() {
         // @formatter:off
         return new Object[][]{
-                {1l, "Ahmed", "EL IDRISSI", "ahmed.elidrissi.attach", "ahmed.elidrissi.attach@gmail.com"},
-                {2l, "Moulay", "ATTACH", "mlyahmed1", "mlyahmed1@gmail.com"},
-                {3232l, "Fatima-Ezzahrae", "EL IDRISSI", "fatima.elidrissi", "fatima.elidrissi@yahoo.fr"},
+                {1l, "1", "Ahmed", "EL IDRISSI", "ahmed.elidrissi.attach", "ahmed.elidrissi.attach@gmail.com"},
+                {2l, "2", "Moulay", "ATTACH", "mlyahmed1", "mlyahmed1@gmail.com"},
+                {3232l, "3232", "Fatima-Ezzahrae", "EL IDRISSI", "fatima.elidrissi", "fatima.elidrissi@yahoo.fr"},
         };
         // @formatter:on
     }
@@ -90,10 +90,11 @@ public class PersonMapperTest {
 
     private void given_person(Object[] properties) {
         person.setId((Long) properties[0])
-                .setFirstname(String.valueOf(properties[1]))
-                .setLastname(String.valueOf(properties[2]))
-                .setUsername(String.valueOf(properties[3]))
-                .setEmail(String.valueOf(properties[4]));
+                .setExternalId(String.valueOf(properties[1]))
+                .setFirstname(String.valueOf(properties[2]))
+                .setLastname(String.valueOf(properties[3]))
+                .setUsername(String.valueOf(properties[4]))
+                .setEmail(String.valueOf(properties[5]));
     }
 
     private void when_map_person_to_bean() {
@@ -115,10 +116,11 @@ public class PersonMapperTest {
     private void then_person_properties_are_mapped_to_bean(Object[] properties) {
         assertThat(bean, notNullValue());
         assertThat(bean.getId(), equalTo((Long) properties[0]));
-        assertThat(bean.getFirstname(), equalTo(String.valueOf(properties[1])));
-        assertThat(bean.getLastname(), equalTo(String.valueOf(properties[2])));
-        assertThat(bean.getUsername(), equalTo(String.valueOf(properties[3])));
-        assertThat(bean.getEmail(), equalTo(String.valueOf(properties[4])));
+        assertThat(bean.getExternalId(), equalTo(String.valueOf(properties[1])));
+        assertThat(bean.getFirstname(), equalTo(String.valueOf(properties[2])));
+        assertThat(bean.getLastname(), equalTo(String.valueOf(properties[3])));
+        assertThat(bean.getUsername(), equalTo(String.valueOf(properties[4])));
+        assertThat(bean.getEmail(), equalTo(String.valueOf(properties[5])));
     }
 
     @Test
@@ -195,10 +197,11 @@ public class PersonMapperTest {
     private void then_bean_properties_are_mapped_to_person(Object... properties) {
         assertThat(person, notNullValue());
         assertThat(person.getId(), equalTo((Long) properties[0]));
-        assertThat(person.getFirstname(), equalTo(String.valueOf(properties[1])));
-        assertThat(person.getLastname(), equalTo(String.valueOf(properties[2])));
-        assertThat(person.getUsername(), equalTo(String.valueOf(properties[3])));
-        assertThat(person.getEmail(), equalTo(String.valueOf(properties[4])));
+        assertThat(person.getExternalId(), equalTo(String.valueOf(properties[1])));
+        assertThat(person.getFirstname(), equalTo(String.valueOf(properties[2])));
+        assertThat(person.getLastname(), equalTo(String.valueOf(properties[3])));
+        assertThat(person.getUsername(), equalTo(String.valueOf(properties[4])));
+        assertThat(person.getEmail(), equalTo(String.valueOf(properties[5])));
     }
 
     private void when_map_bean_to_person() {
@@ -207,10 +210,11 @@ public class PersonMapperTest {
 
     private void given_bean(Object... properties) {
         bean.setId((Long) properties[0])
-                .setFirstname(String.valueOf(properties[1]))
-                .setLastname(String.valueOf(properties[2]))
-                .setUsername(String.valueOf(properties[3]))
-                .setEmail(String.valueOf(properties[4]));
+                .setExternalId(String.valueOf(properties[1]))
+                .setFirstname(String.valueOf(properties[2]))
+                .setLastname(String.valueOf(properties[3]))
+                .setUsername(String.valueOf(properties[4]))
+                .setEmail(String.valueOf(properties[5]));
     }
 
 

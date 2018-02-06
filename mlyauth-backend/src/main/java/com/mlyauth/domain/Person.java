@@ -16,6 +16,9 @@ public class Person  implements Serializable {
     @GeneratedValue(generator = "PERSON_ID", strategy = GenerationType.TABLE)
     private long id;
 
+    @Column(name = "EXTERNAL_ID", nullable = false)
+    private String externalId;
+
     @Column(name = "FIRSTNAME", nullable = false)
     private String firstname;
 
@@ -45,6 +48,16 @@ public class Person  implements Serializable {
 
     public Person setId(long id) {
         this.id = id;
+        return this;
+    }
+
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public Person setExternalId(String externalId) {
+        this.externalId = externalId;
         return this;
     }
 

@@ -85,6 +85,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     private PersonBean given_person(String... properties) {
         PersonBean personBean = new PersonBean();
+        personBean.setExternalId(properties[0]);
         personBean.setFirstname(properties[0]);
         personBean.setLastname(properties[1]);
         personBean.setUsername(properties[2]);

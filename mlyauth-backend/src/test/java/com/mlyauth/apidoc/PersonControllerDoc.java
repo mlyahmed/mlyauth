@@ -2,6 +2,7 @@ package com.mlyauth.apidoc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.itests.AbstractIntegrationTest;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,6 +52,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     public void when_person_creation_is_ok_then_document_it() throws Exception {
 
         Map<String, Object> person = new HashMap<>();
+        person.put("externalId", RandomStringUtils.random(20, true, true));
         person.put("firstname", "Ahmed");
         person.put("lastname", "Ahmed");
         person.put("username", "Ahmed");

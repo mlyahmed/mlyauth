@@ -25,6 +25,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
         if(person == null) return null;
         return PersonBean.newInstance()
                 .setId(person.getId())
+                .setExternalId(person.getExternalId())
                 .setFirstname(person.getFirstname())
                 .setLastname(person.getLastname())
                 .setUsername(person.getUsername())
@@ -43,6 +44,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
     public Person toEntity(PersonBean bean) {
         return bean == null ? null : Person.newInstance()
                 .setId(bean.getId())
+                .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())
                 .setUsername(bean.getUsername())

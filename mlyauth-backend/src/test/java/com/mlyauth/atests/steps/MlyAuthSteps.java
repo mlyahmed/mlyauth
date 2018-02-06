@@ -12,6 +12,7 @@ import com.mlyauth.constants.AuthAspectType;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
     public void an_existed_person_withe_username_and_email(String firstname, String lastname, String username, String email) throws Exception {
         PersonBean person = PersonBean.newInstance()
                 .setFirstname(firstname)
+                .setExternalId(RandomStringUtils.random(20, true, true))
                 .setLastname(lastname)
                 .setUsername(username)
                 .setEmail(email)
