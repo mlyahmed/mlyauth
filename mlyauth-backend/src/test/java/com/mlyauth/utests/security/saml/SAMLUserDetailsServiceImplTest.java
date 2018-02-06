@@ -1,6 +1,8 @@
 package com.mlyauth.utests.security.saml;
 
+import com.google.common.collect.Sets;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.PrimaUser;
 import com.mlyauth.security.saml.OpenSAMLUtils;
@@ -18,6 +20,7 @@ import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.NameID;
 import org.springframework.security.saml.SAMLCredential;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,6 +67,16 @@ public class SAMLUserDetailsServiceImplTest {
     public void when_all_good_then_return_user() {
         given_credential_with_all_attributes();
         given_the_person_exists();
+        given_the_application_is_assigned_to_the_person();
+        when_load_user();
+        then_user_is_loaded();
+    }
+
+
+    @Test
+    public void when_the_application_attribute_is_absent_then_user_is_returned() {
+        given_all_credential_attributes_except_app();
+        given_the_person_exists();
         when_load_user();
         then_user_is_loaded();
     }
@@ -74,25 +87,69 @@ public class SAMLUserDetailsServiceImplTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_attributes_is_empty_then_error() {
+    public void when_attributes_list_is_empty_then_error() {
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
         when_load_user();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_the_client_id_attribute_is_null_then_error() {
-        given_assert_with_all_attributes_but_client_id();
+        given_all_credential_attributes_except_the_client_id();
         when_load_user();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_the_person_is_not_found_then_error() {
         given_credential_with_all_attributes();
-        when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(person);
+        given_the_person_does_not_exist();
         when_load_user();
     }
 
-    private void given_assert_with_all_attributes_but_client_id() {
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_profile_code_attribute_is_absent_then_error() {
+        given_all_credential_attributes_except_the_profile_code();
+        given_the_person_exists();
+        when_load_user();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_application_code_attribute_exists_and_the_application_is_not_assigned_to_the_client_then_error() {
+        given_credential_with_all_attributes();
+        given_the_person_exists();
+        person.setApplications(Collections.emptySet());
+        when_load_user();
+    }
+
+    private void given_the_application_is_assigned_to_the_person() {
+        person.setApplications(Sets.newHashSet(Application.newInstance().setAppname(APPLICATION_CODE)));
+    }
+
+    private void given_credential_with_all_attributes() {
+        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
+    }
+
+    private void given_all_credential_attributes_except_app() {
+        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
+    }
+
+    private void given_all_credential_attributes_except_the_profile_code() {
+        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        attributes.add(buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
+    }
+
+    private void given_all_credential_attributes_except_the_client_id() {
         attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
         attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
         attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
@@ -107,13 +164,8 @@ public class SAMLUserDetailsServiceImplTest {
         when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(person);
     }
 
-    private void given_credential_with_all_attributes() {
-        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
-        credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
+    private void given_the_person_does_not_exist() {
+        when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(null);
     }
 
     private void when_load_user() {

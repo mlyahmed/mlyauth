@@ -4,3 +4,7 @@ databaseChangeLog:
 
   - include:
       file: database/examples/person-examples.sql
+  - include:
+      file: database/examples/application-examples.sql
+  - include:
+      file: database/examples/application-person-examples.sql

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ErrorController {
+
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String exception(final Throwable throwable, final Model model) {
@@ -15,4 +16,5 @@ public class ErrorController {
         model.addAttribute("MLY_AUTH_ERROR_CODE", "APP_NOT_ASSIGNED");
         return "error";
     }
+
 }

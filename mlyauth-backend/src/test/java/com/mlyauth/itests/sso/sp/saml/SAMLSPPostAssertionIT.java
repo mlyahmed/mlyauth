@@ -262,7 +262,7 @@ public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
         attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
         attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
         attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "policy"));
+        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "PolicyDev"));
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
