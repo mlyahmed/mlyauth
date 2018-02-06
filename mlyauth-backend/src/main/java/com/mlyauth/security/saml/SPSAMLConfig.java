@@ -19,10 +19,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.saml.*;
@@ -41,13 +38,11 @@ import org.springframework.security.saml.websso.*;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.PostConstruct;
@@ -58,9 +53,14 @@ import java.util.*;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
 @Order(2)
-public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
+public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
+
+    public static final String SP_SAML_METADATA_ENDPOINT = "/sp/saml/metadata";
+    public static final String SAML_SP_LOGOUT_ENDPOINT = "/saml/sp/logout";
+    public static final String SAML_SP_SINGLE_LOGOUT_ENDPOINT = "/saml/sp/SingleLogout";
+    public static final String SP_SAML_SSO_ENDPOINT = "/sp/saml/sso";
+    public static final String SP_ENTITY_ID = "primainsure4sgi";
 
     @Autowired
     private SAMLUserDetailsService samlUserDetailsService;
@@ -222,7 +222,7 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
         metadataGenerator.setWantAssertionSigned(true);
         metadataGenerator.setRequestSigned(true);
-        metadataGenerator.setEntityId("primainsure4sgi");
+        metadataGenerator.setEntityId(SP_ENTITY_ID);
         metadataGenerator.setNameID(Collections.emptyList());
         metadataGenerator.setBindingsSSO(Arrays.asList("POST"));
         metadataGenerator.setBindingsSLO(Arrays.asList("POST"));
@@ -234,7 +234,6 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() {
         final PrimaSPMetadataDisplayFilter primaSPMetadataDisplayFilter = new PrimaSPMetadataDisplayFilter();
-        primaSPMetadataDisplayFilter.setFilterProcessesUrl("/saml/sp/metadata");
         return primaSPMetadataDisplayFilter;
     }
 
@@ -247,12 +246,12 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SAMLProcessingFilter samlWebSSOProcessingFilter() throws Exception {
-        SAMLProcessingFilter samlWebSSOProcessingFilter = new SAMLProcessingFilter();
-        samlWebSSOProcessingFilter.setFilterProcessesUrl("/saml/sp/SSO");
-        samlWebSSOProcessingFilter.setAuthenticationManager(authenticationManager());
-        samlWebSSOProcessingFilter.setAuthenticationSuccessHandler(successRedirectHandler());
-        samlWebSSOProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
-        return samlWebSSOProcessingFilter;
+        SAMLProcessingFilter samlProcessing = new SAMLProcessingFilter();
+        samlProcessing.setFilterProcessesUrl(SP_SAML_SSO_ENDPOINT);
+        samlProcessing.setAuthenticationManager(authenticationManager());
+        samlProcessing.setAuthenticationSuccessHandler(successRedirectHandler());
+        samlProcessing.setAuthenticationFailureHandler(authenticationFailureHandler());
+        return samlProcessing;
     }
 
     @Bean
@@ -315,41 +314,20 @@ public class SAMLSPConfig extends WebSecurityConfigurerAdapter {
         return options;
     }
 
-    @Bean
-    public SAMLEntryPoint samlEntryPoint() {
-        SAMLEntryPoint entryPoint = new SAMLEntryPoint();
-        entryPoint.setDefaultProfileOptions(profileOptions());
-        return entryPoint;
-    }
-
     @Bean("samlFilter")
     public FilterChainProxy samlFilter() throws Exception {
         List<SecurityFilterChain> chains = new ArrayList<>();
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/sp/logout/**"), samlLogoutFilter()));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/sp/metadata/**"), metadataDisplayFilter()));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/sp/SingleLogout/**"), samlLogoutProcessingFilter()));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/sp/SSO/**"), samlWebSSOProcessingFilter()));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(SAML_SP_LOGOUT_ENDPOINT), samlLogoutFilter()));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(SP_SAML_METADATA_ENDPOINT), metadataGeneratorFilter(), metadataDisplayFilter()));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(SAML_SP_SINGLE_LOGOUT_ENDPOINT), samlLogoutProcessingFilter()));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(SP_SAML_SSO_ENDPOINT), samlWebSSOProcessingFilter()));
         return new FilterChainProxy(chains);
     }
 
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/saml/sp/**").httpBasic().authenticationEntryPoint(samlEntryPoint());
-        http.addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
-                .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
-        http.csrf().disable();
-    }
-
-    @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(samlAuthenticationProvider());
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
     }
 
 

@@ -3,7 +3,7 @@ spring:
       database: H2
     datasource:
       generate-unique-name: true
-      url: jdbc:h2:file:~/mlyahmed
+      url: jdbc:h2:file:../../h2/mlyahmed
       username: sa
       password:
       driver-class-name: org.h2.Driver

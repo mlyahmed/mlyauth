@@ -34,9 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-public class SAMLSPMetadataIT extends AbstractIntegrationTest {
+public class SPSAMLMetadataIT extends AbstractIntegrationTest {
 
     public static final String SP_ENTITY_ID = "primainsure4sgi";
+    public static final String SP_SAML_METADATA_ENDPOINT = "/sp/saml/metadata";
 
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
@@ -112,7 +113,7 @@ public class SAMLSPMetadataIT extends AbstractIntegrationTest {
     }
 
     private String when_get_sp_metadata() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/saml/sp/metadata"));
+        ResultActions resultActions = mockMvc.perform(get(SP_SAML_METADATA_ENDPOINT));
         MvcResult result = resultActions.andExpect(status().isOk())
                 .andExpect(content().contentType("application/xml"))
                 .andReturn();

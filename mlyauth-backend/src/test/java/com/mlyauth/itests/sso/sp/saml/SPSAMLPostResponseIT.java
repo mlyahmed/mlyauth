@@ -46,13 +46,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-public class SAMLSPPostAssertionIT extends AbstractIntegrationTest {
+public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
     public static final String SECU_EXCP_ATTR = "SPRING_SECURITY_LAST_EXCEPTION";
     public static final String TESTING_IDP_ENTITY_ID = "testingIDP";
     public static final String SP_ENTITY_ID = "primainsure4sgi";
-    public static final String SP_ASSERTION_CONSUMER_ENDPOINT = "http://localhost/saml/sp/SSO";
-    public static final String SP_SSO_ENDPOINT = "/saml/sp/SSO";
+    public static final String SP_ASSERTION_CONSUMER_ENDPOINT = "http://localhost/sp/saml/sso";
+    public static final String SP_SSO_ENDPOINT = "/sp/saml/sso";
 
     @Autowired
     private Filter samlFilter;

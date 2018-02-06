@@ -30,6 +30,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
     private PersonDAO personDAO;
 
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
+        //HttpServletRequest request = (HttpServletRequest) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_REQUEST);
         checkCredentials(credential);
         return new PrimaUser(personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode())));
     }
