@@ -20,7 +20,6 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.saml.*;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
@@ -52,7 +51,6 @@ import java.io.File;
 import java.util.*;
 
 @Configuration
-@EnableWebSecurity
 @Order(2)
 public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
 
@@ -246,7 +244,7 @@ public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SAMLProcessingFilter samlWebSSOProcessingFilter() throws Exception {
-        SAMLProcessingFilter samlProcessing = new SAMLProcessingFilter();
+        SAMLProcessingFilter samlProcessing = new PrimaSAMLProcessingFilter();
         samlProcessing.setFilterProcessesUrl(SP_SAML_SSO_ENDPOINT);
         samlProcessing.setAuthenticationManager(authenticationManager());
         samlProcessing.setAuthenticationSuccessHandler(successRedirectHandler());
