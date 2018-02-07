@@ -1,5 +1,6 @@
 package com.mlyauth.security.saml;
 
+import org.opensaml.common.SAMLRuntimeException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.saml.SAMLProcessingFilter;
@@ -24,7 +25,7 @@ public class PrimaSAMLProcessingFilter extends SAMLProcessingFilter {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SAMLRuntimeException(e);
         } catch (Exception e) {
             throw e;
         }
