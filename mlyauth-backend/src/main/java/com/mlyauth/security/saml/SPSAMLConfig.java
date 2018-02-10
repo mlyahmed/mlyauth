@@ -1,5 +1,6 @@
 package com.mlyauth.security.saml;
 
+import com.mlyauth.security.saml.metadata.PrimaSPMetadataDisplayFilter;
 import liquibase.util.file.FilenameUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
