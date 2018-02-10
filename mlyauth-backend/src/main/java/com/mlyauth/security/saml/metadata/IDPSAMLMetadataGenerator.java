@@ -19,6 +19,8 @@ import java.util.Arrays;
 @Component
 public class IDPSAMLMetadataGenerator {
 
+    public static final String IDP_SAML_ENTITY_ID = "app4primainsure";
+
     @Autowired
     private SAMLHelper samlHelper;
 
@@ -43,8 +45,8 @@ public class IDPSAMLMetadataGenerator {
             idpDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
 
             metadata.getRoleDescriptors().add(idpDescriptor);
-            metadata.setEntityID("app4primainsure");
-            metadata.setID("app4primainsure");
+            metadata.setEntityID(IDP_SAML_ENTITY_ID);
+            metadata.setID(IDP_SAML_ENTITY_ID);
 
             return metadata;
         } catch (Exception e) {
