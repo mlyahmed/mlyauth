@@ -177,20 +177,20 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     private void given_testing_idp_metadata() throws SecurityException, MetadataProviderException {
         EntityDescriptor metadata = samlHelper.buildSAMLObject(EntityDescriptor.class);
         metadata.setEntityID(TESTING_IDP_ENTITY_ID);
-        IDPSSODescriptor spSSODescriptor = samlHelper.buildSAMLObject(IDPSSODescriptor.class);
+        IDPSSODescriptor idpDescriptor = samlHelper.buildSAMLObject(IDPSSODescriptor.class);
         X509KeyInfoGeneratorFactory keyInfoGeneratorFactory = new X509KeyInfoGeneratorFactory();
         keyInfoGeneratorFactory.setEmitEntityCertificate(true);
         KeyInfoGenerator keyInfoGenerator = keyInfoGeneratorFactory.newInstance();
         KeyDescriptor encKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         encKeyDescriptor.setUse(UsageType.ENCRYPTION);
         encKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
-        spSSODescriptor.getKeyDescriptors().add(encKeyDescriptor);
+        idpDescriptor.getKeyDescriptors().add(encKeyDescriptor);
         KeyDescriptor signKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         signKeyDescriptor.setUse(UsageType.SIGNING);
         signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
-        spSSODescriptor.getKeyDescriptors().add(signKeyDescriptor);
-        spSSODescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
-        metadata.getRoleDescriptors().add(spSSODescriptor);
+        idpDescriptor.getKeyDescriptors().add(signKeyDescriptor);
+        idpDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
+        metadata.getRoleDescriptors().add(idpDescriptor);
         metadataManager.addMetadataProvider(new MetadataMemoryProvider(metadata));
         metadataManager.setRefreshCheckInterval(0);
         metadataManager.refreshMetadata();

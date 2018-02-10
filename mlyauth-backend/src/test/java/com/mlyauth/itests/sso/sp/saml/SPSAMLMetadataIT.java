@@ -41,7 +41,11 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
     private Filter samlFilter;
 
     @Autowired
+    private Filter metadataDisplayFilter;
+
+    @Autowired
     private Filter metadataGeneratorFilter;
+
 
     @Autowired
     private WebApplicationContext wac;
@@ -56,7 +60,7 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
+        this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, metadataDisplayFilter, samlFilter).build();
 
     }
 
@@ -64,17 +68,6 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
     public void when_request_SP_metadata_then_returned() throws Exception {
         String content = when_get_sp_metadata();
         assertThat(content, notNullValue());
-    }
-
-    @Test
-    public void the_metadata_must_be_signed() throws Exception {
-        String content = when_get_sp_metadata();
-        EntityDescriptorImpl metadata = samlHelper.toMetadata(content);
-        assertThat(metadata.isSigned(), equalTo(true));
-        SAMLSignatureProfileValidator signatureProfileValidator = new SAMLSignatureProfileValidator();
-        signatureProfileValidator.validate(metadata.getSignature());
-        SignatureValidator sigValidator = new SignatureValidator(keyManeger.getDefaultCredential());
-        sigValidator.validate(metadata.getSignature());
     }
 
 
@@ -96,6 +89,17 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
         assertThat(spssoDescriptor.getDefaultAssertionConsumerService(), notNullValue());
         assertThat(spssoDescriptor.getDefaultAssertionConsumerService().getBinding(), equalTo(SAML2_POST_BINDING_URI));
         assertThat(spssoDescriptor.getDefaultAssertionConsumerService().getLocation(), notNullValue());
+    }
+
+    @Test
+    public void the_metadata_must_be_signed() throws Exception {
+        String content = when_get_sp_metadata();
+        EntityDescriptorImpl metadata = samlHelper.toMetadata(content);
+        assertThat(metadata.isSigned(), equalTo(true));
+        SAMLSignatureProfileValidator signatureProfileValidator = new SAMLSignatureProfileValidator();
+        signatureProfileValidator.validate(metadata.getSignature());
+        SignatureValidator sigValidator = new SignatureValidator(keyManeger.getDefaultCredential());
+        sigValidator.validate(metadata.getSignature());
     }
 
     private String when_get_sp_metadata() throws Exception {

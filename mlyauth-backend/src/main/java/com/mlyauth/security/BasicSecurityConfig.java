@@ -55,6 +55,7 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
         http.authorizeRequests()
                 .antMatchers("/sp/saml/**").permitAll()
+                .antMatchers("/idp/saml/**").permitAll()
                 .antMatchers("/login*").permitAll()
                 .anyRequest().authenticated()
                 .and()
