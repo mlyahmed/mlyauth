@@ -1,7 +1,7 @@
 package com.mlyauth.itests.sso.sp.saml;
 
 import com.mlyauth.itests.AbstractIntegrationTest;
-import com.mlyauth.security.saml.OpenSAMLUtils;
+import com.mlyauth.security.saml.SAMLHelper;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +53,9 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     public static final String SP_ENTITY_ID = "primainsure4sgi";
     public static final String SP_ASSERTION_CONSUMER_ENDPOINT = "http://localhost/sp/saml/sso";
     public static final String SP_SSO_ENDPOINT = "/sp/saml/sso";
+
+    @Autowired
+    private SAMLHelper samlHelper;
 
     @Autowired
     private Filter samlFilter;
@@ -172,17 +175,17 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_testing_idp_metadata() throws SecurityException, MetadataProviderException {
-        EntityDescriptor metadata = OpenSAMLUtils.buildSAMLObject(EntityDescriptor.class);
+        EntityDescriptor metadata = samlHelper.buildSAMLObject(EntityDescriptor.class);
         metadata.setEntityID(TESTING_IDP_ENTITY_ID);
-        IDPSSODescriptor spSSODescriptor = OpenSAMLUtils.buildSAMLObject(IDPSSODescriptor.class);
+        IDPSSODescriptor spSSODescriptor = samlHelper.buildSAMLObject(IDPSSODescriptor.class);
         X509KeyInfoGeneratorFactory keyInfoGeneratorFactory = new X509KeyInfoGeneratorFactory();
         keyInfoGeneratorFactory.setEmitEntityCertificate(true);
         KeyInfoGenerator keyInfoGenerator = keyInfoGeneratorFactory.newInstance();
-        KeyDescriptor encKeyDescriptor = OpenSAMLUtils.buildSAMLObject(KeyDescriptor.class);
+        KeyDescriptor encKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         encKeyDescriptor.setUse(UsageType.ENCRYPTION);
         encKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
         spSSODescriptor.getKeyDescriptors().add(encKeyDescriptor);
-        KeyDescriptor signKeyDescriptor = OpenSAMLUtils.buildSAMLObject(KeyDescriptor.class);
+        KeyDescriptor signKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         signKeyDescriptor.setUse(UsageType.SIGNING);
         signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
         spSSODescriptor.getKeyDescriptors().add(signKeyDescriptor);
@@ -194,37 +197,37 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_response() {
-        artifactResponse = OpenSAMLUtils.buildSAMLObject(ArtifactResponse.class);
-        Issuer issuer = OpenSAMLUtils.buildSAMLObject(Issuer.class);
+        artifactResponse = samlHelper.buildSAMLObject(ArtifactResponse.class);
+        Issuer issuer = samlHelper.buildSAMLObject(Issuer.class);
         issuer.setValue(TESTING_IDP_ENTITY_ID);
         artifactResponse.setIssuer(issuer);
         artifactResponse.setIssueInstant(new DateTime());
         artifactResponse.setDestination(SP_ASSERTION_CONSUMER_ENDPOINT);
-        artifactResponse.setID(OpenSAMLUtils.generateRandomId());
+        artifactResponse.setID(samlHelper.generateRandomId());
 
 
-        response = OpenSAMLUtils.buildSAMLObject(Response.class);
+        response = samlHelper.buildSAMLObject(Response.class);
         response.setDestination(SP_ASSERTION_CONSUMER_ENDPOINT);
         response.setIssueInstant(new DateTime());
-        response.setID(OpenSAMLUtils.generateRandomId());
-        Issuer issuer2 = OpenSAMLUtils.buildSAMLObject(Issuer.class);
+        response.setID(samlHelper.generateRandomId());
+        Issuer issuer2 = samlHelper.buildSAMLObject(Issuer.class);
         issuer2.setValue(TESTING_IDP_ENTITY_ID);
         response.setIssuer(issuer2);
         artifactResponse.setMessage(response);
     }
 
     private void given_response_is_success() {
-        responseStatus = OpenSAMLUtils.buildSAMLObject(Status.class);
-        StatusCode statusCode = OpenSAMLUtils.buildSAMLObject(StatusCode.class);
+        responseStatus = samlHelper.buildSAMLObject(Status.class);
+        StatusCode statusCode = samlHelper.buildSAMLObject(StatusCode.class);
         statusCode.setValue(StatusCode.SUCCESS_URI);
         responseStatus.setStatusCode(statusCode);
         response.setStatus(responseStatus);
     }
 
     private void given_response_is_false() {
-        responseStatus = OpenSAMLUtils.buildSAMLObject(Status.class);
-        StatusCode statusCode = OpenSAMLUtils.buildSAMLObject(StatusCode.class);
-        StatusMessage statusMessage = OpenSAMLUtils.buildSAMLObject(StatusMessage.class);
+        responseStatus = samlHelper.buildSAMLObject(Status.class);
+        StatusCode statusCode = samlHelper.buildSAMLObject(StatusCode.class);
+        StatusMessage statusMessage = samlHelper.buildSAMLObject(StatusMessage.class);
         statusCode.setValue(StatusCode.AUTHN_FAILED_URI);
         statusMessage.setMessage("Failed");
         responseStatus.setStatusCode(statusCode);
@@ -233,24 +236,24 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_assertion() {
-        assertion = OpenSAMLUtils.buildSAMLObject(Assertion.class);
-        Issuer issuer3 = OpenSAMLUtils.buildSAMLObject(Issuer.class);
+        assertion = samlHelper.buildSAMLObject(Assertion.class);
+        Issuer issuer3 = samlHelper.buildSAMLObject(Issuer.class);
         issuer3.setValue(TESTING_IDP_ENTITY_ID);
         assertion.setIssuer(issuer3);
         assertion.setIssueInstant(new DateTime());
-        assertion.setID(OpenSAMLUtils.generateRandomId());
+        assertion.setID(samlHelper.generateRandomId());
     }
 
     private void given_assertion_subject() {
-        assertionSubject = OpenSAMLUtils.buildSAMLObject(Subject.class);
-        NameID nameID = OpenSAMLUtils.buildSAMLObject(NameID.class);
+        assertionSubject = samlHelper.buildSAMLObject(Subject.class);
+        NameID nameID = samlHelper.buildSAMLObject(NameID.class);
         nameID.setFormat(NameIDType.TRANSIENT);
         assertionSubject.setNameID(nameID);
         nameID.setValue("ahmed.elidrissi.attach@gmail.com");
 
-        subjectConfirmation = OpenSAMLUtils.buildSAMLObject(SubjectConfirmation.class);
+        subjectConfirmation = samlHelper.buildSAMLObject(SubjectConfirmation.class);
         subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
-        SubjectConfirmationData subjectConfirmationData = OpenSAMLUtils.buildSAMLObject(SubjectConfirmationData.class);
+        SubjectConfirmationData subjectConfirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
         subjectConfirmationData.setInResponseTo(SP_ENTITY_ID);
         subjectConfirmationData.setNotOnOrAfter(new DateTime().plusDays(2));
         subjectConfirmationData.setRecipient(SP_ASSERTION_CONSUMER_ENDPOINT);
@@ -260,9 +263,9 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_assertion_auth_statement() {
-        assertionAuthnStatement = OpenSAMLUtils.buildSAMLObject(AuthnStatement.class);
-        AuthnContext authnContext = OpenSAMLUtils.buildSAMLObject(AuthnContext.class);
-        AuthnContextClassRef authnContextClassRef = OpenSAMLUtils.buildSAMLObject(AuthnContextClassRef.class);
+        assertionAuthnStatement = samlHelper.buildSAMLObject(AuthnStatement.class);
+        AuthnContext authnContext = samlHelper.buildSAMLObject(AuthnContext.class);
+        AuthnContextClassRef authnContextClassRef = samlHelper.buildSAMLObject(AuthnContextClassRef.class);
         authnContextClassRef.setAuthnContextClassRef(AuthnContext.PASSWORD_AUTHN_CTX);
         authnContext.setAuthnContextClassRef(authnContextClassRef);
         assertionAuthnStatement.setAuthnContext(authnContext);
@@ -271,10 +274,10 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_assertion_audience() {
-        assertionConditions = OpenSAMLUtils.buildSAMLObject(Conditions.class);
+        assertionConditions = samlHelper.buildSAMLObject(Conditions.class);
         assertionConditions.setNotOnOrAfter(new DateTime().plusDays(2));
-        AudienceRestriction audienceRestriction = OpenSAMLUtils.buildSAMLObject(AudienceRestriction.class);
-        assertionAudience = OpenSAMLUtils.buildSAMLObject(Audience.class);
+        AudienceRestriction audienceRestriction = samlHelper.buildSAMLObject(AudienceRestriction.class);
+        assertionAudience = samlHelper.buildSAMLObject(Audience.class);
         assertionAudience.setAudienceURI(SP_ENTITY_ID);
         audienceRestriction.getAudiences().add(assertionAudience);
         assertionConditions.getAudienceRestrictions().add(audienceRestriction);
@@ -282,13 +285,13 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_assertion_valid_attributes() {
-        attributeStatement = OpenSAMLUtils.buildSAMLObject(AttributeStatement.class);
+        attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "9000")); //See person-examples.sql
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
-        attributes.add(OpenSAMLUtils.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "PolicyDev"));
+        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "9000")); //See person-examples.sql
+        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
+        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
+        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
+        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "PolicyDev"));
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
@@ -306,7 +309,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     private void given_response_is_signed() throws MarshallingException, SignatureException {
-        Signature signature = OpenSAMLUtils.buildSAMLObject(Signature.class);
+        Signature signature = samlHelper.buildSAMLObject(Signature.class);
         signature.setSigningCredential(keyManeger.getDefaultCredential());
         signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
@@ -318,7 +321,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     private void when_post_response() throws Exception {
         resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
                 .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                .param("SAMLResponse", Base64.encodeBytes(OpenSAMLUtils.toString(response).getBytes())));
+                .param("SAMLResponse", Base64.encodeBytes(samlHelper.toString(response).getBytes())));
     }
 
 

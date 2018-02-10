@@ -1,4 +1,4 @@
-package com.mlyauth.mvc;
+package com.mlyauth.services;
 
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.AuthNavigation;

@@ -5,7 +5,7 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.PrimaUser;
-import com.mlyauth.security.saml.OpenSAMLUtils;
+import com.mlyauth.security.saml.SAMLHelper;
 import com.mlyauth.security.saml.SAMLUserDetailsServiceImpl;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.mlyauth.beans.AttributeBean.*;
-import static com.mlyauth.security.saml.OpenSAMLUtils.buildStringAttribute;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -46,6 +45,8 @@ public class SAMLUserDetailsServiceImplTest {
     @InjectMocks
     private SAMLUserDetailsServiceImpl service;
 
+    private SAMLHelper samlLHelper = new SAMLHelper();
+
     private NameID nameID;
     private Assertion assertion;
     private List<Attribute> attributes;
@@ -57,8 +58,8 @@ public class SAMLUserDetailsServiceImplTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         DefaultBootstrap.bootstrap();
-        nameID = OpenSAMLUtils.buildSAMLObject(NameID.class);
-        assertion = OpenSAMLUtils.buildSAMLObject(Assertion.class);
+        nameID = samlLHelper.buildSAMLObject(NameID.class);
+        assertion = samlLHelper.buildSAMLObject(Assertion.class);
         attributes = new LinkedList<>();
     }
 
@@ -125,35 +126,35 @@ public class SAMLUserDetailsServiceImplTest {
     }
 
     private void given_credential_with_all_attributes() {
-        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 
     private void given_all_credential_attributes_except_app() {
-        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 
     private void given_all_credential_attributes_except_the_profile_code() {
-        attributes.add(buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), CLIENT_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 
     private void given_all_credential_attributes_except_the_client_id() {
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
-        attributes.add(buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), USER_PROFILE));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), PRESTATION_ID));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), ACTION));
+        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 

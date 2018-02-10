@@ -11,6 +11,7 @@ import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.schema.impl.XSStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import javax.xml.namespace.QName;
@@ -23,8 +24,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 
-public class OpenSAMLUtils {
-    private static Logger logger = LoggerFactory.getLogger(OpenSAMLUtils.class);
+@Component
+public class SAMLHelper {
+    private static Logger logger = LoggerFactory.getLogger(SAMLHelper.class);
 
     private static SecureRandomIdentifierGenerator randomIdGenerator;
 
@@ -37,7 +39,7 @@ public class OpenSAMLUtils {
         }
     }
 
-    public static String generateRandomId() {
+    public String generateRandomId() {
         return randomIdGenerator.generateIdentifier();
     }
 
@@ -54,8 +56,8 @@ public class OpenSAMLUtils {
     }
 
 
-    public static Attribute buildStringAttribute(String attName, String attValue) {
-        Attribute attribute = OpenSAMLUtils.buildSAMLObject(Attribute.class);
+    public Attribute buildStringAttribute(String attName, String attValue) {
+        Attribute attribute = SAMLHelper.buildSAMLObject(Attribute.class);
         attribute.setName(attName);
         XSStringBuilder stringBuilder = (XSStringBuilder) org.opensaml.xml.Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
         XSString value = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
@@ -64,7 +66,7 @@ public class OpenSAMLUtils {
         return attribute;
     }
 
-    public static String toString(XMLObject xmlObject) throws Exception {
+    public String toString(XMLObject xmlObject) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.newDocument();
