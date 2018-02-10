@@ -12,6 +12,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/person-application.yaml
   - include:
+      file: database/changelog/schema/application-aspect.yaml
+  - include:
       file: database/changelog/schema/entity-attribute.yaml
   - include:
       file: database/changelog/schema/attribute-flow.yaml
@@ -28,3 +30,5 @@ databaseChangeLog:
       file: database/changelog/data/init/application.sql
   - include:
       file: database/changelog/data/init/application-person.sql
+  - include:
+      file: database/changelog/data/init/application-aspect.sql

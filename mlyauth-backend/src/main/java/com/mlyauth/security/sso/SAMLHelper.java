@@ -1,4 +1,4 @@
-package com.mlyauth.security.saml;
+package com.mlyauth.security.sso;
 
 import org.opensaml.Configuration;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;

@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: APPLICATION_ASPECT
+            columns:
+              - column:
+                  name: APPLICATION_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ASPECT_CODE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_ASPECT
+            baseColumnNames: APPLICATION_ID
+            referencedTableName: APPLICATION
+            referencedColumnNames: ID
+            constraintName: app_aspect_fk_application_id
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_ASPECT
+            baseColumnNames: ASPECT_CODE
+            referencedTableName: AUTH_ASPECT
+            referencedColumnNames: TYPE
+            constraintName: app_aspect_fk_aspect_code
+        - addUniqueConstraint:
+            tableName: APPLICATION_ASPECT
+            columnNames: APPLICATION_ID, ASPECT_CODE
+            constraintName: app_aspect_uniq

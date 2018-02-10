@@ -1,4 +1,4 @@
-package com.mlyauth.security.saml.metadata;
+package com.mlyauth.security.sso.sp.saml.metadata;
 
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.springframework.security.saml.metadata.MetadataDisplayFilter;

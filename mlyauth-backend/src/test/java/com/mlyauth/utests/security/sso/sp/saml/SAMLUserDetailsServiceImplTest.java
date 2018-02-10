@@ -1,12 +1,12 @@
-package com.mlyauth.utests.security.saml;
+package com.mlyauth.utests.security.sso.sp.saml;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.PrimaUser;
-import com.mlyauth.security.saml.SAMLHelper;
-import com.mlyauth.security.saml.SAMLUserDetailsServiceImpl;
+import com.mlyauth.security.sso.SAMLHelper;
+import com.mlyauth.security.sso.sp.SAMLUserDetailsServiceImpl;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;

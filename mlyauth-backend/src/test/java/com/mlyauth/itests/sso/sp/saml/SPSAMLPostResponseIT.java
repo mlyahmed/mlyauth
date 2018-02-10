@@ -1,7 +1,7 @@
 package com.mlyauth.itests.sso.sp.saml;
 
 import com.mlyauth.itests.AbstractIntegrationTest;
-import com.mlyauth.security.saml.SAMLHelper;
+import com.mlyauth.security.sso.SAMLHelper;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;

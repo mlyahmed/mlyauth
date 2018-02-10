@@ -1,4 +1,4 @@
-package com.mlyauth.security.saml;
+package com.mlyauth.security.sso.sp;
 
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;

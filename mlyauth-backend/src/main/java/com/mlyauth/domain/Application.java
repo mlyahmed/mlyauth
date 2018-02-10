@@ -4,6 +4,7 @@ import com.mlyauth.constants.AuthAspectType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name="APPLICATION")
@@ -26,6 +27,11 @@ public class Application  implements Serializable {
     @Enumerated(EnumType.STRING)
     private AuthAspectType authAspect;
 
+    @ElementCollection(targetClass = AuthAspectType.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "APPLICATION_ASPECT", joinColumns = @JoinColumn(name = "APPLICATION_ID"))
+    @Column(name = "ASPECT_CODE")
+    private Set<AuthAspectType> aspects;
 
     public static Application newInstance(){
         return new Application();
@@ -62,5 +68,13 @@ public class Application  implements Serializable {
 
     public void setAuthAspect(AuthAspectType authAspect) {
         this.authAspect = authAspect;
+    }
+
+    public Set<AuthAspectType> getAspects() {
+        return aspects;
+    }
+
+    public void setAspects(Set<AuthAspectType> aspects) {
+        this.aspects = aspects;
     }
 }

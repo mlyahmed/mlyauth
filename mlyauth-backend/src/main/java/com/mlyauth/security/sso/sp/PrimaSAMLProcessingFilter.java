@@ -1,4 +1,4 @@
-package com.mlyauth.security.saml;
+package com.mlyauth.security.sso.sp;
 
 import org.opensaml.common.SAMLRuntimeException;
 import org.springframework.security.core.Authentication;

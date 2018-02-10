@@ -1,4 +1,4 @@
-package com.mlyauth.security.saml;
+package com.mlyauth.security.sso.sp;
 
 import org.opensaml.common.SAMLException;
 import org.opensaml.common.SAMLObject;

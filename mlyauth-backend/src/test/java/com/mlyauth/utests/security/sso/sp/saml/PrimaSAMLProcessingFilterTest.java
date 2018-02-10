@@ -1,6 +1,6 @@
-package com.mlyauth.utests.security.saml;
+package com.mlyauth.utests.security.sso.sp.saml;
 
-import com.mlyauth.security.saml.PrimaSAMLProcessingFilter;
+import com.mlyauth.security.sso.sp.PrimaSAMLProcessingFilter;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -72,7 +72,7 @@ public class PrimaSAMLProcessingFilterTest {
     private void set_up_request_and_response() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        request.setRequestURI("/sp/saml/sso");
+        request.setRequestURI("/sp/sso/sso");
     }
 
     private void set_up_the_the_filter() {
@@ -85,7 +85,7 @@ public class PrimaSAMLProcessingFilterTest {
     private void set_up_saml_message_context() throws MetadataProviderException {
         Endpoint endpoint = new AssertionConsumerServiceBuilder().buildObject("", "", "");
         endpoint.setBinding(SAML2_POST_BINDING_URI);
-        endpoint.setLocation("http://localhost/sp/saml/sso");
+        endpoint.setLocation("http://localhost/sp/sso/sso");
         SAMLMessageContext context = new SAMLMessageContext();
         RoleDescriptor localEntityMetadata = mock(RoleDescriptor.class);
         when(localEntityMetadata.getEndpoints()).thenReturn(Arrays.asList(endpoint));
