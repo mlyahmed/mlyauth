@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: APPLICATION_ASPECT_ATTR
+            columns:
+              - column:
+                  name: APPLICATION_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ASPECT_CODE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ATTRIBUTE_CODE
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ATTRIBUTE_VALUE
+                  type: CLOB
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_ASPECT_ATTR
+            baseColumnNames: APPLICATION_ID
+            referencedTableName: APPLICATION
+            referencedColumnNames: ID
+            constraintName: app_aspect_attr_fk_application_id
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_ASPECT_ATTR
+            baseColumnNames: ASPECT_CODE
+            referencedTableName: AUTH_ASPECT
+            referencedColumnNames: TYPE
+            constraintName: app_aspect_attr_fk_aspect_code
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_ASPECT_ATTR
+            baseColumnNames: ATTRIBUTE_CODE
+            referencedTableName: ATTRIBUTE_CATALOG
+            referencedColumnNames: CODE
+            constraintName: app_aspect_attr_fk_attr_code
+        - addUniqueConstraint:
+            tableName: APPLICATION_ASPECT_ATTR
+            columnNames: APPLICATION_ID, ASPECT_CODE, ATTRIBUTE_CODE
+            constraintName: app_aspect_attr_uniq

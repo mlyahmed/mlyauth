@@ -14,6 +14,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/application-aspect.yaml
   - include:
+      file: database/changelog/schema/application-aspect-attribute.yaml
+  - include:
       file: database/changelog/schema/entity-attribute.yaml
   - include:
       file: database/changelog/schema/attribute-flow.yaml

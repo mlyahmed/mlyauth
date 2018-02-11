@@ -19,7 +19,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: DEFAULT_VALUE
-                  type: varchar(500)
+                  type: CLOB
                   constraints:
                     nullable: true
               - column:
