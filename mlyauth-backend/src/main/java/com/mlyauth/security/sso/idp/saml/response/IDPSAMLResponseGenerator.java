@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -105,10 +103,7 @@ public class IDPSAMLResponseGenerator {
         final ApplicationAspectAttribute encryptionCertificate = attributes.stream()
                 .filter(att -> SP_SAML_ENCRYPTION_CERTIFICATE.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);
-        final byte[] decode = org.opensaml.xml.util.Base64.decode(encryptionCertificate.getValue());
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        return (X509Certificate) certFactory.generateCertificate(inputStream);
+        return samlHelper.toX509Certificate(encryptionCertificate.getValue());
     }
 
     private List<ApplicationAspectAttribute> loadAttributes(Application app) {

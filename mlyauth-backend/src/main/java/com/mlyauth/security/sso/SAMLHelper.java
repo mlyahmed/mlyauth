@@ -2,17 +2,25 @@ package com.mlyauth.security.sso;
 
 import org.opensaml.Configuration;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeValue;
+import org.opensaml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml2.encryption.Decrypter;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
+import org.opensaml.xml.encryption.DecryptionException;
+import org.opensaml.xml.encryption.InlineEncryptedKeyResolver;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
 import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.schema.impl.XSStringBuilder;
+import org.opensaml.xml.security.credential.Credential;
+import org.opensaml.xml.security.keyinfo.StaticKeyInfoCredentialResolver;
+import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +37,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 @Component
 public class SAMLHelper {
@@ -81,6 +92,28 @@ public class SAMLHelper {
         value.setValue(attValue);
         attribute.getAttributeValues().add(value);
         return attribute;
+    }
+
+
+    public X509Certificate toX509Certificate(String encodedCertificate) throws CertificateException {
+        final byte[] decode = org.opensaml.xml.util.Base64.decode(encodedCertificate);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        return (X509Certificate) certFactory.generateCertificate(inputStream);
+    }
+
+    public BasicX509Credential toBasicX509Credential(String encodedCertificate) throws CertificateException {
+        BasicX509Credential credential = new BasicX509Credential();
+        credential.setEntityCertificate(toX509Certificate(encodedCertificate));
+        return credential;
+    }
+
+
+    public Assertion decryptAssertion(EncryptedAssertion encreptedAssertion, Credential credential) throws DecryptionException {
+        StaticKeyInfoCredentialResolver keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(credential);
+        Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());
+        decrypter.setRootInNewDocument(true);
+        return decrypter.decrypt(encreptedAssertion);
     }
 
     public String toString(XMLObject xmlObject) throws Exception {
