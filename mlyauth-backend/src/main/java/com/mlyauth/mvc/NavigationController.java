@@ -16,10 +16,10 @@ public class NavigationController {
     @Autowired
     private NavigationService navigationService;
 
-    @GetMapping("/to/{appname}")
-    public String navigateTo(@PathVariable String appname, Model model) {
-        final AuthNavigation authNavigation = navigationService.newNavigation(appname);
-        authNavigation.getAttributes().forEach(att -> model.addAttribute(att.getCode(), att));
+    @GetMapping("/{protocole}/to/{appname}")
+    public String navigateTo(@PathVariable String protocole, @PathVariable String appname, Model model) {
+        final AuthNavigation authNavigation = navigationService.newNavigation(protocole, appname);
+        model.addAttribute("navigation", authNavigation);
         return authNavigation.getPosterPage();
     }
 

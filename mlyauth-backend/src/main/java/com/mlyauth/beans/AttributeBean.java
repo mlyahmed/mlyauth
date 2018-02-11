@@ -15,6 +15,7 @@ public class AttributeBean implements Cloneable{
     public final static AttributeBean SAML_RESPONSE_PRESTATION_ID = new AttributeBean("idPrestation", AUTHENTICATION);
     public final static AttributeBean SAML_RESPONSE_ACTION = new AttributeBean("action", AUTHENTICATION);
     public final static AttributeBean SAML_RESPONSE_APP = new AttributeBean("application", AUTHENTICATION);
+    public final static AttributeBean SAML_RESPONSE = new AttributeBean("SAMLResponse", AUTHENTICATION);
 
     private String code;
     private String alias;

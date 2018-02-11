@@ -31,9 +31,7 @@ public class IDPSAMLResponseGeneratorIT extends AbstractIntegrationTest {
     @Test
     public void when_generate_a_saml_response_to_app_then_return_valid_response() throws Exception {
         final Application policy = applicationDAO.findByAppname("PolicyDev");
-
         final List<ApplicationAspectAttribute> byApplicationIdAndAspectCode = appAspectAttrDAO.findByAppAndAspect(policy.getId(), AuthAspectType.SP_SAML.name());
-
         Response response = generator.generate(policy);
         Assert.assertThat(response, Matchers.notNullValue());
     }
