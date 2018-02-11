@@ -27,7 +27,7 @@ public class Application  implements Serializable {
     @Enumerated(EnumType.STRING)
     private AuthAspectType authAspect;
 
-    @ElementCollection(targetClass = AuthAspectType.class)
+    @ElementCollection(targetClass = AuthAspectType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "APPLICATION_ASPECT", joinColumns = @JoinColumn(name = "APPLICATION_ID"))
     @Column(name = "ASPECT_CODE")
@@ -41,8 +41,9 @@ public class Application  implements Serializable {
         return id;
     }
 
-    public void setId(long id) {
+    public Application setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getAppname() {
@@ -74,7 +75,8 @@ public class Application  implements Serializable {
         return aspects;
     }
 
-    public void setAspects(Set<AuthAspectType> aspects) {
+    public Application setAspects(Set<AuthAspectType> aspects) {
         this.aspects = aspects;
+        return this;
     }
 }

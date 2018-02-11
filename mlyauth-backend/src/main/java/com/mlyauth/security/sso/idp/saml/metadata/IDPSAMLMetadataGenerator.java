@@ -11,6 +11,7 @@ import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
 import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +20,14 @@ import java.util.Arrays;
 @Component
 public class IDPSAMLMetadataGenerator {
 
-    public static final String IDP_SAML_ENTITY_ID = "app4primainsure";
-
     @Autowired
     private SAMLHelper samlHelper;
 
     @Autowired
     private KeyManager keyManeger;
+
+    @Value("${idp.saml.entityId}")
+    private String idpEntityId;
 
     public EntityDescriptor generateMetadata() {
 
@@ -45,8 +47,8 @@ public class IDPSAMLMetadataGenerator {
             idpDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
 
             metadata.getRoleDescriptors().add(idpDescriptor);
-            metadata.setEntityID(IDP_SAML_ENTITY_ID);
-            metadata.setID(IDP_SAML_ENTITY_ID);
+            metadata.setEntityID(idpEntityId);
+            metadata.setID(idpEntityId);
 
             return metadata;
         } catch (Exception e) {

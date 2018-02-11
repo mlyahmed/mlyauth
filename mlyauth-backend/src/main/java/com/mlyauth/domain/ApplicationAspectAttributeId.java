@@ -17,28 +17,35 @@ public class ApplicationAspectAttributeId implements Serializable {
     @Column(name = "ATTRIBUTE_CODE")
     private String attributeCode;
 
+    public static ApplicationAspectAttributeId newInstance() {
+        return new ApplicationAspectAttributeId();
+    }
+
     public long getApplicationId() {
         return applicationId;
     }
 
-    public void setApplicationId(long applicationId) {
+    public ApplicationAspectAttributeId setApplicationId(long applicationId) {
         this.applicationId = applicationId;
+        return this;
     }
 
     public String getAspectCode() {
         return aspectCode;
     }
 
-    public void setAspectCode(String aspectCode) {
+    public ApplicationAspectAttributeId setAspectCode(String aspectCode) {
         this.aspectCode = aspectCode;
+        return this;
     }
 
     public String getAttributeCode() {
         return attributeCode;
     }
 
-    public void setAttributeCode(String attributeCode) {
+    public ApplicationAspectAttributeId setAttributeCode(String attributeCode) {
         this.attributeCode = attributeCode;
+        return this;
     }
 
     @Override

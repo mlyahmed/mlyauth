@@ -14,6 +14,7 @@ import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.signature.X509Certificate;
 import org.opensaml.xml.signature.X509Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -42,6 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
+
+    @Value("${idp.saml.entityId}")
+    private String idpEntityId;
 
     @Autowired
     private SAMLHelper samlHelper;
@@ -80,8 +84,8 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
         when_get_IDP_metadata();
         EntityDescriptorImpl metadata = samlHelper.toMetadata(result.getResponse().getContentAsString());
         assertThat(metadata, notNullValue());
-        assertThat(metadata.getEntityID(), equalTo("app4primainsure"));
-        assertThat(metadata.getID(), equalTo("app4primainsure"));
+        assertThat(metadata.getEntityID(), equalTo(idpEntityId));
+        assertThat(metadata.getID(), equalTo(idpEntityId));
     }
 
     @Test

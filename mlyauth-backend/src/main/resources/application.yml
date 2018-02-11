@@ -9,6 +9,10 @@ spring:
             ddl-auto: validateNewPerson
             use-new-id-generator-mappings: true
 
+idp:
+    saml:
+        entityId: primainsureIDP
+
 server:
     port: 16666
 

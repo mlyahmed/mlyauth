@@ -61,7 +61,7 @@ public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SAMLUserDetailsService samlUserDetailsService;
 
-    @Value("${saml.idps-metadata-dir:#{null}}")
+    @Value("${sp.saml.idps-metadata-dir:#{null}}")
     private File idpsMetadataDir;
 
 
