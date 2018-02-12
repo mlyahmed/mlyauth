@@ -20,7 +20,7 @@ public class NavigationController {
     public String navigateTo(@PathVariable String protocole, @PathVariable String appname, Model model) {
         final AuthNavigation authNavigation = navigationService.newNavigation(protocole, appname);
         model.addAttribute("navigation", authNavigation);
-        return authNavigation.getPosterPage();
+        return "post-navigation";
     }
 
 
