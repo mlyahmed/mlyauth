@@ -35,7 +35,7 @@ import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 import static com.mlyauth.constants.SPSAMLAuthAttributes.*;
 
 @Component
-public class IDPSAMLResponseGenerator {
+public class SAMLResponseGenerator {
 
     @Autowired
     private KeyManager keyManager;

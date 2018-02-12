@@ -8,7 +8,9 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.security.sso.SAMLHelper;
-import com.mlyauth.security.sso.idp.saml.response.IDPSAMLResponseGenerator;
+import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
+import com.mlyauth.utests.tools.KeysForTests;
+import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,6 +25,7 @@ import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.encryption.DecryptionException;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
+import org.opensaml.xml.util.Base64;
 import org.springframework.security.saml.key.JKSKeyManager;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -31,7 +34,9 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.*;
 
 import static org.hamcrest.Matchers.*;
@@ -39,8 +44,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.opensaml.saml2.core.SubjectConfirmation.METHOD_BEARER;
 
-public class IDPSAMLResponseGeneratorTest {
-    private static final String ENCRYPTION_CERTIFICATE = "MIIFFTCCA/2gAwIBAgIRAJC77w46ZihMZ1XjYS8RfRYwDQYJKoZIhvcNAQELBQAwXzELMAkGA1UEBhMCRlIxDjAMBgNVBAgTBVBhcmlzMQ4wDAYDVQQHEwVQYXJpczEOMAwGA1UEChMFR2FuZGkxIDAeBgNVBAMTF0dhbmRpIFN0YW5kYXJkIFNTTCBDQSAyMB4XDTE3MDUyNDAwMDAwMFoXDTE4MDUyNDIzNTk1OVowYjEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRhdGVkMRswGQYDVQQLExJHYW5kaSBTdGFuZGFyZCBTU0wxIDAeBgNVBAMTF3NnaS5wcmltYS1zb2x1dGlvbnMuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnpSeVdowAqtclGgAHlFQ+rruYgsNYZ+7xeFStOB0Rrr7FCQAKvPXNoAD1lgKny/4Bs+UWtrhXwNxpibVvo0yCVSXctn+yQRBnLKJLsK8+2IfWHZrBHQiOAe2bc8mtW90XTRc2Jeb6ljPu61Uai17lXKXvHCafDkK6Xr5F0SQKGMA65sqqnlVZyT45ZUO8Jgypqd/94COB+9nBeIsVrKBlSPbwFhd2olyGqQr/yIlyNU7RnHtpSP+8JdNVH6S7dQR7wQt3oK907TfNSPa6RcD4yykrWDmz3yzqMLjwsh7j6LCqjC37PEMk45Bq4r9ei2c6xx6AjyNYypo8KbYktctTwIDAQABo4IBxzCCAcMwHwYDVR0jBBgwFoAUs5Cn2MmvTs1hPJ98rV1/Qf1pMOowHQYDVR0OBBYEFGJyeFB1ZFxi8Oiu7k7VuJb2Z/fBMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjBLBgNVHSAERDBCMDYGCysGAQQBsjEBAgIaMCcwJQYIKwYBBQUHAgEWGWh0dHBzOi8vY3BzLnVzZXJ0cnVzdC5jb20wCAYGZ4EMAQIBMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9HYW5kaVN0YW5kYXJkU1NMQ0EyLmNybDBzBggrBgEFBQcBAQRnMGUwPAYIKwYBBQUHMAKGMGh0dHA6Ly9jcnQudXNlcnRydXN0LmNvbS9HYW5kaVN0YW5kYXJkU1NMQ0EyLmNydDAlBggrBgEFBQcwAYYZaHR0cDovL29jc3AudXNlcnRydXN0LmNvbTA/BgNVHREEODA2ghdzZ2kucHJpbWEtc29sdXRpb25zLmNvbYIbd3d3LnNnaS5wcmltYS1zb2x1dGlvbnMuY29tMA0GCSqGSIb3DQEBCwUAA4IBAQCBHTW3H+WNfMMEBVj93GshddJ+MgoGht6GBGSaBG09bAKmuiXOhNZU4QkOLBrNsUdg6NfbUytD9m3GVo4TjJoEPFk+889Bz4kTQ4bwwPUa5BCkXsWUyPf8al2rTCjVCi8jkjzlo2++ts3//2XzUUuFQpLzs47Qf8fUw+QPUDSSqYmG8Cw7AiTfyHkAXJwMfb1GxDcG+fLEi76m5TOU6OWZoxXioggVufmge6rehuHQ4GHsM7qJUdBEekZNiDAauA+KgeT7UzbdpvPK19Sdo2FhgJvQvP34S7GsT7/7W7BeO8xNY1YiyIrcqzxwCB8kIsCTGCP5HLglYlSjs+QT20el";
+public class SAMLResponseGeneratorTest {
     private static final long APPLICATION_ID = 2522l;
     private static final String SP_SAMLSSO_URL = "http://localhost:8889/primainsure/S/S/O/saml/SSO";
     private static final String IDP_ENTITY_ID = "primainsureIDP";
@@ -49,7 +53,7 @@ public class IDPSAMLResponseGeneratorTest {
     public static final String KEYSTORE_TEST_ALIAS = "sgi.prima-solutions.com";
 
     @InjectMocks
-    private IDPSAMLResponseGenerator generator;
+    private SAMLResponseGenerator generator;
 
     @Mock
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
@@ -68,8 +72,12 @@ public class IDPSAMLResponseGeneratorTest {
     private Response response;
     private Assertion assertion;
 
+    private Pair<PrivateKey, X509Certificate> credentialPair;
+    private String encodedCertificate;
+
     @Before
     public void setup() throws Exception {
+        given_application_credentials();
         given_current_idp_key_manager();
         DefaultBootstrap.bootstrap();
         MockitoAnnotations.initMocks(this);
@@ -81,6 +89,7 @@ public class IDPSAMLResponseGeneratorTest {
         given_the_application_sp_entity_id(APPLICATION_ID, SP_ENTITY_ID);
         givent_the_application_sp_encryption_certificate(APPLICATION_ID);
     }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void when_generate_response_from_null_then_error() throws Exception {
@@ -192,6 +201,11 @@ public class IDPSAMLResponseGeneratorTest {
         when_generate_a_response();
     }
 
+    private void given_application_credentials() throws Exception {
+        credentialPair = KeysForTests.generateCredential();
+        encodedCertificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
+    }
+
     private void given_an_application(long applicationId, AuthAspectType[] supportedAspects) {
         application = Application.newInstance()
                 .setAppname(APP_NAME).setId(applicationId)
@@ -219,7 +233,7 @@ public class IDPSAMLResponseGeneratorTest {
         final ApplicationAspectAttributeId ssoEncryptionCertificate = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
                 .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
-        ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEncryptionCertificate).setValue(ENCRYPTION_CERTIFICATE);
+        ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEncryptionCertificate).setValue(encodedCertificate);
         appAspectAttrobutes.add(ssoEncryptionCertificateAttribute);
     }
 
@@ -228,8 +242,8 @@ public class IDPSAMLResponseGeneratorTest {
     }
 
     private void and_decrypt_Assertion() throws CertificateException, DecryptionException {
-        BasicX509Credential credential = samlHelper.toBasicX509Credential(ENCRYPTION_CERTIFICATE);
-        credential.setPrivateKey(keyManager.getDefaultCredential().getPrivateKey());
+        BasicX509Credential credential = samlHelper.toBasicX509Credential(encodedCertificate);
+        credential.setPrivateKey(credentialPair.getKey());
         assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), credential);
     }
 
