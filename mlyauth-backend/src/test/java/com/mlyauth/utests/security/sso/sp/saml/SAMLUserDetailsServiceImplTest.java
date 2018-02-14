@@ -5,7 +5,7 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.security.PrimaUser;
+import com.mlyauth.security.context.PrimaUser;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.sp.SAMLUserDetailsServiceImpl;
 import org.apache.commons.lang.RandomStringUtils;

@@ -2,7 +2,8 @@ package com.mlyauth.security.sso.sp;
 
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
-import com.mlyauth.security.PrimaUser;
+import com.mlyauth.security.context.IContextHolder;
+import com.mlyauth.security.context.PrimaUser;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.schema.impl.XSStringImpl;
 import org.slf4j.Logger;
@@ -29,8 +30,12 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
     @Autowired
     private PersonDAO personDAO;
 
+
+    @Autowired
+    private IContextHolder contextHolder;
+
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
-        //HttpServletRequest request = (HttpServletRequest) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_REQUEST);
+        //HttpSession request = (HttpSession) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_SESSION);
         checkCredentials(credential);
         return new PrimaUser(personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode())));
     }

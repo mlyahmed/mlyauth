@@ -1,4 +1,4 @@
-package com.mlyauth.security;
+package com.mlyauth.security.context;
 
 import com.mlyauth.domain.Person;
 import org.springframework.security.core.GrantedAuthority;
