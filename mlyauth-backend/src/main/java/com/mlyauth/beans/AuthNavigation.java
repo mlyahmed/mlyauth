@@ -7,7 +7,6 @@ public class AuthNavigation {
 
     private String target;
     private Collection<AttributeBean> attributes;
-    private String posterPage;
 
 
     public String getTarget() {
@@ -26,12 +25,5 @@ public class AuthNavigation {
         this.attributes = attributes;
     }
 
-    public String getPosterPage() {
-        return posterPage;
-    }
-
-    public void setPosterPage(String posterPage) {
-        this.posterPage = posterPage;
-    }
 
 }

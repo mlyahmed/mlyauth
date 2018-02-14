@@ -47,7 +47,6 @@ public class SAMLNavigationService {
 
 
         authNavigation.setAttributes(navigationAttributes);
-        authNavigation.setPosterPage("post-navigation");
         return authNavigation;
     }
 }

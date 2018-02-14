@@ -10,7 +10,6 @@ public class PersonBean {
     private String firstname;
     private String lastname;
     private String email;
-    private String username;
     private char[] password;
     private Collection<String> applications = new LinkedHashSet<>();
 
@@ -60,15 +59,6 @@ public class PersonBean {
 
     public PersonBean setEmail(String email) {
         this.email = email;
-        return this;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public PersonBean setUsername(String username) {
-        this.username = username;
         return this;
     }
 

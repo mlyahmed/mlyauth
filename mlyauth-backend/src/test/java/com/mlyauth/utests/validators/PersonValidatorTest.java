@@ -34,7 +34,6 @@ public class PersonValidatorTest {
         final PersonBean person = PersonBean.newInstance()
                 .setFirstname("Ahmed")
                 .setLastname("EL IDRISSI")
-                .setUsername("mlyahmed")
                 .setPassword("password".toCharArray())
                 .setEmail("ahmed@gmail.com");
 
@@ -62,7 +61,6 @@ public class PersonValidatorTest {
         final PersonBean person = PersonBean.newInstance()
                 .setFirstname("Ahmed")
                 .setLastname("EL IDRISSI")
-                .setUsername("mlyahmed")
                 .setPassword("password".toCharArray())
                 .setEmail(null);
 

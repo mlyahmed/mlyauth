@@ -28,11 +28,10 @@ public class Person  implements Serializable {
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "USERNAME", nullable = false, unique = true)
-    private String username;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "AUTH_INFORMATION_ID")
+    private AuthenticationInfo authenticationInfo;
 
-    @Column(name = "PASSWORD", nullable = false)
-    private String password;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(name = "PERSON_APPLICATION", joinColumns = @JoinColumn(name = "PERSON_ID"), inverseJoinColumns = @JoinColumn(name = "APPLICATION_ID"))
@@ -88,21 +87,12 @@ public class Person  implements Serializable {
         return this;
     }
 
-    public String getUsername() {
-        return username;
+    public AuthenticationInfo getAuthenticationInfo() {
+        return authenticationInfo;
     }
 
-    public Person setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Person setPassword(String password) {
-        this.password = password;
+    public Person setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
+        this.authenticationInfo = authenticationInfo;
         return this;
     }
 

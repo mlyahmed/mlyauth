@@ -3,8 +3,8 @@ package com.mlyauth.utests.mappers;
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
-import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
+import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.mappers.PersonMapper;
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -36,9 +36,6 @@ public class PersonMapperTest {
     @Mock
     private ApplicationDAO applicationDAO;
 
-    @Mock
-    private PersonDAO personDAO;
-
     @InjectMocks
     private PersonMapper mapper;
 
@@ -46,9 +43,9 @@ public class PersonMapperTest {
     public static Object[] properties() {
         // @formatter:off
         return new Object[][]{
-                {1l, "1", "Ahmed", "EL IDRISSI", "ahmed.elidrissi.attach", "ahmed.elidrissi.attach@gmail.com"},
-                {2l, "2", "Moulay", "ATTACH", "mlyahmed1", "mlyahmed1@gmail.com"},
-                {3232l, "3232", "Fatima-Ezzahrae", "EL IDRISSI", "fatima.elidrissi", "fatima.elidrissi@yahoo.fr"},
+                {1l, "1", "Ahmed", "EL IDRISSI", "ahmed.elidrissi.attach@gmail.com"},
+                {2l, "2", "Moulay", "ATTACH", "mlyahmed1@gmail.com"},
+                {3232l, "3232", "Fatima-Ezzahrae", "EL IDRISSI", "fatima.elidrissi@yahoo.fr"},
         };
         // @formatter:on
     }
@@ -93,8 +90,7 @@ public class PersonMapperTest {
                 .setExternalId(String.valueOf(properties[1]))
                 .setFirstname(String.valueOf(properties[2]))
                 .setLastname(String.valueOf(properties[3]))
-                .setUsername(String.valueOf(properties[4]))
-                .setEmail(String.valueOf(properties[5]));
+                .setEmail(String.valueOf(properties[4]));
     }
 
     private void when_map_person_to_bean() {
@@ -119,14 +115,13 @@ public class PersonMapperTest {
         assertThat(bean.getExternalId(), equalTo(String.valueOf(properties[1])));
         assertThat(bean.getFirstname(), equalTo(String.valueOf(properties[2])));
         assertThat(bean.getLastname(), equalTo(String.valueOf(properties[3])));
-        assertThat(bean.getUsername(), equalTo(String.valueOf(properties[4])));
-        assertThat(bean.getEmail(), equalTo(String.valueOf(properties[5])));
+        assertThat(bean.getEmail(), equalTo(String.valueOf(properties[4])));
     }
 
     @Test
     @UseDataProvider("passwords")
     public void when_map_to_bean_then_do_not_map_password(String password){
-        person.setPassword(password);
+        person.setAuthenticationInfo(AuthenticationInfo.newInstance().setPassword(password));
         when_map_person_to_bean();
         then_the_person_password_is_not_mapped();
     }
@@ -196,12 +191,13 @@ public class PersonMapperTest {
     @SuppressWarnings("Duplicates")
     private void then_bean_properties_are_mapped_to_person(Object... properties) {
         assertThat(person, notNullValue());
+        assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), equalTo((Long) properties[0]));
         assertThat(person.getExternalId(), equalTo(String.valueOf(properties[1])));
         assertThat(person.getFirstname(), equalTo(String.valueOf(properties[2])));
         assertThat(person.getLastname(), equalTo(String.valueOf(properties[3])));
-        assertThat(person.getUsername(), equalTo(String.valueOf(properties[4])));
-        assertThat(person.getEmail(), equalTo(String.valueOf(properties[5])));
+        assertThat(person.getEmail(), equalTo(String.valueOf(properties[4])));
+        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(String.valueOf(properties[4])));
     }
 
     private void when_map_bean_to_person() {
@@ -213,8 +209,7 @@ public class PersonMapperTest {
                 .setExternalId(String.valueOf(properties[1]))
                 .setFirstname(String.valueOf(properties[2]))
                 .setLastname(String.valueOf(properties[3]))
-                .setUsername(String.valueOf(properties[4]))
-                .setEmail(String.valueOf(properties[5]));
+                .setEmail(String.valueOf(properties[4]));
     }
 
 

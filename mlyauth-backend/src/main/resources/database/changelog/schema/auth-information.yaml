@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: AUTH_INFORMATION
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: LOGIN
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: PASSWORD
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: STATUS
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: EFFECTIVE_ON
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: EXPIRE_ON
+                  type: DATETIME
+                  constraints:
+                    nullable: true

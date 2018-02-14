@@ -21,7 +21,9 @@ public class ScenariosHook {
 
     @Before
     public void markTheTransaction() {
-        currentPersonHolder.setCurrentPerson(PersonBean.newInstance().setUsername("root").setPassword("root".toCharArray()));
+        currentPersonHolder.setCurrentPerson(PersonBean.newInstance()
+                .setPassword("root".toCharArray())
+                .setEmail("ahmed.elidrissi.attach@gmail.com"));
         txStatus = txMgr.getTransaction(new DefaultTransactionDefinition());
     }
 

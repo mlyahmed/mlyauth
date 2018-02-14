@@ -23,10 +23,6 @@ public class Application  implements Serializable {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "AUTH_ASPECT", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private AuthAspectType authAspect;
-
     @ElementCollection(targetClass = AuthAspectType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "APPLICATION_ASPECT", joinColumns = @JoinColumn(name = "APPLICATION_ID"))
@@ -61,14 +57,6 @@ public class Application  implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public AuthAspectType getAuthAspect() {
-        return authAspect;
-    }
-
-    public void setAuthAspect(AuthAspectType authAspect) {
-        this.authAspect = authAspect;
     }
 
     public Set<AuthAspectType> getAspects() {

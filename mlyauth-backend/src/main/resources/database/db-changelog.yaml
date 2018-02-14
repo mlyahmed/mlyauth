@@ -6,6 +6,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/auth-aspect.yaml
   - include:
+      file: database/changelog/schema/auth-information.yaml
+  - include:
       file: database/changelog/schema/person.yaml
   - include:
       file: database/changelog/schema/application.yaml

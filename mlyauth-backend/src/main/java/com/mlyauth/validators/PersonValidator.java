@@ -20,7 +20,7 @@ public class PersonValidator implements IPersonValidator {
         if (bean == null)
             throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_IS_NULL")));
 
-        if (personDAO.findByUsername(bean.getUsername()) != null)
+        if (personDAO.findByEmail(bean.getEmail()) != null)
             throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
 
         if (bean.getEmail() == null)

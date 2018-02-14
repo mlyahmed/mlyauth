@@ -24,7 +24,7 @@ public class BasicAuthControllerIT extends AbstractIntegrationTest {
     @Test
     public void when_user_password_match_then_ok() throws Exception {
         final ResultActions resultActions = mockMvc.perform(post(AUTHENTICATION_PATH)
-                .param("username", "root")
+                .param("username", "ahmed.elidrissi.attach@gmail.com")
                 .param("password", "root")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .characterEncoding("UTF-8"));
@@ -34,7 +34,7 @@ public class BasicAuthControllerIT extends AbstractIntegrationTest {
     @Test
     public void when_user_password_match_then_redirect_to_login() throws Exception {
         final ResultActions resultActions = mockMvc.perform(post(AUTHENTICATION_PATH)
-                .param("username", "root")
+                .param("username", "ahmed.elidrissi.attach@gmail.com")
                 .param("password", "ddd")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .characterEncoding("UTF-8"));

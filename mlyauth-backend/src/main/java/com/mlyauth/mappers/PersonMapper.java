@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
+import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 
 import javax.inject.Inject;
@@ -28,7 +29,6 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
                 .setExternalId(person.getExternalId())
                 .setFirstname(person.getFirstname())
                 .setLastname(person.getLastname())
-                .setUsername(person.getUsername())
                 .setEmail(person.getEmail())
                 .setApplications(applicationsToAppnames(person));
     }
@@ -47,7 +47,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean>{
                 .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())
-                .setUsername(bean.getUsername())
+                .setAuthenticationInfo(AuthenticationInfo.newInstance().setLogin(bean.getEmail()))
                 .setEmail(bean.getEmail())
                 .setApplications(appnamesToApplications(bean.getApplications()));
     }

@@ -19,7 +19,7 @@ public class CurrentPersonHolder {
     }
 
     public String getUsername(){
-        return (currentPerson != null) ? currentPerson.getUsername() :  null;
+        return (currentPerson != null) ? currentPerson.getEmail() : null;
     }
 
     public String getPassword(){

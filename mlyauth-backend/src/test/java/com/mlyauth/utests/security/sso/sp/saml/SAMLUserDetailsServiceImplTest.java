@@ -3,6 +3,7 @@ package com.mlyauth.utests.security.sso.sp.saml;
 import com.google.common.collect.Sets;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
+import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.PrimaUser;
 import com.mlyauth.security.sso.SAMLHelper;
@@ -52,6 +53,7 @@ public class SAMLUserDetailsServiceImplTest {
     private List<Attribute> attributes;
     private SAMLCredential credential;
     private Person person;
+    private AuthenticationInfo authenticationInfo;
     private Object user;
 
     @Before
@@ -159,9 +161,11 @@ public class SAMLUserDetailsServiceImplTest {
     }
 
     private void given_the_person_exists() {
+        authenticationInfo = AuthenticationInfo.newInstance()
+                .setLogin(USERNAME)
+                .setPassword(RandomStringUtils.random(20, true, true));
         person = new Person();
-        person.setUsername(USERNAME);
-        person.setPassword(RandomStringUtils.random(20, true, true));
+        person.setAuthenticationInfo(authenticationInfo);
         when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(person);
     }
 

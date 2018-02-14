@@ -41,9 +41,9 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     public static Object[] properties() {
         // @formatter:off
         return new Object[][]{
-                {"Ahmed", "EL IDRISSI", "mlyahmed", "ahmed.elidrissi@gmail.com", "password"},
-                {"Mly", "ATTACH", "mlayhmed1", "mlyahmed1@gmail.com", "mlayhmed1"},
-                {"Fatima-Ezzahrae", "EL IDRISSI", "fatiid", "fatima.elidrissi@yahoo.fr", "fatina"},
+                {"2154", "Ahmed", "EL IDRISSI", "ahmed.elidrissi@gmail.com", "password"},
+                {"5121", "Mly", "ATTACH", "mlyahmed1@gmail.com", "mlayhmed1"},
+                {"5487", "Fatima-Ezzahrae", "EL IDRISSI", "fatima.elidrissi@yahoo.fr", "fatina"},
         };
         // @formatter:on
     }
@@ -59,7 +59,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     @Test
     public void when_create_a_new_person_and_already_exists_then_error() throws Exception {
-        PersonBean personBean = given_person("Moulay", "ATTACH", "mlyattach", "moulay.attach@gmail.com", "password");
+        PersonBean personBean = given_person("201254", "Moulay", "ATTACH", "moulay.attach@gmail.com", "password");
         final ResultActions resultActions = when_create_new_person(personBean);
         resultActions.andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -68,15 +68,17 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void and_he_is_well_created(ResultActions resultActions, String... properties) throws Exception {
-        final Person person = personDAO.findByUsername(properties[2]);
+        final Person person = personDAO.findByEmail(properties[3]);
         assertThat(person, notNullValue());
+        assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), notNullValue());
-        assertThat(person.getFirstname(), equalTo(properties[0]));
-        assertThat(person.getLastname(), equalTo(properties[1]));
-        assertThat(person.getUsername(), equalTo(properties[2]));
+        assertThat(person.getExternalId(), equalTo(properties[0]));
+        assertThat(person.getFirstname(), equalTo(properties[1]));
+        assertThat(person.getLastname(), equalTo(properties[2]));
+        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(properties[3]));
         assertThat(person.getEmail(), equalTo(properties[3]));
-        assertThat(person.getPassword(), not(equalTo(properties[4])));
-        assertTrue(passwordEncoder.matches(properties[4], person.getPassword()));
+        assertThat(person.getAuthenticationInfo().getPassword(), not(equalTo(properties[4])));
+        assertTrue(passwordEncoder.matches(properties[4], person.getAuthenticationInfo().getPassword()));
     }
 
     private void then_is_created(ResultActions resultActions) throws Exception {
@@ -86,9 +88,8 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private PersonBean given_person(String... properties) {
         PersonBean personBean = new PersonBean();
         personBean.setExternalId(properties[0]);
-        personBean.setFirstname(properties[0]);
-        personBean.setLastname(properties[1]);
-        personBean.setUsername(properties[2]);
+        personBean.setFirstname(properties[1]);
+        personBean.setLastname(properties[2]);
         personBean.setEmail(properties[3]);
         personBean.setPassword(properties[4].toCharArray());
         return personBean;

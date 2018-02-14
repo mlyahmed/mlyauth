@@ -13,7 +13,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.apache.commons.lang.RandomStringUtils;
-import org.hamcrest.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,7 +22,7 @@ import java.util.Map;
 
 import static com.mlyauth.beans.AttributeBean.*;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -52,7 +51,6 @@ public class MlyAuthSteps extends AbstractStepsDef{
                 .setFirstname(firstname)
                 .setExternalId(RandomStringUtils.random(20, true, true))
                 .setLastname(lastname)
-                .setUsername(username)
                 .setEmail(email)
                 .setPassword("password".toCharArray());
         final ResultActions resultActions = restTestHelper.performPost("/domain/person", person).andExpect(status().is(CREATED.value()));
@@ -92,13 +90,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
     public void user_is_connected_to_app(String username, String appname) throws Exception {
         resultActionHolder.getResultActions()
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(request().attribute(BASIC_AUTH_ENDPOINT.getCode(), hasProperty("alias", Matchers.equalTo("authurl"))))
-                .andExpect(request().attribute(BASIC_AUTH_ENDPOINT.getCode(), hasProperty("value", Matchers.equalTo("https://localhost/j_spring_security_check"))))
-                .andExpect(request().attribute(BASIC_AUTH_USERNAME.getCode(), hasProperty("alias", Matchers.equalTo("j_username"))))
-                .andExpect(request().attribute(BASIC_AUTH_USERNAME.getCode(), hasProperty("value", Matchers.equalTo("gestF"))))
-                .andExpect(request().attribute(BASIC_AUTH_PASSWORD.getCode(), hasProperty("alias", Matchers.equalTo("j_password"))))
-                .andExpect(request().attribute(BASIC_AUTH_PASSWORD.getCode(), hasProperty("value", Matchers.equalTo("gestF"))))
-        ;
+                .andExpect(request().attribute("navigation", notNullValue()));
     }
 
     @Given("^(.+) is asigned to (.+)")

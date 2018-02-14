@@ -1,7 +1,9 @@
 package com.mlyauth.services;
 
 import com.mlyauth.beans.PersonBean;
+import com.mlyauth.constants.AuthenticationInfoStatus;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.mappers.PersonMapper;
 import com.mlyauth.validators.IPersonValidator;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 @Service
 @Transactional
@@ -29,20 +33,27 @@ public class PersonService implements IPersonService {
     @Override
     public PersonBean createPerson(PersonBean bean) {
         personValidator.validateNewPerson(bean);
-        return personMapper.toBean(personDAO.save(toEntity(bean)));
+        final Person person = personDAO.save(toEntity(bean));
+        return personMapper.toBean(person);
     }
 
     private Person toEntity(PersonBean bean) {
-        return personMapper.toEntity(bean)
-                .setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword())));
+        final AuthenticationInfo authenticationInfo = AuthenticationInfo.newInstance()
+                .setLogin(bean.getEmail())
+                .setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword())))
+                .setStatus(AuthenticationInfoStatus.ACTIVE)
+                .setEffectiveOn(new Date());
+        final Person person = personMapper.toEntity(bean);
+        person.setAuthenticationInfo(authenticationInfo);
+        return person;
     }
 
     @Override
     public PersonBean updatePerson(PersonBean bean) {
-        return personMapper.toBean(
-                personDAO.save(personMapper.toEntity(bean)
-                        .setPassword(personDAO.findOne(bean.getId()).getPassword()))
-        );
+        final Person person = personDAO.findOne(bean.getId());
+        final Person update = personMapper.toEntity(bean);
+        update.setAuthenticationInfo(person.getAuthenticationInfo());
+        return personMapper.toBean(personDAO.save(update));
     }
 
 }

@@ -32,7 +32,7 @@ public class BasicNavigationService {
         AuthNavigation authNavigation = new AuthNavigation();
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserDetails userdetails = (UserDetails) authentication.getPrincipal();
-        final Person person = personDAO.findByUsername(userdetails.getUsername());
+        final Person person = personDAO.findByEmail(userdetails.getUsername());
         Collection<Application> applications = person.getApplications();
         if (applications.stream().noneMatch(app -> app.getAppname().equals(appname)))
             throw AuthException.newInstance().setErrors(Arrays.asList(new AuthError("", "")));
@@ -42,7 +42,6 @@ public class BasicNavigationService {
         navigationAttributes.add(BASIC_AUTH_USERNAME.setAlias("j_username").setValue("gestF"));
         navigationAttributes.add(BASIC_AUTH_PASSWORD.setAlias("j_password").setValue("gestF"));
         authNavigation.setAttributes(navigationAttributes);
-        authNavigation.setPosterPage("post-navigation");
 
         return authNavigation;
     }
