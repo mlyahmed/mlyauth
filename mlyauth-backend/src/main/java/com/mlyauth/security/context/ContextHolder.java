@@ -28,7 +28,9 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public IContext newContext(Person person) {
-        return contexts.put(getSession().getId(), new Context(person));
+        final Context context = new Context(person);
+        contexts.put(getSession().getId(), context);
+        return context;
     }
 
     @Override
