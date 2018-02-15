@@ -15,7 +15,7 @@
 <form id="post-navigation-form" name="post-navigation-form" action="#" th:action="@{${navigation.target}}"
       th:object="${navigation}" th:method="POST">
     <tr th:each="attribute :${navigation.attributes}">
-        <input type="hidden" th:name="${attribute.alias}" th:value="${attribute.value}" disabled="disabled"/>
+        <input type="hidden" th:name="${attribute.alias}" th:value="${attribute.value}"/>
     </tr>
 
     <noscript>

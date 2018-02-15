@@ -151,8 +151,7 @@ public class SAMLResponseGeneratorTest {
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData(), notNullValue());
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(SP_ENTITY_ID));
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getRecipient(), equalTo(SP_SAMLSSO_URL));
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotBefore(), notNullValue());
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotBefore().isBeforeNow(), equalTo(true));
+        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotBefore(), nullValue());
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(30).toInstant()), equalTo(true));
     }
@@ -175,8 +174,7 @@ public class SAMLResponseGeneratorTest {
         when_generate_a_response();
         and_decrypt_Assertion();
         assertThat(assertion.getConditions(), notNullValue());
-        assertThat(assertion.getConditions().getNotBefore(), notNullValue());
-        assertThat(assertion.getConditions().getNotBefore().isBeforeNow(), equalTo(true));
+        assertThat(assertion.getConditions().getNotBefore(), nullValue());
         assertThat(assertion.getConditions().getNotOnOrAfter(), notNullValue());
         assertThat(assertion.getConditions().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(30).toInstant()), equalTo(true));
         assertThat(assertion.getConditions().getAudienceRestrictions(), hasSize(1));

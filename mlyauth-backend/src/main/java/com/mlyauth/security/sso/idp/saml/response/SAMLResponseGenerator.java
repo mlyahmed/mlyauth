@@ -136,7 +136,6 @@ public class SAMLResponseGenerator {
         subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
         subjectConfirmationData.setInResponseTo(getEntityId(attributes).getValue());
         subjectConfirmationData.setRecipient(getTargetURL(attributes).getValue());
-        subjectConfirmationData.setNotBefore((new DateTime()).plusMillis(10));
         subjectConfirmationData.setNotOnOrAfter((new DateTime()).plusMinutes(20));
         subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
         subject.getSubjectConfirmations().add(subjectConfirmation);
@@ -155,7 +154,6 @@ public class SAMLResponseGenerator {
 
     private void setConditions(List<ApplicationAspectAttribute> attributes, Assertion assertion) {
         final Conditions conditions = samlHelper.buildSAMLObject(Conditions.class);
-        conditions.setNotBefore((new DateTime()).plusMillis(10));
         conditions.setNotOnOrAfter((new DateTime()).plusMinutes(20));
         AudienceRestriction audienceRestriction = samlHelper.buildSAMLObject(AudienceRestriction.class);
         final Audience audience = samlHelper.buildSAMLObject(Audience.class);
