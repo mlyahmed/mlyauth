@@ -7,6 +7,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -23,13 +24,13 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public void setContext(IContext context) {
-
+        contexts.put(getSession().getId(), context);
     }
 
     @Override
     public IContext newContext(Person person) {
         final Context context = new Context(person);
-        contexts.put(getSession().getId(), context);
+        this.setContext(context);
         return context;
     }
 
@@ -50,22 +51,22 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public AuthenticationInfo getAuthenticationInfo() {
-        return null;
+        return getPerson() != null ? getPerson().getAuthenticationInfo() : null;
     }
 
     @Override
     public Map<String, String> getAttributes() {
-        return null;
+        return getContext() != null ? getContext().getAttributes() : Collections.emptyMap();
     }
 
     @Override
     public String getAttribute(String key) {
-        return null;
+        return getContext() != null ? getContext().getAttribute(key) : null;
     }
 
     @Override
     public boolean putAttribute(String key, String value) {
-        return false;
+        return getContext() != null && getContext().putAttribute(key, value);
     }
 
     private static class Context implements IContext {

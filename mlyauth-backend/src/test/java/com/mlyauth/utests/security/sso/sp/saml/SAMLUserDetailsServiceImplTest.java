@@ -5,16 +5,20 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.security.context.IContextHolder;
 import com.mlyauth.security.context.PrimaUser;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.sp.SAMLUserDetailsServiceImpl;
+import com.mlyauth.utests.security.context.MockContextHolder;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
@@ -39,6 +43,8 @@ public class SAMLUserDetailsServiceImplTest {
     public static final String APPLICATION_CODE = "policy";
     public static final String USERNAME = "ahmed.elidrissi";
 
+    @Spy
+    private IContextHolder contextHolder = new MockContextHolder();
 
     @Mock
     private PersonDAO personDAO;
@@ -66,6 +72,11 @@ public class SAMLUserDetailsServiceImplTest {
     }
 
 
+    @After
+    public void tearsDown() {
+        ((MockContextHolder) contextHolder).resetMock();
+    }
+
     @Test
     public void when_all_good_then_return_user() {
         given_credential_with_all_attributes();
@@ -82,6 +93,20 @@ public class SAMLUserDetailsServiceImplTest {
         given_the_person_exists();
         when_load_user();
         then_user_is_loaded();
+    }
+
+    @Test
+    public void the_attributes_must_be_loaded_in_the_context() {
+        given_credential_with_all_attributes();
+        given_the_person_exists();
+        given_the_application_is_assigned_to_the_person();
+        when_load_user();
+        assertThat(contextHolder.getContext(), Matchers.notNullValue());
+        assertThat(contextHolder.getAttribute(SAML_RESPONSE_CLIENT_ID.getCode()), Matchers.equalTo(CLIENT_ID));
+        assertThat(contextHolder.getAttribute(SAML_RESPONSE_PROFILE.getCode()), Matchers.equalTo(USER_PROFILE));
+        assertThat(contextHolder.getAttribute(SAML_RESPONSE_PRESTATION_ID.getCode()), Matchers.equalTo(PRESTATION_ID));
+        assertThat(contextHolder.getAttribute(SAML_RESPONSE_ACTION.getCode()), Matchers.equalTo(ACTION));
+        assertThat(contextHolder.getAttribute(SAML_RESPONSE_APP.getCode()), Matchers.equalTo(APPLICATION_CODE));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -182,4 +207,5 @@ public class SAMLUserDetailsServiceImplTest {
         assertThat(user, Matchers.instanceOf(PrimaUser.class));
         assertThat(((PrimaUser) user).getPerson(), Matchers.equalTo(person));
     }
+
 }

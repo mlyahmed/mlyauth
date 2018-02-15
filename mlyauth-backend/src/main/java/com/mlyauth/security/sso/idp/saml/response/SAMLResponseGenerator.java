@@ -5,6 +5,7 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.exception.AuthError;
 import com.mlyauth.exception.AuthException;
+import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
@@ -36,6 +37,9 @@ import static com.mlyauth.constants.SPSAMLAuthAttributes.*;
 
 @Component
 public class SAMLResponseGenerator {
+
+    @Autowired
+    private IContext context;
 
     @Autowired
     private KeyManager keyManager;
@@ -108,6 +112,7 @@ public class SAMLResponseGenerator {
         setSubject(assertion, attributes);
         setAuthnStatement(assertion);
         setConditions(attributes, assertion);
+        setAssertionAttributes(assertion);
         return assertion;
     }
 
@@ -161,6 +166,13 @@ public class SAMLResponseGenerator {
         audienceRestriction.getAudiences().add(audience);
         conditions.getAudienceRestrictions().add(audienceRestriction);
         assertion.setConditions(conditions);
+    }
+
+    private void setAssertionAttributes(Assertion assertion) {
+        AttributeStatement attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
+        final List<Attribute> assertionAttributes = attributeStatement.getAttributes();
+        context.getAttributes().forEach((k, v) -> assertionAttributes.add(samlHelper.buildStringAttribute(k, v)));
+        assertion.getAttributeStatements().add(attributeStatement);
     }
 
     private EncryptedAssertion encryptAssertion(List<ApplicationAspectAttribute> attributes, Assertion assertion) throws CertificateException, EncryptionException {

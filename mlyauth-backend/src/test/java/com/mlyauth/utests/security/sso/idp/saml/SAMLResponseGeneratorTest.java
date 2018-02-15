@@ -7,11 +7,14 @@ import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
+import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
+import com.mlyauth.utests.security.context.MockContext;
 import com.mlyauth.utests.tools.KeysForTests;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,6 +26,7 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.*;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.encryption.DecryptionException;
+import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.util.Base64;
@@ -64,6 +68,9 @@ public class SAMLResponseGeneratorTest {
     @Spy
     private KeyManager keyManager;
 
+    @Spy
+    private IContext context = new MockContext();
+
     private List<ApplicationAspectAttribute> appAspectAttrobutes;
     private ApplicationAspectAttribute ssoUrlAttribute;
     private ApplicationAspectAttribute ssoEntityIdAttribute;
@@ -91,8 +98,13 @@ public class SAMLResponseGeneratorTest {
     }
 
 
+    @After
+    public void tearsDown() {
+        ((MockContext) context).resetMock();
+    }
+
     @Test(expected = IllegalArgumentException.class)
-    public void when_generate_response_from_null_then_error() throws Exception {
+    public void when_generate_response_from_null_then_error() {
         generator.generate(null);
     }
 
@@ -180,6 +192,24 @@ public class SAMLResponseGeneratorTest {
         assertThat(assertion.getConditions().getAudienceRestrictions(), hasSize(1));
         assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences(), hasSize(1));
         assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI(), equalTo(SP_ENTITY_ID));
+    }
+
+    @Test
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_context_attributes() throws Exception {
+        context.putAttribute("action", "A");
+        context.putAttribute("profile", "CL");
+        when_generate_a_response();
+        and_decrypt_Assertion();
+        assertThat(assertion.getAttributeStatements(), notNullValue());
+        assertThat(assertion.getAttributeStatements(), hasSize(1));
+        assertThat(assertion.getAttributeStatements().get(0).getAttributes(), hasSize(2));
+        assertThat(getAttributeValue("action"), equalTo("A"));
+        assertThat(getAttributeValue("profile"), equalTo("CL"));
+    }
+
+    private String getAttributeValue(String attributeName) {
+        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
+        return ((XSString) actual.getAttributeValues().get(0)).getValue();
     }
 
     @Test

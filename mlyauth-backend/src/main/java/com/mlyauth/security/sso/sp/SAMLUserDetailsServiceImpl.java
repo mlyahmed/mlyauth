@@ -2,6 +2,7 @@ package com.mlyauth.security.sso.sp;
 
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
+import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.IContextHolder;
 import com.mlyauth.security.context.PrimaUser;
 import org.opensaml.xml.XMLObject;
@@ -35,9 +36,11 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
     private IContextHolder contextHolder;
 
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
-        //HttpSession request = (HttpSession) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_SESSION);
         checkCredentials(credential);
-        return new PrimaUser(personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode())));
+        final Person person = personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()));
+        final IContext context = contextHolder.newContext(person);
+        credential.getAttributes().forEach(attr -> context.putAttribute(attr.getName(), credential.getAttributeAsString(attr.getName())));
+        return new PrimaUser(person);
     }
 
     private void checkCredentials(SAMLCredential credential) {
