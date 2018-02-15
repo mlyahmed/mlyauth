@@ -26,4 +26,7 @@ public class AuthNavigation {
     }
 
 
+    public AttributeBean getAttribute(String code){
+        return attributes.stream().filter(attr -> attr.getCode().equals(code)).findFirst().orElse(null);
+    }
 }

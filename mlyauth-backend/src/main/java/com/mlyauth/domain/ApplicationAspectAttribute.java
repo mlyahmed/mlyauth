@@ -1,9 +1,8 @@
 package com.mlyauth.domain;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import com.mlyauth.constants.SPSAMLAuthAttributes;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "APPLICATION_ASPECT_ATTR")
@@ -36,6 +35,12 @@ public class ApplicationAspectAttribute {
         this.value = value;
         return this;
     }
+
+    @Transient
+    public SPSAMLAuthAttributes getAttributeCode(){
+        return SPSAMLAuthAttributes.create(this.getId().getAttributeCode());
+    }
+
 }
 
 
