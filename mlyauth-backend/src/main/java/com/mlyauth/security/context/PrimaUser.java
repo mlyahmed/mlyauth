@@ -10,6 +10,17 @@ public class PrimaUser extends User {
 
     private final Person person;
 
+    public PrimaUser(IContext context) {
+        super(context.getAuthenticationInfo().getLogin(),
+                context.getAuthenticationInfo().getPassword(),
+                true,
+                true,
+                true,
+                true,
+                new LinkedList<GrantedAuthority>());
+        this.person = context.getPerson();
+    }
+
     public PrimaUser(Person person) {
         super(person.getAuthenticationInfo().getLogin(),
                 person.getAuthenticationInfo().getPassword(),

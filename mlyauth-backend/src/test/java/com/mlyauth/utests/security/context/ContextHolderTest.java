@@ -35,12 +35,7 @@ public class ContextHolderTest {
 
     @Test
     public void when_there_is_no_active_context_then_return_null() {
-        assertThat(holder.getContext(), nullValue());
-        assertThat(holder.getAuthenticationInfo(), nullValue());
-        assertThat(holder.getPerson(), nullValue());
-        assertThat(holder.getAttributes(), notNullValue());
-        assertThat(holder.getAttributes().size(), equalTo(0));
-        assertThat(holder.putAttribute("key", "value"), equalTo(false));
+        the_no_context_is_set();
     }
 
     @Test
@@ -141,6 +136,24 @@ public class ContextHolderTest {
         assertThat(context.getAttributes().get("clientProfile"), equalTo("CL"));
         assertThat(context.getAttributes().get("prestationId"), equalTo("BA0000215487985"));
         assertThat(holder.getAttributes(), equalTo(context.getAttributes()));
+    }
+
+    @Test
+    public void when_reset_then_remove_the_context() {
+        MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        holder.newContext(person);
+        holder.reset();
+        the_no_context_is_set();
+    }
+
+    private void the_no_context_is_set() {
+        assertThat(holder.getContext(), nullValue());
+        assertThat(holder.getAuthenticationInfo(), nullValue());
+        assertThat(holder.getPerson(), nullValue());
+        assertThat(holder.getAttributes(), notNullValue());
+        assertThat(holder.getAttributes().size(), equalTo(0));
+        assertThat(holder.putAttribute("key", "value"), equalTo(false));
     }
 
 }

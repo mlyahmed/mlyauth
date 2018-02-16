@@ -40,7 +40,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
         final Person person = personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()));
         final IContext context = contextHolder.newContext(person);
         credential.getAttributes().forEach(attr -> context.putAttribute(attr.getName(), credential.getAttributeAsString(attr.getName())));
-        return new PrimaUser(person);
+        return new PrimaUser(context);
     }
 
     private void checkCredentials(SAMLCredential credential) {

@@ -1,5 +1,6 @@
 package com.mlyauth.conf;
 
+import com.mlyauth.security.context.IContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,9 @@ public class AppConf implements TransactionManagementConfigurer {
 
     @Autowired
     private EntityManagerFactory emf;
+
+    @Autowired
+    private IContextHolder contextHolder;
 
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
@@ -44,10 +48,11 @@ public class AppConf implements TransactionManagementConfigurer {
 
             @Override
             public void sessionDestroyed(HttpSessionEvent se) {
-                System.out.println("Session Destroyed, Session id:" + se.getSession().getId());
+                contextHolder.reset();
             }
 
         };
 
     }
+
 }
