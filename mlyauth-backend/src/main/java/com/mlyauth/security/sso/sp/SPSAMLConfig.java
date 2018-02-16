@@ -1,5 +1,6 @@
 package com.mlyauth.security.sso.sp;
 
+import com.mlyauth.hooks.SPSAMLUrlAuthenticationSuccessHandler;
 import com.mlyauth.security.sso.sp.saml.metadata.PrimaSPMetadataDisplayFilter;
 import liquibase.util.file.FilenameUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -251,7 +252,7 @@ public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler = new SPSAMLUrlAuthenticationSuccessHandler();
         successRedirectHandler.setDefaultTargetUrl("/home.html");
         return successRedirectHandler;
     }

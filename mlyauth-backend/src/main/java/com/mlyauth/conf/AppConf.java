@@ -9,14 +9,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 @Configuration
 @EnableTransactionManagement
 public class AppConf implements TransactionManagementConfigurer {
-
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
     private EntityManagerFactory emf;
@@ -31,7 +29,25 @@ public class AppConf implements TransactionManagementConfigurer {
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
-
         return transactionManager;
+    }
+
+    @Bean
+    public HttpSessionListener httpSessionListener() {
+
+        return new HttpSessionListener() {
+
+            @Override
+            public void sessionCreated(HttpSessionEvent se) {
+                System.out.println("Session Created with session id+" + se.getSession().getId());
+            }
+
+            @Override
+            public void sessionDestroyed(HttpSessionEvent se) {
+                System.out.println("Session Destroyed, Session id:" + se.getSession().getId());
+            }
+
+        };
+
     }
 }

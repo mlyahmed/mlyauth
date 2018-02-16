@@ -104,18 +104,43 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void when_post_an_true_response_from_a_defined_idp_then_OK() throws Exception {
+    public void when_post_a_true_response_from_a_defined_idp_then_OK() throws Exception {
         given_response_is_success();
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_valid_attributes();
+        given_assertion_minim_valid_attributes();
         given_assertnion_is_encrypted();
         given_response_is_signed();
         when_post_response();
         then_authenticated();
     }
 
+
+    @Test
+    public void when_post_a_true_response_from_a_defined_idp_and_target_an_existed_app_then_navigate_to_the_app() throws Exception {
+        given_response_is_success();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        given_assertion_minim_valid_attributes();
+        given_the_target_app();
+        given_assertnion_is_encrypted();
+        given_response_is_signed();
+        when_post_response();
+        then_navigate_to_the_app();
+    }
+
+    private void then_navigate_to_the_app() throws Exception {
+        resultActions
+                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
+                .andExpect(redirectedUrl("/navigate/saml/to/PolicyDev"));
+    }
+
+    private void given_the_target_app() {
+        final List<Attribute> attributes = attributeStatement.getAttributes();
+        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "PolicyDev"));
+    }
 
     @Test
     public void when_post_a_true_response_from_undefined_idp_then_error() throws Exception {
@@ -149,7 +174,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_valid_attributes();
+        given_assertion_minim_valid_attributes();
         given_assertnion_is_encrypted();
         when_post_response();
         then_error();
@@ -162,7 +187,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_valid_attributes();
+        given_assertion_minim_valid_attributes();
         given_response_is_signed();
         when_post_response();
         then_error();
@@ -284,14 +309,13 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         assertion.setConditions(assertionConditions);
     }
 
-    private void given_assertion_valid_attributes() {
+    private void given_assertion_minim_valid_attributes() {
         attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
         attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_CLIENT_ID.getCode(), "9000")); //See person-examples.sql
         attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
         attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
         attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
-        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "PolicyDev"));
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
