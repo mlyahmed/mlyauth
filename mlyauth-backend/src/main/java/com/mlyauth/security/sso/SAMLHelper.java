@@ -64,7 +64,7 @@ public class SAMLHelper {
         return randomIdGenerator.generateIdentifier();
     }
 
-    public static <T> T buildSAMLObject(final Class<T> clazz) {
+    public <T> T buildSAMLObject(final Class<T> clazz) {
         try {
 
             XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
@@ -85,7 +85,7 @@ public class SAMLHelper {
     }
 
     public Attribute buildStringAttribute(String attName, String attValue) {
-        Attribute attribute = SAMLHelper.buildSAMLObject(Attribute.class);
+        Attribute attribute = buildSAMLObject(Attribute.class);
         attribute.setName(attName);
         XSStringBuilder stringBuilder = (XSStringBuilder) org.opensaml.xml.Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
         XSString value = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
