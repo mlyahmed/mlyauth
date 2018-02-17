@@ -13,6 +13,11 @@ public class MockContext implements IContext {
     private Map<String, String> attributes = new HashMap<>();
 
     @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
     public HttpSession getSession() {
         return null;
     }
@@ -24,6 +29,16 @@ public class MockContext implements IContext {
 
     @Override
     public AuthenticationInfo getAuthenticationInfo() {
+        return null;
+    }
+
+    @Override
+    public String getLogin() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
         return null;
     }
 

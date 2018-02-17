@@ -8,11 +8,17 @@ import java.util.Map;
 
 public interface IContext {
 
+    String getId();
+
     HttpSession getSession();
 
     Person getPerson();
 
     AuthenticationInfo getAuthenticationInfo();
+
+    String getLogin();
+
+    String getPassword();
 
     Map<String, String> getAttributes();
 

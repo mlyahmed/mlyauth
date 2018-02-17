@@ -4,7 +4,7 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.IContextHolder;
-import com.mlyauth.security.context.PrimaUser;
+import com.mlyauth.security.context.IDPUser;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.schema.impl.XSStringImpl;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
         final Person person = personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()));
         final IContext context = contextHolder.newContext(person);
         credential.getAttributes().forEach(attr -> context.putAttribute(attr.getName(), credential.getAttributeAsString(attr.getName())));
-        return new PrimaUser(context);
+        return new IDPUser(context);
     }
 
     private void checkCredentials(SAMLCredential credential) {

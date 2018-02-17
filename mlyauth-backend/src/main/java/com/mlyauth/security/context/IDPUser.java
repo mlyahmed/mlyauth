@@ -6,23 +6,27 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.LinkedList;
 
-public class PrimaUser extends User {
+public class IDPUser extends User {
 
-    private final Person person;
+    private final IContext context;
 
-    public PrimaUser(IContext context) {
-        super(context.getAuthenticationInfo().getLogin(),
-                context.getAuthenticationInfo().getPassword(),
+    public IDPUser(IContext context) {
+        super(context.getLogin(),
+                context.getPassword(),
                 true,
                 true,
                 true,
                 true,
                 new LinkedList<GrantedAuthority>());
-        this.person = context.getPerson();
+        this.context = context;
     }
 
 
     public Person getPerson() {
-        return person;
+        return context.getPerson();
+    }
+
+    public IContext getContext() {
+        return context;
     }
 }

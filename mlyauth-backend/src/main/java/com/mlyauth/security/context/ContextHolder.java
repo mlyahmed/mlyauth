@@ -2,6 +2,7 @@ package com.mlyauth.security.context;
 
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.exception.ContextAlreadyLoaded;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -23,26 +24,23 @@ public class ContextHolder implements IContextHolder {
     @Autowired
     protected IContextIdGenerator idGenerator;
 
-    private String getId() {
-        return String.valueOf(getSession().getAttribute(CONTEXT_ID_ATTRIBUTE));
+    @Override
+    public String getId() {
+        return getContext() != null ? getContext().getId() : null;
     }
 
     @Override
     public IContext getContext() {
-        return contexts.get(getId());
-    }
-
-    @Override
-    public void setContext(IContext context) {
-        final HttpSession session = getSession();
-        session.setAttribute(CONTEXT_ID_ATTRIBUTE, idGenerator.generateId());
-        contexts.put(getId(), context);
+        return contexts.get(String.valueOf(getSession().getAttribute(CONTEXT_ID_ATTRIBUTE)));
     }
 
     @Override
     public IContext newContext(Person person) {
-        final Context context = new Context(person);
-        this.setContext(context);
+        if (getContext() != null)
+            throw new ContextAlreadyLoaded();
+
+        final Context context = new Context(idGenerator.generateId(), person);
+        contexts.put(context.getId(), context);
         return context;
     }
 
@@ -67,6 +65,16 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
+    public String getLogin() {
+        return getAuthenticationInfo() != null ? getAuthenticationInfo().getLogin() : null;
+    }
+
+    @Override
+    public String getPassword() {
+        return getAuthenticationInfo() != null ? getAuthenticationInfo().getPassword() : null;
+    }
+
+    @Override
     public Map<String, String> getAttributes() {
         return getContext() != null ? getContext().getAttributes() : Collections.emptyMap();
     }
@@ -83,11 +91,19 @@ public class ContextHolder implements IContextHolder {
 
     private static class Context implements IContext {
 
+        private final String id;
         private final Person person;
         private Map<String, String> attributes = new HashMap<>();
 
-        protected Context(Person person) {
+        protected Context(String id, Person person) {
+            this.id = id;
             this.person = person;
+            getSession().setAttribute(CONTEXT_ID_ATTRIBUTE, id);
+        }
+
+        @Override
+        public String getId() {
+            return id;
         }
 
         @Override
@@ -103,6 +119,16 @@ public class ContextHolder implements IContextHolder {
         @Override
         public AuthenticationInfo getAuthenticationInfo() {
             return person.getAuthenticationInfo();
+        }
+
+        @Override
+        public String getLogin() {
+            return person.getAuthenticationInfo().getLogin();
+        }
+
+        @Override
+        public String getPassword() {
+            return person.getAuthenticationInfo().getPassword();
         }
 
         @Override

@@ -3,7 +3,7 @@ package com.mlyauth.security.basic;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.context.IContextHolder;
-import com.mlyauth.security.context.PrimaUser;
+import com.mlyauth.security.context.IDPUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +24,7 @@ public class BasicUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final Person person = personDAO.findByEmail(username);
-        return person == null ? null : new PrimaUser(contextHolder.newContext(person));
+        return person == null ? null : new IDPUser(contextHolder.newContext(person));
     }
 
 }

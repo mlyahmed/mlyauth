@@ -6,7 +6,7 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.context.IContextHolder;
-import com.mlyauth.security.context.PrimaUser;
+import com.mlyauth.security.context.IDPUser;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.sp.SAMLUserDetailsServiceImpl;
 import com.mlyauth.utests.security.context.MockContextHolder;
@@ -204,8 +204,8 @@ public class SAMLUserDetailsServiceImplTest {
 
     private void then_user_is_loaded() {
         assertThat(user, Matchers.notNullValue());
-        assertThat(user, Matchers.instanceOf(PrimaUser.class));
-        assertThat(((PrimaUser) user).getPerson(), Matchers.equalTo(person));
+        assertThat(user, Matchers.instanceOf(IDPUser.class));
+        assertThat(((IDPUser) user).getPerson(), Matchers.equalTo(person));
     }
 
 }

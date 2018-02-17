@@ -6,8 +6,6 @@ public interface IContextHolder extends IContext {
 
     IContext getContext();
 
-    void setContext(IContext context);
-
     IContext newContext(Person person);
 
     void reset();
