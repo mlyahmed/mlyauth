@@ -6,7 +6,7 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.exception.AuthError;
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +35,7 @@ public class BasicNavigationService {
         final Person person = personDAO.findByEmail(userdetails.getUsername());
         Collection<Application> applications = person.getApplications();
         if (applications.stream().noneMatch(app -> app.getAppname().equals(appname)))
-            throw AuthException.newInstance().setErrors(Arrays.asList(new AuthError("", "")));
+            throw IDPException.newInstance().setErrors(Arrays.asList(new AuthError("", "")));
 
 
         navigationAttributes.add(BASIC_AUTH_ENDPOINT.setAlias("authurl").setValue("https://localhost/j_spring_security_check"));

@@ -1,7 +1,7 @@
 package com.mlyauth.api;
 
 import com.mlyauth.beans.PersonBean;
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.services.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class PersonController {
     public ResponseEntity newPerson(@RequestBody PersonBean bean) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(bean));
-        } catch (AuthException e) {
+        } catch (IDPException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
         }
     }

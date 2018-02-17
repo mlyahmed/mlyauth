@@ -4,7 +4,7 @@ import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.exception.AuthError;
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.joda.time.DateTime;
@@ -60,7 +60,7 @@ public class SAMLResponseGenerator {
             final List<ApplicationAspectAttribute> attributes = loadAttributes(app);
             return buildResponse(attributes);
         } catch (Exception e) {
-            throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
+            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
         }
 
     }

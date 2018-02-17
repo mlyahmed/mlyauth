@@ -1,6 +1,6 @@
 package com.mlyauth.utests.services;
 
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.services.PersonService;
 import com.mlyauth.validators.IPersonValidator;
 import org.junit.Before;
@@ -23,9 +23,9 @@ public class PersonServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test(expected = AuthException.class)
+    @Test(expected = IDPException.class)
     public void when_validation_is_ko_then_error() {
-        Mockito.doThrow(AuthException.newInstance()).when(personValidator).validateNewPerson(Mockito.any());
+        Mockito.doThrow(IDPException.newInstance()).when(personValidator).validateNewPerson(Mockito.any());
         personService.createPerson(null);
     }
 

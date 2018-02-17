@@ -5,7 +5,7 @@ import com.mlyauth.beans.AuthNavigation;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.AuthError;
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.exception.NotSPSAMLApplication;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
@@ -49,7 +49,7 @@ public class SAMLNavigationService {
             authNavigation.setTarget(response.getDestination());
 
         } catch (Exception e) {
-            throw AuthException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
+            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
         }
 
 

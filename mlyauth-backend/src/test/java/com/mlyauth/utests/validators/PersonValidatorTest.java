@@ -2,7 +2,7 @@ package com.mlyauth.utests.validators;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.PersonDAO;
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.validators.PersonValidator;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -42,11 +42,11 @@ public class PersonValidatorTest {
 
     @Test
     public void when_validate_new_person_and_null_then_error() {
-        AuthException ex = null;
+        IDPException ex = null;
 
         try {
             validator.validateNewPerson(null);
-        } catch (AuthException e) {
+        } catch (IDPException e) {
             ex = e;
         }
 
@@ -64,11 +64,11 @@ public class PersonValidatorTest {
                 .setPassword("password".toCharArray())
                 .setEmail(null);
 
-        AuthException ex = null;
+        IDPException ex = null;
 
         try {
             validator.validateNewPerson(person);
-        } catch (AuthException e) {
+        } catch (IDPException e) {
             ex = e;
         }
 

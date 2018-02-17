@@ -1,7 +1,7 @@
 package com.mlyauth.security.sso.idp.saml.metadata;
 
 import com.mlyauth.exception.AuthError;
-import com.mlyauth.exception.AuthException;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.metadata.EntityDescriptor;
@@ -52,7 +52,7 @@ public class IDPSAMLMetadataGenerator {
 
             return metadata;
         } catch (Exception e) {
-            throw AuthException.newInstance().setErrors(Arrays.asList(new AuthError("IDP_SAML_METADATA_ERROR", e.getMessage())));
+            throw IDPException.newInstance().setErrors(Arrays.asList(new AuthError("IDP_SAML_METADATA_ERROR", e.getMessage())));
         }
 
     }
