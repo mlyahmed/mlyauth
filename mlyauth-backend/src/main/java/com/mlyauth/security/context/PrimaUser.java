@@ -21,17 +21,6 @@ public class PrimaUser extends User {
         this.person = context.getPerson();
     }
 
-    public PrimaUser(Person person) {
-        super(person.getAuthenticationInfo().getLogin(),
-                person.getAuthenticationInfo().getPassword(),
-                true,
-                true,
-                true,
-                true,
-                new LinkedList<GrantedAuthority>());
-        this.person = person;
-    }
-
 
     public Person getPerson() {
         return person;

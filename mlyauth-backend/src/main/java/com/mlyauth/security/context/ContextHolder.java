@@ -2,8 +2,7 @@ package com.mlyauth.security.context;
 
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import org.apache.catalina.SessionIdGenerator;
-import org.apache.catalina.util.StandardSessionIdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -21,7 +20,8 @@ public class ContextHolder implements IContextHolder {
 
     private final Map<String, IContext> contexts = new WeakHashMap<>();
 
-    private SessionIdGenerator idGenerator = new StandardSessionIdGenerator();
+    @Autowired
+    protected IContextIdGenerator idGenerator;
 
     private String getId() {
         return String.valueOf(getSession().getAttribute(CONTEXT_ID_ATTRIBUTE));
@@ -35,7 +35,7 @@ public class ContextHolder implements IContextHolder {
     @Override
     public void setContext(IContext context) {
         final HttpSession session = getSession();
-        session.setAttribute(CONTEXT_ID_ATTRIBUTE, idGenerator.generateSessionId());
+        session.setAttribute(CONTEXT_ID_ATTRIBUTE, idGenerator.generateId());
         contexts.put(getId(), context);
     }
 
