@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Date;
 import java.util.LinkedList;
 
+import static com.mlyauth.constants.AuthenticationInfoStatus.ACTIVE;
+import static com.mlyauth.constants.AuthenticationInfoStatus.LOCKED;
+
 public class IDPUser extends User {
 
     private final IContext context;
@@ -14,10 +17,10 @@ public class IDPUser extends User {
     public IDPUser(IContext context) {
         super(context.getLogin(),
                 context.getPassword(),
-                true,
+                context.getAuthenticationInfo().getStatus() == ACTIVE,
                 context.getAuthenticationInfo().getExpireOn().after(new Date()),
                 true,
-                true,
+                context.getAuthenticationInfo().getStatus() != LOCKED,
                 new LinkedList<GrantedAuthority>());
         this.context = context;
     }
