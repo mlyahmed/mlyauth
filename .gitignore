@@ -12,3 +12,4 @@ out
 .gradle
 logs
 dist
+/mlyauth-backend/h2/
