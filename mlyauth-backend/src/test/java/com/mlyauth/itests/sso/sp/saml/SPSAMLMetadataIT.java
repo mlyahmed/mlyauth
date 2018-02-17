@@ -105,7 +105,7 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
     private String when_get_sp_metadata() throws Exception {
         ResultActions resultActions = mockMvc.perform(get(SP_SAML_METADATA_ENDPOINT));
         MvcResult result = resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType("application/xml"))
+                .andExpect(content().contentType("application/xml;charset=UTF-8"))
                 .andReturn();
 
         return result.getResponse().getContentAsString();
