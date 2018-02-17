@@ -4,6 +4,7 @@ import com.mlyauth.domain.Person;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.Date;
 import java.util.LinkedList;
 
 public class IDPUser extends User {
@@ -14,7 +15,7 @@ public class IDPUser extends User {
         super(context.getLogin(),
                 context.getPassword(),
                 true,
-                true,
+                context.getAuthenticationInfo().getExpireOn().after(new Date()),
                 true,
                 true,
                 new LinkedList<GrantedAuthority>());

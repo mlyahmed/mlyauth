@@ -26,6 +26,7 @@ import org.opensaml.saml2.core.NameID;
 import org.springframework.security.saml.SAMLCredential;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,6 +43,8 @@ public class SAMLUserDetailsServiceImplTest {
     public static final String ACTION = "S";
     public static final String APPLICATION_CODE = "policy";
     public static final String USERNAME = "ahmed.elidrissi";
+    public static final String SECRET = RandomStringUtils.random(20, true, true);
+    public static final Date FUTURE_TIME = new Date(System.currentTimeMillis() + (1000 * 60));
 
     @Spy
     private IContextHolder contextHolder = new MockContextHolder();
@@ -188,7 +191,8 @@ public class SAMLUserDetailsServiceImplTest {
     private void given_the_person_exists() {
         authenticationInfo = AuthenticationInfo.newInstance()
                 .setLogin(USERNAME)
-                .setPassword(RandomStringUtils.random(20, true, true));
+                .setPassword(SECRET)
+                .setExpireOn(FUTURE_TIME);
         person = new Person();
         person.setAuthenticationInfo(authenticationInfo);
         when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(person);
