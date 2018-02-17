@@ -1,5 +1,6 @@
 package com.mlyauth.security.sso;
 
+import com.mlyauth.exception.IDPSAMLError;
 import org.opensaml.Configuration;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.Assertion;
@@ -116,18 +117,22 @@ public class SAMLHelper {
         return decrypter.decrypt(encreptedAssertion);
     }
 
-    public String toString(XMLObject xmlObject) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.newDocument();
-        Marshaller out = org.opensaml.xml.Configuration.getMarshallerFactory().getMarshaller(xmlObject);
-        out.marshall(xmlObject, document);
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        StringWriter stringWriter = new StringWriter();
-        StreamResult streamResult = new StreamResult(stringWriter);
-        DOMSource source = new DOMSource(document);
-        transformer.transform(source, streamResult);
-        stringWriter.close();
-        return stringWriter.toString();
+    public String toString(XMLObject xmlObject) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.newDocument();
+            Marshaller out = org.opensaml.xml.Configuration.getMarshallerFactory().getMarshaller(xmlObject);
+            out.marshall(xmlObject, document);
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            StringWriter stringWriter = new StringWriter();
+            StreamResult streamResult = new StreamResult(stringWriter);
+            DOMSource source = new DOMSource(document);
+            transformer.transform(source, streamResult);
+            stringWriter.close();
+            return stringWriter.toString();
+        } catch (Exception e) {
+            throw IDPSAMLError.newInstance(e);
+        }
     }
 }

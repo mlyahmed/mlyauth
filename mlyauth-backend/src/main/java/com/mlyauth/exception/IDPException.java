@@ -7,6 +7,14 @@ public class IDPException extends RuntimeException {
 
     private Collection<AuthError> errors = new LinkedHashSet<>();
 
+    protected IDPException(Exception e) {
+        super(e);
+    }
+
+    protected IDPException() {
+
+    }
+
     public static IDPException newInstance() {
         return new IDPException();
     }

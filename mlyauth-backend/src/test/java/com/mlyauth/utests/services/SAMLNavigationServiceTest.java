@@ -4,6 +4,7 @@ import com.mlyauth.beans.AuthNavigation;
 import com.mlyauth.constants.AuthAspectType;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
+import com.mlyauth.exception.ApplicationNotFound;
 import com.mlyauth.exception.NotSPSAMLApplication;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
@@ -41,6 +42,7 @@ public class SAMLNavigationServiceTest {
 
     @InjectMocks
     private SAMLNavigationService service;
+
     private Response response;
     private Application application;
 
@@ -73,7 +75,11 @@ public class SAMLNavigationServiceTest {
         service.newNavigation(TARGET_APP);
     }
 
-    // not saml app
+    @Test(expected = ApplicationNotFound.class)
+    public void when_application_does_not_exist_then_error() {
+        service.newNavigation(TARGET_APP);
+    }
+
     // app does not exist
     // app saml attributes misses
 }
