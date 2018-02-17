@@ -2,7 +2,6 @@ package com.mlyauth.security.context;
 
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.exception.ContextAlreadyLoaded;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -36,9 +35,6 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public IContext newContext(Person person) {
-        if (getContext() != null)
-            throw new ContextAlreadyLoaded();
-
         final Context context = new Context(idGenerator.generateId(), person);
         contexts.put(context.getId(), context);
         return context;

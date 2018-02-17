@@ -46,6 +46,6 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: PERSON
             baseColumnNames: AUTH_INFORMATION_ID
-            referencedTableName: AUTH_INFORMATION
+            referencedTableName: AUTHENTICATION_INFO
             referencedColumnNames: ID
             constraintName: person_auth_fk_auth_id

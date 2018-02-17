@@ -13,9 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.web.filter.RequestContextFilter;
 
 @EnableWebSecurity
@@ -52,7 +50,7 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
-        http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
+        http.httpBasic();
         http.authorizeRequests()
                 .antMatchers("/sp/saml/**").permitAll()
                 .antMatchers("/idp/saml/**").permitAll()
@@ -72,10 +70,4 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-        entryPoint.setRealmName("admin realm");
-        return entryPoint;
-    }
 }

@@ -2,7 +2,6 @@ package com.mlyauth.utests.security.context;
 
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.exception.ContextAlreadyLoaded;
 import com.mlyauth.security.context.ContextHolder;
 import com.mlyauth.security.context.ContextIdGenerator;
 import com.mlyauth.security.context.IContext;
@@ -155,14 +154,6 @@ public class ContextHolderTest {
         assertThat(holder.getAttributes(), notNullValue());
         assertThat(holder.getAttributes().size(), equalTo(0));
         assertThat(holder.putAttribute("key", "value"), equalTo(false));
-    }
-
-    @Test(expected = ContextAlreadyLoaded.class)
-    public void when_create_new_context_and_already_existed_one_then_error() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
-        holder.newContext(person);
-        holder.newContext(person);
     }
 
 }

@@ -6,13 +6,13 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "AUTH_INFORMATION")
+@Table(name = "AUTHENTICATION_INFO")
 public class AuthenticationInfo {
 
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "AUTH_INFORMATION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", valueColumnName = "SEQUENCEVALUE", pkColumnValue = "AUTH_INFORMATION_ID", initialValue = 9999, allocationSize = 1)
-    @GeneratedValue(generator = "AUTH_INFORMATION_ID", strategy = GenerationType.TABLE)
+    @TableGenerator(name = "AUTHENTICATION_INFO_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", valueColumnName = "SEQUENCEVALUE", pkColumnValue = "AUTHENTICATION_INFO_ID", initialValue = 9999, allocationSize = 1)
+    @GeneratedValue(generator = "AUTHENTICATION_INFO_ID", strategy = GenerationType.TABLE)
     private long id;
 
     @Column(name = "LOGIN", nullable = false, unique = true)
