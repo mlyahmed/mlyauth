@@ -156,4 +156,20 @@ public class ContextHolderTest {
         assertThat(holder.putAttribute("key", "value"), equalTo(false));
     }
 
+    @Test
+    public void when_create_new_context_and_same_session_then_keep_the_same_id() {
+        request.setSession(new MockHttpSession());
+        final IContext context1 = holder.newContext(person);
+        final IContext context2 = holder.newContext(person);
+        assertThat(context1.getId(), equalTo(context2.getId()));
+    }
+
+    @Test
+    public void when_create_new_context_and_different_session_then_new_context_id() {
+        request.setSession(new MockHttpSession());
+        final IContext context1 = holder.newContext(person);
+        request.setSession(new MockHttpSession());
+        final IContext context2 = holder.newContext(person);
+        assertThat(context1.getId(), not(equalTo(context2.getId())));
+    }
 }

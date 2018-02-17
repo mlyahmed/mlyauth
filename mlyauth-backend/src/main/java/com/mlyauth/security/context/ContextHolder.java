@@ -35,9 +35,13 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public IContext newContext(Person person) {
-        final Context context = new Context(idGenerator.generateId(), person);
+        final Context context = new Context(newId(), person);
         contexts.put(context.getId(), context);
         return context;
+    }
+
+    private String newId() {
+        return getContext() != null ? getContext().getId() : idGenerator.generateId();
     }
 
     @Override
