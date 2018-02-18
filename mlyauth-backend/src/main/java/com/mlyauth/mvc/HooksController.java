@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HooksController {
 
     @RequestMapping("/")
-    public String home1() {
+    public String entry() {
         return "/home";
     }
 

@@ -31,6 +31,7 @@ public class SAMLNavigationServiceTest {
 
     public static final String TARGET_APP = "TargetApp";
     public static final String TARGET_APP_URL = "http://application.com/sp/saml/sso";
+
     @Mock
     private ApplicationDAO applicationDAO;
 
@@ -57,7 +58,7 @@ public class SAMLNavigationServiceTest {
     }
 
     @Test
-    public void when_create_new_navigation_to_an_assigned_app_then_return_it() throws Exception {
+    public void when_create_new_navigation_to_an_assigned_app_then_return_it() {
         application.setAspects(new HashSet<>(Arrays.asList(AuthAspectType.SP_SAML)));
         when(applicationDAO.findByAppname(TARGET_APP)).thenReturn(application);
         final AuthNavigation authNavigation = service.newNavigation(TARGET_APP);
@@ -69,7 +70,7 @@ public class SAMLNavigationServiceTest {
     }
 
     @Test(expected = NotSPSAMLApplication.class)
-    public void when_create_new_navigation_to_unexisting_then_error() throws ConfigurationException {
+    public void when_create_new_navigation_to_unexisting_then_error() {
         application.setAspects(new HashSet<>(Arrays.asList()));
         when(applicationDAO.findByAppname(TARGET_APP)).thenReturn(application);
         service.newNavigation(TARGET_APP);
@@ -80,6 +81,5 @@ public class SAMLNavigationServiceTest {
         service.newNavigation(TARGET_APP);
     }
 
-    // app does not exist
     // app saml attributes misses
 }
