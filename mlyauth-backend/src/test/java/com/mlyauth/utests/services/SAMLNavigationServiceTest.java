@@ -45,6 +45,7 @@ public class SAMLNavigationServiceTest {
     private SAMLNavigationService service;
 
     private Response response;
+
     private Application application;
 
     @Before
