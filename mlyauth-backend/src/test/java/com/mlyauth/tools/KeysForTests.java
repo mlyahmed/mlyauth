@@ -1,5 +1,6 @@
 package com.mlyauth.tools;
 
+import com.mlyauth.exception.EncryptionCredentialError;
 import javafx.util.Pair;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -29,24 +30,30 @@ public class KeysForTests {
     private static final String email = "sgi@prima-solutions.com";
 
 
-    public static Pair<PrivateKey, X509Certificate> generateCredential() throws Exception {
-        final BouncyCastleProvider provider = new BouncyCastleProvider();
-        Security.addProvider(provider);
-        KeyPair KPair = generateKeyPair();
+    public static Pair<PrivateKey, X509Certificate> generateCredential() {
+        try {
 
-        final Date notBefore = new Date(System.currentTimeMillis() - validity);
-        final Date notAfter = new Date(System.currentTimeMillis() + validity);
+            final BouncyCastleProvider provider = new BouncyCastleProvider();
+            Security.addProvider(provider);
+            KeyPair KPair = generateKeyPair();
 
-        X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(buildIssuer(),
-                BigInteger.valueOf(new SecureRandom().nextInt()),
-                notBefore, notAfter, buildSubject(), KPair.getPublic());
+            final Date notBefore = new Date(System.currentTimeMillis() - validity);
+            final Date notAfter = new Date(System.currentTimeMillis() + validity);
 
-        JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
-        certificateBuilder.addExtension(Extension.subjectKeyIdentifier, false, extUtils.createSubjectKeyIdentifier(KPair.getPublic()));
-        certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, extUtils.createAuthorityKeyIdentifier(KPair.getPublic()));
-        X509CertificateHolder certHldr = certificateBuilder.build(new JcaContentSignerBuilder("SHA1WithRSA").setProvider(provider.getName()).build(KPair.getPrivate()));
-        X509Certificate certificate = new JcaX509CertificateConverter().setProvider(provider.getName()).getCertificate(certHldr);
-        return new Pair<>(KPair.getPrivate(), certificate);
+            X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(buildIssuer(),
+                    BigInteger.valueOf(new SecureRandom().nextInt()),
+                    notBefore, notAfter, buildSubject(), KPair.getPublic());
+
+            JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
+            certificateBuilder.addExtension(Extension.subjectKeyIdentifier, false, extUtils.createSubjectKeyIdentifier(KPair.getPublic()));
+            certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, extUtils.createAuthorityKeyIdentifier(KPair.getPublic()));
+            X509CertificateHolder certHldr = certificateBuilder.build(new JcaContentSignerBuilder("SHA1WithRSA").setProvider(provider.getName()).build(KPair.getPrivate()));
+            X509Certificate certificate = new JcaX509CertificateConverter().setProvider(provider.getName()).getCertificate(certHldr);
+            return new Pair<>(KPair.getPrivate(), certificate);
+
+        } catch (Exception e) {
+            throw EncryptionCredentialError.newInstance(e);
+        }
     }
 
     private static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
