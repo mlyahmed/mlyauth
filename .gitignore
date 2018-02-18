@@ -13,3 +13,4 @@ out
 logs
 dist
 /mlyauth-backend/h2/
+/h2/
