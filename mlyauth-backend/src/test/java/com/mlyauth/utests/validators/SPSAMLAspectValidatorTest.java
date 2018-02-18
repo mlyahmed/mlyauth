@@ -113,6 +113,27 @@ public class SPSAMLAspectValidatorTest {
         validator.validate(application);
     }
 
+    @Test(expected = BadSPSAMLAspectAttributeValue.class)
+    public void when_the_sso_url_attribute_value_is_not_valid_url_then_error() throws Exception {
+        given_the_application_holds_all_the_required_attributes();
+        ssoUrlAttribute.setValue("badurl");
+        validator.validate(application);
+    }
+
+    @Test(expected = BadSPSAMLAspectAttributeValue.class)
+    public void when_the_encryption_certificate_attribute_value_is_null_then_error() throws Exception {
+        given_the_application_holds_all_the_required_attributes();
+        certificateAttribute.setValue(null);
+        validator.validate(application);
+    }
+
+    @Test(expected = BadSPSAMLAspectAttributeValue.class)
+    public void when_the_encryption_certificate_attribute_value_is_blank_then_error() throws Exception {
+        given_the_application_holds_all_the_required_attributes();
+        certificateAttribute.setValue("");
+        validator.validate(application);
+    }
+
     private void given_the_application_holds_all_the_required_attributes() throws CertificateEncodingException {
         given_the_application_holds_encryption_certificate();
         given_the_application_holds_sso_url();

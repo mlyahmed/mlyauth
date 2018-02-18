@@ -38,10 +38,7 @@ dependencies {
     compile("joda-time:joda-time:2.2")
     compile("com.jayway.jsonpath:json-path:2.0.0")
     compile("org.liquibase:liquibase-core:3.5.3")
-
-
-
-
+    compile("commons-validator:commons-validator:1.6")
 
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
