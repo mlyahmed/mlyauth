@@ -66,9 +66,7 @@ public class SPSAMLAspectValidatorTest {
 
     @Test
     public void when_the_application_is_a_well_defined_SP_SAML_application_then_ok() throws Exception {
-        given_the_application_holds_encryption_certificate();
-        given_the_application_holds_sso_url();
-        given_the_application_holds_the_entity_id();
+        given_the_application_holds_all_the_required_attributes();
         validator.validate(application);
     }
 
@@ -81,20 +79,44 @@ public class SPSAMLAspectValidatorTest {
 
     @Test(expected = BadSPSAMLAspectAttributeValue.class)
     public void when_the_entity_id_attribute_value_is_null_then_error() throws Exception {
-        given_the_application_holds_encryption_certificate();
-        given_the_application_holds_sso_url();
-        given_the_application_holds_the_entity_id();
+        given_the_application_holds_all_the_required_attributes();
         entityIdAttribute.setValue(null);
         validator.validate(application);
     }
 
     @Test(expected = BadSPSAMLAspectAttributeValue.class)
     public void when_the_entity_id_attribute_value_is_blank_then_error() throws Exception {
+        given_the_application_holds_all_the_required_attributes();
+        entityIdAttribute.setValue("");
+        validator.validate(application);
+    }
+
+
+    @Test(expected = MissingSPSAMLAspectAttribute.class)
+    public void when_the_sso_url_is_absent_then_error() throws Exception {
+        given_the_application_holds_encryption_certificate();
+        given_the_application_holds_the_entity_id();
+        validator.validate(application);
+    }
+
+    @Test(expected = BadSPSAMLAspectAttributeValue.class)
+    public void when_the_sso_url_attribute_value_is_null_then_error() throws Exception {
+        given_the_application_holds_all_the_required_attributes();
+        ssoUrlAttribute.setValue(null);
+        validator.validate(application);
+    }
+
+    @Test(expected = BadSPSAMLAspectAttributeValue.class)
+    public void when_the_sso_url_attribute_value_is_blank_then_error() throws Exception {
+        given_the_application_holds_all_the_required_attributes();
+        ssoUrlAttribute.setValue("");
+        validator.validate(application);
+    }
+
+    private void given_the_application_holds_all_the_required_attributes() throws CertificateEncodingException {
         given_the_application_holds_encryption_certificate();
         given_the_application_holds_sso_url();
         given_the_application_holds_the_entity_id();
-        entityIdAttribute.setValue("");
-        validator.validate(application);
     }
 
     private void given_the_application_holds_encryption_certificate() throws CertificateEncodingException {

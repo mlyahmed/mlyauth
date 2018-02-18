@@ -1,5 +1,6 @@
 package com.mlyauth.validators;
 
+import com.mlyauth.constants.SPSAMLAuthAttributes;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 import static com.mlyauth.constants.SPSAMLAuthAttributes.SP_SAML_ENTITY_ID;
+import static com.mlyauth.constants.SPSAMLAuthAttributes.SP_SAML_SSO_URL;
 
 @Component
 public class SPSAMLAspectValidator {
@@ -28,18 +30,24 @@ public class SPSAMLAspectValidator {
         if (application.getAspects() == null || !application.getAspects().contains(SP_SAML))
             throw NotSPSAMLApplication.newInstance();
 
-
         List<ApplicationAspectAttribute> attributes = appAspectAttrDAO.findByAppAndAspect(application.getId(), SP_SAML.name());
+        validateAttributeExists(attributes, SP_SAML_ENTITY_ID);
+        validateAttributeExists(attributes, SP_SAML_SSO_URL);
 
-        final ApplicationAspectAttribute entityIdAttribute = attributes.stream()
-                .filter(attr -> SP_SAML_ENTITY_ID == attr.getAttributeCode())
+    }
+
+    private ApplicationAspectAttribute validateAttributeExists(List<ApplicationAspectAttribute> attributes, SPSAMLAuthAttributes attribute) {
+        final ApplicationAspectAttribute found = attributes.stream()
+                .filter(attr -> attribute == attr.getAttributeCode())
                 .findFirst().orElse(null);
 
-        if (entityIdAttribute == null)
+        if (found == null)
             throw MissingSPSAMLAspectAttribute.newInstance();
 
-        if (StringUtils.isBlank(entityIdAttribute.getValue()))
+        if (StringUtils.isBlank(found.getValue()))
             throw BadSPSAMLAspectAttributeValue.newInstance();
+
+        return found;
     }
 
 }
