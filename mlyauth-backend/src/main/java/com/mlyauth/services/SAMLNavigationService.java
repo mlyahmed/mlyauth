@@ -33,14 +33,13 @@ public class SAMLNavigationService {
 
     public AuthNavigation newNavigation(String appname) {
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
-        AuthNavigation authNavigation = new AuthNavigation();
-        final Application application = applicationDAO.findByAppname(appname);
-        checkApplication(application);
-        final Response response = responseGenerator.generate(application);
-        navigationAttributes.add(SAML_RESPONSE.setAlias("SAMLResponse").setValue(encodeBytes(samlHelper.toString(response).getBytes())));
-        authNavigation.setTarget(response.getDestination());
-        authNavigation.setAttributes(navigationAttributes);
-        return authNavigation;
+        AuthNavigation navigation = new AuthNavigation();
+        checkApplication(applicationDAO.findByAppname(appname));
+        final Response response = responseGenerator.generate(applicationDAO.findByAppname(appname));
+        navigationAttributes.add(SAML_RESPONSE.setValue(encodeBytes(samlHelper.toString(response).getBytes())));
+        navigation.setTarget(response.getDestination());
+        navigation.setAttributes(navigationAttributes);
+        return navigation;
     }
 
     private void checkApplication(Application application) {

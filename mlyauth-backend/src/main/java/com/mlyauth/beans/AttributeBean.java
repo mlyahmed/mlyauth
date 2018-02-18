@@ -28,9 +28,8 @@ public class AttributeBean implements Cloneable{
     }
 
     public AttributeBean(String code, AttributeCategory category) {
-        this.code = code;
+        this.code = this.alias = code;
         this.category = category;
-        this.defaultValue = "";
         this.mandatory = false;
     }
 
