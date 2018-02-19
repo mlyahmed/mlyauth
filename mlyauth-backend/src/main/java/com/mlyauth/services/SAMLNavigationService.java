@@ -4,8 +4,8 @@ import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.AuthNavigation;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
-import com.mlyauth.exception.ApplicationNotFound;
-import com.mlyauth.exception.NotSPSAMLApplication;
+import com.mlyauth.exception.ApplicationNotFoundException;
+import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import org.opensaml.saml2.core.Response;
@@ -44,9 +44,9 @@ public class SAMLNavigationService {
 
     private void checkApplication(Application application) {
         if (application == null)
-            throw ApplicationNotFound.newInstance();
+            throw ApplicationNotFoundException.newInstance();
 
         if (!application.getAspects().contains(SP_SAML))
-            throw NotSPSAMLApplication.newInstance();
+            throw NotSPSAMLApplicationException.newInstance();
     }
 }

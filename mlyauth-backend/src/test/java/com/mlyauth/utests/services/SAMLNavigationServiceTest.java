@@ -4,8 +4,8 @@ import com.mlyauth.beans.AuthNavigation;
 import com.mlyauth.constants.AuthAspectType;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
-import com.mlyauth.exception.ApplicationNotFound;
-import com.mlyauth.exception.NotSPSAMLApplication;
+import com.mlyauth.exception.ApplicationNotFoundException;
+import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.services.SAMLNavigationService;
@@ -70,14 +70,14 @@ public class SAMLNavigationServiceTest {
         assertThat(authNavigation.getAttribute("SAMLResponse").getValue(), equalTo(encodeBytes(samlHelper.toString(response).getBytes())));
     }
 
-    @Test(expected = NotSPSAMLApplication.class)
+    @Test(expected = NotSPSAMLApplicationException.class)
     public void when_create_new_navigation_to_unexisting_then_error() {
         application.setAspects(new HashSet<>(Arrays.asList()));
         when(applicationDAO.findByAppname(TARGET_APP)).thenReturn(application);
         service.newNavigation(TARGET_APP);
     }
 
-    @Test(expected = ApplicationNotFound.class)
+    @Test(expected = ApplicationNotFoundException.class)
     public void when_application_does_not_exist_then_error() {
         service.newNavigation(TARGET_APP);
     }

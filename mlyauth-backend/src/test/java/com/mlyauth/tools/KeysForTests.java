@@ -1,6 +1,6 @@
 package com.mlyauth.tools;
 
-import com.mlyauth.exception.EncryptionCredentialError;
+import com.mlyauth.exception.EncryptionCredentialException;
 import javafx.util.Pair;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -52,7 +52,7 @@ public class KeysForTests {
             return new Pair<>(KPair.getPrivate(), certificate);
 
         } catch (Exception e) {
-            throw EncryptionCredentialError.newInstance(e);
+            throw EncryptionCredentialException.newInstance(e);
         }
     }
 

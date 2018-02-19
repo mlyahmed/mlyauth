@@ -1,6 +1,6 @@
 package com.mlyauth.security.sso;
 
-import com.mlyauth.exception.IDPSAMLError;
+import com.mlyauth.exception.IDPSAMLErrorException;
 import org.opensaml.Configuration;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.Assertion;
@@ -96,11 +96,15 @@ public class SAMLHelper {
     }
 
 
-    public X509Certificate toX509Certificate(String encodedCertificate) throws CertificateException {
-        final byte[] decode = org.opensaml.xml.util.Base64.decode(encodedCertificate);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        return (X509Certificate) certFactory.generateCertificate(inputStream);
+    public X509Certificate toX509Certificate(String encodedCertificate) {
+        try {
+            final byte[] decode = org.opensaml.xml.util.Base64.decode(encodedCertificate);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            return (X509Certificate) certFactory.generateCertificate(inputStream);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
     public BasicX509Credential toBasicX509Credential(String encodedCertificate) throws CertificateException {
@@ -132,7 +136,7 @@ public class SAMLHelper {
             stringWriter.close();
             return stringWriter.toString();
         } catch (Exception e) {
-            throw IDPSAMLError.newInstance(e);
+            throw IDPSAMLErrorException.newInstance(e);
         }
     }
 }

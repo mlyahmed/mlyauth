@@ -7,21 +7,19 @@ import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.tools.KeysForTests;
 import com.mlyauth.utests.security.context.MockContext;
+import com.mlyauth.validators.ISPSAMLAspectValidator;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.*;
 import org.opensaml.security.SAMLSignatureProfileValidator;
@@ -41,7 +39,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -58,6 +59,9 @@ public class SAMLResponseGeneratorTest {
 
     @InjectMocks
     private SAMLResponseGenerator generator;
+
+    @Mock
+    private ISPSAMLAspectValidator spsamlAspectValidator;
 
     @Mock
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
@@ -222,10 +226,9 @@ public class SAMLResponseGeneratorTest {
         sigValidator.validate(response.getSignature());
     }
 
-    @Test
-    @Ignore
+    @Test(expected = IDPException.class)
     public void when_the_sso_url_is_absent_then_error() throws Exception {
-        appAspectAttrobutes = new LinkedList<>(Arrays.asList(ssoEntityIdAttribute, ssoEncryptionCertificateAttribute));
+        Mockito.doThrow(IDPException.newInstance()).when(spsamlAspectValidator).validate(application);
         when_generate_a_response();
     }
 

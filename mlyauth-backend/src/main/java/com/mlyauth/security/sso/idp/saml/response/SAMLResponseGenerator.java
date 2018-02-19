@@ -7,6 +7,7 @@ import com.mlyauth.exception.AuthError;
 import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
+import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
 import org.opensaml.saml2.encryption.Encrypter;
@@ -39,6 +40,9 @@ import static com.mlyauth.constants.SPSAMLAuthAttributes.*;
 public class SAMLResponseGenerator {
 
     @Autowired
+    private ISPSAMLAspectValidator validator;
+
+    @Autowired
     private IContext context;
 
     @Autowired
@@ -55,10 +59,10 @@ public class SAMLResponseGenerator {
 
     public Response generate(Application app) {
         Assert.notNull(app, "The application parameter is null");
+        validator.validate(app);
 
         try {
-            final List<ApplicationAspectAttribute> attributes = loadAttributes(app);
-            return buildResponse(attributes);
+            return buildResponse(loadAttributes(app));
         } catch (Exception e) {
             throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
         }
