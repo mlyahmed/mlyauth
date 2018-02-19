@@ -192,7 +192,7 @@ public class SAMLUserDetailsServiceImplTest {
         authenticationInfo = AuthenticationInfo.newInstance()
                 .setLogin(USERNAME)
                 .setPassword(SECRET)
-                .setExpireOn(FUTURE_TIME);
+                .setExpireAt(FUTURE_TIME);
         person = new Person();
         person.setAuthenticationInfo(authenticationInfo);
         when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(person);

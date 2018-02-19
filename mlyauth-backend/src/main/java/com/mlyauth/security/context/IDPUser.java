@@ -18,7 +18,7 @@ public class IDPUser extends User {
         super(context.getLogin(),
                 context.getPassword(),
                 context.getAuthenticationInfo().getStatus() == ACTIVE,
-                context.getAuthenticationInfo().getExpireOn().after(new Date()),
+                context.getAuthenticationInfo().getExpireAt().after(new Date()),
                 true,
                 context.getAuthenticationInfo().getStatus() != LOCKED,
                 new LinkedList<GrantedAuthority>());

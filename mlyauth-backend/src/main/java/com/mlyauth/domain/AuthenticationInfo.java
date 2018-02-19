@@ -25,11 +25,11 @@ public class AuthenticationInfo {
     @Enumerated(EnumType.STRING)
     private AuthenticationInfoStatus status;
 
-    @Column(name = "EFFECTIVE_ON", nullable = false)
-    private java.util.Date effectiveOn;
+    @Column(name = "EFFECTIVE_AT", nullable = false)
+    private java.util.Date effectiveAt;
 
-    @Column(name = "EXPIRE_ON", nullable = false)
-    private java.util.Date expireOn;
+    @Column(name = "EXPIRES_AT", nullable = false)
+    private java.util.Date expireAt;
 
     @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER)
     private Person person;
@@ -74,21 +74,21 @@ public class AuthenticationInfo {
         return this;
     }
 
-    public Date getEffectiveOn() {
-        return effectiveOn;
+    public Date getEffectiveAt() {
+        return effectiveAt;
     }
 
-    public AuthenticationInfo setEffectiveOn(Date effectiveOn) {
-        this.effectiveOn = effectiveOn;
+    public AuthenticationInfo setEffectiveAt(Date effectiveAt) {
+        this.effectiveAt = effectiveAt;
         return this;
     }
 
-    public Date getExpireOn() {
-        return expireOn;
+    public Date getExpireAt() {
+        return expireAt;
     }
 
-    public AuthenticationInfo setExpireOn(Date expireOn) {
-        this.expireOn = expireOn;
+    public AuthenticationInfo setExpireAt(Date expireAt) {
+        this.expireAt = expireAt;
         return this;
     }
 

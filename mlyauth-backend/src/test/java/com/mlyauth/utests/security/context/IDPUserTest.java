@@ -40,7 +40,7 @@ public class IDPUserTest {
 
     @Test
     public void when_create_a_user_then_must_be_set() {
-        authInfo.setExpireOn(FUTURE_TIME);
+        authInfo.setExpireAt(FUTURE_TIME);
         IDPUser user = new IDPUser(context);
         assertThat(user.getContext(), equalTo(context));
         assertThat(user.getPerson(), equalTo(person));
@@ -52,14 +52,14 @@ public class IDPUserTest {
 
     @Test
     public void when_the_expiring_time_is_passed_then_the_accound_is_expired() {
-        authInfo.setExpireOn(PASSED_TIME);
+        authInfo.setExpireAt(PASSED_TIME);
         IDPUser user = new IDPUser(context);
         assertThat(user.isAccountNonExpired(), equalTo(false));
     }
 
     @Test
     public void when_the_account_status_is_not_active_then_is_locked() {
-        authInfo.setExpireOn(FUTURE_TIME);
+        authInfo.setExpireAt(FUTURE_TIME);
         authInfo.setStatus(AuthenticationInfoStatus.LOCKED);
         IDPUser user = new IDPUser(context);
         assertThat(user.isAccountNonLocked(), equalTo(false));

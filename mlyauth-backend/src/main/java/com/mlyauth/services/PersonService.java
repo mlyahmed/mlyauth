@@ -42,8 +42,8 @@ public class PersonService implements IPersonService {
                 .setLogin(bean.getEmail())
                 .setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword())))
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
-                .setEffectiveOn(new Date())
-                .setExpireOn(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365 * 100))); //A century
+                .setEffectiveAt(new Date())
+                .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365 * 100))); //A century
         final Person person = personMapper.toEntity(bean);
         person.setAuthenticationInfo(authenticationInfo);
         return person;

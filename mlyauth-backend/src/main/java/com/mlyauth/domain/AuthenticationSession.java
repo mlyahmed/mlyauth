@@ -12,4 +12,6 @@ public abstract class AuthenticationSession {
     @GeneratedValue(generator = "AUTHENTICATION_SESSION_ID", strategy = GenerationType.TABLE)
     private long id;
 
+    @Column(name = "CREATED_AT", nullable = false)
+    private java.util.Date createdAt;
 }
