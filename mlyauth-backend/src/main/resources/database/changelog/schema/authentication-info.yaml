@@ -10,31 +10,31 @@ databaseChangeLog:
                   name: ID
                   type: bigint
                   constraints:
-                    primaryKey: true
-                    nullable: false
+                      primaryKey: true
+                      nullable: false
               - column:
                   name: LOGIN
                   type: varchar(250)
                   constraints:
-                    nullable: false
-                    unique: true
+                      nullable: false
+                      unique: true
               - column:
                   name: PASSWORD
                   type: varchar(255)
                   constraints:
-                    nullable: false
+                      nullable: false
               - column:
                   name: STATUS
                   type: varchar(50)
                   constraints:
-                    nullable: false
+                      nullable: false
               - column:
                   name: EFFECTIVE_AT
                   type: DATETIME
                   constraints:
-                    nullable: false
+                      nullable: false
               - column:
                   name: EXPIRES_AT
                   type: DATETIME
                   constraints:
-                    nullable: true
+                      nullable: true

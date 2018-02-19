@@ -8,6 +8,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/authentication-info.yaml
   - include:
+      file: database/changelog/schema/authentication-session.yaml
+  - include:
       file: database/changelog/schema/person.yaml
   - include:
       file: database/changelog/schema/application.yaml

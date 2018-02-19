@@ -4,7 +4,7 @@ databaseChangeLog:
       author: mlyahmed
       changes:
         - createTable:
-            tableName: PERSON
+            tableName: AUTHENTICATION_SESSION
             columns:
               - column:
                   name: ID
@@ -13,40 +13,38 @@ databaseChangeLog:
                       primaryKey: true
                       nullable: false
               - column:
-                  name: EXTERNAL_ID
-                  type: varchar(100)
-                  constraints:
-                      unique: true
-                      nullable: false
-              - column:
-                  name: FIRSTNAME
-                  type: varchar(255)
-                  constraints:
-                      nullable: false
-              - column:
-                  name: LASTNAME
-                  type: varchar(255)
-                  constraints:
-                      nullable: false
-              - column:
-                  name: EMAIL
+                  name: CONTEXT_ID
                   type: varchar(250)
                   constraints:
                       nullable: false
                       unique: true
               - column:
+                  name: STATUS
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: CREATED_AT
+                  type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
+                  name: CLOSED_AT
+                  type: DATETIME
+                  constraints:
+                      nullable: true
+              - column:
                   name: AUTHENTICATION_INFO_ID
                   type: bigint
                   constraints:
                       nullable: false
-                      unique: true
   - changeSet:
       id: 2
       author: mlyahmed
       changes:
         - addForeignKeyConstraint:
-            baseTableName: PERSON
+            baseTableName: AUTHENTICATION_SESSION
             baseColumnNames: AUTHENTICATION_INFO_ID
             referencedTableName: AUTHENTICATION_INFO
             referencedColumnNames: ID
-            constraintName: person_auth_fk_auth_id
+            constraintName: auth_session_fk_auth_info_id

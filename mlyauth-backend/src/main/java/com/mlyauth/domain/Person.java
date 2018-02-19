@@ -29,7 +29,7 @@ public class Person  implements Serializable {
     private String email;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "AUTH_INFORMATION_ID")
+    @JoinColumn(name = "AUTHENTICATION_INFO_ID")
     private AuthenticationInfo authenticationInfo;
 
 
