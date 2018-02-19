@@ -1,6 +1,7 @@
 package com.mlyauth.security.context;
 
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,8 @@ public interface IContext {
     Person getPerson();
 
     AuthenticationInfo getAuthenticationInfo();
+
+    AuthenticationSession getAuthenticationSession();
 
     String getLogin();
 

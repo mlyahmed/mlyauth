@@ -1,6 +1,7 @@
 package com.mlyauth.utests.security.context;
 
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
 import com.mlyauth.security.context.IContext;
 
@@ -29,6 +30,11 @@ public class MockContext implements IContext {
 
     @Override
     public AuthenticationInfo getAuthenticationInfo() {
+        return null;
+    }
+
+    @Override
+    public AuthenticationSession getAuthenticationSession() {
         return null;
     }
 

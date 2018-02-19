@@ -1,6 +1,8 @@
 package com.mlyauth.security.context;
 
+import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -8,10 +10,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
+
+import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
 
 @Configuration
 public class ContextHolder implements IContextHolder {
@@ -22,6 +23,9 @@ public class ContextHolder implements IContextHolder {
 
     @Autowired
     protected IContextIdGenerator idGenerator;
+
+    @Autowired
+    protected AuthenticationSessionDAO sauthSessionDAO;
 
     @Override
     public String getId() {
@@ -35,8 +39,17 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public IContext newContext(Person person) {
-        final Context context = new Context(newId(), person);
-        contexts.put(context.getId(), context);
+        final String contextId = newId();
+
+        AuthenticationSession authSession = AuthenticationSession.newInstance()
+                .setContextId(contextId)
+                .setStatus(ACTIVE)
+                .setCreatedAt(new Date())
+                .setAuthenticationInfo(person.getAuthenticationInfo());
+        authSession = sauthSessionDAO.save(authSession);
+
+        final Context context = new Context(contextId, person, authSession);
+        contexts.put(contextId, context);
         return context;
     }
 
@@ -62,6 +75,11 @@ public class ContextHolder implements IContextHolder {
     @Override
     public AuthenticationInfo getAuthenticationInfo() {
         return getPerson() != null ? getPerson().getAuthenticationInfo() : null;
+    }
+
+    @Override
+    public AuthenticationSession getAuthenticationSession() {
+        return getContext() != null ? getContext().getAuthenticationSession() : null;
     }
 
     @Override
@@ -93,11 +111,13 @@ public class ContextHolder implements IContextHolder {
 
         private final String id;
         private final Person person;
+        private final AuthenticationSession authSession;
         private Map<String, String> attributes = new HashMap<>();
 
-        protected Context(String id, Person person) {
+        protected Context(String id, Person person, AuthenticationSession authSession) {
             this.id = id;
             this.person = person;
+            this.authSession = authSession;
             getSession().setAttribute(CONTEXT_ID_ATTRIBUTE, id);
         }
 
@@ -119,6 +139,11 @@ public class ContextHolder implements IContextHolder {
         @Override
         public AuthenticationInfo getAuthenticationInfo() {
             return person.getAuthenticationInfo();
+        }
+
+        @Override
+        public AuthenticationSession getAuthenticationSession() {
+            return authSession;
         }
 
         @Override

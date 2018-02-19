@@ -1,5 +1,6 @@
 package com.mlyauth.utests.security.context;
 
+import com.mlyauth.mocks.dao.MockAuthenticationSessionDAO;
 import com.mlyauth.security.context.ContextHolder;
 import com.mlyauth.security.context.ContextIdGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -15,6 +16,7 @@ public class MockContextHolder extends ContextHolder {
         ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request);
         RequestContextHolder.setRequestAttributes(requestAttributes);
         idGenerator = new ContextIdGenerator();
+        sauthSessionDAO = new MockAuthenticationSessionDAO();
     }
 
 

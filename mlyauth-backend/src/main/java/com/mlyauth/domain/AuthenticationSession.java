@@ -32,6 +32,10 @@ public class AuthenticationSession {
     @Column(name = "CLOSED_AT")
     private java.util.Date closedAt;
 
+    public static AuthenticationSession newInstance() {
+        return new AuthenticationSession();
+    }
+
     public long getId() {
         return id;
     }
@@ -44,32 +48,36 @@ public class AuthenticationSession {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public AuthenticationSession setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 
     public AuthenticationSessionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(AuthenticationSessionStatus status) {
+    public AuthenticationSession setStatus(AuthenticationSessionStatus status) {
         this.status = status;
+        return this;
     }
 
     public String getContextId() {
         return contextId;
     }
 
-    public void setContextId(String contextId) {
+    public AuthenticationSession setContextId(String contextId) {
         this.contextId = contextId;
+        return this;
     }
 
     public AuthenticationInfo getAuthenticationInfo() {
         return authenticationInfo;
     }
 
-    public void setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
+    public AuthenticationSession setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
+        return this;
     }
 
     public Date getClosedAt() {

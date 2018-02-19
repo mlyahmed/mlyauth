@@ -1,13 +1,14 @@
 package com.mlyauth.utests.security.context;
 
+import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.mocks.dao.MockAuthenticationSessionDAO;
 import com.mlyauth.security.context.ContextHolder;
 import com.mlyauth.security.context.ContextIdGenerator;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.IContextIdGenerator;
 import org.apache.commons.lang.RandomStringUtils;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -18,8 +19,11 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
+import static java.lang.System.currentTimeMillis;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ContextHolderTest {
 
@@ -29,6 +33,9 @@ public class ContextHolderTest {
 
     @Spy
     private IContextIdGenerator contextIdGenerator = new ContextIdGenerator();
+
+    @Spy
+    private AuthenticationSessionDAO sessionDAO = new MockAuthenticationSessionDAO();
 
     @InjectMocks
     private ContextHolder holder;
@@ -56,7 +63,7 @@ public class ContextHolderTest {
         MockHttpSession session = new MockHttpSession();
         request.setSession(session);
         final IContext context = holder.newContext(person);
-        assertThat(context, Matchers.notNullValue());
+        assertThat(context, notNullValue());
         assertThat(holder.getId(), notNullValue());
         assertThat(context.getId(), notNullValue());
         assertThat(holder.getId(), equalTo(context.getId()));
@@ -67,6 +74,21 @@ public class ContextHolderTest {
         assertThat(context.getAuthenticationInfo(), equalTo(authenticationInfo));
         assertThat(context.getLogin(), equalTo(authenticationInfo.getLogin()));
         assertThat(holder.getLogin(), equalTo(authenticationInfo.getLogin()));
+    }
+
+    @Test
+    public void when_create_a_new_context_then_create_a_new_auth_session() {
+        MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        final IContext context = holder.newContext(person);
+        assertThat(holder.getAuthenticationSession(), notNullValue());
+        assertThat(context.getAuthenticationSession(), notNullValue());
+        assertThat(context.getAuthenticationSession().getId(), notNullValue());
+        assertThat(sessionDAO.findOne(context.getAuthenticationSession().getId()), notNullValue());
+        assertThat(context.getAuthenticationSession().getContextId(), equalTo(context.getId()));
+        assertThat(context.getAuthenticationSession().getStatus(), equalTo(ACTIVE));
+        assertThat(context.getAuthenticationSession().getCreatedAt(), notNullValue());
+        assertTrue(context.getAuthenticationSession().getCreatedAt().getTime() - currentTimeMillis() < 50);
     }
 
     @Test
@@ -148,6 +170,7 @@ public class ContextHolderTest {
         assertThat(holder.getId(), nullValue());
         assertThat(holder.getContext(), nullValue());
         assertThat(holder.getAuthenticationInfo(), nullValue());
+        assertThat(holder.getAuthenticationSession(), nullValue());
         assertThat(holder.getLogin(), nullValue());
         assertThat(holder.getPassword(), nullValue());
         assertThat(holder.getPerson(), nullValue());
