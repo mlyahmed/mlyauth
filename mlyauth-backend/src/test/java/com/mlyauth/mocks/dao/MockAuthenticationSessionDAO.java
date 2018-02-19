@@ -15,7 +15,7 @@ public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
     public AuthenticationSession save(AuthenticationSession entity) {
         entity.setId(++IDS);
         sessions.put(IDS, entity);
-        return entity;
+        return entity.clone(); //Keep it to keep the tests valid
     }
 
 
@@ -26,7 +26,7 @@ public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
 
     @Override
     public AuthenticationSession findOne(Long id) {
-        return sessions.get(id);
+        return sessions.get(id).clone();  //Keep it to keep the tests valid
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
 
     @Override
     public long count() {
-        return 0;
+        return sessions.size();
     }
 
     @Override

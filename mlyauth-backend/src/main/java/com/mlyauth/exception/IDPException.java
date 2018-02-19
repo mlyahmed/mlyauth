@@ -19,6 +19,10 @@ public class IDPException extends RuntimeException {
         return new IDPException();
     }
 
+    public static IDPException newInstance(Exception e) {
+        return new IDPException(e);
+    }
+
     public Collection<AuthError> getErrors() {
         return errors;
     }

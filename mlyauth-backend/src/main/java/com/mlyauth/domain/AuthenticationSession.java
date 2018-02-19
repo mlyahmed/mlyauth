@@ -1,13 +1,15 @@
 package com.mlyauth.domain;
 
 import com.mlyauth.constants.AuthenticationSessionStatus;
+import com.mlyauth.exception.IDPException;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "AUTHENTICATION_SESSION")
-public class AuthenticationSession {
+public class AuthenticationSession implements Cloneable, Serializable {
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -86,5 +88,13 @@ public class AuthenticationSession {
 
     public void setClosedAt(Date closedAt) {
         this.closedAt = closedAt;
+    }
+
+    public AuthenticationSession clone() {
+        try {
+            return (AuthenticationSession) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw IDPException.newInstance(e);
+        }
     }
 }

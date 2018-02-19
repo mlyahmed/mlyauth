@@ -2,6 +2,7 @@ package com.mlyauth.utests.security.context;
 
 import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
 import com.mlyauth.mocks.dao.MockAuthenticationSessionDAO;
 import com.mlyauth.security.context.ContextHolder;
@@ -20,6 +21,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
+import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;
 import static java.lang.System.currentTimeMillis;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -78,17 +80,42 @@ public class ContextHolderTest {
 
     @Test
     public void when_create_a_new_context_then_create_a_new_auth_session() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
+        request.setSession(new MockHttpSession());
         final IContext context = holder.newContext(person);
         assertThat(holder.getAuthenticationSession(), notNullValue());
         assertThat(context.getAuthenticationSession(), notNullValue());
+        assertThat(holder.getAuthenticationSession(), equalTo(context.getAuthenticationSession()));
         assertThat(context.getAuthenticationSession().getId(), notNullValue());
         assertThat(sessionDAO.findOne(context.getAuthenticationSession().getId()), notNullValue());
         assertThat(context.getAuthenticationSession().getContextId(), equalTo(context.getId()));
         assertThat(context.getAuthenticationSession().getStatus(), equalTo(ACTIVE));
         assertThat(context.getAuthenticationSession().getCreatedAt(), notNullValue());
         assertTrue(context.getAuthenticationSession().getCreatedAt().getTime() - currentTimeMillis() < 50);
+        assertThat(context.getAuthenticationSession().getAuthenticationInfo(), equalTo(authenticationInfo));
+    }
+
+    @Test
+    public void given_an_existing_context_when_create_a_new_one_then_the_old_session_is_closed() {
+        request.setSession(new MockHttpSession());
+        IContext context = holder.newContext(person);
+        final AuthenticationSession authSession1 = context.getAuthenticationSession();
+        context = holder.newContext(person);
+        final AuthenticationSession authSession2 = context.getAuthenticationSession();
+        assertThat(authSession1, not(equalTo(authSession2)));
+        assertThat(sessionDAO.findOne(authSession1.getId()).getStatus(), equalTo(CLOSED));
+        assertThat(sessionDAO.findOne(authSession1.getId()).getClosedAt(), notNullValue());
+        assertTrue(sessionDAO.findOne(authSession1.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+    }
+
+    @Test
+    public void given_an_existing_context_when_reset_it_then_close_the_session() {
+        request.setSession(new MockHttpSession());
+        IContext context = holder.newContext(person);
+        final AuthenticationSession authSession = context.getAuthenticationSession();
+        holder.reset();
+        assertThat(sessionDAO.findOne(authSession.getId()).getStatus(), equalTo(CLOSED));
+        assertThat(sessionDAO.findOne(authSession.getId()).getClosedAt(), notNullValue());
+        assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
     }
 
     @Test

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
+import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;
 
 @Configuration
 public class ContextHolder implements IContextHolder {
@@ -40,25 +41,15 @@ public class ContextHolder implements IContextHolder {
     @Override
     public IContext newContext(Person person) {
         final String contextId = newId();
-
-        AuthenticationSession authSession = AuthenticationSession.newInstance()
-                .setContextId(contextId)
-                .setStatus(ACTIVE)
-                .setCreatedAt(new Date())
-                .setAuthenticationInfo(person.getAuthenticationInfo());
-        authSession = sauthSessionDAO.save(authSession);
-
-        final Context context = new Context(contextId, person, authSession);
+        closeCurrentSession();
+        final Context context = new Context(contextId, person, newAuthSession(person, contextId));
         contexts.put(contextId, context);
         return context;
     }
 
-    private String newId() {
-        return getContext() != null ? getContext().getId() : idGenerator.generateId();
-    }
-
     @Override
     public void reset() {
+        closeCurrentSession();
         contexts.remove(getId());
     }
 
@@ -107,7 +98,30 @@ public class ContextHolder implements IContextHolder {
         return getContext() != null && getContext().putAttribute(key, value);
     }
 
+    private void closeCurrentSession() {
+        final AuthenticationSession currentAuthSession = getAuthenticationSession();
+        if (currentAuthSession != null) {
+            currentAuthSession.setStatus(CLOSED);
+            currentAuthSession.setClosedAt(new Date());
+            sauthSessionDAO.save(currentAuthSession);
+        }
+    }
+
+    private AuthenticationSession newAuthSession(Person person, String contextId) {
+        AuthenticationSession authSession = AuthenticationSession.newInstance()
+                .setContextId(contextId)
+                .setStatus(ACTIVE)
+                .setCreatedAt(new Date())
+                .setAuthenticationInfo(person.getAuthenticationInfo());
+        return sauthSessionDAO.save(authSession);
+    }
+
+    private String newId() {
+        return getContext() != null ? getContext().getId() : idGenerator.generateId();
+    }
+
     private static class Context implements IContext {
+
 
         private final String id;
         private final Person person;
