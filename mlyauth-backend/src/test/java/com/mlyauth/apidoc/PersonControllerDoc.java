@@ -25,6 +25,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +45,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(springSecurity())
                 .apply(documentationConfiguration(restDocumentation)).build();
     }
 
