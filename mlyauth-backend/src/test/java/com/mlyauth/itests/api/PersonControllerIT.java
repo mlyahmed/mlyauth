@@ -2,8 +2,10 @@ package com.mlyauth.itests.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.beans.PersonBean;
+import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 import com.mlyauth.itests.AbstractIntegrationTest;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -13,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -51,6 +56,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     @Test
     @UseDataProvider("properties")
     public void when_create_a_new_person_then_create_him(String... properties) throws Exception {
+        given_the_root_is_a_master();
         PersonBean personBean = given_person(properties);
         final ResultActions resultActions = when_create_new_person(personBean);
         then_is_created(resultActions);
@@ -59,6 +65,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     @Test
     public void when_create_a_new_person_and_already_exists_then_error() throws Exception {
+        given_the_root_is_a_master();
         PersonBean personBean = given_person("201254", "Moulay", "ATTACH", "moulay.attach@gmail.com", "password");
         final ResultActions resultActions = when_create_new_person(personBean);
         resultActions.andExpect(status().isBadRequest())
@@ -67,6 +74,27 @@ public class PersonControllerIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.[0].code", equalTo("PERSON_ALREADY_EXISTS")));
     }
 
+
+    @Test
+    @UseDataProvider("properties")
+    public void when_create_a_new_person_without_matser_profile_then_error(String... properties) throws Exception {
+        given_the_root_is_not_a_master();
+        PersonBean personBean = given_person(properties);
+        final ResultActions resultActions = when_create_new_person(personBean);
+        resultActions.andExpect(status().isForbidden());
+    }
+
+    private void given_the_root_is_a_master() {
+        final Person master = personDAO.findByEmail(MASTER_EMAIL);
+        master.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.MASTER))));
+        personDAO.save(master);
+    }
+
+    private void given_the_root_is_not_a_master() {
+        final Person master = personDAO.findByEmail(MASTER_EMAIL);
+        master.getProfiles().clear();
+        personDAO.save(master);
+    }
 
     private void and_he_is_well_created(ResultActions resultActions, String... properties) throws Exception {
         final Person person = personDAO.findByEmail(properties[3]);
@@ -100,7 +128,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private ResultActions when_create_new_person(PersonBean personBean) throws Exception {
         return mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(personBean))
-                .with(httpBasic(ROOT_USERNAME, ROOT_PASSWORD))
+                .with(httpBasic(MASTER_EMAIL, MASTER_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
     }

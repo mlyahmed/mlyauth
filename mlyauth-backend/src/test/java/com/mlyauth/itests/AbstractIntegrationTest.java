@@ -16,8 +16,8 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
-    public static final String ROOT_USERNAME = "ahmed.elidrissi.attach@gmail.com";
-    public static final String ROOT_PASSWORD = "root";
+    public static final String MASTER_EMAIL = "ahmed.elidrissi.attach@gmail.com";
+    public static final String MASTER_PASSWORD = "root";
 
     @ClassRule
     public static final SpringClassRule springClassRule = new SpringClassRule();

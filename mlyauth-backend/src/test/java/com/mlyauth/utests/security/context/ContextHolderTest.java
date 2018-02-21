@@ -1,5 +1,6 @@
 package com.mlyauth.utests.security.context;
 
+import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.AuthenticationSession;
@@ -10,9 +11,13 @@ import com.mlyauth.security.context.ContextHolder;
 import com.mlyauth.security.context.ContextIdGenerator;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.IContextIdGenerator;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -27,11 +32,13 @@ import java.util.HashSet;
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
 import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;
 import static com.mlyauth.constants.ProfileCode.MASTER;
+import static com.mlyauth.constants.ProfileCode.NAVIGATOR;
 import static java.lang.System.currentTimeMillis;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(DataProviderRunner.class)
 public class ContextHolderTest {
 
     private AuthenticationInfo authenticationInfo;
@@ -236,14 +243,25 @@ public class ContextHolderTest {
         assertThat(holder.getProfiles(), hasSize(0));
     }
 
+    @DataProvider
+    public static Object[] profiles() {
+        // @formatter:off
+        return new String[]{
+                MASTER.name(),
+                NAVIGATOR.name()
+        };
+        // @formatter:on
+    }
+
     @Test
-    public void the_context_must_return_the_profiles() {
+    @UseDataProvider("profiles")
+    public void the_context_must_return_the_profiles(String profile) {
         request.setSession(new MockHttpSession());
-        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(MASTER))));
+        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
         final IContext context = holder.newContext(person);
         assertThat(context.getProfiles(), hasSize(1));
-        assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(MASTER));
+        assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
         assertThat(holder.getProfiles(), hasSize(1));
-        assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(MASTER));
+        assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
     }
 }

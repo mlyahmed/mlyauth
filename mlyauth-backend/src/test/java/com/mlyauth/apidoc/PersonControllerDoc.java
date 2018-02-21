@@ -62,7 +62,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
 
         final ResultActions result = mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(person))
-                .with(httpBasic(ROOT_USERNAME, ROOT_PASSWORD))
+                .with(httpBasic(MASTER_EMAIL, MASTER_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
 

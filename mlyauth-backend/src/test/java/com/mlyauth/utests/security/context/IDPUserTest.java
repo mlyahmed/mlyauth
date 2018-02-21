@@ -1,15 +1,20 @@
 package com.mlyauth.utests.security.context;
 
 import com.mlyauth.constants.AuthenticationInfoStatus;
+import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.IContextHolder;
 import com.mlyauth.security.context.IDPUser;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Arrays;
@@ -17,9 +22,11 @@ import java.util.Date;
 import java.util.HashSet;
 
 import static com.mlyauth.constants.ProfileCode.MASTER;
+import static com.mlyauth.constants.ProfileCode.NAVIGATOR;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
+@RunWith(DataProviderRunner.class)
 public class IDPUserTest {
 
     public static final Date PASSED_TIME = new Date(System.currentTimeMillis() - (1000 * 60));
@@ -70,13 +77,24 @@ public class IDPUserTest {
         assertThat(user.isAccountNonLocked(), equalTo(false));
     }
 
+    @DataProvider
+    public static Object[] profiles() {
+        // @formatter:off
+        return new String[]{
+                MASTER.name(),
+                NAVIGATOR.name()
+        };
+        // @formatter:on
+    }
+
     @Test
-    public void the_profiles_must_be_loaded() {
+    @UseDataProvider("profiles")
+    public void the_profiles_must_be_loaded(String profile) {
         authInfo.setExpireAt(FUTURE_TIME);
-        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(MASTER))));
+        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
         IDPUser user = new IDPUser(context);
         assertThat(user.getAuthorities(), notNullValue());
         assertThat(user.getAuthorities(), hasSize(1));
-        assertThat(user.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority(), equalTo(MASTER.name()));
+        assertThat(user.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority(), equalTo(ProfileCode.valueOf(profile).name()));
     }
 }
