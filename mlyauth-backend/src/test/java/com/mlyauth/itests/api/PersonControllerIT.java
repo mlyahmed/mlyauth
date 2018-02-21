@@ -67,6 +67,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.[0].code", equalTo("PERSON_ALREADY_EXISTS")));
     }
 
+
     private void and_he_is_well_created(ResultActions resultActions, String... properties) throws Exception {
         final Person person = personDAO.findByEmail(properties[3]);
         assertThat(person, notNullValue());

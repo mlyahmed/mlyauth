@@ -37,6 +37,10 @@ public class Person  implements Serializable {
     @JoinTable(name = "PERSON_APPLICATION", joinColumns = @JoinColumn(name = "PERSON_ID"), inverseJoinColumns = @JoinColumn(name = "APPLICATION_ID"))
     private Set<Application> applications;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "PERSON_PROFILE", joinColumns = @JoinColumn(name = "PERSON_ID"), inverseJoinColumns = @JoinColumn(name = "PROFILE_CODE"))
+    private Set<Profile> profiles;
+
     public static Person newInstance() {
         return new Person();
     }
@@ -103,5 +107,13 @@ public class Person  implements Serializable {
     public Person setApplications(Set<Application> applications) {
         this.applications = applications;
         return this;
+    }
+
+    public Set<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(Set<Profile> profiles) {
+        this.profiles = profiles;
     }
 }

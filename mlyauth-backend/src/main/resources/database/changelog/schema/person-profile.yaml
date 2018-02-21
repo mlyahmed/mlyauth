@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: PERSON_PROFILE
+            columns:
+              - column:
+                  name: PERSON_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PROFILE_CODE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: PERSON_PROFILE
+            baseColumnNames: PERSON_ID
+            referencedTableName: PERSON
+            referencedColumnNames: ID
+            constraintName: person_profile_fk_person_id
+        - addForeignKeyConstraint:
+            baseTableName: PERSON_PROFILE
+            baseColumnNames: PROFILE_CODE
+            referencedTableName: PROFILE
+            referencedColumnNames: CODE
+            constraintName: person_profile_fk_profile_code
+        - addUniqueConstraint:
+            tableName: PERSON_PROFILE
+            columnNames: PERSON_ID, PROFILE_CODE
+            constraintName: person_profile_uniq

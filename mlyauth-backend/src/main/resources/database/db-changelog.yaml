@@ -10,7 +10,11 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/authentication-session.yaml
   - include:
+      file: database/changelog/schema/profile.yaml
+  - include:
       file: database/changelog/schema/person.yaml
+  - include:
+      file: database/changelog/schema/person-profile.yaml
   - include:
       file: database/changelog/schema/application.yaml
   - include:
@@ -26,6 +30,8 @@ databaseChangeLog:
       file: database/changelog/data/init/attribute-catalog.sql
   - include:
       file: database/changelog/data/init/auth-aspect.sql
+  - include:
+      file: database/changelog/data/init/profile.sql
   - include:
       file: database/changelog/data/init/person.sql
   - include:
