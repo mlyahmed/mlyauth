@@ -17,13 +17,17 @@ public class Profile {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    public static Profile newInstance() {
+        return new Profile();
+    }
 
     public ProfileCode getCode() {
         return code;
     }
 
-    public void setCode(ProfileCode code) {
+    public Profile setCode(ProfileCode code) {
         this.code = code;
+        return this;
     }
 
     public String getDescription() {

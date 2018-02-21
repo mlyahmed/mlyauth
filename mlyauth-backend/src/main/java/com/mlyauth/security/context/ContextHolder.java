@@ -4,6 +4,7 @@ import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -81,6 +82,11 @@ public class ContextHolder implements IContextHolder {
     @Override
     public String getPassword() {
         return getAuthenticationInfo() != null ? getAuthenticationInfo().getPassword() : null;
+    }
+
+    @Override
+    public Set<Profile> getProfiles() {
+        return getContext() != null ? getContext().getProfiles() : Collections.emptySet();
     }
 
     @Override
@@ -168,6 +174,11 @@ public class ContextHolder implements IContextHolder {
         @Override
         public String getPassword() {
             return person.getAuthenticationInfo().getPassword();
+        }
+
+        @Override
+        public Set<Profile> getProfiles() {
+            return person.getProfiles() != null ? person.getProfiles() : Collections.emptySet();
         }
 
         @Override

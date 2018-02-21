@@ -3,9 +3,11 @@ package com.mlyauth.security.context;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Set;
 
 public interface IContext {
 
@@ -22,6 +24,8 @@ public interface IContext {
     String getLogin();
 
     String getPassword();
+
+    Set<Profile> getProfiles();
 
     Map<String, String> getAttributes();
 

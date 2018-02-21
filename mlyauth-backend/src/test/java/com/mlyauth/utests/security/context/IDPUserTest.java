@@ -3,16 +3,21 @@ package com.mlyauth.utests.security.context;
 import com.mlyauth.constants.AuthenticationInfoStatus;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.IContextHolder;
 import com.mlyauth.security.context.IDPUser;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
-import static org.hamcrest.Matchers.equalTo;
+import static com.mlyauth.constants.ProfileCode.MASTER;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class IDPUserTest {
@@ -63,5 +68,15 @@ public class IDPUserTest {
         authInfo.setStatus(AuthenticationInfoStatus.LOCKED);
         IDPUser user = new IDPUser(context);
         assertThat(user.isAccountNonLocked(), equalTo(false));
+    }
+
+    @Test
+    public void the_profiles_must_be_loaded() {
+        authInfo.setExpireAt(FUTURE_TIME);
+        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(MASTER))));
+        IDPUser user = new IDPUser(context);
+        assertThat(user.getAuthorities(), notNullValue());
+        assertThat(user.getAuthorities(), hasSize(1));
+        assertThat(user.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority(), equalTo(MASTER.name()));
     }
 }

@@ -1,14 +1,14 @@
 package com.mlyauth.security.context;
 
 import com.mlyauth.domain.Person;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Date;
-import java.util.LinkedList;
 
 import static com.mlyauth.constants.AuthenticationInfoStatus.ACTIVE;
 import static com.mlyauth.constants.AuthenticationInfoStatus.LOCKED;
+import static java.util.stream.Collectors.toSet;
 
 public class IDPUser extends User {
 
@@ -21,7 +21,8 @@ public class IDPUser extends User {
                 context.getAuthenticationInfo().getExpireAt().after(new Date()),
                 true,
                 context.getAuthenticationInfo().getStatus() != LOCKED,
-                new LinkedList<GrantedAuthority>());
+                context.getProfiles().stream().map(profile -> new SimpleGrantedAuthority(profile.getCode().name())).collect(toSet()));
+
         this.context = context;
     }
 

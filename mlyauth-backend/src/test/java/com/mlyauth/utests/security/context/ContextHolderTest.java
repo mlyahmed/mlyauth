@@ -4,6 +4,7 @@ import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 import com.mlyauth.mocks.dao.MockAuthenticationSessionDAO;
 import com.mlyauth.security.context.ContextHolder;
 import com.mlyauth.security.context.ContextIdGenerator;
@@ -20,8 +21,12 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
 import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;
+import static com.mlyauth.constants.ProfileCode.MASTER;
 import static java.lang.System.currentTimeMillis;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -221,5 +226,24 @@ public class ContextHolderTest {
         request.setSession(new MockHttpSession());
         final IContext context2 = holder.newContext(person);
         assertThat(context1.getId(), not(equalTo(context2.getId())));
+    }
+
+    @Test
+    public void when_there_is_no_profile_then_the_context_must_return_empty_collection() {
+        request.setSession(new MockHttpSession());
+        final IContext context = holder.newContext(person);
+        assertThat(context.getProfiles(), hasSize(0));
+        assertThat(holder.getProfiles(), hasSize(0));
+    }
+
+    @Test
+    public void the_context_must_return_the_profiles() {
+        request.setSession(new MockHttpSession());
+        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(MASTER))));
+        final IContext context = holder.newContext(person);
+        assertThat(context.getProfiles(), hasSize(1));
+        assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(MASTER));
+        assertThat(holder.getProfiles(), hasSize(1));
+        assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(MASTER));
     }
 }

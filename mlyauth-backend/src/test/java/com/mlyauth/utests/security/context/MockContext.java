@@ -3,11 +3,13 @@ package com.mlyauth.utests.security.context;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 import com.mlyauth.security.context.IContext;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MockContext implements IContext {
 
@@ -45,6 +47,11 @@ public class MockContext implements IContext {
 
     @Override
     public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public Set<Profile> getProfiles() {
         return null;
     }
 
