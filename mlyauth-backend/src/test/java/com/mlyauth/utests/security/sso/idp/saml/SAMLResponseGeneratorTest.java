@@ -233,7 +233,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     private void given_application_credentials() throws Exception {
-        credentialPair = KeysForTests.generateCredential();
+        credentialPair = KeysForTests.generateRSACredential();
         encodedCertificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
     }
 

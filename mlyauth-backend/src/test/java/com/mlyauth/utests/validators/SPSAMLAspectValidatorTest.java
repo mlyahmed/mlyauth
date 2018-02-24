@@ -158,7 +158,7 @@ public class SPSAMLAspectValidatorTest {
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
                 .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
-        final Pair<PrivateKey, X509Certificate> credentialPair = KeysForTests.generateCredential();
+        final Pair<PrivateKey, X509Certificate> credentialPair = KeysForTests.generateRSACredential();
         final String certificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
         certificateAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(encryptionCertificateId)
