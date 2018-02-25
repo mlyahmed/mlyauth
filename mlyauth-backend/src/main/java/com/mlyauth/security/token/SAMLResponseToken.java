@@ -1,6 +1,7 @@
 package com.mlyauth.security.token;
 
 import com.mlyauth.constants.*;
+import com.mlyauth.domain.Application;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
@@ -15,15 +16,29 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.constants.TokenStatus.FORGED;
+import static com.mlyauth.constants.TokenVerdict.FAIL;
+import static com.mlyauth.constants.TokenVerdict.SUCCESS;
+import static org.opensaml.saml2.core.StatusCode.AUTHN_FAILED_URI;
+import static org.opensaml.saml2.core.StatusCode.SUCCESS_URI;
+
 public class SAMLResponseToken implements IDPToken<Response> {
 
-    public static final String SCOPES_ATTR = "scopes";
     public static final String BP_ATTR = "bp";
+    public static final String SCOPES_ATTR = "scopes";
+    public static final String DELEGATOR_ATTR = "delegator";
+    public static final String DELEGATE_ATTR = "delegate";
+    public static final String STATE_ATTR = "state";
+
     private final Response response;
     private final Assertion assertion;
     private final Subject subject;
+    private final Audience audience;
     private final HashMap<String, String> attributes;
+
     private TokenStatus status;
+
+
     @Autowired
     private SAMLHelper samlHelper = new SAMLHelper();
 
@@ -31,12 +46,49 @@ public class SAMLResponseToken implements IDPToken<Response> {
         response = samlHelper.buildSAMLObject(Response.class);
         assertion = samlHelper.buildSAMLObject(Assertion.class);
         subject = samlHelper.buildSAMLObject(Subject.class);
-
+        audience = samlHelper.buildSAMLObject(Audience.class);
         attributes = new HashMap<>();
-        subject.setNameID(newSubjectNameID());
-        assertion.setSubject(subject);
-        response.getAssertions().add(assertion);
+        initAssertion();
+        initSubject();
+        initAudience();
+        initResponse();
         status = TokenStatus.CREATED;
+    }
+
+    private void initAssertion() {
+        final AuthnStatement authnStatement = samlHelper.buildSAMLObject(AuthnStatement.class);
+        final AuthnContext authnContext = samlHelper.buildSAMLObject(AuthnContext.class);
+        AuthnContextClassRef authnContextClassRef = samlHelper.buildSAMLObject(AuthnContextClassRef.class);
+        authnContextClassRef.setAuthnContextClassRef(AuthnContext.PASSWORD_AUTHN_CTX);
+        authnContext.setAuthnContextClassRef(authnContextClassRef);
+        authnStatement.setAuthnContext(authnContext);
+        assertion.getAuthnStatements().add(authnStatement);
+        assertion.setIssuer(samlHelper.buildSAMLObject(Issuer.class));
+    }
+
+    private void initAudience() {
+        final Conditions conditions = samlHelper.buildSAMLObject(Conditions.class);
+        AudienceRestriction audienceRestriction = samlHelper.buildSAMLObject(AudienceRestriction.class);
+        audienceRestriction.getAudiences().add(audience);
+        conditions.getAudienceRestrictions().add(audienceRestriction);
+        assertion.setConditions(conditions);
+    }
+
+    private void initSubject() {
+        subject.setNameID(newSubjectNameID());
+        final SubjectConfirmation subjectConfirmation = samlHelper.buildSAMLObject(SubjectConfirmation.class);
+        final SubjectConfirmationData subjectConfirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
+        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+        subject.getSubjectConfirmations().add(subjectConfirmation);
+        assertion.setSubject(subject);
+    }
+
+    private void initResponse() {
+        response.setIssuer(samlHelper.buildSAMLObject(Issuer.class));
+        response.getAssertions().add(assertion);
+        Status responseSatus = samlHelper.buildSAMLObject(Status.class);
+        responseSatus.setStatusCode(samlHelper.buildSAMLObject(StatusCode.class));
+        response.setStatus(responseSatus);
     }
 
     @Override
@@ -47,7 +99,8 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Override
     public void setId(String id) {
         response.setID(id);
-        status = TokenStatus.FORGED;
+        assertion.setID(id);
+        status = FORGED;
     }
 
     @Override
@@ -56,9 +109,10 @@ public class SAMLResponseToken implements IDPToken<Response> {
     }
 
     @Override
-    public void setSubject(String subject) {
-        assertion.getSubject().getNameID().setValue(subject);
-        status = TokenStatus.FORGED;
+    public void setSubject(String value) {
+        subject.getNameID().setValue(value);
+        subject.getSubjectConfirmations().get(0).setMethod(SubjectConfirmation.METHOD_BEARER);
+        status = FORGED;
     }
 
     @Override
@@ -71,7 +125,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Override
     public void setScopes(Set<TokenScope> scopes) {
         attributes.put(SCOPES_ATTR, scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")));
-        status = TokenStatus.FORGED;
+        status = FORGED;
     }
 
     @Override
@@ -82,67 +136,75 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Override
     public void setBP(String bp) {
         attributes.put(BP_ATTR, bp);
-        status = TokenStatus.FORGED;
+        status = FORGED;
     }
 
     @Override
     public String getState() {
-        return null;
+        return attributes.get(STATE_ATTR);
     }
 
     @Override
     public void setState(String state) {
-
+        attributes.put(STATE_ATTR, state);
+        status = FORGED;
     }
 
     @Override
     public String getIssuer() {
-        return null;
+        return response.getIssuer() != null ? response.getIssuer().getValue() : null;
     }
 
     @Override
     public void setIssuer(String issuerURI) {
-
+        response.getIssuer().setValue(issuerURI);
+        assertion.getIssuer().setValue(issuerURI);
+        status = FORGED;
     }
 
     @Override
     public String getAudience() {
-        return null;
+        return audience.getAudienceURI();
     }
 
     @Override
     public void setAudience(String audienceURI) {
-
+        audience.setAudienceURI(audienceURI);
+        status = FORGED;
     }
 
     @Override
     public String getDelegator() {
-        return null;
+        return attributes.get(DELEGATOR_ATTR);
     }
 
     @Override
     public void setDelegator(String delegatorID) {
-
+        attributes.put(DELEGATOR_ATTR, delegatorID);
+        status = FORGED;
     }
 
     @Override
     public String getDelegate() {
-        return null;
+        return attributes.get(DELEGATE_ATTR);
     }
 
     @Override
     public void setDelegate(String delegateURI) {
-
+        attributes.put(DELEGATE_ATTR, delegateURI);
+        status = FORGED;
     }
 
     @Override
     public TokenVerdict getVerdict() {
-        return null;
+        if (StringUtils.isBlank(response.getStatus().getStatusCode().getValue())) return null;
+        return SUCCESS_URI.equalsIgnoreCase(response.getStatus().getStatusCode().getValue()) ? SUCCESS : FAIL;
     }
 
     @Override
     public void setVerdict(TokenVerdict verdict) {
-
+        response.getStatus().getStatusCode().setValue((SUCCESS == verdict) ? SUCCESS_URI : AUTHN_FAILED_URI);
+        status = FORGED;
     }
 
     @Override
@@ -182,6 +244,11 @@ public class SAMLResponseToken implements IDPToken<Response> {
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }
+    }
+
+    @Override
+    public Application getApplication() {
+        return null;
     }
 
     @Override
