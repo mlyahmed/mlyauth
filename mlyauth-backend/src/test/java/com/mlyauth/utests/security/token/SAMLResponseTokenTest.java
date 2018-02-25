@@ -1,6 +1,7 @@
 package com.mlyauth.utests.security.token;
 
 import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenType;
 import com.mlyauth.security.sso.SAMLHelper;
@@ -17,10 +18,10 @@ import org.opensaml.xml.ConfigurationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Set;
 
-import static com.mlyauth.constants.TokenScope.PERSON;
-import static com.mlyauth.constants.TokenScope.POLICY;
+import static com.mlyauth.constants.TokenScope.*;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -29,17 +30,6 @@ public class SAMLResponseTokenTest {
 
     private SAMLResponseToken token;
     private SAMLHelper samlHelper;
-
-    @DataProvider
-    public static String[] subjects() {
-        // @formatter:off
-        return new String[]{
-                "BA0000000000855",
-                "BA0000000000856",
-                "125485"
-        };
-        // @formatter:on
-    }
 
     @Before
     public void setup() throws ConfigurationException {
@@ -87,6 +77,17 @@ public class SAMLResponseTokenTest {
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
+    @DataProvider
+    public static String[] subjects() {
+        // @formatter:off
+        return new String[]{
+                "BA0000000000855",
+                "BA0000000000856",
+                "125485"
+        };
+        // @formatter:on
+    }
+
     @Test
     @UseDataProvider("subjects")
     public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
@@ -96,10 +97,27 @@ public class SAMLResponseTokenTest {
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
+    @DataProvider
+    public static Object[][] scopes() {
+        // @formatter:off
+        return new Object[][]{
+                {PERSON.name(), POLICY.name(), CLAIM.name()},
+                {PROPOSAL.name(), POLICY.name(), PERSON.name()},
+                {POLICY.name(), CLAIM.name(), PERSON.name(), PROPOSAL.name()},
+                {POLICY.name()},
+                {CLAIM.name()},
+        };
+        // @formatter:on
+    }
+
     @Test
-    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set() {
-        token.setScopes(new HashSet<>(Arrays.asList(PERSON, POLICY)));
-        assertThat(token.getScopes(), equalTo(new HashSet<>(Arrays.asList(PERSON, POLICY))));
+    @UseDataProvider("scopes")
+    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopes) {
+        final Set<TokenScope> scopesSet = Arrays.stream(scopes).map(TokenScope::valueOf).collect(toSet());
+        token.setScopes(scopesSet);
+        assertThat(token.getScopes(), equalTo(scopesSet));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
+
+    //public void when_create_a_fresh_token_and_set_BP_then_it_must_be_set
 }
