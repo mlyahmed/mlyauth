@@ -5,15 +5,15 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.opensaml.saml2.core.*;
 import org.opensaml.xml.util.XMLObjectHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenStatus.FORGED;
@@ -62,8 +62,10 @@ public class SAMLResponseToken implements IDPToken<Response> {
         authnContextClassRef.setAuthnContextClassRef(AuthnContext.PASSWORD_AUTHN_CTX);
         authnContext.setAuthnContextClassRef(authnContextClassRef);
         authnStatement.setAuthnContext(authnContext);
+        authnStatement.setAuthnInstant(DateTime.now());
         assertion.getAuthnStatements().add(authnStatement);
         assertion.setIssuer(samlHelper.buildSAMLObject(Issuer.class));
+        assertion.setIssueInstant(DateTime.now());
     }
 
     private void initAudience() {
@@ -71,6 +73,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
         AudienceRestriction audienceRestriction = samlHelper.buildSAMLObject(AudienceRestriction.class);
         audienceRestriction.getAudiences().add(audience);
         conditions.getAudienceRestrictions().add(audienceRestriction);
+        conditions.setNotOnOrAfter(DateTime.now().plusMinutes(2));
         assertion.setConditions(conditions);
     }
 
@@ -78,6 +81,8 @@ public class SAMLResponseToken implements IDPToken<Response> {
         subject.setNameID(newSubjectNameID());
         final SubjectConfirmation subjectConfirmation = samlHelper.buildSAMLObject(SubjectConfirmation.class);
         final SubjectConfirmationData subjectConfirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
+        subjectConfirmationData.setNotOnOrAfter(DateTime.now().plusMinutes(2));
+        subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
         subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
         subject.getSubjectConfirmations().add(subjectConfirmation);
         assertion.setSubject(subject);
@@ -86,9 +91,10 @@ public class SAMLResponseToken implements IDPToken<Response> {
     private void initResponse() {
         response.setIssuer(samlHelper.buildSAMLObject(Issuer.class));
         response.getAssertions().add(assertion);
-        Status responseSatus = samlHelper.buildSAMLObject(Status.class);
-        responseSatus.setStatusCode(samlHelper.buildSAMLObject(StatusCode.class));
-        response.setStatus(responseSatus);
+        Status responseStatus = samlHelper.buildSAMLObject(Status.class);
+        responseStatus.setStatusCode(samlHelper.buildSAMLObject(StatusCode.class));
+        response.setStatus(responseStatus);
+        response.setIssueInstant(DateTime.now());
     }
 
     @Override
@@ -111,7 +117,6 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Override
     public void setSubject(String value) {
         subject.getNameID().setValue(value);
-        subject.getSubjectConfirmations().get(0).setMethod(SubjectConfirmation.METHOD_BEARER);
         status = FORGED;
     }
 
@@ -209,17 +214,20 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public LocalDateTime getExpiryTime() {
-        return null;
+        final Date date = assertion.getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault()).toDate();
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     @Override
     public LocalDateTime getEffectiveTime() {
-        return null;
+        final Date date = assertion.getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault()).toDate();
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     @Override
     public LocalDateTime getIssuanceTime() {
-        return null;
+        final Date date = response.getIssueInstant().toDateTime(DateTimeZone.getDefault()).toDate();
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     @Override

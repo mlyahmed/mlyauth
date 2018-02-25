@@ -7,6 +7,8 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.apache.commons.lang.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.xml.ConfigurationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Set;
@@ -26,9 +29,10 @@ import static com.mlyauth.constants.TokenScope.*;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.opensaml.saml2.core.NameIDType.TRANSIENT;
 
 @RunWith(DataProviderRunner.class)
-public class SAMLResponseTokenTest {
+public class SAMLFreshResponseTokenTest {
 
     private SAMLResponseToken token;
     private SAMLHelper samlHelper;
@@ -78,6 +82,44 @@ public class SAMLResponseTokenTest {
     }
 
     @Test
+    public void when_create_a_fresh_token_then_it_is_effective_now() {
+        assertThat(token.getEffectiveTime(), notNullValue());
+        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnInstant(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault()).isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_it_issued_now() {
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getIssueInstant(), notNullValue());
+        assertThat(token.getNative().getIssueInstant().toDateTime(DateTimeZone.getDefault()).isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getIssueInstant().toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+    }
+
+
+    @Test
+    public void when_create_a_fresh_token_then_it_expires_in_2_minutes() {
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(token.getNative().getAssertions()
+                .get(0).getSubject().getSubjectConfirmations()
+                .get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
+        assertThat(token.getNative().getAssertions()
+                .get(0).getSubject().getSubjectConfirmations()
+                .get(0).getSubjectConfirmationData().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
+                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(token.getNative().getAssertions()
+                .get(0).getConditions().getNotOnOrAfter(), notNullValue());
+        assertThat(token.getNative().getAssertions()
+                .get(0).getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
+                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+    }
+
+
+    @Test
     public void when_get_native_then_return_a_copy() {
         final Response response = token.getNative();
         response.setID(samlHelper.generateRandomId());
@@ -121,9 +163,6 @@ public class SAMLResponseTokenTest {
         assertThat(token.getDelegator(), nullValue());
         assertThat(token.getDelegate(), nullValue());
         assertThat(token.getVerdict(), nullValue());
-        assertThat(token.getExpiryTime(), nullValue());
-        assertThat(token.getEffectiveTime(), nullValue());
-        assertThat(token.getIssuanceTime(), nullValue());
         assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
         assertThat(token.getType(), equalTo(TokenType.ACCESS));
         assertThat(token.getStatus(), equalTo(TokenStatus.CREATED));
@@ -147,6 +186,7 @@ public class SAMLResponseTokenTest {
         assertThat(token.getNative().getAssertions(), hasSize(1));
         assertThat(token.getNative().getAssertions().get(0).getSubject(), notNullValue());
         assertThat(token.getNative().getAssertions().get(0).getSubject().getNameID().getValue(), equalTo(subject));
+        assertThat(token.getNative().getAssertions().get(0).getSubject().getNameID().getFormat(), equalTo(TRANSIENT));
         assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations(), hasSize(1));
         assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations().get(0).getMethod(), equalTo(SubjectConfirmation.METHOD_BEARER));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));

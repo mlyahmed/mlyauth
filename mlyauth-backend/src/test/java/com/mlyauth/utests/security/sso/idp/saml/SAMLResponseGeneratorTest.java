@@ -113,7 +113,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_generate_it() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_generate_it() {
         when_generate_a_response();
         assertThat(response, notNullValue());
         assertThat(response.getID(), notNullValue());
@@ -227,7 +227,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     @Test(expected = IDPException.class)
-    public void when_the_sso_url_is_absent_then_error() throws Exception {
+    public void when_the_sso_url_is_absent_then_error() {
         Mockito.doThrow(IDPException.newInstance()).when(spsamlAspectValidator).validate(application);
         when_generate_a_response();
     }
@@ -268,7 +268,7 @@ public class SAMLResponseGeneratorTest {
         appAspectAttrobutes.add(ssoEncryptionCertificateAttribute);
     }
 
-    private void when_generate_a_response() throws Exception {
+    private void when_generate_a_response() {
         response = generator.generate(application);
     }
 
