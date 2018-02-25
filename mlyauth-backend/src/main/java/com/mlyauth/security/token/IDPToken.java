@@ -5,7 +5,7 @@ import com.mlyauth.constants.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-public interface IIDPToken<N> {
+public interface IDPToken<N> {
 
     String getId();
 
@@ -21,7 +21,7 @@ public interface IIDPToken<N> {
 
     String getBP();
 
-    void setBP();
+    void setBP(String bp);
 
     String getState();
 

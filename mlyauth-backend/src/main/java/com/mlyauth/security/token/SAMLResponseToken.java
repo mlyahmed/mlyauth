@@ -15,9 +15,10 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SAMLResponseToken implements IIDPToken<Response> {
+public class SAMLResponseToken implements IDPToken<Response> {
 
     public static final String SCOPES_ATTR = "scopes";
+    public static final String BP_ATTR = "bp";
     private final Response response;
     private final Assertion assertion;
     private final Subject subject;
@@ -34,6 +35,7 @@ public class SAMLResponseToken implements IIDPToken<Response> {
         attributes = new HashMap<>();
         subject.setNameID(newSubjectNameID());
         assertion.setSubject(subject);
+        response.getAssertions().add(assertion);
         status = TokenStatus.CREATED;
     }
 
@@ -74,12 +76,13 @@ public class SAMLResponseToken implements IIDPToken<Response> {
 
     @Override
     public String getBP() {
-        return null;
+        return attributes.get(BP_ATTR);
     }
 
     @Override
-    public void setBP() {
-
+    public void setBP(String bp) {
+        attributes.put(BP_ATTR, bp);
+        status = TokenStatus.FORGED;
     }
 
     @Override

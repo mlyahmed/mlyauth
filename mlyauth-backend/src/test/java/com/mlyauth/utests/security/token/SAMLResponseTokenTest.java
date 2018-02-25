@@ -39,9 +39,22 @@ public class SAMLResponseTokenTest {
         ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
     }
 
+    @DataProvider
+    public static String[] bps() {
+        // @formatter:off
+        return new String[]{
+                "01",
+                "98",
+                "235"
+        };
+        // @formatter:on
+    }
+
     @Test
     public void when_create_fresh_response_then_token_must_be_fresh() {
         assertThat(token.getNative(), notNullValue());
+        assertThat(token.getNative().getAssertions(), hasSize(1));
+        assertThat(token.getNative().getAssertions().get(0).getSubject(), notNullValue());
         assertThat(token.getId(), nullValue());
         assertThat(token.getSubject(), nullValue());
         assertThat(token.getScopes(), empty());
@@ -58,14 +71,6 @@ public class SAMLResponseTokenTest {
         assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
         assertThat(token.getType(), equalTo(TokenType.ACCESS));
         assertThat(token.getStatus(), equalTo(TokenStatus.CREATED));
-    }
-
-    @Test
-    public void when_get_native_then_return_a_copy() {
-        final Response response = token.getNative();
-        response.setID(samlHelper.generateRandomId());
-        assertThat(token.getId(), nullValue());
-        assertThat(token.getNative().getID(), nullValue());
     }
 
     @Test
@@ -89,12 +94,13 @@ public class SAMLResponseTokenTest {
     }
 
     @Test
-    @UseDataProvider("subjects")
-    public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
-        token.setSubject(subject);
-        assertThat(token.getSubject(), equalTo(subject));
-        assertThat(token.getNative().getAssertions(), empty());
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    public void when_get_native_then_return_a_copy() {
+        final Response response = token.getNative();
+        response.setID(samlHelper.generateRandomId());
+        response.getAssertions().clear();
+        assertThat(token.getId(), nullValue());
+        assertThat(token.getNative().getID(), nullValue());
+        assertThat(token.getNative().getAssertions(), hasSize(1));
     }
 
     @DataProvider
@@ -119,5 +125,28 @@ public class SAMLResponseTokenTest {
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
-    //public void when_create_a_fresh_token_and_set_BP_then_it_must_be_set
+    @Test
+    @UseDataProvider("subjects")
+    public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
+        token.setSubject(subject);
+        assertThat(token.getSubject(), equalTo(subject));
+        assertThat(token.getNative().getAssertions(), hasSize(1));
+        assertThat(token.getNative().getAssertions().get(0).getSubject(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getSubject().getNameID().getValue(), equalTo(subject));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    @UseDataProvider("bps")
+    public void when_create_a_fresh_token_and_set_BP_then_it_must_be_set(String bp) {
+        token.setBP(bp);
+        assertThat(token.getBP(), equalTo(bp));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    public void when_create_a_fresh_token_and_set_BP_then_it_must_be_set(String bp) {
+        token.setBP(bp);
+        assertThat(token.getBP(), equalTo(bp));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
 }
