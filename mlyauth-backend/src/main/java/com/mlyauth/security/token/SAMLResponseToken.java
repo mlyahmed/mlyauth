@@ -10,6 +10,7 @@ import org.joda.time.DateTimeZone;
 import org.opensaml.saml2.core.*;
 import org.opensaml.xml.util.XMLObjectHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -30,6 +31,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     public static final String DELEGATE_ATTR = "delegate";
     public static final String STATE_ATTR = "state";
 
+    private final Application application;
     private final Response response;
     private final Assertion assertion;
     private final Subject subject;
@@ -42,12 +44,16 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Autowired
     private SAMLHelper samlHelper = new SAMLHelper();
 
-    public SAMLResponseToken() {
+    public SAMLResponseToken(final Application app) {
+        application = app;
         response = samlHelper.buildSAMLObject(Response.class);
         assertion = samlHelper.buildSAMLObject(Assertion.class);
         subject = samlHelper.buildSAMLObject(Subject.class);
         audience = samlHelper.buildSAMLObject(Audience.class);
         attributes = new HashMap<>();
+
+        Assert.notNull(application, "The app argument is mandatory !");
+
         initAssertion();
         initSubject();
         initAudience();

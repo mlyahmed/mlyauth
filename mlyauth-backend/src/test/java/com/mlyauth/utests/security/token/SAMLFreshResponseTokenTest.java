@@ -1,6 +1,7 @@
 package com.mlyauth.utests.security.token;
 
 import com.mlyauth.constants.*;
+import com.mlyauth.domain.Application;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.SAMLResponseToken;
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -37,14 +38,6 @@ public class SAMLFreshResponseTokenTest {
     private SAMLResponseToken token;
     private SAMLHelper samlHelper;
 
-    @Before
-    public void setup() throws ConfigurationException {
-        DefaultBootstrap.bootstrap();
-        samlHelper = new SAMLHelper();
-        token = new SAMLResponseToken();
-        ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
-    }
-
     @DataProvider
     public static String[] subjects() {
         // @formatter:off
@@ -61,6 +54,19 @@ public class SAMLFreshResponseTokenTest {
         return RandomStringUtils.random(length > 0 ? length : 20, true, true);
     }
 
+    @Before
+    public void setup() throws ConfigurationException {
+        DefaultBootstrap.bootstrap();
+        samlHelper = new SAMLHelper();
+        token = new SAMLResponseToken(Application.newInstance());
+        ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_application_is_null_the_error() {
+        new SAMLResponseToken(null);
+    }
+
     @Test
     public void when_create_fresh_response_then_token_native_must_be_fresh() {
         assertThat(token.getNative(), notNullValue());
@@ -71,32 +77,29 @@ public class SAMLFreshResponseTokenTest {
         assertThat(token.getNative().getAssertions().get(0).getIssuer(), notNullValue());
         assertThat(token.getNative().getAssertions().get(0).getSubject(), notNullValue());
         assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
+                .get(0).getSubjectConfirmationData(), notNullValue());
         assertThat(token.getNative().getAssertions().get(0).getConditions(), notNullValue());
         assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions().get(0).getAudiences(), hasSize(1));
+        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions()
+                .get(0).getAudiences(), hasSize(1));
         assertThat(token.getNative().getAssertions().get(0).getAuthnStatements(), hasSize(1));
         assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext().getAuthnContextClassRef(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef(), equalTo(AuthnContext.PASSWORD_AUTHN_CTX));
+        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext()
+                .getAuthnContextClassRef(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext()
+                .getAuthnContextClassRef().getAuthnContextClassRef(), equalTo(AuthnContext.PASSWORD_AUTHN_CTX));
     }
 
     @Test
     public void when_create_a_fresh_token_then_it_is_effective_now() {
         assertThat(token.getEffectiveTime(), notNullValue());
         assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnInstant(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault()).isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
-    }
-
-    @Test
-    public void when_create_a_fresh_token_it_issued_now() {
-        assertThat(token.getIssuanceTime(), notNullValue());
-        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getIssueInstant(), notNullValue());
-        assertThat(token.getNative().getIssueInstant().toDateTime(DateTimeZone.getDefault()).isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getIssueInstant().toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements()
+                .get(0).getAuthnInstant(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements()
+                .get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault())
+                .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
     }
 
 
@@ -179,6 +182,18 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    public void when_create_a_fresh_token_it_issued_now() {
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getIssueInstant(), notNullValue());
+        assertThat(token.getNative().getIssueInstant().toDateTime(DateTimeZone.getDefault())
+                .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getIssueInstant()
+                .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+    }
+
+    @Test
     @UseDataProvider("subjects")
     public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
         token.setSubject(subject);
@@ -188,7 +203,8 @@ public class SAMLFreshResponseTokenTest {
         assertThat(token.getNative().getAssertions().get(0).getSubject().getNameID().getValue(), equalTo(subject));
         assertThat(token.getNative().getAssertions().get(0).getSubject().getNameID().getFormat(), equalTo(TRANSIENT));
         assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations().get(0).getMethod(), equalTo(SubjectConfirmation.METHOD_BEARER));
+        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
+                .get(0).getMethod(), equalTo(SubjectConfirmation.METHOD_BEARER));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
@@ -226,7 +242,8 @@ public class SAMLFreshResponseTokenTest {
         token.setAudience(audience);
         assertThat(token.getAudience(), equalTo(audience));
         assertThat(token.getNative().getAssertions().get(0).getConditions(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI(), equalTo(audience));
+        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions()
+                .get(0).getAudiences().get(0).getAudienceURI(), equalTo(audience));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
