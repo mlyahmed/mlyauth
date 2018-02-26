@@ -2,6 +2,7 @@ package com.mlyauth.security.sso;
 
 import com.mlyauth.exception.IDPSAMLErrorException;
 import org.opensaml.Configuration;
+import org.opensaml.common.SignableSAMLObject;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
@@ -12,7 +13,10 @@ import org.opensaml.saml2.encryption.Encrypter;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.encryption.*;
+import org.opensaml.xml.encryption.EncryptionConstants;
+import org.opensaml.xml.encryption.EncryptionParameters;
+import org.opensaml.xml.encryption.InlineEncryptedKeyResolver;
+import org.opensaml.xml.encryption.KeyEncryptionParameters;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
@@ -22,6 +26,9 @@ import org.opensaml.xml.schema.impl.XSStringBuilder;
 import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.security.keyinfo.StaticKeyInfoCredentialResolver;
 import org.opensaml.xml.security.x509.BasicX509Credential;
+import org.opensaml.xml.signature.Signature;
+import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.Signer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +45,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
@@ -107,29 +113,51 @@ public class SAMLHelper {
         }
     }
 
-    public BasicX509Credential toBasicX509Credential(String encodedCertificate) throws CertificateException {
+    public BasicX509Credential toBasicX509Credential(String encodedCertificate) {
         BasicX509Credential credential = new BasicX509Credential();
         credential.setEntityCertificate(toX509Certificate(encodedCertificate));
         return credential;
     }
 
 
-    public Assertion decryptAssertion(EncryptedAssertion encryptedAssertion, Credential credential) throws DecryptionException {
-        StaticKeyInfoCredentialResolver keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(credential);
-        Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());
-        decrypter.setRootInNewDocument(true);
-        return decrypter.decrypt(encryptedAssertion);
+    public Assertion decryptAssertion(EncryptedAssertion encryptedAssertion, Credential credential) {
+        try {
+            StaticKeyInfoCredentialResolver keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(credential);
+            Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());
+            decrypter.setRootInNewDocument(true);
+            return decrypter.decrypt(encryptedAssertion);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
-    public EncryptedAssertion encryptAssertion(Assertion assertion, Credential credential) throws EncryptionException {
-        EncryptionParameters encryptionParameters = new EncryptionParameters();
-        encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
-        KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
-        keyEncryptionParameters.setEncryptionCredential(credential);
-        keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
-        Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
-        encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
-        return encrypter.encrypt(assertion);
+    public EncryptedAssertion encryptAssertion(Assertion assertion, Credential credential) {
+        try {
+            EncryptionParameters encryptionParameters = new EncryptionParameters();
+            encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+            KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
+            keyEncryptionParameters.setEncryptionCredential(credential);
+            keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
+            Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
+            encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
+            return encrypter.encrypt(assertion);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
+
+    public void signObject(SignableSAMLObject object, Credential credential) {
+        try {
+            Signature signature = this.buildSAMLObject(Signature.class);
+            signature.setSigningCredential(credential);
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
+            signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+            object.setSignature(signature);
+            org.opensaml.xml.Configuration.getMarshallerFactory().getMarshaller(object).marshall(object);
+            Signer.signObject(signature);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
     public String toString(XMLObject xmlObject) {

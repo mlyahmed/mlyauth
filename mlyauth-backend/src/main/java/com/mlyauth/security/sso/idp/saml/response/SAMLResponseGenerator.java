@@ -10,14 +10,8 @@ import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
-import org.opensaml.xml.Configuration;
 import org.opensaml.xml.encryption.EncryptionException;
-import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.security.x509.BasicX509Credential;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureConstants;
-import org.opensaml.xml.signature.SignatureException;
-import org.opensaml.xml.signature.Signer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.saml.key.KeyManager;
@@ -59,7 +53,7 @@ public class SAMLResponseGenerator {
         try {
             return buildResponse(loadAttributes(app));
         } catch (Exception e) {
-            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
+            throw IDPException.newInstance(e).setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
         }
 
     }
@@ -95,14 +89,8 @@ public class SAMLResponseGenerator {
         response.setStatus(status);
     }
 
-    private void signResponse(Response response) throws MarshallingException, SignatureException {
-        Signature signature = samlHelper.buildSAMLObject(Signature.class);
-        signature.setSigningCredential(keyManager.getDefaultCredential());
-        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
-        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        response.setSignature(signature);
-        Configuration.getMarshallerFactory().getMarshaller(response).marshall(response);
-        Signer.signObject(signature);
+    private void signResponse(Response response) {
+        samlHelper.signObject(response, keyManager.getDefaultCredential());
     }
 
 
