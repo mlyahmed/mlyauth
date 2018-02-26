@@ -8,11 +8,11 @@ import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.saml2.core.EncryptedAssertion;
 import org.opensaml.saml2.encryption.Decrypter;
+import org.opensaml.saml2.encryption.Encrypter;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.encryption.DecryptionException;
-import org.opensaml.xml.encryption.InlineEncryptedKeyResolver;
+import org.opensaml.xml.encryption.*;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
@@ -114,11 +114,22 @@ public class SAMLHelper {
     }
 
 
-    public Assertion decryptAssertion(EncryptedAssertion encreptedAssertion, Credential credential) throws DecryptionException {
+    public Assertion decryptAssertion(EncryptedAssertion encryptedAssertion, Credential credential) throws DecryptionException {
         StaticKeyInfoCredentialResolver keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(credential);
         Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());
         decrypter.setRootInNewDocument(true);
-        return decrypter.decrypt(encreptedAssertion);
+        return decrypter.decrypt(encryptedAssertion);
+    }
+
+    public EncryptedAssertion encryptAssertion(Assertion assertion, Credential credential) throws EncryptionException {
+        EncryptionParameters encryptionParameters = new EncryptionParameters();
+        encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+        KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
+        keyEncryptionParameters.setEncryptionCredential(credential);
+        keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
+        Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
+        encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
+        return encrypter.encrypt(assertion);
     }
 
     public String toString(XMLObject xmlObject) {

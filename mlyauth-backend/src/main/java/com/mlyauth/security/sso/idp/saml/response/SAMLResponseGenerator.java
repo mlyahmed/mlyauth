@@ -10,12 +10,8 @@ import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
-import org.opensaml.saml2.encryption.Encrypter;
 import org.opensaml.xml.Configuration;
-import org.opensaml.xml.encryption.EncryptionConstants;
 import org.opensaml.xml.encryption.EncryptionException;
-import org.opensaml.xml.encryption.EncryptionParameters;
-import org.opensaml.xml.encryption.KeyEncryptionParameters;
 import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
@@ -28,7 +24,6 @@ import org.springframework.security.saml.key.KeyManager;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
@@ -179,20 +174,13 @@ public class SAMLResponseGenerator {
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
-    private EncryptedAssertion encryptAssertion(List<ApplicationAspectAttribute> attributes, Assertion assertion) throws CertificateException, EncryptionException {
+    private EncryptedAssertion encryptAssertion(List<ApplicationAspectAttribute> attributes, Assertion assertion) throws EncryptionException {
         BasicX509Credential credential = new BasicX509Credential();
         credential.setEntityCertificate(loadApplicationEncryptionCertificate(attributes));
-        EncryptionParameters encryptionParameters = new EncryptionParameters();
-        encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
-        KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
-        keyEncryptionParameters.setEncryptionCredential(credential);
-        keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
-        Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
-        encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
-        return encrypter.encrypt(assertion);
+        return samlHelper.encryptAssertion(assertion, credential);
     }
 
-    private X509Certificate loadApplicationEncryptionCertificate(List<ApplicationAspectAttribute> attributes) throws CertificateException {
+    private X509Certificate loadApplicationEncryptionCertificate(List<ApplicationAspectAttribute> attributes) {
         return samlHelper.toX509Certificate(getEncryptionCertificate(attributes).getValue());
     }
 

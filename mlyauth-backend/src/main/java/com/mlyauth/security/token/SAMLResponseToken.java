@@ -181,6 +181,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Override
     public void setAudience(String audienceURI) {
         audience.setAudienceURI(audienceURI);
+        subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setInResponseTo(audienceURI);
         status = FORGED;
     }
 
@@ -262,7 +263,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public Application getApplication() {
-        return null;
+        return application;
     }
 
     @Override

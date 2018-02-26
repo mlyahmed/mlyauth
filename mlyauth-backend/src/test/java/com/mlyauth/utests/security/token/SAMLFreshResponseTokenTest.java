@@ -37,6 +37,7 @@ public class SAMLFreshResponseTokenTest {
 
     private SAMLResponseToken token;
     private SAMLHelper samlHelper;
+    private Application application;
 
     @DataProvider
     public static String[] subjects() {
@@ -49,22 +50,14 @@ public class SAMLFreshResponseTokenTest {
         // @formatter:on
     }
 
-    private static String randomString() {
-        final int length = (new Random()).nextInt(30);
-        return RandomStringUtils.random(length > 0 ? length : 20, true, true);
-    }
-
-    @Before
-    public void setup() throws ConfigurationException {
-        DefaultBootstrap.bootstrap();
-        samlHelper = new SAMLHelper();
-        token = new SAMLResponseToken(Application.newInstance());
-        ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void when_application_is_null_the_error() {
         new SAMLResponseToken(null);
+    }
+
+    private static String randomString() {
+        final int length = (new Random()).nextInt(30);
+        return RandomStringUtils.random(length > 0 ? length : 20, true, true);
     }
 
     @Test
@@ -155,23 +148,6 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_fresh_response_then_token_claims_must_be_fresh() {
-        assertThat(token.getId(), nullValue());
-        assertThat(token.getSubject(), nullValue());
-        assertThat(token.getScopes(), empty());
-        assertThat(token.getBP(), nullValue());
-        assertThat(token.getState(), nullValue());
-        assertThat(token.getIssuer(), nullValue());
-        assertThat(token.getAudience(), nullValue());
-        assertThat(token.getDelegator(), nullValue());
-        assertThat(token.getDelegate(), nullValue());
-        assertThat(token.getVerdict(), nullValue());
-        assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
-        assertThat(token.getType(), equalTo(TokenType.ACCESS));
-        assertThat(token.getStatus(), equalTo(TokenStatus.CREATED));
-    }
-
-    @Test
     public void when_create_a_fresh_token_and_set_Id_then_must_be_set() {
         String id = randomString();
         token.setId(id);
@@ -191,6 +167,15 @@ public class SAMLFreshResponseTokenTest {
         assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
         assertThat(token.getNative().getAssertions().get(0).getIssueInstant()
                 .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+    }
+
+    @Before
+    public void setup() throws ConfigurationException {
+        DefaultBootstrap.bootstrap();
+        samlHelper = new SAMLHelper();
+        application = Application.newInstance();
+        token = new SAMLResponseToken(application);
+        ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
     }
 
     @Test
@@ -237,14 +222,21 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_audience_then_it_must_be_set() {
-        final String audience = randomString();
-        token.setAudience(audience);
-        assertThat(token.getAudience(), equalTo(audience));
-        assertThat(token.getNative().getAssertions().get(0).getConditions(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions()
-                .get(0).getAudiences().get(0).getAudienceURI(), equalTo(audience));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    public void when_create_fresh_response_then_token_claims_must_be_fresh() {
+        assertThat(token.getId(), nullValue());
+        assertThat(token.getSubject(), nullValue());
+        assertThat(token.getScopes(), empty());
+        assertThat(token.getBP(), nullValue());
+        assertThat(token.getState(), nullValue());
+        assertThat(token.getIssuer(), nullValue());
+        assertThat(token.getAudience(), nullValue());
+        assertThat(token.getDelegator(), nullValue());
+        assertThat(token.getDelegate(), nullValue());
+        assertThat(token.getVerdict(), nullValue());
+        assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
+        assertThat(token.getType(), equalTo(TokenType.ACCESS));
+        assertThat(token.getStatus(), equalTo(TokenStatus.CREATED));
+        assertThat(token.getApplication(), equalTo(application));
     }
 
     @Test
@@ -276,6 +268,19 @@ public class SAMLFreshResponseTokenTest {
         token.setVerdict(TokenVerdict.FAIL);
         assertThat(token.getVerdict(), equalTo(TokenVerdict.FAIL));
         assertThat(token.getNative().getStatus().getStatusCode().getValue(), equalTo(StatusCode.AUTHN_FAILED_URI));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_set_audience_then_it_must_be_set() {
+        final String audience = randomString();
+        token.setAudience(audience);
+        assertThat(token.getAudience(), equalTo(audience));
+        assertThat(token.getNative().getAssertions().get(0).getConditions(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions()
+                .get(0).getAudiences().get(0).getAudienceURI(), equalTo(audience));
+        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
+                .get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(audience));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 }
