@@ -1,7 +1,6 @@
 package com.mlyauth.security.token;
 
 import com.mlyauth.constants.*;
-import com.mlyauth.domain.Application;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -61,8 +60,6 @@ public interface IDPToken<N> {
     TokenStatus getStatus();
 
     N getNative();
-
-    Application getApplication();
 
     void cypher();
 

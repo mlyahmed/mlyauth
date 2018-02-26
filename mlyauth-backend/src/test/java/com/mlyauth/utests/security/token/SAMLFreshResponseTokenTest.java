@@ -1,7 +1,6 @@
 package com.mlyauth.utests.security.token;
 
 import com.mlyauth.constants.*;
-import com.mlyauth.domain.Application;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.SAMLResponseToken;
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -19,6 +18,8 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.security.credential.BasicCredential;
+import org.opensaml.xml.security.credential.Credential;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -37,7 +38,16 @@ public class SAMLFreshResponseTokenTest {
 
     private SAMLResponseToken token;
     private SAMLHelper samlHelper;
-    private Application application;
+    private Credential credential;
+
+    @Before
+    public void setup() throws ConfigurationException {
+        DefaultBootstrap.bootstrap();
+        samlHelper = new SAMLHelper();
+        credential = new BasicCredential();
+        token = new SAMLResponseToken(credential);
+        ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
+    }
 
     @DataProvider
     public static String[] subjects() {
@@ -169,15 +179,6 @@ public class SAMLFreshResponseTokenTest {
                 .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
     }
 
-    @Before
-    public void setup() throws ConfigurationException {
-        DefaultBootstrap.bootstrap();
-        samlHelper = new SAMLHelper();
-        application = Application.newInstance();
-        token = new SAMLResponseToken(application);
-        ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
-    }
-
     @Test
     @UseDataProvider("subjects")
     public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
@@ -236,7 +237,6 @@ public class SAMLFreshResponseTokenTest {
         assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
         assertThat(token.getType(), equalTo(TokenType.ACCESS));
         assertThat(token.getStatus(), equalTo(TokenStatus.CREATED));
-        assertThat(token.getApplication(), equalTo(application));
     }
 
     @Test

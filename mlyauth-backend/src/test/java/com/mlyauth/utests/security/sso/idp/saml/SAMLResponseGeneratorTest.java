@@ -23,7 +23,6 @@ import org.mockito.*;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.*;
 import org.opensaml.security.SAMLSignatureProfileValidator;
-import org.opensaml.xml.encryption.DecryptionException;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
@@ -272,13 +271,13 @@ public class SAMLResponseGeneratorTest {
         response = generator.generate(application);
     }
 
-    private void and_decrypt_Assertion() throws CertificateException, DecryptionException {
+    private void and_decrypt_Assertion() {
         BasicX509Credential credential = samlHelper.toBasicX509Credential(encodedCertificate);
         credential.setPrivateKey(credentialPair.getKey());
         assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), credential);
     }
 
-    private void given_current_idp_key_manager() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    private void given_current_idp_key_manager() throws Exception {
         Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(KEYSTORE_TEST_ALIAS, "Bourso$17");
         keyManager = new JKSKeyManager(loadKeyStore(), passwords, KEYSTORE_TEST_ALIAS);

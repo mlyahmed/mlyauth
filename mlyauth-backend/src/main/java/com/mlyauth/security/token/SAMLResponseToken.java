@@ -1,13 +1,13 @@
 package com.mlyauth.security.token;
 
 import com.mlyauth.constants.*;
-import com.mlyauth.domain.Application;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.saml2.core.*;
+import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.util.XMLObjectHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -31,7 +31,6 @@ public class SAMLResponseToken implements IDPToken<Response> {
     public static final String DELEGATE_ATTR = "delegate";
     public static final String STATE_ATTR = "state";
 
-    private final Application application;
     private final Response response;
     private final Assertion assertion;
     private final Subject subject;
@@ -44,15 +43,14 @@ public class SAMLResponseToken implements IDPToken<Response> {
     @Autowired
     private SAMLHelper samlHelper = new SAMLHelper();
 
-    public SAMLResponseToken(final Application app) {
-        application = app;
+    public SAMLResponseToken(final Credential credential) {
         response = samlHelper.buildSAMLObject(Response.class);
         assertion = samlHelper.buildSAMLObject(Assertion.class);
         subject = samlHelper.buildSAMLObject(Subject.class);
         audience = samlHelper.buildSAMLObject(Audience.class);
         attributes = new HashMap<>();
 
-        Assert.notNull(application, "The app argument is mandatory !");
+        Assert.notNull(credential, "The credential argument is mandatory !");
 
         initAssertion();
         initSubject();
@@ -259,11 +257,6 @@ public class SAMLResponseToken implements IDPToken<Response> {
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }
-    }
-
-    @Override
-    public Application getApplication() {
-        return application;
     }
 
     @Override
