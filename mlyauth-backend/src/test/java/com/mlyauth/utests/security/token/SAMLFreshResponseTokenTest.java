@@ -3,9 +3,11 @@ package com.mlyauth.utests.security.token;
 import com.mlyauth.constants.*;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.SAMLResponseToken;
+import com.mlyauth.tools.KeysForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import javafx.util.Pair;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -22,6 +24,8 @@ import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Random;
@@ -44,30 +48,36 @@ public class SAMLFreshResponseTokenTest {
     public void setup() throws ConfigurationException {
         DefaultBootstrap.bootstrap();
         samlHelper = new SAMLHelper();
-        credential = new BasicCredential();
+
+        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
+        credential = samlHelper.toCredential(pair.getKey(), pair.getValue());
+
         token = new SAMLResponseToken(credential);
         ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
     }
 
-    @DataProvider
-    public static String[] subjects() {
-        // @formatter:off
-        return new String[]{
-                "BA0000000000855",
-                "BA0000000000856",
-                "125485"
-        };
-        // @formatter:on
-    }
+
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_application_is_null_the_error() {
+    public void when_credential_is_null_the_error() {
         new SAMLResponseToken(null);
     }
 
-    private static String randomString() {
-        final int length = (new Random()).nextInt(30);
-        return RandomStringUtils.random(length > 0 ? length : 20, true, true);
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_credential_private_key_is_null_then_error() {
+        final BasicCredential credential = new BasicCredential();
+        credential.setPublicKey(KeysForTests.generateRSACredential().getValue().getPublicKey());
+        credential.setPrivateKey(null);
+        new SAMLResponseToken(credential);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_credential_public_key_is_null_then_error() {
+        final BasicCredential credential = new BasicCredential();
+        credential.setPrivateKey(KeysForTests.generateRSACredential().getKey());
+        credential.setPublicKey(null);
+        new SAMLResponseToken(credential);
     }
 
     @Test
@@ -179,6 +189,17 @@ public class SAMLFreshResponseTokenTest {
                 .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
     }
 
+    @DataProvider
+    public static String[] subjects() {
+        // @formatter:off
+        return new String[]{
+                "BA0000000000855",
+                "BA0000000000856",
+                "125485"
+        };
+        // @formatter:on
+    }
+
     @Test
     @UseDataProvider("subjects")
     public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
@@ -282,5 +303,10 @@ public class SAMLFreshResponseTokenTest {
         assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
                 .get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(audience));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    private static String randomString() {
+        final int length = (new Random()).nextInt(30);
+        return RandomStringUtils.random(length > 0 ? length : 20, true, true);
     }
 }

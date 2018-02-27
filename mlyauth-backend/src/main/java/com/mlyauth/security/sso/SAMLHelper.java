@@ -45,6 +45,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
@@ -155,6 +156,18 @@ public class SAMLHelper {
             object.setSignature(signature);
             org.opensaml.xml.Configuration.getMarshallerFactory().getMarshaller(object).marshall(object);
             Signer.signObject(signature);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
+
+
+    public Credential toCredential(PrivateKey privateKey, X509Certificate certificate) {
+        try {
+            BasicX509Credential credential = new BasicX509Credential();
+            credential.setEntityCertificate(certificate);
+            credential.setPrivateKey(privateKey);
+            return credential;
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }

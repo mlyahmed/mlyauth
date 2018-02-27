@@ -10,7 +10,6 @@ import org.opensaml.saml2.core.*;
 import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.util.XMLObjectHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -22,6 +21,7 @@ import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static org.opensaml.saml2.core.StatusCode.AUTHN_FAILED_URI;
 import static org.opensaml.saml2.core.StatusCode.SUCCESS_URI;
+import static org.springframework.util.Assert.notNull;
 
 public class SAMLResponseToken implements IDPToken<Response> {
 
@@ -31,11 +31,11 @@ public class SAMLResponseToken implements IDPToken<Response> {
     public static final String DELEGATE_ATTR = "delegate";
     public static final String STATE_ATTR = "state";
 
-    private final Response response;
-    private final Assertion assertion;
-    private final Subject subject;
-    private final Audience audience;
-    private final HashMap<String, String> attributes;
+    private Response response;
+    private Assertion assertion;
+    private Subject subject;
+    private Audience audience;
+    private HashMap<String, String> attributes;
 
     private TokenStatus status;
 
@@ -44,22 +44,23 @@ public class SAMLResponseToken implements IDPToken<Response> {
     private SAMLHelper samlHelper = new SAMLHelper();
 
     public SAMLResponseToken(final Credential credential) {
-        response = samlHelper.buildSAMLObject(Response.class);
-        assertion = samlHelper.buildSAMLObject(Assertion.class);
-        subject = samlHelper.buildSAMLObject(Subject.class);
-        audience = samlHelper.buildSAMLObject(Audience.class);
-        attributes = new HashMap<>();
+        notNull(credential, "The credential argument is mandatory !");
+        notNull(credential.getPrivateKey(), "The private key argument is mandatory !");
+        notNull(credential.getPublicKey(), "The public key argument is mandatory !");
+        init();
+    }
 
-        Assert.notNull(credential, "The credential argument is mandatory !");
-
+    private void init() {
         initAssertion();
         initSubject();
         initAudience();
         initResponse();
+        attributes = new HashMap<>();
         status = TokenStatus.CREATED;
     }
 
     private void initAssertion() {
+        assertion = samlHelper.buildSAMLObject(Assertion.class);
         final AuthnStatement authnStatement = samlHelper.buildSAMLObject(AuthnStatement.class);
         final AuthnContext authnContext = samlHelper.buildSAMLObject(AuthnContext.class);
         AuthnContextClassRef authnContextClassRef = samlHelper.buildSAMLObject(AuthnContextClassRef.class);
@@ -73,6 +74,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     }
 
     private void initAudience() {
+        audience = samlHelper.buildSAMLObject(Audience.class);
         final Conditions conditions = samlHelper.buildSAMLObject(Conditions.class);
         AudienceRestriction audienceRestriction = samlHelper.buildSAMLObject(AudienceRestriction.class);
         audienceRestriction.getAudiences().add(audience);
@@ -82,6 +84,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     }
 
     private void initSubject() {
+        subject = samlHelper.buildSAMLObject(Subject.class);
         subject.setNameID(newSubjectNameID());
         final SubjectConfirmation subjectConfirmation = samlHelper.buildSAMLObject(SubjectConfirmation.class);
         final SubjectConfirmationData subjectConfirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
@@ -92,13 +95,20 @@ public class SAMLResponseToken implements IDPToken<Response> {
         assertion.setSubject(subject);
     }
 
+    private NameID newSubjectNameID() {
+        NameID nameID = samlHelper.buildSAMLObject(NameID.class);
+        nameID.setFormat(NameIDType.TRANSIENT);
+        return nameID;
+    }
+
     private void initResponse() {
+        response = samlHelper.buildSAMLObject(Response.class);
         response.setIssuer(samlHelper.buildSAMLObject(Issuer.class));
-        response.getAssertions().add(assertion);
         Status responseStatus = samlHelper.buildSAMLObject(Status.class);
         responseStatus.setStatusCode(samlHelper.buildSAMLObject(StatusCode.class));
         response.setStatus(responseStatus);
         response.setIssueInstant(DateTime.now());
+        response.getAssertions().add(assertion);
     }
 
     @Override
@@ -274,9 +284,4 @@ public class SAMLResponseToken implements IDPToken<Response> {
         return null;
     }
 
-    private NameID newSubjectNameID() {
-        NameID nameID = samlHelper.buildSAMLObject(NameID.class);
-        nameID.setFormat(NameIDType.TRANSIENT);
-        return nameID;
-    }
 }
