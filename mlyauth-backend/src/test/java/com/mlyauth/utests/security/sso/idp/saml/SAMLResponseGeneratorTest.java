@@ -127,7 +127,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_the_assertion_must_be_encrypted() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_the_assertion_must_be_encrypted() {
         when_generate_a_response();
         assertThat(response.getAssertions(), is(empty()));
         assertThat(response.getEncryptedAssertions(), hasSize(1));
@@ -135,7 +135,7 @@ public class SAMLResponseGeneratorTest {
 
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_be_well_encrypted() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_be_well_encrypted() {
         when_generate_a_response();
         and_decrypt_Assertion();
         assertThat(assertion, notNullValue());
@@ -143,7 +143,7 @@ public class SAMLResponseGeneratorTest {
 
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_be_a_successful() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_be_a_successful() {
         when_generate_a_response();
         and_decrypt_Assertion();
         assertThat(assertion.getID(), notNullValue());
@@ -154,7 +154,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_a_subject_and_confirmation() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_a_subject_and_confirmation() {
         when_generate_a_response();
         and_decrypt_Assertion();
         final Subject subject = assertion.getSubject();
@@ -173,7 +173,7 @@ public class SAMLResponseGeneratorTest {
 
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_an_auth_statement() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_an_auth_statement() {
         when_generate_a_response();
         and_decrypt_Assertion();
         assertThat(assertion.getAuthnStatements(), hasSize(1));
@@ -185,7 +185,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_conditions() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_conditions() {
         when_generate_a_response();
         and_decrypt_Assertion();
         assertThat(assertion.getConditions(), notNullValue());
@@ -198,7 +198,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     @Test
-    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_context_attributes() throws Exception {
+    public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_context_attributes() {
         context.putAttribute("action", "A");
         context.putAttribute("profile", "CL");
         when_generate_a_response();

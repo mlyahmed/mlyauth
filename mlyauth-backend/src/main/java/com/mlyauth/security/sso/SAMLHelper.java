@@ -11,6 +11,7 @@ import org.opensaml.saml2.core.EncryptedAssertion;
 import org.opensaml.saml2.encryption.Decrypter;
 import org.opensaml.saml2.encryption.Encrypter;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
+import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.encryption.EncryptionConstants;
@@ -28,6 +29,7 @@ import org.opensaml.xml.security.keyinfo.StaticKeyInfoCredentialResolver;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.signature.Signer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,6 +163,16 @@ public class SAMLHelper {
         }
     }
 
+    public void validateSignature(SignableSAMLObject object, Credential credential) {
+        try {
+            SAMLSignatureProfileValidator signatureProfileValidator = new SAMLSignatureProfileValidator();
+            signatureProfileValidator.validate(object.getSignature());
+            SignatureValidator sigValidator = new SignatureValidator(credential);
+            sigValidator.validate(object.getSignature());
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
 
     public Credential toCredential(PrivateKey privateKey, X509Certificate certificate) {
         try {

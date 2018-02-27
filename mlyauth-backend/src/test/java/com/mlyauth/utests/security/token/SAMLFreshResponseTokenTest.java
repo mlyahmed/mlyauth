@@ -15,8 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opensaml.DefaultBootstrap;
+import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContext;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.xml.ConfigurationException;
@@ -28,6 +28,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -42,17 +43,18 @@ public class SAMLFreshResponseTokenTest {
 
     private SAMLResponseToken token;
     private SAMLHelper samlHelper;
-    private Credential credential;
+    private Credential cypherCredential;
+    private Credential decipherCredential;
 
     @Before
     public void setup() throws ConfigurationException {
         DefaultBootstrap.bootstrap();
         samlHelper = new SAMLHelper();
-
-        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
-        credential = samlHelper.toCredential(pair.getKey(), pair.getValue());
-
-        token = new SAMLResponseToken(credential);
+        final Pair<PrivateKey, X509Certificate> pair1 = KeysForTests.generateRSACredential();
+        final Pair<PrivateKey, X509Certificate> pair2 = KeysForTests.generateRSACredential();
+        cypherCredential = samlHelper.toCredential(pair1.getKey(), pair2.getValue());
+        decipherCredential = samlHelper.toCredential(pair2.getKey(), pair1.getValue());
+        token = new SAMLResponseToken(cypherCredential);
         ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
     }
 
@@ -134,17 +136,6 @@ public class SAMLFreshResponseTokenTest {
                 .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
     }
 
-
-    @Test
-    public void when_get_native_then_return_a_copy() {
-        final Response response = token.getNative();
-        response.setID(samlHelper.generateRandomId());
-        response.getAssertions().clear();
-        assertThat(token.getId(), nullValue());
-        assertThat(token.getNative().getID(), nullValue());
-        assertThat(token.getNative().getAssertions(), hasSize(1));
-    }
-
     @DataProvider
     public static Object[][] scopes() {
         // @formatter:off
@@ -224,7 +215,7 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_Stete_then_it_must_be_set() {
+    public void when_create_a_fresh_token_and_set_State_then_it_must_be_set() {
         final String state = randomString();
         token.setState(state);
         assertThat(token.getState(), equalTo(state));
@@ -303,6 +294,53 @@ public class SAMLFreshResponseTokenTest {
         assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
                 .get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(audience));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_set_target_URL_then_it_must_be_set() {
+        final String url = randomString();
+        token.setTargetURL(url);
+        assertThat(token.getTargetURL(), equalTo(url));
+        assertThat(token.getNative().getDestination(), equalTo(url));
+        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().getRecipient(), equalTo(url));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_cypher_it_then_it_must_be_cyphered() {
+        given_forged_token();
+        token.cypher();
+        assertThat(token.getNative().getAssertions(), empty());
+        assertThat(token.getNative().getEncryptedAssertions(), hasSize(1));
+        Assertion assertion = samlHelper.decryptAssertion(token.getNative().getEncryptedAssertions().get(0), decipherCredential);
+        assertThat(assertion, notNullValue());
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_cypher_it_then_it_must_be_signed() {
+        given_forged_token();
+        token.cypher();
+        samlHelper.validateSignature(token.getNative(), decipherCredential);
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_cypher_it_then_it_must_be_set_as_cyphered() {
+        given_forged_token();
+        token.cypher();
+        assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+    }
+
+    private void given_forged_token() {
+        token.setId(randomString());
+        token.setVerdict(TokenVerdict.SUCCESS);
+        token.setDelegate(randomString());
+        token.setDelegator(randomString());
+        token.setAudience(randomString());
+        token.setIssuer(randomString());
+        token.setState(randomString());
+        token.setScopes(new HashSet<>(Arrays.asList(PERSON, POLICY)));
+        token.setBP(randomString());
+        token.setSubject(randomString());
+        token.setTargetURL(randomString());
     }
 
     private static String randomString() {

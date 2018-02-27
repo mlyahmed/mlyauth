@@ -1,14 +1,12 @@
 package com.mlyauth.security.token;
 
 import com.mlyauth.constants.*;
-import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.saml2.core.*;
 import org.opensaml.xml.security.credential.Credential;
-import org.opensaml.xml.util.XMLObjectHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -16,6 +14,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.mlyauth.constants.TokenStatus.FORGED;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
@@ -31,6 +30,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     public static final String DELEGATE_ATTR = "delegate";
     public static final String STATE_ATTR = "state";
 
+    private Credential credential;
     private Response response;
     private Assertion assertion;
     private Subject subject;
@@ -47,6 +47,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
         notNull(credential, "The credential argument is mandatory !");
         notNull(credential.getPrivateKey(), "The private key argument is mandatory !");
         notNull(credential.getPublicKey(), "The public key argument is mandatory !");
+        this.credential = credential;
         init();
     }
 
@@ -194,6 +195,17 @@ public class SAMLResponseToken implements IDPToken<Response> {
     }
 
     @Override
+    public String getTargetURL() {
+        return response.getDestination();
+    }
+
+    @Override
+    public void setTargetURL(String url) {
+        response.setDestination(url);
+        subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setRecipient(url);
+    }
+
+    @Override
     public String getDelegator() {
         return attributes.get(DELEGATOR_ATTR);
     }
@@ -262,16 +274,15 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public Response getNative() {
-        try {
-            return XMLObjectHelper.cloneXMLObject(response);
-        } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
-        }
+        return response;
     }
 
     @Override
     public void cypher() {
-
+        response.getAssertions().clear();
+        response.getEncryptedAssertions().add(samlHelper.encryptAssertion(assertion, credential));
+        samlHelper.signObject(response, credential);
+        status = CYPHERED;
     }
 
     @Override

@@ -35,6 +35,10 @@ public interface IDPToken<N> {
 
     void setAudience(String audienceURI);
 
+    String getTargetURL();
+
+    void setTargetURL(String url);
+
     String getDelegator();
 
     void setDelegator(String delegatorID);
