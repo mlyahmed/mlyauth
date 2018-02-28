@@ -21,6 +21,7 @@ import org.opensaml.xml.encryption.KeyEncryptionParameters;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
+import org.opensaml.xml.parse.BasicParserPool;
 import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.schema.impl.XSStringBuilder;
@@ -31,11 +32,13 @@ import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.signature.Signer;
+import org.opensaml.xml.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -57,7 +60,7 @@ public class SAMLHelper {
 
 
     @Autowired
-    private ParserPool parserPool;
+    private ParserPool parserPool = new BasicParserPool();
 
     private static SecureRandomIdentifierGenerator randomIdGenerator;
 
@@ -74,6 +77,7 @@ public class SAMLHelper {
         return randomIdGenerator.generateIdentifier();
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T buildSAMLObject(final Class<T> clazz) {
         try {
 
@@ -180,6 +184,18 @@ public class SAMLHelper {
             credential.setEntityCertificate(certificate);
             credential.setPrivateKey(privateKey);
             return credential;
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
+
+    public XMLObject decode(String encodedObject) {
+        try {
+            final byte[] decoded = Base64.decode(encodedObject);
+            Document messageDoc = parserPool.parse(new ByteArrayInputStream(decoded));
+            Element messageElem = messageDoc.getDocumentElement();
+            Unmarshaller unmarshaller = org.opensaml.xml.Configuration.getUnmarshallerFactory().getUnmarshaller(messageElem);
+            return unmarshaller.unmarshall(messageElem);
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }

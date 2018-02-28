@@ -11,6 +11,10 @@ public class IDPException extends RuntimeException {
         super(e);
     }
 
+    protected IDPException(String message) {
+        super(message);
+    }
+
     protected IDPException() {
 
     }

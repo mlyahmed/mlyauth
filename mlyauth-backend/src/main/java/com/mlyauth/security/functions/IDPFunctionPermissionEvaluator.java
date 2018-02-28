@@ -17,6 +17,7 @@ public class IDPFunctionPermissionEvaluator implements PermissionEvaluator {
     private Map<Class<?>, IDPPermissionValidator> validators = new LinkedHashMap<>();
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         final IDPPermissionValidator validator = validators.get(targetDomainObject.getClass());
         if (validator != null)

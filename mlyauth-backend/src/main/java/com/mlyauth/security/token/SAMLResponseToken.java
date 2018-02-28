@@ -1,11 +1,14 @@
 package com.mlyauth.security.token;
 
 import com.mlyauth.constants.*;
+import com.mlyauth.exception.TokenAlreadyCommitedException;
+import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.sso.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.saml2.core.*;
+import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +23,7 @@ import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static org.opensaml.saml2.core.StatusCode.AUTHN_FAILED_URI;
 import static org.opensaml.saml2.core.StatusCode.SUCCESS_URI;
+import static org.opensaml.xml.util.Base64.encodeBytes;
 import static org.springframework.util.Assert.notNull;
 
 public class SAMLResponseToken implements IDPToken<Response> {
@@ -38,7 +42,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     private HashMap<String, String> attributes;
 
     private TokenStatus status;
-
+    private boolean committed;
 
     @Autowired
     private SAMLHelper samlHelper = new SAMLHelper();
@@ -53,11 +57,12 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     private void init() {
         initAssertion();
+        initAttributes();
         initSubject();
         initAudience();
         initResponse();
         attributes = new HashMap<>();
-        status = TokenStatus.CREATED;
+        status = TokenStatus.FRESH;
     }
 
     private void initAssertion() {
@@ -72,6 +77,17 @@ public class SAMLResponseToken implements IDPToken<Response> {
         assertion.getAuthnStatements().add(authnStatement);
         assertion.setIssuer(samlHelper.buildSAMLObject(Issuer.class));
         assertion.setIssueInstant(DateTime.now());
+    }
+
+    private void initAttributes() {
+        AttributeStatement attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
+        final List<Attribute> assertionAttributes = attributeStatement.getAttributes();
+        final Attribute state = samlHelper.buildStringAttribute(STATE_ATTR, null);
+        final Attribute scopes = samlHelper.buildStringAttribute(SCOPES_ATTR, null);
+        final Attribute bp = samlHelper.buildStringAttribute(BP_ATTR, null);
+        final Attribute delegate = samlHelper.buildStringAttribute(DELEGATE_ATTR, null);
+        assertionAttributes.addAll(Arrays.asList(state, scopes, bp, delegate));
+        assertion.getAttributeStatements().add(attributeStatement);
     }
 
     private void initAudience() {
@@ -137,36 +153,36 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public Set<TokenScope> getScopes() {
-        if (StringUtils.isBlank(attributes.get(SCOPES_ATTR))) return Collections.emptySet();
-        return Arrays.stream(attributes.get(SCOPES_ATTR).split("\\|"))
+        if (StringUtils.isBlank(getAttributeValue(SCOPES_ATTR))) return Collections.emptySet();
+        return Arrays.stream(getAttributeValue(SCOPES_ATTR).split("\\|"))
                 .map(v -> TokenScope.valueOf(v)).collect(Collectors.toSet());
     }
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
-        attributes.put(SCOPES_ATTR, scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")));
+        setAttributeValue(SCOPES_ATTR, scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")));
         status = FORGED;
     }
 
     @Override
     public String getBP() {
-        return attributes.get(BP_ATTR);
+        return getAttributeValue(BP_ATTR);
     }
 
     @Override
     public void setBP(String bp) {
-        attributes.put(BP_ATTR, bp);
+        setAttributeValue(BP_ATTR, bp);
         status = FORGED;
     }
 
     @Override
     public String getState() {
-        return attributes.get(STATE_ATTR);
+        return getAttributeValue(STATE_ATTR);
     }
 
     @Override
     public void setState(String state) {
-        attributes.put(STATE_ATTR, state);
+        setAttributeValue(STATE_ATTR, state);
         status = FORGED;
     }
 
@@ -218,12 +234,12 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public String getDelegate() {
-        return attributes.get(DELEGATE_ATTR);
+        return getAttributeValue(DELEGATE_ATTR);
     }
 
     @Override
     public void setDelegate(String delegateURI) {
-        attributes.put(DELEGATE_ATTR, delegateURI);
+        setAttributeValue(DELEGATE_ATTR, delegateURI);
         status = FORGED;
     }
 
@@ -283,16 +299,28 @@ public class SAMLResponseToken implements IDPToken<Response> {
         response.getEncryptedAssertions().add(samlHelper.encryptAssertion(assertion, credential));
         samlHelper.signObject(response, credential);
         status = CYPHERED;
+        committed = true;
     }
 
     @Override
     public void decipher() {
-
+        if (committed)
+            throw TokenAlreadyCommitedException.newInstance();
     }
 
     @Override
     public String serialize() {
-        return null;
+        if (status != CYPHERED) throw TokenNotCipheredException.newInstance();
+        return encodeBytes(samlHelper.toString(response).getBytes());
     }
 
+    private void setAttributeValue(String attributeName, String attributeValue) {
+        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
+        ((XSString) actual.getAttributeValues().get(0)).setValue(attributeValue);
+    }
+
+    private String getAttributeValue(String attributeName) {
+        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
+        return ((XSString) actual.getAttributeValues().get(0)).getValue();
+    }
 }

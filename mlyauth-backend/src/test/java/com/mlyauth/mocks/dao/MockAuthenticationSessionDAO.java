@@ -6,10 +6,11 @@ import com.mlyauth.domain.AuthenticationSession;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
 
     private static Long IDS = 0l;
-    Map<Long, AuthenticationSession> sessions = new HashMap<>();
+    private Map<Long, AuthenticationSession> sessions = new HashMap<>();
 
     @Override
     public AuthenticationSession save(AuthenticationSession entity) {
