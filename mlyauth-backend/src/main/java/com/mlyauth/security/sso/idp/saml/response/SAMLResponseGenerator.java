@@ -1,12 +1,13 @@
 package com.mlyauth.security.sso.idp.saml.response;
 
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
-import com.mlyauth.exception.AuthError;
-import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
+import com.mlyauth.security.token.IDPToken;
+import com.mlyauth.security.token.SAMLResponseToken;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
@@ -46,16 +46,24 @@ public class SAMLResponseGenerator {
     @Value("${idp.saml.entityId}")
     private String idpEntityId;
 
-    public Response generate(Application app) {
+    public IDPToken<Response> generate(Application app) {
         Assert.notNull(app, "The application parameter is null");
         validator.validate(app);
+        final List<ApplicationAspectAttribute> attributes = loadAttributes(app);
+        BasicX509Credential credential = new BasicX509Credential();
+        credential.setEntityCertificate(loadApplicationEncryptionCertificate(attributes));
+        credential.setPrivateKey(keyManager.getDefaultCredential().getPrivateKey());
 
-        try {
-            return buildResponse(loadAttributes(app));
-        } catch (Exception e) {
-            throw IDPException.newInstance(e).setErrors(Arrays.asList(AuthError.newInstance("SAML_RESPONSE_ERR")));
-        }
-
+        SAMLResponseToken token = new SAMLResponseToken(credential);
+        token.setId(samlHelper.generateRandomId());
+        token.setIssuer(idpEntityId);
+        token.setTargetURL(getTargetURL(attributes).getValue());
+        token.setVerdict(TokenVerdict.SUCCESS);
+        token.setSubject("");
+        token.setAudience(getEntityId(attributes).getValue());
+        context.getAttributes().forEach((k, v) -> token.setClaim(k, v));
+        token.cypher();
+        return token;
     }
 
     private Response buildResponse(List<ApplicationAspectAttribute> attributes) throws Exception {

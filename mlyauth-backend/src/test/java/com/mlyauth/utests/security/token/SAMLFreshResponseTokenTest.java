@@ -104,30 +104,6 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_fresh_response_then_token_native_must_be_fresh() {
-        assertThat(token.getNative(), notNullValue());
-        assertThat(token.getNative().getStatus(), notNullValue());
-        assertThat(token.getNative().getStatus().getStatusCode(), notNullValue());
-        assertThat(token.getNative().getIssuer(), notNullValue());
-        assertThat(token.getNative().getAssertions(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getIssuer(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getSubject(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getConditions(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions()
-                .get(0).getAudiences(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements(), hasSize(1));
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext()
-                .getAuthnContextClassRef(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements().get(0).getAuthnContext()
-                .getAuthnContextClassRef().getAuthnContextClassRef(), equalTo(AuthnContext.PASSWORD_AUTHN_CTX));
-    }
-
-    @Test
     public void when_create_a_fresh_token_and_set_Id_then_must_be_set() {
         String id = randomString();
         token.setId(id);
@@ -221,7 +197,6 @@ public class SAMLFreshResponseTokenTest {
         final String bp = randomString();
         token.setBP(bp);
         assertThat(token.getBP(), equalTo(bp));
-        assertThat(getAttributeValue(token.getNative().getAssertions().get(0), BP_ATTR), equalTo(bp));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
@@ -356,7 +331,6 @@ public class SAMLFreshResponseTokenTest {
     public void when_create_fresh_token_and_set_success_verdict_then_it_must_be_set() {
         token.setVerdict(TokenVerdict.SUCCESS);
         assertThat(token.getVerdict(), equalTo(TokenVerdict.SUCCESS));
-        assertThat(token.getNative().getStatus().getStatusCode().getValue(), equalTo(StatusCode.SUCCESS_URI));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
@@ -372,7 +346,6 @@ public class SAMLFreshResponseTokenTest {
     public void when_create_fresh_token_and_set_fail_verdict_then_it_must_be_set() {
         token.setVerdict(TokenVerdict.FAIL);
         assertThat(token.getVerdict(), equalTo(TokenVerdict.FAIL));
-        assertThat(token.getNative().getStatus().getStatusCode().getValue(), equalTo(StatusCode.AUTHN_FAILED_URI));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
@@ -451,6 +424,35 @@ public class SAMLFreshResponseTokenTest {
         assertThat(assertion.getIssueInstant(), notNullValue());
         assertThat(assertion.getIssueInstant().toDateTime(DateTimeZone.getDefault())
                 .isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+    }
+
+    @DataProvider
+    public static Object[][] claims() {
+        // @formatter:off
+        return new String[][]{
+                {"prestationId", "BA000000215487"},
+                {"action", "S"},
+                {"codeRole", "CL"},
+                {"referenceRole", "215487548754"},
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("claims")
+    public void when_set_other_claim_then_it_must_be_set(String... claimPair) {
+        token.setClaim(claimPair[0], claimPair[1]);
+        assertThat(token.getClaim(claimPair[0]), equalTo(claimPair[1]));
+    }
+
+    @Test
+    @UseDataProvider("claims")
+    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(String... claimPair) {
+        token.setClaim(claimPair[0], claimPair[1]);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(getAttributeValue(assertion, claimPair[0]), equalTo(claimPair[1]));
     }
 
     @Test
@@ -574,6 +576,13 @@ public class SAMLFreshResponseTokenTest {
         given_forged_token();
         when_cypher_the_token();
         token.setVerdict(TokenVerdict.FAIL);
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_claim_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setClaim(randomString(), randomString());
     }
 
     private void given_forged_token() {

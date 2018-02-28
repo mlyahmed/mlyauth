@@ -63,6 +63,10 @@ public interface IDPToken<N> {
 
     TokenStatus getStatus();
 
+    void setClaim(String claimURI, String value);
+
+    String getClaim(String claimURI);
+
     N getNative();
 
     void cypher();

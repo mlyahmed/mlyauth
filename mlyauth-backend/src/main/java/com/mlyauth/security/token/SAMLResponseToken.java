@@ -299,6 +299,25 @@ public class SAMLResponseToken implements IDPToken<Response> {
     }
 
     @Override
+    public void setClaim(String claimURI, String value) {
+        checkCommitted();
+        if (StringUtils.isBlank(getAttributeValue(claimURI)))
+            newAttribute(claimURI);
+        setAttributeValue(claimURI, value);
+    }
+
+    private void newAttribute(String claimURI) {
+        final Attribute claim = samlHelper.buildStringAttribute(STATE_ATTR, null);
+        claim.setName(claimURI);
+        assertion.getAttributeStatements().get(0).getAttributes().add(claim);
+    }
+
+    @Override
+    public String getClaim(String claimURI) {
+        return getAttributeValue(claimURI);
+    }
+
+    @Override
     public Response getNative() {
         return response;
     }
@@ -333,7 +352,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
     }
 
     private String getAttributeValue(String attributeName) {
-        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
-        return ((XSString) actual.getAttributeValues().get(0)).getValue();
+        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().orElse(null);
+        return actual != null ? ((XSString) actual.getAttributeValues().get(0)).getValue() : null;
     }
 }

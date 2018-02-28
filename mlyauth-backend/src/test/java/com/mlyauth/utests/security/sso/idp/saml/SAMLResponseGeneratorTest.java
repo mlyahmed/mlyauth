@@ -11,6 +11,7 @@ import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
+import com.mlyauth.security.token.IDPToken;
 import com.mlyauth.tools.KeysForTests;
 import com.mlyauth.utests.security.context.MockContext;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
@@ -191,7 +192,7 @@ public class SAMLResponseGeneratorTest {
         assertThat(assertion.getConditions(), notNullValue());
         assertThat(assertion.getConditions().getNotBefore(), nullValue());
         assertThat(assertion.getConditions().getNotOnOrAfter(), notNullValue());
-        assertThat(assertion.getConditions().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(30).toInstant()), equalTo(true));
+        assertThat(assertion.getConditions().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(2).toInstant()), equalTo(true));
         assertThat(assertion.getConditions().getAudienceRestrictions(), hasSize(1));
         assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences(), hasSize(1));
         assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI(), equalTo(SP_ENTITY_ID));
@@ -205,7 +206,6 @@ public class SAMLResponseGeneratorTest {
         and_decrypt_Assertion();
         assertThat(assertion.getAttributeStatements(), notNullValue());
         assertThat(assertion.getAttributeStatements(), hasSize(1));
-        assertThat(assertion.getAttributeStatements().get(0).getAttributes(), hasSize(2));
         assertThat(getAttributeValue("action"), equalTo("A"));
         assertThat(getAttributeValue("profile"), equalTo("CL"));
     }
@@ -268,7 +268,8 @@ public class SAMLResponseGeneratorTest {
     }
 
     private void when_generate_a_response() {
-        response = generator.generate(application);
+        final IDPToken<Response> token = generator.generate(application);
+        response = (Response) samlHelper.decode(token.serialize());
     }
 
     private void and_decrypt_Assertion() {

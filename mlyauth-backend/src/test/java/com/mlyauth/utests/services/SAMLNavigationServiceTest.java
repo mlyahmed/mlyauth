@@ -8,7 +8,11 @@ import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
+import com.mlyauth.security.token.IDPToken;
+import com.mlyauth.security.token.SAMLResponseToken;
 import com.mlyauth.services.SAMLNavigationService;
+import com.mlyauth.tools.KeysForTests;
+import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,13 +23,14 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
 
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
-import static org.opensaml.xml.util.Base64.encodeBytes;
 
 public class SAMLNavigationServiceTest {
 
@@ -44,7 +49,7 @@ public class SAMLNavigationServiceTest {
     @InjectMocks
     private SAMLNavigationService service;
 
-    private Response response;
+    private IDPToken<Response> token;
 
     private Application application;
 
@@ -53,9 +58,11 @@ public class SAMLNavigationServiceTest {
         MockitoAnnotations.initMocks(this);
         DefaultBootstrap.bootstrap();
         application = new Application();
-        response = samlHelper.buildSAMLObject(Response.class);
-        response.setDestination(TARGET_APP_URL);
-        when(responseGenerator.generate(application)).thenReturn(response);
+        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
+        token = new SAMLResponseToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
+        token.setTargetURL(TARGET_APP_URL);
+        token.cypher();
+        when(responseGenerator.generate(application)).thenReturn(token);
     }
 
     @Test
@@ -67,7 +74,7 @@ public class SAMLNavigationServiceTest {
         assertThat(authNavigation.getTarget(), equalTo(TARGET_APP_URL));
         assertThat(authNavigation.getAttributes(), hasSize(1));
         assertThat(authNavigation.getAttribute("SAMLResponse"), notNullValue());
-        assertThat(authNavigation.getAttribute("SAMLResponse").getValue(), equalTo(encodeBytes(samlHelper.toString(response).getBytes())));
+        assertThat(authNavigation.getAttribute("SAMLResponse").getValue(), equalTo(token.serialize()));
     }
 
     @Test(expected = NotSPSAMLApplicationException.class)
