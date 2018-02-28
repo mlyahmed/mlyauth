@@ -75,6 +75,17 @@ configurations {
     }
 }
 
+test {
+    testLogging {
+        showStandardStreams = false
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            }
+        }
+    }
+}
+
 jacoco {
     toolVersion = "0.7.9"
     reportsDir = file("$buildDir/coverage")

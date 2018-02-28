@@ -541,6 +541,41 @@ public class SAMLFreshResponseTokenTest {
         token.setIssuer(randomString());
     }
 
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_audience_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setAudience(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_target_URL_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_delegator_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_delegate_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_verdict_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setVerdict(TokenVerdict.FAIL);
+    }
+
     private void given_forged_token() {
         token.setId(randomString());
         token.setVerdict(TokenVerdict.SUCCESS);

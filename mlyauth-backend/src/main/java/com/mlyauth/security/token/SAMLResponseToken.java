@@ -209,6 +209,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setAudience(String audienceURI) {
+        checkCommitted();
         audience.setAudienceURI(audienceURI);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setInResponseTo(audienceURI);
         status = FORGED;
@@ -221,6 +222,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setTargetURL(String url) {
+        checkCommitted();
         response.setDestination(url);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setRecipient(url);
         status = FORGED;
@@ -233,6 +235,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setDelegator(String delegatorID) {
+        checkCommitted();
         setAttributeValue(DELEGATOR_ATTR, delegatorID);
         status = FORGED;
     }
@@ -244,6 +247,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setDelegate(String delegateURI) {
+        checkCommitted();
         setAttributeValue(DELEGATE_ATTR, delegateURI);
         status = FORGED;
     }
@@ -256,6 +260,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setVerdict(TokenVerdict verdict) {
+        checkCommitted();
         response.getStatus().getStatusCode().setValue((SUCCESS == verdict) ? SUCCESS_URI : AUTHN_FAILED_URI);
         status = FORGED;
     }
