@@ -527,6 +527,20 @@ public class SAMLFreshResponseTokenTest {
         token.setBP(randomString());
     }
 
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_state_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setState(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_issuer_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setIssuer(randomString());
+    }
+
     private void given_forged_token() {
         token.setId(randomString());
         token.setVerdict(TokenVerdict.SUCCESS);

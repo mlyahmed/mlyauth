@@ -133,7 +133,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setId(String id) {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
         response.setID(id);
         assertion.setID(id);
         status = FORGED;
@@ -146,7 +146,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setSubject(String value) {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
         subject.getNameID().setValue(value);
         status = FORGED;
     }
@@ -160,7 +160,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
         setAttributeValue(SCOPES_ATTR, scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")));
         status = FORGED;
     }
@@ -172,7 +172,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setBP(String bp) {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
         setAttributeValue(BP_ATTR, bp);
         status = FORGED;
     }
@@ -184,6 +184,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setState(String state) {
+        checkCommitted();
         setAttributeValue(STATE_ATTR, state);
         status = FORGED;
     }
@@ -195,6 +196,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setIssuer(String issuerURI) {
+        checkCommitted();
         response.getIssuer().setValue(issuerURI);
         assertion.getIssuer().setValue(issuerURI);
         status = FORGED;
@@ -307,14 +309,17 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void decipher() {
-        if (committed)
-            throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
     }
 
     @Override
     public String serialize() {
         if (status != CYPHERED) throw TokenNotCipheredException.newInstance();
         return encodeBytes(samlHelper.toString(response).getBytes());
+    }
+
+    private void checkCommitted() {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
     }
 
     private void setAttributeValue(String attributeName, String attributeValue) {
