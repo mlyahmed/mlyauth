@@ -87,6 +87,23 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    public void when_create_fresh_response_then_token_claims_must_be_fresh() {
+        assertThat(token.getId(), nullValue());
+        assertThat(token.getSubject(), nullValue());
+        assertThat(token.getScopes(), empty());
+        assertThat(token.getBP(), nullValue());
+        assertThat(token.getState(), nullValue());
+        assertThat(token.getIssuer(), nullValue());
+        assertThat(token.getAudience(), nullValue());
+        assertThat(token.getDelegator(), nullValue());
+        assertThat(token.getDelegate(), nullValue());
+        assertThat(token.getVerdict(), nullValue());
+        assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
+        assertThat(token.getType(), equalTo(TokenType.ACCESS));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FRESH));
+    }
+
+    @Test
     public void when_create_fresh_response_then_token_native_must_be_fresh() {
         assertThat(token.getNative(), notNullValue());
         assertThat(token.getNative().getStatus(), notNullValue());
@@ -111,63 +128,6 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_then_it_is_effective_now() {
-        assertThat(token.getEffectiveTime(), notNullValue());
-        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements()
-                .get(0).getAuthnInstant(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getAuthnStatements()
-                .get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault())
-                .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
-    }
-
-
-    @Test
-    public void when_create_a_fresh_token_then_it_expires_in_2_minutes() {
-        assertThat(token.getExpiryTime(), notNullValue());
-        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
-        assertThat(token.getNative().getAssertions()
-                .get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
-        assertThat(token.getNative().getAssertions()
-                .get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
-                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
-        assertThat(token.getNative().getAssertions()
-                .get(0).getConditions().getNotOnOrAfter(), notNullValue());
-        assertThat(token.getNative().getAssertions()
-                .get(0).getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
-                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
-    }
-
-    @DataProvider
-    public static Object[][] scopes() {
-        // @formatter:off
-        return new Object[][]{
-                {PERSON.name(), POLICY.name(), CLAIM.name()},
-                {PROPOSAL.name(), POLICY.name(), PERSON.name()},
-                {POLICY.name(), CLAIM.name(), PERSON.name(), PROPOSAL.name()},
-                {POLICY.name()},
-                {CLAIM.name()},
-        };
-        // @formatter:on
-    }
-
-    @Test
-    @UseDataProvider("scopes")
-    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
-        final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
-        token.setScopes(scopes);
-        assertThat(token.getScopes(), equalTo(scopes));
-        assertThat(getAttributeValue(token.getNative().getAssertions().get(0), SCOPES_ATTR), equalTo(compact(scopes)));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
-    }
-
-    private String compact(Set<TokenScope> scopesSet) {
-        return scopesSet.stream().map(TokenScope::name).collect(Collectors.joining("|"));
-    }
-
-    @Test
     public void when_create_a_fresh_token_and_set_Id_then_must_be_set() {
         String id = randomString();
         token.setId(id);
@@ -176,15 +136,14 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_it_issued_now() {
-        assertThat(token.getIssuanceTime(), notNullValue());
-        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getIssueInstant(), notNullValue());
-        assertThat(token.getNative().getIssueInstant().toDateTime(DateTimeZone.getDefault())
-                .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getIssueInstant()
-                .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+    public void when_serialize_cyphered_token_then_the_id_must_be_committed() {
+        final String id = randomString();
+        token.setId(id);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(response.getID(), equalTo(id));
+        assertThat(assertion.getID(), equalTo(id));
     }
 
     @DataProvider
@@ -207,6 +166,57 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    @UseDataProvider("subjects")
+    public void when_serialize_cyphered_token_then_the_subject_must_be_committed(String subject) {
+        token.setSubject(subject);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(assertion.getSubject(), notNullValue());
+        assertThat(assertion.getSubject().getNameID().getValue(), equalTo(subject));
+        assertThat(assertion.getSubject().getNameID().getFormat(), equalTo(TRANSIENT));
+        assertThat(assertion.getSubject().getSubjectConfirmations(), hasSize(1));
+        assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getMethod(), equalTo(METHOD_BEARER));
+    }
+
+    @DataProvider
+    public static Object[][] scopes() {
+        // @formatter:off
+        return new Object[][]{
+                {PERSON.name(), POLICY.name(), CLAIM.name()},
+                {PROPOSAL.name(), POLICY.name(), PERSON.name()},
+                {POLICY.name(), CLAIM.name(), PERSON.name(), PROPOSAL.name()},
+                {POLICY.name()},
+                {CLAIM.name()},
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("scopes")
+    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
+        final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
+        token.setScopes(scopes);
+        assertThat(token.getScopes(), equalTo(scopes));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    @UseDataProvider("scopes")
+    public void when_serialize_cyphered_token_then_the_scopes_must_be_committed(String... scopesArray) {
+        final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
+        token.setScopes(scopes);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(getAttributeValue(assertion, SCOPES_ATTR), equalTo(compact(scopes)));
+    }
+
+    private String compact(Set<TokenScope> scopesSet) {
+        return scopesSet.stream().map(TokenScope::name).collect(Collectors.joining("|"));
+    }
+
+    @Test
     public void when_create_a_fresh_token_and_set_BP_then_it_must_be_set() {
         final String bp = randomString();
         token.setBP(bp);
@@ -216,7 +226,17 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_State_then_it_must_be_set() {
+    public void when_serialize_cyphered_token_then_the_BP_must_be_committed() {
+        final String bp = randomString();
+        token.setBP(bp);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(getAttributeValue(assertion, BP_ATTR), equalTo(bp));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_set_state_then_it_must_be_set() {
         final String state = randomString();
         token.setState(state);
         assertThat(token.getState(), equalTo(state));
@@ -224,32 +244,76 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    public void when_serialize_cyphered_token_then_the_state_must_be_committed() {
+        final String state = randomString();
+        token.setState(state);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(getAttributeValue(assertion, STATE_ATTR), equalTo(state));
+    }
+
+    @Test
     public void when_create_a_fresh_token_and_set_issuer_then_it_must_be_set() {
         final String issuerURI = randomString();
         token.setIssuer(issuerURI);
         assertThat(token.getIssuer(), equalTo(issuerURI));
-        assertThat(token.getNative().getIssuer(), notNullValue());
-        assertThat(token.getNative().getIssuer().getValue(), equalTo(issuerURI));
-        assertThat(token.getNative().getAssertions().get(0).getIssuer(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getIssuer().getValue(), equalTo(issuerURI));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
-    public void when_create_fresh_response_then_token_claims_must_be_fresh() {
-        assertThat(token.getId(), nullValue());
-        assertThat(token.getSubject(), nullValue());
-        assertThat(token.getScopes(), empty());
-        assertThat(token.getBP(), nullValue());
-        assertThat(token.getState(), nullValue());
-        assertThat(token.getIssuer(), nullValue());
-        assertThat(token.getAudience(), nullValue());
-        assertThat(token.getDelegator(), nullValue());
-        assertThat(token.getDelegate(), nullValue());
-        assertThat(token.getVerdict(), nullValue());
-        assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
-        assertThat(token.getType(), equalTo(TokenType.ACCESS));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FRESH));
+    public void when_serialize_cyphered_token_then_the_issuer_must_be_committed() {
+        final String issuerURI = randomString();
+        token.setIssuer(issuerURI);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(response.getIssuer(), notNullValue());
+        assertThat(response.getIssuer().getValue(), equalTo(issuerURI));
+        assertThat(assertion.getIssuer(), notNullValue());
+        assertThat(assertion.getIssuer().getValue(), equalTo(issuerURI));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_set_audience_then_it_must_be_set() {
+        final String audience = randomString();
+        token.setAudience(audience);
+        assertThat(token.getAudience(), equalTo(audience));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_audience_must_be_committed() {
+        final String audience = randomString();
+        token.setAudience(audience);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(assertion.getConditions(), notNullValue());
+        assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0)
+                .getAudienceURI(), equalTo(audience));
+        assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData()
+                .getInResponseTo(), equalTo(audience));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_set_target_URL_then_it_must_be_set() {
+        final String url = randomString();
+        token.setTargetURL(url);
+        assertThat(token.getTargetURL(), equalTo(url));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_target_URL_must_be_committed() {
+        final String url = randomString();
+        token.setTargetURL(url);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(response.getDestination(), equalTo(url));
+        assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData()
+                .getRecipient(), equalTo(url));
     }
 
     @Test
@@ -261,11 +325,31 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    public void when_serialize_cyphered_token_then_the_delegator_must_be_committed() {
+        final String delegator = randomString();
+        token.setDelegator(delegator);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(getAttributeValue(assertion, DELEGATOR_ATTR), equalTo(delegator));
+    }
+
+    @Test
     public void when_create_a_fresh_token_and_set_delegate_then_it_must_be_set() {
-        final String delegate = randomString();
-        token.setDelegate(delegate);
-        assertThat(token.getDelegate(), equalTo(delegate));
+        final String delegateURI = randomString();
+        token.setDelegate(delegateURI);
+        assertThat(token.getDelegate(), equalTo(delegateURI));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_delegate_must_be_committed() {
+        final String delegateURI = randomString();
+        token.setDelegate(delegateURI);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(getAttributeValue(assertion, DELEGATE_ATTR), equalTo(delegateURI));
     }
 
     @Test
@@ -285,28 +369,50 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_audience_then_it_must_be_set() {
-        final String audience = randomString();
-        token.setAudience(audience);
-        assertThat(token.getAudience(), equalTo(audience));
-        assertThat(token.getNative().getAssertions().get(0).getConditions(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getConditions().getAudienceRestrictions()
-                .get(0).getAudiences().get(0).getAudienceURI(), equalTo(audience));
-        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(audience));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    public void when_create_a_fresh_token_then_it_is_effective_now() {
+        assertThat(token.getEffectiveTime(), notNullValue());
+        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_target_URL_then_it_must_be_set() {
-        final String url = randomString();
-        token.setTargetURL(url);
-        assertThat(token.getTargetURL(), equalTo(url));
-        assertThat(token.getNative().getDestination(), equalTo(url));
-        assertThat(token.getNative().getAssertions().get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData().getRecipient(), equalTo(url));
+    public void when_serialize_cyphered_token_then_the_effective_time_must_be_committed() {
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(assertion.getAuthnStatements().get(0).getAuthnInstant(), notNullValue());
+        assertThat(assertion.getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault())
+                .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
     }
 
+    @Test
+    public void when_create_a_fresh_token_then_it_expires_in_2_minutes() {
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(token.getNative().getAssertions()
+                .get(0).getSubject().getSubjectConfirmations()
+                .get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
+        assertThat(token.getNative().getAssertions()
+                .get(0).getSubject().getSubjectConfirmations()
+                .get(0).getSubjectConfirmationData().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
+                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(token.getNative().getAssertions()
+                .get(0).getConditions().getNotOnOrAfter(), notNullValue());
+        assertThat(token.getNative().getAssertions()
+                .get(0).getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
+                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_it_issued_now() {
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getIssueInstant(), notNullValue());
+        assertThat(token.getNative().getIssueInstant().toDateTime(DateTimeZone.getDefault())
+                .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
+        assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
+        assertThat(token.getNative().getAssertions().get(0).getIssueInstant()
+                .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+    }
 
     @Test
     public void when_create_a_fresh_token_and_cypher_it_then_it_must_be_set_as_cyphered() {
@@ -354,41 +460,6 @@ public class SAMLFreshResponseTokenTest {
     public void when_serialize_a_not_ciphered_token_then_error() {
         given_forged_token();
         when_serialize_the_token();
-    }
-
-    @Test
-    public void when_serialize_cyphered_token_then_the_id_must_be_committed() {
-        final String id = randomString();
-        token.setId(id);
-        when_cypher_the_token();
-        Response response = (Response) samlHelper.decode(when_serialize_the_token());
-        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(response.getID(), equalTo(id));
-        assertThat(assertion.getID(), equalTo(id));
-    }
-
-    @Test
-    public void when_serialize_cyphered_token_then_the_delegate_must_be_committed() {
-        final String delegate = randomString();
-        token.setDelegate(delegate);
-        when_cypher_the_token();
-        Response response = (Response) samlHelper.decode(when_serialize_the_token());
-        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(getAttributeValue(assertion, DELEGATE_ATTR), equalTo(delegate));
-    }
-
-    @Test
-    public void when_serialize_cyphered_token_then_the_subject_must_be_committed() {
-        final String subject = randomString();
-        token.setSubject(subject);
-        when_cypher_the_token();
-        Response response = (Response) samlHelper.decode(when_serialize_the_token());
-        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(assertion.getSubject(), notNullValue());
-        assertThat(assertion.getSubject().getNameID().getValue(), equalTo(subject));
-        assertThat(assertion.getSubject().getNameID().getFormat(), equalTo(TRANSIENT));
-        assertThat(assertion.getSubject().getSubjectConfirmations(), hasSize(1));
-        assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getMethod(), equalTo(METHOD_BEARER));
     }
 
     private void given_forged_token() {

@@ -85,8 +85,9 @@ public class SAMLResponseToken implements IDPToken<Response> {
         final Attribute state = samlHelper.buildStringAttribute(STATE_ATTR, null);
         final Attribute scopes = samlHelper.buildStringAttribute(SCOPES_ATTR, null);
         final Attribute bp = samlHelper.buildStringAttribute(BP_ATTR, null);
+        final Attribute delegator = samlHelper.buildStringAttribute(DELEGATOR_ATTR, null);
         final Attribute delegate = samlHelper.buildStringAttribute(DELEGATE_ATTR, null);
-        assertionAttributes.addAll(Arrays.asList(state, scopes, bp, delegate));
+        assertionAttributes.addAll(Arrays.asList(state, scopes, bp, delegator, delegate));
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
@@ -219,16 +220,17 @@ public class SAMLResponseToken implements IDPToken<Response> {
     public void setTargetURL(String url) {
         response.setDestination(url);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setRecipient(url);
+        status = FORGED;
     }
 
     @Override
     public String getDelegator() {
-        return attributes.get(DELEGATOR_ATTR);
+        return getAttributeValue(DELEGATOR_ATTR);
     }
 
     @Override
     public void setDelegator(String delegatorID) {
-        attributes.put(DELEGATOR_ATTR, delegatorID);
+        setAttributeValue(DELEGATOR_ATTR, delegatorID);
         status = FORGED;
     }
 
