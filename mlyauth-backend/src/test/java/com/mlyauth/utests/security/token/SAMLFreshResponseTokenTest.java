@@ -361,11 +361,48 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    public void when_serialize_cyphered_token_then_the_success_verdict_must_be_committed() {
+        token.setVerdict(TokenVerdict.SUCCESS);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        assertThat(response.getStatus().getStatusCode().getValue(), equalTo(StatusCode.SUCCESS_URI));
+    }
+
+    @Test
     public void when_create_fresh_token_and_set_fail_verdict_then_it_must_be_set() {
         token.setVerdict(TokenVerdict.FAIL);
         assertThat(token.getVerdict(), equalTo(TokenVerdict.FAIL));
         assertThat(token.getNative().getStatus().getStatusCode().getValue(), equalTo(StatusCode.AUTHN_FAILED_URI));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_fail_verdict_must_be_committed() {
+        token.setVerdict(TokenVerdict.FAIL);
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        assertThat(response.getStatus().getStatusCode().getValue(), equalTo(StatusCode.AUTHN_FAILED_URI));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_then_it_expires_in_2_minutes() {
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_expiry_time_must_be_committed() {
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData()
+                .getNotOnOrAfter(), notNullValue());
+        assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData()
+                .getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
+                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(assertion.getConditions().getNotOnOrAfter(), notNullValue());
+        assertThat(assertion.getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
+                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
     }
 
     @Test
@@ -385,33 +422,22 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_then_it_expires_in_2_minutes() {
-        assertThat(token.getExpiryTime(), notNullValue());
-        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
-        assertThat(token.getNative().getAssertions()
-                .get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
-        assertThat(token.getNative().getAssertions()
-                .get(0).getSubject().getSubjectConfirmations()
-                .get(0).getSubjectConfirmationData().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
-                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
-        assertThat(token.getNative().getAssertions()
-                .get(0).getConditions().getNotOnOrAfter(), notNullValue());
-        assertThat(token.getNative().getAssertions()
-                .get(0).getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
-                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
-    }
-
-    @Test
     public void when_create_a_fresh_token_it_issued_now() {
         assertThat(token.getIssuanceTime(), notNullValue());
         assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getIssueInstant(), notNullValue());
-        assertThat(token.getNative().getIssueInstant().toDateTime(DateTimeZone.getDefault())
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_issuance_time_must_be_committed() {
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(response.getIssueInstant(), notNullValue());
+        assertThat(response.getIssueInstant().toDateTime(DateTimeZone.getDefault())
                 .isAfter((new DateTime()).minusSeconds(1)), equalTo(true));
-        assertThat(token.getNative().getAssertions().get(0).getIssueInstant(), notNullValue());
-        assertThat(token.getNative().getAssertions().get(0).getIssueInstant()
-                .toDateTime(DateTimeZone.getDefault()).isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(assertion.getIssueInstant(), notNullValue());
+        assertThat(assertion.getIssueInstant().toDateTime(DateTimeZone.getDefault())
+                .isAfter(DateTime.now().minusSeconds(1)), equalTo(true));
     }
 
     @Test
