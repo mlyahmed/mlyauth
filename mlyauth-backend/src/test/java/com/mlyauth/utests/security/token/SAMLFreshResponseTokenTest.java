@@ -422,6 +422,19 @@ public class SAMLFreshResponseTokenTest {
     }
 
     @Test
+    public void when_serialize_cyphered_token_then_the_auth_context_is_set() {
+        given_forged_token();
+        when_cypher_the_token();
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
+        Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
+        assertThat(assertion.getAuthnStatements().get(0).getAuthnContext()
+                .getAuthnContextClassRef(), notNullValue());
+        ;
+        assertThat(assertion.getAuthnStatements().get(0).getAuthnContext().getAuthnContextClassRef()
+                .getAuthnContextClassRef(), equalTo(AuthnContext.PASSWORD_AUTHN_CTX));
+    }
+
+    @Test
     public void when_create_a_fresh_token_it_issued_now() {
         assertThat(token.getIssuanceTime(), notNullValue());
         assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
@@ -451,22 +464,20 @@ public class SAMLFreshResponseTokenTest {
     public void when_serialize_a_cyphered_token_then_return_encoded_response() {
         given_forged_token();
         when_cypher_the_token();
-        String serialized = when_serialize_the_token();
-        assertThat(serialized, notNullValue());
-        assertThat(samlHelper.decode(serialized), instanceOf(Response.class));
+        assertThat(when_serialize_the_token(), notNullValue());
+        assertThat(samlHelper.decode(when_serialize_the_token()), instanceOf(Response.class));
     }
 
     @Test
     public void when_serialize_a_cyphered_token_then_return_signed_response() {
         given_forged_token();
         when_cypher_the_token();
-        final String serialized = when_serialize_the_token();
-        Response response = (Response) samlHelper.decode(serialized);
+        Response response = (Response) samlHelper.decode(when_serialize_the_token());
         samlHelper.validateSignature(response, decipherCred);
     }
 
     @Test
-    public void when_serialize_a_cyphered_token_then_return_encrypted_assertion() {
+    public void when_serialize_a_cyphered_token_then_return_an_encrypted_assertion() {
         given_forged_token();
         when_cypher_the_token();
         final String serialized = when_serialize_the_token();
@@ -486,6 +497,34 @@ public class SAMLFreshResponseTokenTest {
     public void when_serialize_a_not_ciphered_token_then_error() {
         given_forged_token();
         when_serialize_the_token();
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_id_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setId(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_subject_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setSubject(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_scopes_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setScopes(new HashSet<>(Arrays.asList(PERSON)));
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_BP_and_already_ciphered_then_error() {
+        given_forged_token();
+        when_cypher_the_token();
+        token.setBP(randomString());
     }
 
     private void given_forged_token() {

@@ -39,8 +39,6 @@ public class SAMLResponseToken implements IDPToken<Response> {
     private Assertion assertion;
     private Subject subject;
     private Audience audience;
-    private HashMap<String, String> attributes;
-
     private TokenStatus status;
     private boolean committed;
 
@@ -61,7 +59,6 @@ public class SAMLResponseToken implements IDPToken<Response> {
         initSubject();
         initAudience();
         initResponse();
-        attributes = new HashMap<>();
         status = TokenStatus.FRESH;
     }
 
@@ -136,6 +133,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setId(String id) {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
         response.setID(id);
         assertion.setID(id);
         status = FORGED;
@@ -148,6 +146,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setSubject(String value) {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
         subject.getNameID().setValue(value);
         status = FORGED;
     }
@@ -161,6 +160,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
         setAttributeValue(SCOPES_ATTR, scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")));
         status = FORGED;
     }
@@ -172,6 +172,7 @@ public class SAMLResponseToken implements IDPToken<Response> {
 
     @Override
     public void setBP(String bp) {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
         setAttributeValue(BP_ATTR, bp);
         status = FORGED;
     }
