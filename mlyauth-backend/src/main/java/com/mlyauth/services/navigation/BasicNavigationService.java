@@ -2,6 +2,7 @@ package com.mlyauth.services.navigation;
 
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.NavigationBean;
+import com.mlyauth.constants.AuthAspectType;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
@@ -20,12 +21,13 @@ import java.util.LinkedList;
 import static com.mlyauth.beans.AttributeBean.*;
 
 @Service
-public class BasicNavigationService {
+public class BasicNavigationService implements ISPNavigationService {
 
     @Autowired
     private PersonDAO personDAO;
 
 
+    @Override
     public NavigationBean newNavigation(String appname) {
 
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
@@ -44,6 +46,11 @@ public class BasicNavigationService {
         navigation.setAttributes(navigationAttributes);
 
         return navigation;
+    }
+
+    @Override
+    public AuthAspectType getSupportedAspect() {
+        return AuthAspectType.AUTH_BASIC;
     }
 
 }

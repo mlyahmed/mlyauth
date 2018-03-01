@@ -2,6 +2,7 @@ package com.mlyauth.services.navigation;
 
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.NavigationBean;
+import com.mlyauth.constants.AuthAspectType;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
@@ -19,7 +20,7 @@ import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 
 @Service
-public class SAMLNavigationService {
+public class SPSAMLNavigationService implements ISPNavigationService {
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -27,6 +28,7 @@ public class SAMLNavigationService {
     @Autowired
     private SAMLResponseGenerator responseGenerator;
 
+    @Override
     public NavigationBean newNavigation(String appname) {
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
         NavigationBean navigation = new NavigationBean();
@@ -36,6 +38,11 @@ public class SAMLNavigationService {
         navigation.setTarget(token.getTargetURL());
         navigation.setAttributes(navigationAttributes);
         return navigation;
+    }
+
+    @Override
+    public AuthAspectType getSupportedAspect() {
+        return SP_SAML;
     }
 
     private void checkApplication(Application application) {

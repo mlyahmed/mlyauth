@@ -1,6 +1,6 @@
 package com.mlyauth.constants;
 
-public enum SPSAMLAuthAttributes implements IStringEnum {
+public enum SPSAMLAttribute implements IStringEnum {
     UNDEFINED("UNDEFINED"),
     SP_SAML_SSO_URL("Auth:SP:SAML:EndPoint"),
     SP_SAML_ENTITY_ID("Auth:SP:SAML:Entity:ID"),
@@ -8,12 +8,12 @@ public enum SPSAMLAuthAttributes implements IStringEnum {
 
     private final String value;
 
-    SPSAMLAuthAttributes(String value) {
+    SPSAMLAttribute(String value) {
         this.value = value;
     }
 
-    public static SPSAMLAuthAttributes create(String value) {
-        return UNDEFINED.create(SPSAMLAuthAttributes.class, value);
+    public static SPSAMLAttribute create(String value) {
+        return UNDEFINED.create(SPSAMLAttribute.class, value);
     }
 
     @Override

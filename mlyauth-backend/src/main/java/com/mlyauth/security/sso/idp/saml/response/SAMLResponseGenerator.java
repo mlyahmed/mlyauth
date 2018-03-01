@@ -21,7 +21,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
-import static com.mlyauth.constants.SPSAMLAuthAttributes.*;
+import static com.mlyauth.constants.SPSAMLAttribute.*;
 
 @Component
 public class SAMLResponseGenerator {

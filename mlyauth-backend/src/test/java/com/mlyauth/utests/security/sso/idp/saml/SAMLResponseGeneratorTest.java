@@ -2,7 +2,7 @@ package com.mlyauth.utests.security.sso.idp.saml;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.constants.AuthAspectType;
-import com.mlyauth.constants.SPSAMLAuthAttributes;
+import com.mlyauth.constants.SPSAMLAttribute;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
@@ -246,7 +246,7 @@ public class SAMLResponseGeneratorTest {
         final ApplicationAspectAttributeId ssoUrl = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(applicationId)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_SSO_URL.getValue());
+                .setAttributeCode(SPSAMLAttribute.SP_SAML_SSO_URL.getValue());
         ssoUrlAttribute = ApplicationAspectAttribute.newInstance().setId(ssoUrl).setValue(spSAMLSSOUrl);
         appAspectAttrobutes.add(ssoUrlAttribute);
     }
@@ -254,7 +254,7 @@ public class SAMLResponseGeneratorTest {
     private void given_the_application_sp_entity_id(long applicationId, String entityId) {
         final ApplicationAspectAttributeId ssoEntityId = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_ENTITY_ID.getValue());
+                .setAttributeCode(SPSAMLAttribute.SP_SAML_ENTITY_ID.getValue());
         ssoEntityIdAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEntityId).setValue(entityId);
         appAspectAttrobutes.add(ssoEntityIdAttribute);
     }
@@ -262,7 +262,7 @@ public class SAMLResponseGeneratorTest {
     private void givent_the_application_sp_encryption_certificate(long applicationId) {
         final ApplicationAspectAttributeId ssoEncryptionCertificate = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
+                .setAttributeCode(SPSAMLAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
         ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEncryptionCertificate).setValue(encodedCertificate);
         appAspectAttrobutes.add(ssoEncryptionCertificateAttribute);
     }

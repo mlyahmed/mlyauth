@@ -10,7 +10,7 @@ import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.security.token.IDPToken;
 import com.mlyauth.security.token.SAMLResponseToken;
-import com.mlyauth.services.navigation.SAMLNavigationService;
+import com.mlyauth.services.navigation.SPSAMLNavigationService;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
 import org.junit.Before;
@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-public class SAMLNavigationServiceTest {
+public class SPSAMLNavigationServiceTest {
 
     public static final String TARGET_APP = "TargetApp";
     public static final String TARGET_APP_URL = "http://application.com/sp/saml/sso";
@@ -47,7 +47,7 @@ public class SAMLNavigationServiceTest {
     private SAMLHelper samlHelper = new SAMLHelper();
 
     @InjectMocks
-    private SAMLNavigationService service;
+    private SPSAMLNavigationService service;
 
     private IDPToken<Response> token;
 

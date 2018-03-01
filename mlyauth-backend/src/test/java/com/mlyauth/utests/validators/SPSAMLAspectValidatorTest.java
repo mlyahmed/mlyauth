@@ -1,7 +1,7 @@
 package com.mlyauth.utests.validators;
 
 import com.mlyauth.constants.AuthAspectType;
-import com.mlyauth.constants.SPSAMLAuthAttributes;
+import com.mlyauth.constants.SPSAMLAttribute;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
@@ -157,7 +157,7 @@ public class SPSAMLAspectValidatorTest {
         final ApplicationAspectAttributeId encryptionCertificateId = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
+                .setAttributeCode(SPSAMLAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
         final Pair<PrivateKey, X509Certificate> credentialPair = KeysForTests.generateRSACredential();
         final String certificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
         certificateAttribute = ApplicationAspectAttribute.newInstance()
@@ -170,7 +170,7 @@ public class SPSAMLAspectValidatorTest {
         ApplicationAspectAttributeId ssoEntityIdAttribute = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_ENTITY_ID.getValue());
+                .setAttributeCode(SPSAMLAttribute.SP_SAML_ENTITY_ID.getValue());
         entityIdAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ssoEntityIdAttribute)
                 .setValue("APP_SP_SAML_ID");
@@ -181,7 +181,7 @@ public class SPSAMLAspectValidatorTest {
         final ApplicationAspectAttributeId ssoUrlId = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(SPSAMLAuthAttributes.SP_SAML_SSO_URL.getValue());
+                .setAttributeCode(SPSAMLAttribute.SP_SAML_SSO_URL.getValue());
         ssoUrlAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ssoUrlId)
                 .setValue("http://localhost/sp/saml/sso");
