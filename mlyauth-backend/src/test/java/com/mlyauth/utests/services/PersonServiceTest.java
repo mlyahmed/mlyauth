@@ -1,7 +1,7 @@
 package com.mlyauth.utests.services;
 
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.services.PersonService;
+import com.mlyauth.services.domain.PersonService;
 import com.mlyauth.validators.IPersonValidator;
 import org.junit.Before;
 import org.junit.Test;

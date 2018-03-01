@@ -1,8 +1,8 @@
 package com.mlyauth.mvc;
 
 import com.mlyauth.beans.AuthNavigation;
-import com.mlyauth.services.BasicNavigationService;
-import com.mlyauth.services.SAMLNavigationService;
+import com.mlyauth.services.navigation.BasicNavigationService;
+import com.mlyauth.services.navigation.SAMLNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

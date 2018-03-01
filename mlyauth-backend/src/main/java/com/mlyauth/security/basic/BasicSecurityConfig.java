@@ -1,4 +1,4 @@
-package com.mlyauth.security;
+package com.mlyauth.security.basic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -7,7 +7,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.itests.AbstractIntegrationTest;
-import com.mlyauth.services.SAMLNavigationService;
+import com.mlyauth.services.navigation.SAMLNavigationService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

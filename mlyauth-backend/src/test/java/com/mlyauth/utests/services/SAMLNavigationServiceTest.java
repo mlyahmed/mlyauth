@@ -10,7 +10,7 @@ import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.security.token.IDPToken;
 import com.mlyauth.security.token.SAMLResponseToken;
-import com.mlyauth.services.SAMLNavigationService;
+import com.mlyauth.services.navigation.SAMLNavigationService;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
 import org.junit.Before;
