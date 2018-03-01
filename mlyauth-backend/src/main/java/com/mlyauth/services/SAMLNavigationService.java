@@ -6,7 +6,6 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
-import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.security.token.IDPToken;
 import org.opensaml.saml2.core.Response;
@@ -27,9 +26,6 @@ public class SAMLNavigationService {
 
     @Autowired
     private SAMLResponseGenerator responseGenerator;
-
-    @Autowired
-    private SAMLHelper samlHelper;
 
     public AuthNavigation newNavigation(String appname) {
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
