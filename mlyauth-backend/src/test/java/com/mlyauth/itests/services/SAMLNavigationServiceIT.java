@@ -1,6 +1,6 @@
 package com.mlyauth.itests.services;
 
-import com.mlyauth.beans.AuthNavigation;
+import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.SPSAMLAuthAttributes;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
@@ -37,7 +37,7 @@ public class SAMLNavigationServiceIT extends AbstractIntegrationTest{
     public void when_generate_a_saml_navigation_to_Policy_Dev_then_generate_it(){
         final Application policyDev = applicationDAO.findByAppname(POLICY_DEV);
         final Map<SPSAMLAuthAttributes, ApplicationAspectAttribute> attributes = attributesDAO.findAndIndex(policyDev.getId(), SP_SAML.name());
-        final AuthNavigation navigation = navigationService.newNavigation(POLICY_DEV);
+        final NavigationBean navigation = navigationService.newNavigation(POLICY_DEV);
         assertThat(navigation, notNullValue());
         assertThat(navigation.getTarget(), equalTo(attributes.get(SP_SAML_SSO_URL).getValue()));
         assertThat(navigation.getAttribute(SAML_RESPONSE.getCode()), notNullValue());

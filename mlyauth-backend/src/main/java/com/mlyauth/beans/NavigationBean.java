@@ -2,7 +2,7 @@ package com.mlyauth.beans;
 
 import java.util.Collection;
 
-public class AuthNavigation {
+public class NavigationBean {
 
 
     private String target;

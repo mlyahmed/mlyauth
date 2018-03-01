@@ -1,6 +1,6 @@
 package com.mlyauth.mvc;
 
-import com.mlyauth.beans.AuthNavigation;
+import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.services.navigation.BasicNavigationService;
 import com.mlyauth.services.navigation.SAMLNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ public class NavigationController {
 
     @GetMapping("/saml/to/{appname}")
     public String samlNavigateTo(@PathVariable String appname, Model model) {
-        final AuthNavigation authNavigation = samlNavigationService.newNavigation(appname);
-        model.addAttribute("navigation", authNavigation);
+        final NavigationBean navigation = samlNavigationService.newNavigation(appname);
+        model.addAttribute("navigation", navigation);
         return "post-navigation";
     }
 
     @GetMapping("/basic/to/{appname}")
     public String basicNavigateTo(@PathVariable String appname, Model model) {
-        final AuthNavigation authNavigation = basicNavigationService.newNavigation(appname);
-        model.addAttribute("navigation", authNavigation);
+        final NavigationBean navigation = basicNavigationService.newNavigation(appname);
+        model.addAttribute("navigation", navigation);
         return "post-navigation";
     }
 

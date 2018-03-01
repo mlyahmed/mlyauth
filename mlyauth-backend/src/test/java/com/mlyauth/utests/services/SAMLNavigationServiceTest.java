@@ -1,6 +1,6 @@
 package com.mlyauth.utests.services;
 
-import com.mlyauth.beans.AuthNavigation;
+import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AuthAspectType;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
@@ -69,12 +69,12 @@ public class SAMLNavigationServiceTest {
     public void when_create_new_navigation_to_an_assigned_app_then_return_it() {
         application.setAspects(new HashSet<>(Arrays.asList(AuthAspectType.SP_SAML)));
         when(applicationDAO.findByAppname(TARGET_APP)).thenReturn(application);
-        final AuthNavigation authNavigation = service.newNavigation(TARGET_APP);
-        assertThat(authNavigation, notNullValue());
-        assertThat(authNavigation.getTarget(), equalTo(TARGET_APP_URL));
-        assertThat(authNavigation.getAttributes(), hasSize(1));
-        assertThat(authNavigation.getAttribute("SAMLResponse"), notNullValue());
-        assertThat(authNavigation.getAttribute("SAMLResponse").getValue(), equalTo(token.serialize()));
+        final NavigationBean navigation = service.newNavigation(TARGET_APP);
+        assertThat(navigation, notNullValue());
+        assertThat(navigation.getTarget(), equalTo(TARGET_APP_URL));
+        assertThat(navigation.getAttributes(), hasSize(1));
+        assertThat(navigation.getAttribute("SAMLResponse"), notNullValue());
+        assertThat(navigation.getAttribute("SAMLResponse").getValue(), equalTo(token.serialize()));
     }
 
     @Test(expected = NotSPSAMLApplicationException.class)

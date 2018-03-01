@@ -1,7 +1,7 @@
 package com.mlyauth.services.navigation;
 
 import com.mlyauth.beans.AttributeBean;
-import com.mlyauth.beans.AuthNavigation;
+import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
@@ -27,9 +27,9 @@ public class SAMLNavigationService {
     @Autowired
     private SAMLResponseGenerator responseGenerator;
 
-    public AuthNavigation newNavigation(String appname) {
+    public NavigationBean newNavigation(String appname) {
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
-        AuthNavigation navigation = new AuthNavigation();
+        NavigationBean navigation = new NavigationBean();
         checkApplication(applicationDAO.findByAppname(appname));
         final IDPToken<Response> token = responseGenerator.generate(applicationDAO.findByAppname(appname));
         navigationAttributes.add(SAML_RESPONSE.setValue(token.serialize()));

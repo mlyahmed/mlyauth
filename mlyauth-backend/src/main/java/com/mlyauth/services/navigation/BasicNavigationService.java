@@ -1,7 +1,7 @@
 package com.mlyauth.services.navigation;
 
 import com.mlyauth.beans.AttributeBean;
-import com.mlyauth.beans.AuthNavigation;
+import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
@@ -26,10 +26,10 @@ public class BasicNavigationService {
     private PersonDAO personDAO;
 
 
-    public AuthNavigation newNavigation(String appname) {
+    public NavigationBean newNavigation(String appname) {
 
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
-        AuthNavigation authNavigation = new AuthNavigation();
+        NavigationBean navigation = new NavigationBean();
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserDetails userdetails = (UserDetails) authentication.getPrincipal();
         final Person person = personDAO.findByEmail(userdetails.getUsername());
@@ -41,9 +41,9 @@ public class BasicNavigationService {
         navigationAttributes.add(BASIC_AUTH_ENDPOINT.setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
         navigationAttributes.add(BASIC_AUTH_USERNAME.setAlias("j_username").setValue("gestF"));
         navigationAttributes.add(BASIC_AUTH_PASSWORD.setAlias("j_password").setValue("gestF"));
-        authNavigation.setAttributes(navigationAttributes);
+        navigation.setAttributes(navigationAttributes);
 
-        return authNavigation;
+        return navigation;
     }
 
 }
