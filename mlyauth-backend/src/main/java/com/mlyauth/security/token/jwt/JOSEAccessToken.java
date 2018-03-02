@@ -3,6 +3,7 @@ package com.mlyauth.security.token.jwt;
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenAlreadyCommitedException;
+import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.token.IDPToken;
 import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWEObject;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
 
+import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
@@ -203,7 +205,7 @@ public class JOSEAccessToken implements IDPToken {
             final JWEHeader header = new JWEHeader.Builder(RSA_OAEP_256, A128GCM).build();
             token = new JWEObject(header, new Payload(tokenSigned));
             token.encrypt(new RSAEncrypter(publicKey));
-            status = TokenStatus.CYPHERED;
+            status = CYPHERED;
             committed = true;
         } catch (Exception e) {
             throw JOSEErrorException.newInstance(e);
@@ -218,6 +220,9 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public String serialize() {
+        if (status != CYPHERED)
+            throw TokenNotCipheredException.newInstance();
+
         return token.serialize();
     }
 }

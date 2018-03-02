@@ -16,10 +16,10 @@ spring:
 logging:
   file: logs/mlyauth-test.log
   level:
-    ROOT: INFO
+    ROOT: ERROR
     org.opensaml: INFO
     org.springframework.core: INFO
-    org.springframework.security.saml: DEBUG
+    org.springframework.security.saml: INFO
 
 liquibase:
   change-log: classpath:database/db-changelog-test.yaml

@@ -4,6 +4,7 @@ import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenType;
 import com.mlyauth.exception.TokenAlreadyCommitedException;
+import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.JWEObject;
@@ -109,8 +110,7 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_cypher_a_fresh_token_then_it_must_be_signed_and_encrypted() throws Exception {
         token.cypher();
-        final String cypheredToken = token.serialize();
-        JWEObject jweObject = JWEObject.parse(cypheredToken);
+        JWEObject jweObject = JWEObject.parse(token.serialize());
         jweObject.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
         assertThat(signedJWT, notNullValue());
@@ -127,6 +127,11 @@ public class JOSEFreshAccessTokenTest {
     public void when_cypher_a_fresh_token_and_decypher_then_error() {
         token.cypher();
         token.decipher();
+    }
+
+    @Test(expected = TokenNotCipheredException.class)
+    public void when_serialize_a_non_cyphered_token_then_error() {
+        token.serialize();
     }
 
     private static String randomString() {
