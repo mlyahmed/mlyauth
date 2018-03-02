@@ -18,10 +18,8 @@ import org.springframework.util.Assert;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.mlyauth.security.token.ExtraClaims.SCOPES;
@@ -75,14 +73,13 @@ public class JOSEAccessToken extends AbstractToken {
     public Set<TokenScope> getScopes() {
         final String scopes = (String) builder.build().getClaim(SCOPES.getValue());
         if (StringUtils.isBlank(scopes)) return Collections.emptySet();
-        return Arrays.stream(scopes.split("\\|")).map(v -> TokenScope.valueOf(v)).collect(Collectors.toSet());
+        return splitScopes(scopes);
     }
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
         checkCommitted();
-        builder = builder.claim(SCOPES.getValue(), scopes.stream().map(TokenScope::name)
-                .collect(Collectors.joining("|")));
+        builder = builder.claim(SCOPES.getValue(), compactScopes(scopes));
         status = TokenStatus.FORGED;
     }
 
