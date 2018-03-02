@@ -145,22 +145,26 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public String getDelegator() {
-        return null;
+        return (String) builder.build().getClaim(DELEGATOR.getValue());
     }
 
     @Override
     public void setDelegator(String delegatorID) {
-
+        checkCommitted();
+        builder = builder.claim(DELEGATOR.getValue(), delegatorID);
+        status = TokenStatus.FORGED;
     }
 
     @Override
     public String getDelegate() {
-        return null;
+        return (String) builder.build().getClaim(DELEGATE.getValue());
     }
 
     @Override
     public void setDelegate(String delegateURI) {
-
+        checkCommitted();
+        builder = builder.claim(DELEGATE.getValue(), delegateURI);
+        status = TokenStatus.FORGED;
     }
 
     @Override

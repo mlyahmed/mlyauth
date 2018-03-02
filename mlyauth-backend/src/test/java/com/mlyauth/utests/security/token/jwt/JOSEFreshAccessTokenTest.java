@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.security.token.ExtraClaims.*;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
@@ -250,11 +251,50 @@ public class JOSEFreshAccessTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getClaim(TARGET_URL.getValue()), equalTo(targetURL));
     }
 
+    @Test
+    public void when_create_a_fresh_token_and_set_Delegator_then_must_be_set() {
+        String delegator = randomString();
+        token.setDelegator(delegator);
+        assertThat(token.getDelegator(), equalTo(delegator));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
 
+    @Test
+    public void when_serialize_cyphered_token_then_the_Delegator_must_be_committed() throws Exception {
+        String delegator = randomString();
+        token.setDelegator(delegator);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(DELEGATOR.getValue()), equalTo(delegator));
+    }
 
+    @Test
+    public void when_create_a_fresh_token_and_set_Delegate_then_must_be_set() {
+        String delegate = randomString();
+        token.setDelegate(delegate);
+        assertThat(token.getDelegate(), equalTo(delegate));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
 
+    @Test
+    public void when_serialize_cyphered_token_then_the_Delegate_must_be_committed() throws Exception {
+        String delegate = randomString();
+        token.setDelegate(delegate);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(DELEGATE.getValue()), equalTo(delegate));
+    }
 
-
+    @Test
+    public void when_create_a_fresh_token_and_set_Verdict_then_must_be_set() {
+        token.setVerdict(SUCCESS);
+        assertThat(token.getDelegate(), equalTo(SUCCESS));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
 
 
 
@@ -305,6 +345,18 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_Target_URL_and_already_ciphered_then_error() {
         token.cypher();
         token.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_Delegator_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_Delegate_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setDelegate(randomString());
     }
 
     @Test
