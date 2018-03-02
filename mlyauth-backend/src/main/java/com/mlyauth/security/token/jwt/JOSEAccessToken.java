@@ -2,9 +2,8 @@ package com.mlyauth.security.token.jwt;
 
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.exception.TokenAlreadyCommitedException;
 import com.mlyauth.exception.TokenNotCipheredException;
-import com.mlyauth.security.token.IDPToken;
+import com.mlyauth.security.token.AbstractToken;
 import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.JWSHeader;
@@ -29,10 +28,9 @@ import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
 
-public class JOSEAccessToken implements IDPToken {
+public class JOSEAccessToken extends AbstractToken {
 
     private TokenStatus status = TokenStatus.FRESH;
-    private boolean committed = false;
 
     private final PrivateKey privateKey;
     private final RSAPublicKey publicKey;
@@ -234,7 +232,4 @@ public class JOSEAccessToken implements IDPToken {
         return token.serialize();
     }
 
-    private void checkCommitted() {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
-    }
 }

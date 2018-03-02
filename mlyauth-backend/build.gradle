@@ -79,12 +79,12 @@ test {
     testLogging {
         showStandardStreams = false
         afterSuite { desc, result ->
-            if (!desc.parent) { // will match the outermost suite
+            if (!desc.parent) {
                 println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
             }
         }
         afterTest { desc, result ->
-            println "Test : ${desc.name} [${desc.className}] with result: ${result.resultType}"
+            println "Test : ${desc.name} [${desc.className}] with result: ${result.resultType} (${result.endTime - result.startTime} ms)"
         }
     }
 }
