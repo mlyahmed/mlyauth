@@ -2,6 +2,7 @@ package com.mlyauth.security.token.jwt;
 
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.JOSEErrorException;
+import com.mlyauth.exception.TokenAlreadyCommitedException;
 import com.mlyauth.security.token.IDPToken;
 import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWEObject;
@@ -26,9 +27,11 @@ import static com.nimbusds.jose.JWSAlgorithm.RS256;
 public class JOSEAccessToken implements IDPToken {
 
     private TokenStatus status = TokenStatus.FRESH;
+    private boolean committed = false;
 
     private final PrivateKey privateKey;
     private final RSAPublicKey publicKey;
+
     private JWEObject token;
     private JWTClaimsSet.Builder builder;
 
@@ -201,6 +204,7 @@ public class JOSEAccessToken implements IDPToken {
             token = new JWEObject(header, new Payload(tokenSigned));
             token.encrypt(new RSAEncrypter(publicKey));
             status = TokenStatus.CYPHERED;
+            committed = true;
         } catch (Exception e) {
             throw JOSEErrorException.newInstance(e);
         }
@@ -208,7 +212,8 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public void decipher() {
-
+        if (committed)
+            throw TokenAlreadyCommitedException.newInstance();
     }
 
     @Override

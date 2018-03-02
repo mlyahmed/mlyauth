@@ -3,6 +3,7 @@ package com.mlyauth.utests.security.token.jwt;
 import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenType;
+import com.mlyauth.exception.TokenAlreadyCommitedException;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.JWEObject;
@@ -80,15 +81,9 @@ public class JOSEFreshAccessTokenTest {
         final String id = randomString();
         token.setId(id);
         token.cypher();
-        final String cypheredToken = token.serialize();
-        assertThat(cypheredToken, notNullValue());
-
-        JWEObject jweObject = JWEObject.parse(cypheredToken);
+        JWEObject jweObject = JWEObject.parse(token.serialize());
         jweObject.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
-
-        assertThat(signedJWT, notNullValue());
-        assertTrue(signedJWT.verify(new RSASSAVerifier(decipherCred.getValue())));
         assertThat(signedJWT.getJWTClaimsSet().getJWTID(), equalTo(id));
     }
 
@@ -105,15 +100,9 @@ public class JOSEFreshAccessTokenTest {
         String subject = randomString();
         token.setSubject(subject);
         token.cypher();
-        final String cypheredToken = token.serialize();
-        assertThat(cypheredToken, notNullValue());
-
-        JWEObject jweObject = JWEObject.parse(cypheredToken);
+        JWEObject jweObject = JWEObject.parse(token.serialize());
         jweObject.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
-
-        assertThat(signedJWT, notNullValue());
-        assertTrue(signedJWT.verify(new RSASSAVerifier(decipherCred.getValue())));
         assertThat(signedJWT.getJWTClaimsSet().getSubject(), equalTo(subject));
     }
 
@@ -132,6 +121,12 @@ public class JOSEFreshAccessTokenTest {
     public void when_cypher_a_fresh_token_then_set_it_as_cyphered() {
         token.cypher();
         assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_cypher_a_fresh_token_and_decypher_then_error() {
+        token.cypher();
+        token.decipher();
     }
 
     private static String randomString() {
