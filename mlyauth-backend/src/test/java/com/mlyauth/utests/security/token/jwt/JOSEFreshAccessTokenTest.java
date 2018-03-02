@@ -31,8 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
-import static com.mlyauth.security.token.ExtraClaims.BP;
-import static com.mlyauth.security.token.ExtraClaims.SCOPES;
+import static com.mlyauth.security.token.ExtraClaims.*;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -175,6 +174,46 @@ public class JOSEFreshAccessTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getClaim(BP.getValue()), equalTo(bp));
     }
 
+    @Test
+    public void when_create_a_fresh_token_and_set_State_then_must_be_set() {
+        String state = randomString();
+        token.setState(state);
+        assertThat(token.getState(), equalTo(state));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_State_must_be_committed() throws Exception {
+        String state = randomString();
+        token.setState(state);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(STATE.getValue()), equalTo(state));
+    }
+
+    @Test
+    public void when_create_a_fresh_token_and_set_Issuer_then_must_be_set() {
+        String issuer = randomString();
+        token.setIssuer(issuer);
+        assertThat(token.getIssuer(), equalTo(issuer));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_Issuer_must_be_committed() throws Exception {
+        String issuer = randomString();
+        token.setIssuer(issuer);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getIssuer(), equalTo(issuer));
+    }
+
+
+
 
 
 
@@ -200,6 +239,18 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_BP_and_already_ciphered_then_error() {
         token.cypher();
         token.setBP(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_State_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setState(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_Issuer_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setIssuer(randomString());
     }
 
     @Test
