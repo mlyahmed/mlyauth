@@ -12,19 +12,24 @@ import java.util.Set;
 
 public class JWTAccessToken implements IDPToken {
 
+    private TokenStatus status = TokenStatus.FRESH;
+
     public JWTAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         Assert.notNull(privateKey, "The private key is mandatory");
         Assert.notNull(publicKey, "The public key is mandatory");
     }
 
+    private String id;
+
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public void setId(String id) {
-
+        this.id = id;
+        status = TokenStatus.FORGED;
     }
 
     @Override
@@ -154,7 +159,7 @@ public class JWTAccessToken implements IDPToken {
 
     @Override
     public TokenStatus getStatus() {
-        return TokenStatus.FRESH;
+        return status;
     }
 
     @Override
