@@ -1,4 +1,4 @@
-package com.mlyauth.utests.security.token;
+package com.mlyauth.utests.security.token.saml;
 
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenAlreadyCommitedException;

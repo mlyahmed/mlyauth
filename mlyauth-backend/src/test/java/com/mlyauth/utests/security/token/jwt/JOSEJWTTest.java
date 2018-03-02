@@ -1,4 +1,4 @@
-package com.mlyauth.utests.security.jwt;
+package com.mlyauth.utests.security.token.jwt;
 
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.*;
