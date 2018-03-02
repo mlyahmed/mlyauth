@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.mlyauth.security.token.ExtraClaims.*;
-import static com.mlyauth.security.token.saml.SAMLResponseToken.STATE_ATTR;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -226,7 +225,7 @@ public class SAMLFreshResponseTokenTest {
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
         Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(getAttributeValue(assertion, STATE_ATTR), equalTo(state));
+        assertThat(getAttributeValue(assertion, STATE.getValue()), equalTo(state));
     }
 
     @Test
