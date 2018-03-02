@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.security.token.ExtraClaims.BP;
 import static com.mlyauth.security.token.ExtraClaims.SCOPES;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
@@ -155,6 +156,28 @@ public class JOSEFreshAccessTokenTest {
                 equalTo(scopes.stream().map(TokenScope::name).collect(Collectors.joining("|"))));
     }
 
+    @Test
+    public void when_create_a_fresh_token_and_set_BP_then_must_be_set() {
+        String bp = randomString();
+        token.setBP(bp);
+        assertThat(token.getBP(), equalTo(bp));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_BP_must_be_committed() throws Exception {
+        String bp = randomString();
+        token.setBP(bp);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(BP.getValue()), equalTo(bp));
+    }
+
+
+
+
     @Test(expected = TokenAlreadyCommitedException.class)
     public void when_set_id_and_already_ciphered_then_error() {
         token.cypher();
@@ -171,6 +194,12 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_scopes_and_already_ciphered_then_error() {
         token.cypher();
         token.setScopes(Collections.emptySet());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_BP_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setBP(randomString());
     }
 
     @Test

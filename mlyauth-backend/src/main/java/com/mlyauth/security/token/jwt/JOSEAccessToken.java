@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
+import static com.mlyauth.security.token.ExtraClaims.BP;
 import static com.mlyauth.security.token.ExtraClaims.SCOPES;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
@@ -85,12 +86,14 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public String getBP() {
-        return null;
+        return (String) builder.build().getClaim(BP.getValue());
     }
 
     @Override
     public void setBP(String bp) {
-
+        checkCommitted();
+        builder = builder.claim(BP.getValue(), bp);
+        status = TokenStatus.FORGED;
     }
 
     @Override
