@@ -4,7 +4,7 @@ import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenAlreadyCommitedException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.sso.SAMLHelper;
-import com.mlyauth.security.token.saml.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -43,9 +43,9 @@ import static org.opensaml.saml2.core.NameIDType.TRANSIENT;
 import static org.opensaml.saml2.core.SubjectConfirmation.METHOD_BEARER;
 
 @RunWith(DataProviderRunner.class)
-public class SAMLFreshResponseTokenTest {
+public class SAMLFreshAccessTokenTest {
 
-    private SAMLResponseToken token;
+    private SAMLAccessToken token;
     private SAMLHelper samlHelper;
     private Credential cypherCred;
     private Credential decipherCred;
@@ -58,7 +58,7 @@ public class SAMLFreshResponseTokenTest {
         final Pair<PrivateKey, X509Certificate> pair2 = KeysForTests.generateRSACredential();
         cypherCred = samlHelper.toCredential(pair1.getKey(), pair2.getValue());
         decipherCred = samlHelper.toCredential(pair2.getKey(), pair1.getValue());
-        token = new SAMLResponseToken(cypherCred);
+        token = new SAMLAccessToken(cypherCred);
         ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
     }
 
@@ -66,7 +66,7 @@ public class SAMLFreshResponseTokenTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void when_credential_is_null_then_error() {
-        new SAMLResponseToken(null);
+        new SAMLAccessToken(null);
     }
 
 
@@ -75,7 +75,7 @@ public class SAMLFreshResponseTokenTest {
         final BasicCredential credential = new BasicCredential();
         credential.setPublicKey(KeysForTests.generateRSACredential().getValue().getPublicKey());
         credential.setPrivateKey(null);
-        new SAMLResponseToken(credential);
+        new SAMLAccessToken(credential);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -83,7 +83,7 @@ public class SAMLFreshResponseTokenTest {
         final BasicCredential credential = new BasicCredential();
         credential.setPrivateKey(KeysForTests.generateRSACredential().getKey());
         credential.setPublicKey(null);
-        new SAMLResponseToken(credential);
+        new SAMLAccessToken(credential);
     }
 
     @Test

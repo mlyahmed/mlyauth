@@ -1,6 +1,6 @@
 package com.mlyauth.security.token;
 
-import com.mlyauth.security.token.saml.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLAccessToken;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ public class TokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public IDPToken createFreshSAMLResponseToken(Credential credential) {
-        return new SAMLResponseToken(credential);
+        return new SAMLAccessToken(credential);
     }
 
 }

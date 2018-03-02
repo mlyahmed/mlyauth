@@ -9,7 +9,7 @@ import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.security.token.IDPToken;
-import com.mlyauth.security.token.saml.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLAccessToken;
 import com.mlyauth.services.navigation.SPSAMLNavigationService;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
@@ -58,7 +58,7 @@ public class SPSAMLNavigationServiceTest {
         DefaultBootstrap.bootstrap();
         application = new Application();
         final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
-        token = new SAMLResponseToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
+        token = new SAMLAccessToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
         token.setTargetURL(TARGET_APP_URL);
         token.cypher();
         when(responseGenerator.generate(application)).thenReturn(token);

@@ -7,7 +7,7 @@ import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.IDPToken;
-import com.mlyauth.security.token.saml.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLAccessToken;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class SAMLResponseGenerator {
         validator.validate(app);
         final List<ApplicationAspectAttribute> attributes = loadAttributes(app);
 
-        SAMLResponseToken token = new SAMLResponseToken(buildCredential(attributes));
+        SAMLAccessToken token = new SAMLAccessToken(buildCredential(attributes));
         token.setId(samlHelper.generateRandomId());
         token.setIssuer(idpEntityId);
         token.setTargetURL(getTargetURL(attributes).getValue());
