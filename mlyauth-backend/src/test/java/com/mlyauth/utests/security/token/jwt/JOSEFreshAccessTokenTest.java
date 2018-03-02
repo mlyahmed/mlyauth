@@ -82,9 +82,9 @@ public class JOSEFreshAccessTokenTest {
         final String id = randomString();
         token.setId(id);
         token.cypher();
-        JWEObject jweObject = JWEObject.parse(token.serialize());
-        jweObject.decrypt(new RSADecrypter(decipherCred.getKey()));
-        final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getJWTID(), equalTo(id));
     }
 
@@ -101,18 +101,30 @@ public class JOSEFreshAccessTokenTest {
         String subject = randomString();
         token.setSubject(subject);
         token.cypher();
-        JWEObject jweObject = JWEObject.parse(token.serialize());
-        jweObject.decrypt(new RSADecrypter(decipherCred.getKey()));
-        final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getSubject(), equalTo(subject));
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_id_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setId(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_subject_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setSubject(randomString());
     }
 
     @Test
     public void when_cypher_a_fresh_token_then_it_must_be_signed_and_encrypted() throws Exception {
         token.cypher();
-        JWEObject jweObject = JWEObject.parse(token.serialize());
-        jweObject.decrypt(new RSADecrypter(decipherCred.getKey()));
-        final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT, notNullValue());
         assertTrue(signedJWT.verify(new RSASSAVerifier(decipherCred.getValue())));
     }

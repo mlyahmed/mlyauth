@@ -52,6 +52,7 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public void setId(String id) {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
         builder = builder.jwtID(id);
         status = TokenStatus.FORGED;
     }
@@ -63,6 +64,7 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public void setSubject(String subject) {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
         builder = builder.subject(subject);
         status = TokenStatus.FORGED;
     }
