@@ -9,7 +9,6 @@ import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.IDPToken;
 import com.mlyauth.security.token.saml.SAMLResponseToken;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +43,7 @@ public class SAMLResponseGenerator {
     @Value("${idp.saml.entityId}")
     private String idpEntityId;
 
-    public IDPToken<Response> generate(Application app) {
+    public IDPToken generate(Application app) {
         Assert.notNull(app, "The application parameter is null");
         validator.validate(app);
         final List<ApplicationAspectAttribute> attributes = loadAttributes(app);

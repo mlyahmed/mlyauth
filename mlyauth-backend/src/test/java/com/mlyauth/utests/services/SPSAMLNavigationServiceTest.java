@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
 
 import java.security.PrivateKey;
@@ -49,7 +48,7 @@ public class SPSAMLNavigationServiceTest {
     @InjectMocks
     private SPSAMLNavigationService service;
 
-    private IDPToken<Response> token;
+    private IDPToken token;
 
     private Application application;
 

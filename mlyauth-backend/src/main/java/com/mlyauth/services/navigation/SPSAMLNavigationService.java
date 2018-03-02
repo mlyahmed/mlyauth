@@ -9,7 +9,6 @@ import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.security.token.IDPToken;
-import org.opensaml.saml2.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ public class SPSAMLNavigationService implements ISPNavigationService {
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
         NavigationBean navigation = new NavigationBean();
         checkApplication(applicationDAO.findByAppname(appname));
-        final IDPToken<Response> token = responseGenerator.generate(applicationDAO.findByAppname(appname));
+        final IDPToken token = responseGenerator.generate(applicationDAO.findByAppname(appname));
         navigationAttributes.add(SAML_RESPONSE.setValue(token.serialize()));
         navigation.setTarget(token.getTargetURL());
         navigation.setAttributes(navigationAttributes);

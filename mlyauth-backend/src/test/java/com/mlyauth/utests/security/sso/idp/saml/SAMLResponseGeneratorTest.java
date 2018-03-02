@@ -268,7 +268,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     private void when_generate_a_response() {
-        final IDPToken<Response> token = generator.generate(application);
+        final IDPToken token = generator.generate(application);
         response = (Response) samlHelper.decode(token.serialize());
     }
 
