@@ -35,7 +35,8 @@ import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
-import static com.mlyauth.security.token.saml.SAMLResponseToken.*;
+import static com.mlyauth.security.token.ExtraClaims.*;
+import static com.mlyauth.security.token.saml.SAMLResponseToken.STATE_ATTR;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -185,7 +186,7 @@ public class SAMLFreshResponseTokenTest {
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
         Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(getAttributeValue(assertion, SCOPES_ATTR), equalTo(compact(scopes)));
+        assertThat(getAttributeValue(assertion, SCOPES.getValue()), equalTo(compact(scopes)));
     }
 
     private String compact(Set<TokenScope> scopesSet) {
@@ -207,7 +208,7 @@ public class SAMLFreshResponseTokenTest {
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
         Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(getAttributeValue(assertion, BP_ATTR), equalTo(bp));
+        assertThat(getAttributeValue(assertion, BP.getValue()), equalTo(bp));
     }
 
     @Test
@@ -306,7 +307,7 @@ public class SAMLFreshResponseTokenTest {
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
         Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(getAttributeValue(assertion, DELEGATOR_ATTR), equalTo(delegator));
+        assertThat(getAttributeValue(assertion, DELEGATOR.getValue()), equalTo(delegator));
     }
 
     @Test
@@ -324,7 +325,7 @@ public class SAMLFreshResponseTokenTest {
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
         Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
-        assertThat(getAttributeValue(assertion, DELEGATE_ATTR), equalTo(delegateURI));
+        assertThat(getAttributeValue(assertion, DELEGATE.getValue()), equalTo(delegateURI));
     }
 
     @Test

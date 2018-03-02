@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
+import static com.mlyauth.security.token.ExtraClaims.SCOPES;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
@@ -72,7 +73,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public Set<TokenScope> getScopes() {
-        final String scopes = (String) builder.build().getClaim("scopes");
+        final String scopes = (String) builder.build().getClaim(SCOPES.getValue());
         if (StringUtils.isBlank(scopes)) return Collections.emptySet();
         return Arrays.stream(scopes.split("\\|")).map(v -> TokenScope.valueOf(v)).collect(Collectors.toSet());
     }
@@ -80,7 +81,7 @@ public class JOSEAccessToken extends AbstractToken {
     @Override
     public void setScopes(Set<TokenScope> scopes) {
         checkCommitted();
-        builder = builder.claim("scopes", scopes.stream().map(TokenScope::name)
+        builder = builder.claim(SCOPES.getValue(), scopes.stream().map(TokenScope::name)
                 .collect(Collectors.joining("|")));
         status = TokenStatus.FORGED;
     }

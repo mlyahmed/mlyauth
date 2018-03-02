@@ -28,8 +28,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.security.token.ExtraClaims.SCOPES;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -138,6 +140,19 @@ public class JOSEFreshAccessTokenTest {
         token.setScopes(scopes);
         assertThat(token.getScopes(), equalTo(scopes));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    @UseDataProvider("scopes")
+    public void when_serialize_cyphered_token_then_the_scopes_must_be_committed(String... scopesArrays) throws Exception {
+        final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
+        token.setScopes(scopes);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(SCOPES.getValue()),
+                equalTo(scopes.stream().map(TokenScope::name).collect(Collectors.joining("|"))));
     }
 
     @Test(expected = TokenAlreadyCommitedException.class)
