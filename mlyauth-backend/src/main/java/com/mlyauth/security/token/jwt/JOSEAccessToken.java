@@ -121,12 +121,14 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public String getAudience() {
-        return null;
+        return builder.build().getAudience().stream().findFirst().orElse(null);
     }
 
     @Override
     public void setAudience(String audienceURI) {
-
+        checkCommitted();
+        builder = builder.audience(audienceURI);
+        status = TokenStatus.FORGED;
     }
 
     @Override

@@ -213,7 +213,24 @@ public class JOSEFreshAccessTokenTest {
     }
 
 
+    @Test
+    public void when_create_a_fresh_token_and_set_Audience_then_must_be_set() {
+        String audienceURI = randomString();
+        token.setAudience(audienceURI);
+        assertThat(token.getAudience(), equalTo(audienceURI));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
 
+    @Test
+    public void when_serialize_cyphered_token_then_the_Audience_must_be_committed() throws Exception {
+        String audienceURI = randomString();
+        token.setAudience(audienceURI);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getAudience().get(0), equalTo(audienceURI));
+    }
 
 
 
@@ -251,6 +268,12 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_Issuer_and_already_ciphered_then_error() {
         token.cypher();
         token.setIssuer(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_Audience_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setAudience(randomString());
     }
 
     @Test
