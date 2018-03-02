@@ -133,12 +133,14 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public String getTargetURL() {
-        return null;
+        return (String) builder.build().getClaim(TARGET_URL.getValue());
     }
 
     @Override
     public void setTargetURL(String url) {
-
+        checkCommitted();
+        builder = builder.claim(TARGET_URL.getValue(), url);
+        status = TokenStatus.FORGED;
     }
 
     @Override
