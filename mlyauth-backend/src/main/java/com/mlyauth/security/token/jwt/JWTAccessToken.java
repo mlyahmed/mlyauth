@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Set;
 
 public class JWTAccessToken implements IDPToken {
@@ -38,7 +39,7 @@ public class JWTAccessToken implements IDPToken {
 
     @Override
     public Set<TokenScope> getScopes() {
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
@@ -143,17 +144,17 @@ public class JWTAccessToken implements IDPToken {
 
     @Override
     public TokenNorm getNorm() {
-        return null;
+        return TokenNorm.JWT;
     }
 
     @Override
     public TokenType getType() {
-        return null;
+        return TokenType.ACCESS;
     }
 
     @Override
     public TokenStatus getStatus() {
-        return null;
+        return TokenStatus.FRESH;
     }
 
     @Override
