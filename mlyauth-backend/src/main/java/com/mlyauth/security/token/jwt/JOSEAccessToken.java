@@ -1,45 +1,65 @@
 package com.mlyauth.security.token.jwt;
 
 import com.mlyauth.constants.*;
+import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.security.token.IDPToken;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.crypto.RSAEncrypter;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
 
-public class JWTAccessToken implements IDPToken {
+import static com.nimbusds.jose.EncryptionMethod.A128GCM;
+import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
+import static com.nimbusds.jose.JWSAlgorithm.RS256;
+
+public class JOSEAccessToken implements IDPToken {
 
     private TokenStatus status = TokenStatus.FRESH;
 
-    public JWTAccessToken(PrivateKey privateKey, PublicKey publicKey) {
+    private final PrivateKey privateKey;
+    private final RSAPublicKey publicKey;
+    private JWEObject token;
+    private JWTClaimsSet.Builder builder;
+
+    public JOSEAccessToken(PrivateKey privateKey, RSAPublicKey publicKey) {
         Assert.notNull(privateKey, "The private key is mandatory");
         Assert.notNull(publicKey, "The public key is mandatory");
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+        builder = new JWTClaimsSet.Builder();
     }
-
-    private String id;
 
     @Override
     public String getId() {
-        return id;
+        return builder.build().getJWTID();
     }
 
     @Override
     public void setId(String id) {
-        this.id = id;
+        builder = builder.jwtID(id);
         status = TokenStatus.FORGED;
     }
 
     @Override
     public String getSubject() {
-        return null;
+        return builder.build().getSubject();
     }
 
     @Override
     public void setSubject(String subject) {
-
+        builder = builder.subject(subject);
+        status = TokenStatus.FORGED;
     }
 
     @Override
@@ -174,7 +194,16 @@ public class JWTAccessToken implements IDPToken {
 
     @Override
     public void cypher() {
-
+        try {
+            SignedJWT tokenSigned = new SignedJWT(new JWSHeader(RS256), builder.build());
+            tokenSigned.sign(new RSASSASigner(privateKey));
+            final JWEHeader header = new JWEHeader.Builder(RSA_OAEP_256, A128GCM).build();
+            token = new JWEObject(header, new Payload(tokenSigned));
+            token.encrypt(new RSAEncrypter(publicKey));
+            status = TokenStatus.CYPHERED;
+        } catch (Exception e) {
+            throw JOSEErrorException.newInstance(e);
+        }
     }
 
     @Override
@@ -184,6 +213,6 @@ public class JWTAccessToken implements IDPToken {
 
     @Override
     public String serialize() {
-        return null;
+        return token.serialize();
     }
 }
