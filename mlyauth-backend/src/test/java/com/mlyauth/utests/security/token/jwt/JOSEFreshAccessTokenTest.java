@@ -1,6 +1,7 @@
 package com.mlyauth.utests.security.token.jwt;
 
 import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenType;
 import com.mlyauth.exception.TokenAlreadyCommitedException;
@@ -11,20 +12,30 @@ import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.SignedJWT;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import javafx.util.Pair;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
+import java.util.Set;
 
+import static com.mlyauth.constants.TokenScope.*;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(DataProviderRunner.class)
 public class JOSEFreshAccessTokenTest {
 
     private JOSEAccessToken token;
@@ -107,6 +118,28 @@ public class JOSEFreshAccessTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getSubject(), equalTo(subject));
     }
 
+    @DataProvider
+    public static Object[][] scopes() {
+        // @formatter:off
+        return new Object[][]{
+                {PROPOSAL.name(), POLICY.name(), CLAIM.name()},
+                {PROPOSAL.name(), POLICY.name(), PERSON.name()},
+                {POLICY.name(), CLAIM.name(), PERSON.name(), PROPOSAL.name()},
+                {PROPOSAL.name()},
+                {PERSON.name()},
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("scopes")
+    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
+        final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
+        token.setScopes(scopes);
+        assertThat(token.getScopes(), equalTo(scopes));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
     @Test(expected = TokenAlreadyCommitedException.class)
     public void when_set_id_and_already_ciphered_then_error() {
         token.cypher();
@@ -117,6 +150,12 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_subject_and_already_ciphered_then_error() {
         token.cypher();
         token.setSubject(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_scopes_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setScopes(Collections.emptySet());
     }
 
     @Test

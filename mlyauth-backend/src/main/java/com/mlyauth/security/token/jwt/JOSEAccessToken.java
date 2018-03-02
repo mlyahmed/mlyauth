@@ -13,13 +13,16 @@ import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
@@ -52,7 +55,7 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public void setId(String id) {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
         builder = builder.jwtID(id);
         status = TokenStatus.FORGED;
     }
@@ -64,19 +67,24 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public void setSubject(String subject) {
-        if (committed) throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
         builder = builder.subject(subject);
         status = TokenStatus.FORGED;
     }
 
     @Override
     public Set<TokenScope> getScopes() {
-        return Collections.emptySet();
+        final String scopes = (String) builder.build().getClaim("scopes");
+        if (StringUtils.isBlank(scopes)) return Collections.emptySet();
+        return Arrays.stream(scopes.split("\\|")).map(v -> TokenScope.valueOf(v)).collect(Collectors.toSet());
     }
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
-
+        checkCommitted();
+        builder = builder.claim("scopes", scopes.stream().map(TokenScope::name)
+                .collect(Collectors.joining("|")));
+        status = TokenStatus.FORGED;
     }
 
     @Override
@@ -216,15 +224,17 @@ public class JOSEAccessToken implements IDPToken {
 
     @Override
     public void decipher() {
-        if (committed)
-            throw TokenAlreadyCommitedException.newInstance();
+        checkCommitted();
     }
 
     @Override
     public String serialize() {
         if (status != CYPHERED)
             throw TokenNotCipheredException.newInstance();
-
         return token.serialize();
+    }
+
+    private void checkCommitted() {
+        if (committed) throw TokenAlreadyCommitedException.newInstance();
     }
 }
