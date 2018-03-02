@@ -1,5 +1,6 @@
 package com.mlyauth.security.token;
 
+import com.mlyauth.security.token.saml.SAMLResponseToken;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

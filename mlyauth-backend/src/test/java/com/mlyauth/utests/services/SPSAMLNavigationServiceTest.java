@@ -9,7 +9,7 @@ import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.security.token.IDPToken;
-import com.mlyauth.security.token.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLResponseToken;
 import com.mlyauth.services.navigation.SPSAMLNavigationService;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;

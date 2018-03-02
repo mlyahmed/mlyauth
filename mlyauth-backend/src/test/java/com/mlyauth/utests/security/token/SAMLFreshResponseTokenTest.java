@@ -4,7 +4,7 @@ import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenAlreadyCommitedException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.sso.SAMLHelper;
-import com.mlyauth.security.token.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLResponseToken;
 import com.mlyauth.tools.KeysForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
-import static com.mlyauth.security.token.SAMLResponseToken.*;
+import static com.mlyauth.security.token.saml.SAMLResponseToken.*;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;

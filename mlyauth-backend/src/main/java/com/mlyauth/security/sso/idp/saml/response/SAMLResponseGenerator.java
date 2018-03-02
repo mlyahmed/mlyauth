@@ -7,7 +7,7 @@ import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.IDPToken;
-import com.mlyauth.security.token.SAMLResponseToken;
+import com.mlyauth.security.token.saml.SAMLResponseToken;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.security.x509.BasicX509Credential;
