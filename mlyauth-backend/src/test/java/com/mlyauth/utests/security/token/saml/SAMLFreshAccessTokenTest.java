@@ -1,7 +1,7 @@
 package com.mlyauth.utests.security.token.saml;
 
 import com.mlyauth.constants.*;
-import com.mlyauth.exception.TokenAlreadyCommitedException;
+import com.mlyauth.exception.TokenAlreadyCommittedException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.token.saml.SAMLAccessToken;
@@ -488,7 +488,7 @@ public class SAMLFreshAccessTokenTest {
         assertThat(samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred), notNullValue());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_create_a_fresh_token_and_cypher_then_we_cannot_decipher_it() {
         given_forged_token();
         when_cypher_the_token();
@@ -501,84 +501,84 @@ public class SAMLFreshAccessTokenTest {
         when_serialize_the_token();
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_id_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setId(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_subject_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setSubject(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_scopes_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setScopes(new HashSet<>(Arrays.asList(PERSON)));
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_BP_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setBP(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_state_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setState(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_issuer_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setIssuer(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_audience_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setAudience(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_target_URL_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setTargetURL(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_delegator_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setDelegator(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_delegate_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setDelegate(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_verdict_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setVerdict(TokenVerdict.FAIL);
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_claim_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();

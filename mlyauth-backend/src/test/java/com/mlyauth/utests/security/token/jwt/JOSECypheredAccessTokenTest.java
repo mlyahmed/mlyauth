@@ -4,6 +4,7 @@ import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
+import com.mlyauth.exception.TokenAlreadyCommittedException;
 import com.mlyauth.security.token.ExtraClaims;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
@@ -16,6 +17,7 @@ import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.security.PrivateKey;
@@ -212,6 +214,13 @@ public class JOSECypheredAccessTokenTest {
         new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), null);
     }
 
+    @Test(expected = TokenAlreadyCommittedException.class)
+    @Ignore
+    public void the_id_is_not_modifiable_before_decipher_it() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setId(randomString());
+    }
+
     private void given_expected_claims() {
         expectedClaims = new JWTClaimsSet.Builder()
                 .jwtID(UUID.randomUUID().toString())
@@ -226,7 +235,7 @@ public class JOSECypheredAccessTokenTest {
                 .claim(ExtraClaims.DELEGATOR.getValue(), randomString())
                 .claim(ExtraClaims.DELEGATE.getValue(), randomString())
                 .claim(ExtraClaims.VERDICT.getValue(), TokenVerdict.SUCCESS)
-                .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 3))
                 .notBeforeTime(new Date())
                 .issueTime(new Date())
                 .build();

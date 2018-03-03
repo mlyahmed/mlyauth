@@ -1,7 +1,7 @@
 package com.mlyauth.utests.security.token.jwt;
 
 import com.mlyauth.constants.*;
-import com.mlyauth.exception.TokenAlreadyCommitedException;
+import com.mlyauth.exception.TokenAlreadyCommittedException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
@@ -387,73 +387,73 @@ public class JOSEFreshAccessTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().after(Date.from(instant)), equalTo(true));
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_id_and_already_ciphered_then_error() {
         token.cypher();
         token.setId(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_subject_and_already_ciphered_then_error() {
         token.cypher();
         token.setSubject(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_scopes_and_already_ciphered_then_error() {
         token.cypher();
         token.setScopes(Collections.emptySet());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_BP_and_already_ciphered_then_error() {
         token.cypher();
         token.setBP(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_State_and_already_ciphered_then_error() {
         token.cypher();
         token.setState(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Issuer_and_already_ciphered_then_error() {
         token.cypher();
         token.setIssuer(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Audience_and_already_ciphered_then_error() {
         token.cypher();
         token.setAudience(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Target_URL_and_already_ciphered_then_error() {
         token.cypher();
         token.setTargetURL(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Delegator_and_already_ciphered_then_error() {
         token.cypher();
         token.setDelegator(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Delegate_and_already_ciphered_then_error() {
         token.cypher();
         token.setDelegate(randomString());
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Verdict_and_already_ciphered_then_error() {
         token.cypher();
         token.setVerdict(TokenVerdict.SUCCESS);
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_set_Claim_and_already_ciphered_then_error() {
         token.cypher();
         token.setClaim(randomString(), randomString());
@@ -475,7 +475,7 @@ public class JOSEFreshAccessTokenTest {
         assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
     }
 
-    @Test(expected = TokenAlreadyCommitedException.class)
+    @Test(expected = TokenAlreadyCommittedException.class)
     public void when_cypher_a_fresh_token_and_decypher_then_error() {
         token.cypher();
         token.decipher();
