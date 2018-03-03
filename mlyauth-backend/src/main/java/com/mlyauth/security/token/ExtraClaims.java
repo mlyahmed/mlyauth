@@ -9,6 +9,7 @@ public enum ExtraClaims implements IStringEnum {
     SCOPES("scopes"),
     DELEGATOR("delegator"),
     DELEGATE("delegate"),
+    VERDICT("verdict"),
     TARGET_URL("targetURL"),
     STATE("state");
 

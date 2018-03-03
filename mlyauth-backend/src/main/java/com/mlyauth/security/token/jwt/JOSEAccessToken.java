@@ -169,12 +169,13 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public TokenVerdict getVerdict() {
-        return null;
+        return (TokenVerdict) builder.build().getClaim(VERDICT.getValue());
     }
 
     @Override
     public void setVerdict(TokenVerdict verdict) {
-
+        builder = builder.claim(VERDICT.getValue(), verdict);
+        status = TokenStatus.FORGED;
     }
 
     @Override

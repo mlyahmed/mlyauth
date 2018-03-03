@@ -292,11 +292,9 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_Verdict_then_must_be_set() {
         token.setVerdict(SUCCESS);
-        assertThat(token.getDelegate(), equalTo(SUCCESS));
+        assertThat(token.getVerdict(), equalTo(SUCCESS));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
-
-
 
 
     @Test(expected = TokenAlreadyCommitedException.class)
