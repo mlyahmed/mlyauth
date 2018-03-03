@@ -25,10 +25,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.security.token.ExtraClaims.*;
@@ -235,6 +232,18 @@ public class JOSECypheredAccessTokenTest {
     public void the_subject_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setSubject(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_scopes_are_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_scopes_are_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
     private void given_expected_claims() {

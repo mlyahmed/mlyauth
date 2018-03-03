@@ -110,7 +110,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
-        checkCommitted();
+        checkUnmodifiable();
         builder = builder.claim(SCOPES.getValue(), compactScopes(scopes));
         status = TokenStatus.FORGED;
     }
