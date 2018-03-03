@@ -2,7 +2,7 @@ package com.mlyauth.security.sso.idp.saml;
 
 import com.mlyauth.exception.AuthError;
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.security.sso.SAMLHelper;
+import com.mlyauth.tools.SAMLHelper;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;

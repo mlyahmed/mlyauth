@@ -1,4 +1,4 @@
-package com.mlyauth.security.sso;
+package com.mlyauth.tools;
 
 import com.mlyauth.exception.IDPSAMLErrorException;
 import org.opensaml.Configuration;
