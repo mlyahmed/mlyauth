@@ -4,13 +4,11 @@ import com.mlyauth.constants.*;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.token.AbstractToken;
-import com.nimbusds.jose.JWEHeader;
-import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +16,7 @@ import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,6 +25,7 @@ import java.util.Date;
 import java.util.Set;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
+import static com.mlyauth.constants.TokenStatus.DECIPHERED;
 import static com.mlyauth.security.token.ExtraClaims.*;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
@@ -37,7 +37,6 @@ public class JOSEAccessToken extends AbstractToken {
 
     private final PrivateKey privateKey;
     private final RSAPublicKey publicKey;
-    private final String cyphered;
 
     private JWEObject token;
     private JWTClaimsSet.Builder builder;
@@ -47,7 +46,6 @@ public class JOSEAccessToken extends AbstractToken {
         Assert.notNull(publicKey, "The public key is mandatory");
         this.privateKey = privateKey;
         this.publicKey = publicKey;
-        this.cyphered = null;
         builder = new JWTClaimsSet.Builder();
 
 
@@ -59,9 +57,21 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     public JOSEAccessToken(String serialize, PrivateKey privateKey, RSAPublicKey publicKey) {
+        Assert.notNull(serialize, "The cyphered token is mandatory");
+        Assert.notNull(privateKey, "The private key is mandatory");
+        Assert.notNull(publicKey, "The public key is mandatory");
         this.privateKey = privateKey;
         this.publicKey = publicKey;
-        cyphered = serialize;
+        parseCipheredToken(serialize);
+        status = TokenStatus.CYPHERED;
+    }
+
+    private void parseCipheredToken(String serialize) {
+        try {
+            token = JWEObject.parse(serialize);
+        } catch (ParseException e) {
+            throw JOSEErrorException.newInstance(e);
+        }
     }
 
     @Override
@@ -245,11 +255,7 @@ public class JOSEAccessToken extends AbstractToken {
     @Override
     public void cypher() {
         try {
-            SignedJWT tokenSigned = new SignedJWT(new JWSHeader(RS256), builder.build());
-            tokenSigned.sign(new RSASSASigner(privateKey));
-            final JWEHeader header = new JWEHeader.Builder(RSA_OAEP_256, A128GCM).build();
-            token = new JWEObject(header, new Payload(tokenSigned));
-            token.encrypt(new RSAEncrypter(publicKey));
+            signAndEncrypt();
             status = CYPHERED;
             committed = true;
         } catch (Exception e) {
@@ -257,17 +263,36 @@ public class JOSEAccessToken extends AbstractToken {
         }
     }
 
+    private void signAndEncrypt() throws JOSEException {
+        SignedJWT tokenSigned = new SignedJWT(new JWSHeader(RS256), builder.build());
+        tokenSigned.sign(new RSASSASigner(privateKey));
+        final JWEHeader header = new JWEHeader.Builder(RSA_OAEP_256, A128GCM).build();
+        token = new JWEObject(header, new Payload(tokenSigned));
+        token.encrypt(new RSAEncrypter(publicKey));
+    }
+
     @Override
     public void decipher() {
         checkCommitted();
         try {
-            JWEObject jweObject = JWEObject.parse(cyphered);
-            jweObject.decrypt(new RSADecrypter(privateKey));
-            final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
-            builder = new JWTClaimsSet.Builder(signedJWT.getJWTClaimsSet());
+            builder = new JWTClaimsSet.Builder(loadCipheredClaims().getJWTClaimsSet());
+            status = DECIPHERED;
         } catch (Exception e) {
             throw JOSEErrorException.newInstance(e);
         }
+    }
+
+    private SignedJWT loadCipheredClaims() throws JOSEException {
+        token.decrypt(new RSADecrypter(privateKey));
+        final SignedJWT signedJWT = token.getPayload().toSignedJWT();
+        checkSignature(signedJWT);
+        return signedJWT;
+    }
+
+    private void checkSignature(SignedJWT signedJWT) throws JOSEException {
+        final boolean wellSigned = signedJWT.verify(new RSASSAVerifier(publicKey));
+        if (!wellSigned)
+            throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
     }
 
     @Override

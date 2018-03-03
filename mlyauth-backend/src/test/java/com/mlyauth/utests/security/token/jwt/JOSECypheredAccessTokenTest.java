@@ -1,6 +1,7 @@
 package com.mlyauth.utests.security.token.jwt;
 
 import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.security.token.ExtraClaims;
@@ -48,9 +49,21 @@ public class JOSECypheredAccessTokenTest {
         final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
         cypherCred = new Pair<>(localCred.getKey(), (RSAPublicKey) peerCred.getValue().getPublicKey());
         decipherCred = new Pair<>(peerCred.getKey(), (RSAPublicKey) localCred.getValue().getPublicKey());
-
         given_expected_claims();
         given_the_claims_are_cyphered();
+    }
+
+    @Test
+    public void the_token_status_must_be_cyphered() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+    }
+
+    @Test
+    public void when_decipher_then_it_must_be_deciphered() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.decipher();
+        assertThat(token.getStatus(), equalTo(TokenStatus.DECIPHERED));
     }
 
     @Test
@@ -149,14 +162,37 @@ public class JOSECypheredAccessTokenTest {
     @Test(expected = JOSEErrorException.class)
     public void when_the_decryption_key_does_not_match_then_error() {
         final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
-        Pair<PrivateKey, RSAPublicKey> wronCred = new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), wronCred.getKey(), decipherCred.getValue());
+        Pair<PrivateKey, RSAPublicKey> wrongCred = new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), wrongCred.getKey(), decipherCred.getValue());
         token.decipher();
     }
 
-    private void when_decipher_the_token() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+    @Test(expected = JOSEErrorException.class)
+    public void when_the_signature_key_does_not_match_then_error() {
+        final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
+        Pair<PrivateKey, RSAPublicKey> wrongCred = new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), wrongCred.getValue());
         token.decipher();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_cyphered_token_is_null_then_erro() {
+        new JOSEAccessToken(null, decipherCred.getKey(), decipherCred.getValue());
+    }
+
+    @Test(expected = JOSEErrorException.class)
+    public void when_the_cyphered_token_is_not_well_formatted_then_erro() {
+        new JOSEAccessToken(randomString(), decipherCred.getKey(), decipherCred.getValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_private_key_is_null_then_erro() {
+        new JOSEAccessToken(tokenEncrypted.serialize(), null, decipherCred.getValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_public_key_is_null_then_erro() {
+        new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), null);
     }
 
     private void given_expected_claims() {
@@ -177,6 +213,11 @@ public class JOSECypheredAccessTokenTest {
                 .notBeforeTime(new Date())
                 .issueTime(new Date())
                 .build();
+    }
+
+    private void when_decipher_the_token() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.decipher();
     }
 
     private void given_the_claims_are_cyphered() throws JOSEException {
