@@ -324,8 +324,37 @@ public class JOSEFreshAccessTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getExpirationTime().before(Date.from(instant)), equalTo(true));
     }
 
+    @Test
+    public void when_create_a_fresh_token_then_it_is_effective_now() {
+        assertThat(token.getEffectiveTime(), notNullValue());
+        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+    }
 
+    @Test
+    public void when_serialize_cyphered_token_then_the_effective_time_must_be_committed() throws Exception {
+        token.cypher();
+        Instant instant = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getNotBeforeTime().after(Date.from(instant)), equalTo(true));
+    }
 
+    @Test
+    public void when_create_a_fresh_token_then_it_is_issued_now() {
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_issuance_time_must_be_committed() throws Exception {
+        token.cypher();
+        Instant instant = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getIssueTime().after(Date.from(instant)), equalTo(true));
+    }
 
     @Test(expected = TokenAlreadyCommitedException.class)
     public void when_set_id_and_already_ciphered_then_error() {

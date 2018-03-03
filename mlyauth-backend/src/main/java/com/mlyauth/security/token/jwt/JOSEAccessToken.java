@@ -48,8 +48,11 @@ public class JOSEAccessToken extends AbstractToken {
         builder = new JWTClaimsSet.Builder();
 
 
-        Instant instant = LocalDateTime.now().plusSeconds(179).atZone(ZoneId.systemDefault()).toInstant();
-        builder = builder.expirationTime(Date.from(instant));
+        Instant threeMinutesAfter = LocalDateTime.now().plusSeconds(179).atZone(ZoneId.systemDefault()).toInstant();
+        Instant aSecondAgo = LocalDateTime.now().plusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
+        builder = builder.expirationTime(Date.from(threeMinutesAfter))
+                .notBeforeTime(Date.from(aSecondAgo))
+                .issueTime(Date.from(aSecondAgo));
     }
 
     @Override
@@ -193,12 +196,12 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public LocalDateTime getEffectiveTime() {
-        return null;
+        return LocalDateTime.ofInstant(builder.build().getNotBeforeTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public LocalDateTime getIssuanceTime() {
-        return null;
+        return LocalDateTime.ofInstant(builder.build().getIssueTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override
