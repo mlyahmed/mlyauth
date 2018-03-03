@@ -6,7 +6,7 @@ import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.token.ExtraClaims;
-import com.mlyauth.token.jwt.JOSEAccessToken;
+import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;

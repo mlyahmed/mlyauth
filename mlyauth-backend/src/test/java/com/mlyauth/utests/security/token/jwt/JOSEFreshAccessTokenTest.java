@@ -3,7 +3,7 @@ package com.mlyauth.utests.security.token.jwt;
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.exception.TokenUnmodifiableException;
-import com.mlyauth.token.jwt.JOSEAccessToken;
+import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
