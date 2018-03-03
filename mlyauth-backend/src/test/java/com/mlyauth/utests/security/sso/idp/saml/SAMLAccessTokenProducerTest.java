@@ -8,9 +8,9 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.exception.IDPException;
+import com.mlyauth.producers.SAMLAccessTokenProducer;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
-import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.token.IDPToken;
 import com.mlyauth.tools.KeysForTests;
 import com.mlyauth.utests.security.context.MockContext;
@@ -49,16 +49,17 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.opensaml.saml2.core.SubjectConfirmation.METHOD_BEARER;
 
-public class SAMLResponseGeneratorTest {
+public class SAMLAccessTokenProducerTest {
+
     private static final long APPLICATION_ID = 2522l;
-    private static final String SP_SAMLSSO_URL = "http://localhost:8889/primainsure/S/S/O/saml/SSO";
+    private static final String SP_SAML_SSO_URL = "http://localhost:8889/primainsure/S/S/O/saml/SSO";
     private static final String IDP_ENTITY_ID = "primainsureIDP";
     public static final String SP_ENTITY_ID = "SPPolicy";
     public static final String APP_NAME = "Policy";
     public static final String KEYSTORE_TEST_ALIAS = "sgi.prima-solutions.com";
 
     @InjectMocks
-    private SAMLResponseGenerator generator;
+    private SAMLAccessTokenProducer generator;
 
     @Mock
     private ISPSAMLAspectValidator spsamlAspectValidator;
@@ -96,7 +97,7 @@ public class SAMLResponseGeneratorTest {
         appAspectAttrobutes = new LinkedList<>();
         when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, AuthAspectType.SP_SAML.name())).thenReturn(appAspectAttrobutes);
         given_an_application(APPLICATION_ID, new AuthAspectType[]{AuthAspectType.SP_SAML});
-        given_the_application_sp_sso_url(APPLICATION_ID, SP_SAMLSSO_URL);
+        given_the_application_sp_sso_url(APPLICATION_ID, SP_SAML_SSO_URL);
         given_the_application_sp_entity_id(APPLICATION_ID, SP_ENTITY_ID);
         givent_the_application_sp_encryption_certificate(APPLICATION_ID);
     }
@@ -109,7 +110,7 @@ public class SAMLResponseGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void when_generate_response_from_null_then_error() {
-        generator.generate(null);
+        generator.produce(null);
     }
 
     @Test
@@ -166,7 +167,7 @@ public class SAMLResponseGeneratorTest {
         assertThat(subject.getSubjectConfirmations().get(0).getMethod(), equalTo(METHOD_BEARER));
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData(), notNullValue());
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(SP_ENTITY_ID));
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getRecipient(), equalTo(SP_SAMLSSO_URL));
+        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getRecipient(), equalTo(SP_SAML_SSO_URL));
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotBefore(), nullValue());
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
         assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(30).toInstant()), equalTo(true));
@@ -268,7 +269,7 @@ public class SAMLResponseGeneratorTest {
     }
 
     private void when_generate_a_response() {
-        final IDPToken token = generator.generate(application);
+        final IDPToken token = generator.produce(application);
         response = (Response) samlHelper.decode(token.serialize());
     }
 

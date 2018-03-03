@@ -7,7 +7,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
-import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
+import com.mlyauth.producers.SAMLAccessTokenProducer;
 import com.mlyauth.token.IDPToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +25,14 @@ public class SPSAMLNavigationService implements ISPNavigationService {
     private ApplicationDAO applicationDAO;
 
     @Autowired
-    private SAMLResponseGenerator responseGenerator;
+    private SAMLAccessTokenProducer responseGenerator;
 
     @Override
     public NavigationBean newNavigation(String appname) {
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
         NavigationBean navigation = new NavigationBean();
         checkApplication(applicationDAO.findByAppname(appname));
-        final IDPToken token = responseGenerator.generate(applicationDAO.findByAppname(appname));
+        final IDPToken token = responseGenerator.produce(applicationDAO.findByAppname(appname));
         navigationAttributes.add(SAML_RESPONSE.setValue(token.serialize()));
         navigation.setTarget(token.getTargetURL());
         navigation.setAttributes(navigationAttributes);

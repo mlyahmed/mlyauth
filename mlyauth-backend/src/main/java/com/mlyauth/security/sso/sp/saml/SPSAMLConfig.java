@@ -1,7 +1,6 @@
 package com.mlyauth.security.sso.sp.saml;
 
 import com.mlyauth.hooks.SPSAMLUrlAuthenticationSuccessHandler;
-import com.mlyauth.security.sso.sp.saml.metadata.PrimaSPMetadataDisplayFilter;
 import liquibase.util.file.FilenameUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -226,7 +225,7 @@ public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() {
-        final PrimaSPMetadataDisplayFilter metadataGeneratorFilter = new PrimaSPMetadataDisplayFilter();
+        final SPSAMLMetadataDisplayFilter metadataGeneratorFilter = new SPSAMLMetadataDisplayFilter();
         metadataGeneratorFilter.setFilterProcessesUrl(SP_SAML_METADATA_ENDPOINT);
         return metadataGeneratorFilter;
     }

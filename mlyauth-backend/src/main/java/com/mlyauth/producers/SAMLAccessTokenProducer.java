@@ -1,4 +1,4 @@
-package com.mlyauth.security.sso.idp.saml.response;
+package com.mlyauth.producers;
 
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
@@ -23,7 +23,7 @@ import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 import static com.mlyauth.constants.SPSAMLAttribute.*;
 
 @Component
-public class SAMLResponseGenerator {
+public class SAMLAccessTokenProducer implements ITokenProducer {
 
     @Autowired
     private ISPSAMLAspectValidator validator;
@@ -43,7 +43,8 @@ public class SAMLResponseGenerator {
     @Value("${idp.saml.entityId}")
     private String idpEntityId;
 
-    public IDPToken generate(Application app) {
+    @Override
+    public IDPToken produce(Application app) {
         Assert.notNull(app, "The application parameter is null");
         validator.validate(app);
         final List<ApplicationAspectAttribute> attributes = loadAttributes(app);

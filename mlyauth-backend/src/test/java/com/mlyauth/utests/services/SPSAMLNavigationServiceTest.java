@@ -6,8 +6,8 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
+import com.mlyauth.producers.SAMLAccessTokenProducer;
 import com.mlyauth.security.sso.SAMLHelper;
-import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
 import com.mlyauth.services.navigation.SPSAMLNavigationService;
 import com.mlyauth.token.IDPToken;
 import com.mlyauth.token.saml.SAMLAccessToken;
@@ -40,7 +40,7 @@ public class SPSAMLNavigationServiceTest {
     private ApplicationDAO applicationDAO;
 
     @Mock
-    private SAMLResponseGenerator responseGenerator;
+    private SAMLAccessTokenProducer responseGenerator;
 
     @Spy
     private SAMLHelper samlHelper = new SAMLHelper();
@@ -61,7 +61,7 @@ public class SPSAMLNavigationServiceTest {
         token = new SAMLAccessToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
         token.setTargetURL(TARGET_APP_URL);
         token.cypher();
-        when(responseGenerator.generate(application)).thenReturn(token);
+        when(responseGenerator.produce(application)).thenReturn(token);
     }
 
     @Test

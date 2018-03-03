@@ -1,4 +1,4 @@
-package com.mlyauth.security.sso.idp.saml.metadata;
+package com.mlyauth.security.sso.idp.saml;
 
 import com.mlyauth.exception.AuthError;
 import com.mlyauth.exception.IDPException;
