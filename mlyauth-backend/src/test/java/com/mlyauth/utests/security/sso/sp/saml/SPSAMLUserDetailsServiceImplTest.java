@@ -8,7 +8,7 @@ import com.mlyauth.domain.Person;
 import com.mlyauth.security.context.IContextHolder;
 import com.mlyauth.security.context.IDPUser;
 import com.mlyauth.security.sso.SAMLHelper;
-import com.mlyauth.security.sso.sp.SAMLUserDetailsServiceImpl;
+import com.mlyauth.security.sso.sp.saml.SPSAMLUserDetailsServiceImpl;
 import com.mlyauth.utests.security.context.MockContextHolder;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
@@ -34,7 +34,7 @@ import static com.mlyauth.beans.AttributeBean.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-public class SAMLUserDetailsServiceImplTest {
+public class SPSAMLUserDetailsServiceImplTest {
 
 
     public static final String CLIENT_ID = "BVCG15487";
@@ -53,7 +53,7 @@ public class SAMLUserDetailsServiceImplTest {
     private PersonDAO personDAO;
 
     @InjectMocks
-    private SAMLUserDetailsServiceImpl service;
+    private SPSAMLUserDetailsServiceImpl service;
 
     private SAMLHelper samlLHelper = new SAMLHelper();
 

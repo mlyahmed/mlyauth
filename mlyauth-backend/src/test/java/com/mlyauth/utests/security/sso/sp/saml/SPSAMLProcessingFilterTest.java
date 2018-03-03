@@ -1,6 +1,6 @@
 package com.mlyauth.utests.security.sso.sp.saml;
 
-import com.mlyauth.security.sso.sp.PrimaSAMLProcessingFilter;
+import com.mlyauth.security.sso.sp.saml.SPSAMLProcessingFilter;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -37,7 +37,7 @@ import static org.opensaml.common.xml.SAMLConstants.SAML2_POST_BINDING_URI;
 import static org.springframework.http.HttpMethod.*;
 
 @RunWith(DataProviderRunner.class)
-public class PrimaSAMLProcessingFilterTest {
+public class SPSAMLProcessingFilterTest {
 
     @Mock
     protected SAMLProcessor processor;
@@ -50,7 +50,7 @@ public class PrimaSAMLProcessingFilterTest {
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private PrimaSAMLProcessingFilter filter;
+    private SPSAMLProcessingFilter filter;
     private Authentication expectedAuthentication;
 
     @DataProvider
@@ -76,7 +76,7 @@ public class PrimaSAMLProcessingFilterTest {
     }
 
     private void set_up_the_the_filter() {
-        filter = new PrimaSAMLProcessingFilter();
+        filter = new SPSAMLProcessingFilter();
         filter.setSAMLProcessor(processor);
         filter.setContextProvider(contextProvider);
         filter.setAuthenticationManager(authenticationManager);

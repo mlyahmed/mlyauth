@@ -1,4 +1,4 @@
-package com.mlyauth.security.sso.sp;
+package com.mlyauth.security.sso.sp.saml;
 
 import com.mlyauth.hooks.SPSAMLUrlAuthenticationSuccessHandler;
 import com.mlyauth.security.sso.sp.saml.metadata.PrimaSPMetadataDisplayFilter;
@@ -126,7 +126,7 @@ public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public WebSSOProfileConsumer webSSOprofileConsumer() {
-        return new PrimaWebSSOProfileConsumerImpl();
+        return new SPSAMLWebSSOProfileConsumerImpl();
     }
 
     @Bean
@@ -242,7 +242,7 @@ public class SPSAMLConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SAMLProcessingFilter samlWebSSOProcessingFilter() throws Exception {
-        SAMLProcessingFilter samlProcessing = new PrimaSAMLProcessingFilter();
+        SAMLProcessingFilter samlProcessing = new SPSAMLProcessingFilter();
         samlProcessing.setFilterProcessesUrl(SP_SAML_SSO_ENDPOINT);
         samlProcessing.setAuthenticationManager(authenticationManager());
         samlProcessing.setAuthenticationSuccessHandler(successRedirectHandler());

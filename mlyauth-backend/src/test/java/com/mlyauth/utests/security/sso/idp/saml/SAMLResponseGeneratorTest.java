@@ -11,7 +11,7 @@ import com.mlyauth.exception.IDPException;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.sso.SAMLHelper;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
-import com.mlyauth.security.token.IDPToken;
+import com.mlyauth.token.IDPToken;
 import com.mlyauth.tools.KeysForTests;
 import com.mlyauth.utests.security.context.MockContext;
 import com.mlyauth.validators.ISPSAMLAspectValidator;

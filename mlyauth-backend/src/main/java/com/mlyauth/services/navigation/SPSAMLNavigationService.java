@@ -8,7 +8,7 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.security.sso.idp.saml.response.SAMLResponseGenerator;
-import com.mlyauth.security.token.IDPToken;
+import com.mlyauth.token.IDPToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

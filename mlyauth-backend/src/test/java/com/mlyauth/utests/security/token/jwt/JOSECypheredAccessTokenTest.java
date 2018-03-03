@@ -5,8 +5,8 @@ import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
-import com.mlyauth.security.token.ExtraClaims;
-import com.mlyauth.security.token.jwt.JOSEAccessToken;
+import com.mlyauth.token.ExtraClaims;
+import com.mlyauth.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
@@ -28,7 +28,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.security.token.ExtraClaims.*;
+import static com.mlyauth.token.ExtraClaims.*;
 import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -244,6 +244,102 @@ public class JOSECypheredAccessTokenTest {
     public void the_scopes_are_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_bp_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setBP(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_bp_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setBP(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_state_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setState(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_state_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setState(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_issuer_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setIssuer(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_issuer_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setIssuer(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_audience_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setAudience(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_audience_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setAudience(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_target_url_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_target_url_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegator_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegator_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegate_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegate_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_verdict_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setVerdict(TokenVerdict.SUCCESS);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_verdict_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setVerdict(TokenVerdict.SUCCESS);
     }
 
     private void given_expected_claims() {

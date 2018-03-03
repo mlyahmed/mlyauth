@@ -1,4 +1,4 @@
-package com.mlyauth.security.sso.sp;
+package com.mlyauth.security.sso.sp.saml;
 
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
@@ -23,9 +23,9 @@ import static com.mlyauth.beans.AttributeBean.*;
 
 @Service
 @Transactional
-public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
+public class SPSAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SAMLUserDetailsServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SPSAMLUserDetailsServiceImpl.class);
 
 
     @Autowired

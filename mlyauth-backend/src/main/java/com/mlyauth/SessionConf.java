@@ -1,4 +1,4 @@
-package com.mlyauth.conf;
+package com.mlyauth;
 
 import com.mlyauth.security.context.IContextHolder;
 import org.slf4j.Logger;

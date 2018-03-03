@@ -1,4 +1,4 @@
-package com.mlyauth.security.sso.sp;
+package com.mlyauth.security.sso.sp.saml;
 
 import org.opensaml.common.SAMLException;
 import org.opensaml.common.SAMLObject;
@@ -9,7 +9,7 @@ import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.saml.context.SAMLMessageContext;
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl;
 
-public class PrimaWebSSOProfileConsumerImpl extends WebSSOProfileConsumerImpl {
+public class SPSAMLWebSSOProfileConsumerImpl extends WebSSOProfileConsumerImpl {
 
     public SAMLCredential processAuthenticationResponse(SAMLMessageContext context) throws SAMLException, org.opensaml.xml.security.SecurityException, ValidationException, DecryptionException {
         verify(context);
