@@ -8,6 +8,7 @@ import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -36,6 +37,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     private final PrivateKey privateKey;
     private final RSAPublicKey publicKey;
+    private final String cyphered;
 
     private JWEObject token;
     private JWTClaimsSet.Builder builder;
@@ -45,6 +47,7 @@ public class JOSEAccessToken extends AbstractToken {
         Assert.notNull(publicKey, "The public key is mandatory");
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.cyphered = null;
         builder = new JWTClaimsSet.Builder();
 
 
@@ -53,6 +56,12 @@ public class JOSEAccessToken extends AbstractToken {
         builder = builder.expirationTime(Date.from(threeMinutesAfter))
                 .notBeforeTime(Date.from(aSecondAgo))
                 .issueTime(Date.from(aSecondAgo));
+    }
+
+    public JOSEAccessToken(String serialize, PrivateKey privateKey, RSAPublicKey publicKey) {
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+        cyphered = serialize;
     }
 
     @Override
@@ -221,12 +230,14 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public void setClaim(String claimURI, String value) {
-
+        checkCommitted();
+        builder = builder.claim(claimURI, value);
+        status = TokenStatus.FORGED;
     }
 
     @Override
     public String getClaim(String claimURI) {
-        return null;
+        return (String) builder.build().getClaim(claimURI);
     }
 
     @Override
@@ -247,6 +258,14 @@ public class JOSEAccessToken extends AbstractToken {
     @Override
     public void decipher() {
         checkCommitted();
+        try {
+            JWEObject jweObject = JWEObject.parse(cyphered);
+            jweObject.decrypt(new RSADecrypter(privateKey));
+            final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
+            builder = new JWTClaimsSet.Builder(signedJWT.getJWTClaimsSet());
+        } catch (Exception e) {
+            throw JOSEErrorException.newInstance(e);
+        }
     }
 
     @Override

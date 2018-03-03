@@ -298,6 +298,37 @@ public class JOSEFreshAccessTokenTest {
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
+    @DataProvider
+    public static Object[][] claims() {
+        // @formatter:off
+        return new String[][]{
+                {"prestationId", "FCJHDJHDJHD545454d54d"},
+                {"action", "DFDFD"},
+                {"codeRole", "GS"},
+                {"referenceRole", "54sd54s5d4s54d5s4d"},
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("claims")
+    public void when_set_other_claim_then_it_must_be_set(String... claimPair) {
+        token.setClaim(claimPair[0], claimPair[1]);
+        assertThat(token.getClaim(claimPair[0]), equalTo(claimPair[1]));
+        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    @UseDataProvider("claims")
+    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(String... claimPair) throws Exception {
+        token.setClaim(claimPair[0], claimPair[1]);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(claimPair[0]), equalTo(claimPair[1]));
+    }
+
     @Test
     public void when_serialize_cyphered_token_then_the_Verdict_must_be_committed() throws Exception {
         token.setVerdict(FAIL);
@@ -420,6 +451,12 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_Verdict_and_already_ciphered_then_error() {
         token.cypher();
         token.setVerdict(TokenVerdict.SUCCESS);
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_Claim_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setClaim(randomString(), randomString());
     }
 
     @Test
