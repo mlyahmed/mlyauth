@@ -96,7 +96,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public void setSubject(String subject) {
-        checkCommitted();
+        checkUnmodifiable();
         builder = builder.subject(subject);
         status = TokenStatus.FORGED;
     }

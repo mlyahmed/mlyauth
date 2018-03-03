@@ -214,9 +214,27 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void the_id_is_not_modifiable_before_decipher_it() {
+    public void the_id_is_not_modifiable_before_decipher() {
         token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
         token.setId(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_id_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setId(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_subject_is_not_modifiable_before_decipher() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.setSubject(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_subject_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setSubject(randomString());
     }
 
     private void given_expected_claims() {
