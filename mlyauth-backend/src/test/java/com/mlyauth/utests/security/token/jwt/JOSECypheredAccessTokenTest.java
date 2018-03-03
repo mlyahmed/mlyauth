@@ -188,11 +188,18 @@ public class JOSECypheredAccessTokenTest {
 
     @Test(expected = JOSEErrorException.class)
     public void when_the_token_is_not_signed_then_error() throws JOSEException {
-        JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
+        final JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
         EncryptedJWT tokenHolder = new EncryptedJWT(header, expectedClaims);
         tokenHolder.encrypt(new RSAEncrypter(cypherCred.getValue()));
         token = new JOSEAccessToken(tokenHolder.serialize(), decipherCred.getKey(), decipherCred.getValue());
         token.decipher();
+    }
+
+    @Test(expected = JOSEErrorException.class)
+    public void when_the_token_is_signed_but_not_encrypted_then_error() throws JOSEException {
+        SignedJWT tokenSigned = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), expectedClaims);
+        tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
+        token = new JOSEAccessToken(tokenSigned.serialize(), decipherCred.getKey(), decipherCred.getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -201,7 +208,7 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_the_public_key_is_null_then_erro() {
+    public void when_the_public_key_is_null_then_error() {
         new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), null);
     }
 

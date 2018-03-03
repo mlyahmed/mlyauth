@@ -47,8 +47,10 @@ public class JOSEAccessToken extends AbstractToken {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         builder = new JWTClaimsSet.Builder();
+        initTimes();
+    }
 
-
+    private void initTimes() {
         Instant threeMinutesAfter = LocalDateTime.now().plusSeconds(179).atZone(ZoneId.systemDefault()).toInstant();
         Instant aSecondAgo = LocalDateTime.now().plusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
         builder = builder.expirationTime(Date.from(threeMinutesAfter))

@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.crypto.SecretKey;
-import java.security.InvalidKeyException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
@@ -47,7 +46,7 @@ public class JOSEJWTTest {
     }
 
     @Test
-    public void the_way_to_sign_a_token_using_RSA() throws JOSEException, InvalidKeyException, ParseException {
+    public void the_way_to_sign_a_token_using_RSA() throws JOSEException, ParseException {
         final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
         JWSObject tokenHolder = new JWSObject(new JWSHeader(JWSAlgorithm.RS256), new Payload(PAYLOAD_STRING_EXAMPLE));
         tokenHolder.sign(new RSASSASigner(pair.getKey()));
