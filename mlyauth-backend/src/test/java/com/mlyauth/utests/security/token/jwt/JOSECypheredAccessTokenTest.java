@@ -2,6 +2,7 @@ package com.mlyauth.utests.security.token.jwt;
 
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
+import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.security.token.ExtraClaims;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
@@ -145,6 +146,19 @@ public class JOSECypheredAccessTokenTest {
                 LocalDateTime.ofInstant(expectedClaims.getIssueTime().toInstant(), ZoneId.systemDefault())));
     }
 
+    @Test(expected = JOSEErrorException.class)
+    public void when_the_decryption_key_does_not_match_then_error() {
+        final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
+        Pair<PrivateKey, RSAPublicKey> wronCred = new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), wronCred.getKey(), decipherCred.getValue());
+        token.decipher();
+    }
+
+    private void when_decipher_the_token() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.decipher();
+    }
+
     private void given_expected_claims() {
         expectedClaims = new JWTClaimsSet.Builder()
                 .jwtID(UUID.randomUUID().toString())
@@ -171,11 +185,6 @@ public class JOSECypheredAccessTokenTest {
         final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
         tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));
         tokenEncrypted.encrypt(new RSAEncrypter(cypherCred.getValue()));
-    }
-
-    private void when_decipher_the_token() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.decipher();
     }
 
     private static String randomString() {
