@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.security.token.ExtraClaims.SCOPES;
+import static com.mlyauth.security.token.ExtraClaims.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -47,7 +47,6 @@ public class JOSECypheredAccessTokenTest {
         given_the_claims_are_cyphered();
 
         token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-
         token.decipher();
 
         assertThat(token.getId(), equalTo(expectedClaims.getJWTID()));
@@ -55,6 +54,14 @@ public class JOSECypheredAccessTokenTest {
         assertThat(expectedClaims.getClaim(SCOPES.getValue()), notNullValue());
         assertThat(token.getScopes(), equalTo(Arrays.stream(expectedClaims.getClaim(SCOPES.getValue())
                 .toString().split("\\|")).map(TokenScope::valueOf).collect(Collectors.toSet())));
+        assertThat(token.getBP(), equalTo(expectedClaims.getClaim(BP.getValue())));
+        assertThat(token.getState(), equalTo(expectedClaims.getClaim(STATE.getValue())));
+        assertThat(token.getIssuer(), equalTo(expectedClaims.getIssuer()));
+        assertThat(token.getAudience(), equalTo(expectedClaims.getAudience().get(0)));
+        assertThat(token.getTargetURL(), equalTo(expectedClaims.getClaim(TARGET_URL.getValue())));
+        assertThat(token.getDelegator(), equalTo(expectedClaims.getClaim(DELEGATOR.getValue())));
+        assertThat(token.getDelegate(), equalTo(expectedClaims.getClaim(DELEGATE.getValue())));
+        assertThat(token.getVerdict(), equalTo(expectedClaims.getClaim(VERDICT.getValue())));
     }
 
     private void given_expected_claims() {
@@ -64,7 +71,7 @@ public class JOSECypheredAccessTokenTest {
                 .claim(SCOPES.getValue(), Arrays.stream(TokenScope.values()).map(TokenScope::name)
                         .collect(Collectors.joining("|")))
                 .claim(ExtraClaims.BP.getValue(), randomString())
-                .claim(ExtraClaims.STATE.getValue(), randomString())
+                .claim(STATE.getValue(), randomString())
                 .issuer(randomString())
                 .audience(randomString())
                 .claim(ExtraClaims.TARGET_URL.getValue(), randomString())
