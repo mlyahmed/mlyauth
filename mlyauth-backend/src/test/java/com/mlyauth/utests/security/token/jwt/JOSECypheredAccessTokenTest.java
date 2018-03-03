@@ -10,6 +10,7 @@ import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
@@ -181,8 +182,17 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = JOSEErrorException.class)
-    public void when_the_cyphered_token_is_not_well_formatted_then_erro() {
+    public void when_the_cyphered_token_is_not_well_formatted_then_error() {
         new JOSEAccessToken(randomString(), decipherCred.getKey(), decipherCred.getValue());
+    }
+
+    @Test(expected = JOSEErrorException.class)
+    public void when_the_token_is_not_signed_then_error() throws JOSEException {
+        JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
+        EncryptedJWT tokenHolder = new EncryptedJWT(header, expectedClaims);
+        tokenHolder.encrypt(new RSAEncrypter(cypherCred.getValue()));
+        token = new JOSEAccessToken(tokenHolder.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.decipher();
     }
 
     @Test(expected = IllegalArgumentException.class)

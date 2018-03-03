@@ -277,7 +277,7 @@ public class JOSEAccessToken extends AbstractToken {
         try {
             builder = new JWTClaimsSet.Builder(loadCipheredClaims().getJWTClaimsSet());
             status = DECIPHERED;
-        } catch (Exception e) {
+        } catch (JOSEException | ParseException e) {
             throw JOSEErrorException.newInstance(e);
         }
     }
@@ -290,8 +290,7 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     private void checkSignature(SignedJWT signedJWT) throws JOSEException {
-        final boolean wellSigned = signedJWT.verify(new RSASSAVerifier(publicKey));
-        if (!wellSigned)
+        if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier(publicKey)))
             throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
     }
 
