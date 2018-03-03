@@ -12,11 +12,15 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
 import org.apache.commons.lang.RandomStringUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
@@ -24,6 +28,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.security.token.ExtraClaims.*;
+import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -36,8 +41,8 @@ public class JOSECypheredAccessTokenTest {
     private JWTClaimsSet expectedClaims;
     private JWEObject tokenEncrypted;
 
-    @Test
-    public void when_given_cyphered_token_then_load_it() throws JOSEException {
+    @Before
+    public void setup() throws JOSEException {
         final Pair<PrivateKey, X509Certificate> peerCred = KeysForTests.generateRSACredential();
         final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
         cypherCred = new Pair<>(localCred.getKey(), (RSAPublicKey) peerCred.getValue().getPublicKey());
@@ -45,23 +50,99 @@ public class JOSECypheredAccessTokenTest {
 
         given_expected_claims();
         given_the_claims_are_cyphered();
+    }
 
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.decipher();
+    @Test
+    public void when_given_cyphered_token_then_the_id_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getId(), equalTo(expectedClaims.getJWTID()));
+    }
 
+    @Test
+    public void when_given_cyphered_token_then_the_subject_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getId(), equalTo(expectedClaims.getJWTID()));
         assertThat(token.getSubject(), equalTo(expectedClaims.getSubject()));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_scopes_are_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getBP(), equalTo(expectedClaims.getClaim(BP.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_bp_is_loaded() {
+        when_decipher_the_token();
         assertThat(expectedClaims.getClaim(SCOPES.getValue()), notNullValue());
         assertThat(token.getScopes(), equalTo(Arrays.stream(expectedClaims.getClaim(SCOPES.getValue())
                 .toString().split("\\|")).map(TokenScope::valueOf).collect(Collectors.toSet())));
-        assertThat(token.getBP(), equalTo(expectedClaims.getClaim(BP.getValue())));
-        assertThat(token.getState(), equalTo(expectedClaims.getClaim(STATE.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_state_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getIssuer(), equalTo(expectedClaims.getIssuer()));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_issuer_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getState(), equalTo(expectedClaims.getClaim(STATE.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_audience_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getAudience(), equalTo(expectedClaims.getAudience().get(0)));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_target_url_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getTargetURL(), equalTo(expectedClaims.getClaim(TARGET_URL.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_delegator_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getDelegator(), equalTo(expectedClaims.getClaim(DELEGATOR.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_delegate_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getDelegate(), equalTo(expectedClaims.getClaim(DELEGATE.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_verdict_is_loaded() {
+        when_decipher_the_token();
         assertThat(token.getVerdict(), equalTo(expectedClaims.getClaim(VERDICT.getValue())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_expiry_time_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(token.getExpiryTime(), within(1, ChronoUnit.SECONDS,
+                LocalDateTime.ofInstant(expectedClaims.getExpirationTime().toInstant(), ZoneId.systemDefault())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_effective_time_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getEffectiveTime(), notNullValue());
+        assertThat(token.getEffectiveTime(), within(1, ChronoUnit.SECONDS,
+                LocalDateTime.ofInstant(expectedClaims.getNotBeforeTime().toInstant(), ZoneId.systemDefault())));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_issuance_time_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(token.getIssuanceTime(), within(1, ChronoUnit.SECONDS,
+                LocalDateTime.ofInstant(expectedClaims.getIssueTime().toInstant(), ZoneId.systemDefault())));
     }
 
     private void given_expected_claims() {
@@ -90,6 +171,11 @@ public class JOSECypheredAccessTokenTest {
         final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
         tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));
         tokenEncrypted.encrypt(new RSAEncrypter(cypherCred.getValue()));
+    }
+
+    private void when_decipher_the_token() {
+        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        token.decipher();
     }
 
     private static String randomString() {
