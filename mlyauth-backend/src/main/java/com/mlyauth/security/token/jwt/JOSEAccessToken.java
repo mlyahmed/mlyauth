@@ -17,8 +17,11 @@ import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
@@ -43,6 +46,10 @@ public class JOSEAccessToken extends AbstractToken {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         builder = new JWTClaimsSet.Builder();
+
+
+        Instant instant = LocalDateTime.now().plusSeconds(179).atZone(ZoneId.systemDefault()).toInstant();
+        builder = builder.expirationTime(Date.from(instant));
     }
 
     @Override
@@ -181,7 +188,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public LocalDateTime getExpiryTime() {
-        return null;
+        return LocalDateTime.ofInstant(builder.build().getExpirationTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override

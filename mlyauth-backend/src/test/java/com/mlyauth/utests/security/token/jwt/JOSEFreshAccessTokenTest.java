@@ -21,6 +21,10 @@ import org.junit.runner.RunWith;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
@@ -303,6 +307,25 @@ public class JOSEFreshAccessTokenTest {
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(VERDICT.getValue()), equalTo(FAIL.name()));
     }
+
+    @Test
+    public void when_create_a_fresh_token_then_it_expires_in_3_minutes() {
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
+    }
+
+    @Test
+    public void when_serialize_cyphered_token_then_the_expiry_time_must_be_committed() throws Exception {
+        token.cypher();
+        Instant instant = LocalDateTime.now().plusMinutes(3).atZone(ZoneId.systemDefault()).toInstant();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getExpirationTime().before(Date.from(instant)), equalTo(true));
+    }
+
+
+
 
     @Test(expected = TokenAlreadyCommitedException.class)
     public void when_set_id_and_already_ciphered_then_error() {

@@ -358,7 +358,7 @@ public class SAMLFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_then_it_expires_in_2_minutes() {
+    public void when_create_a_fresh_token_then_it_expires_in_3_minutes() {
         assertThat(token.getExpiryTime(), notNullValue());
         assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
     }
