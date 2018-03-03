@@ -4,7 +4,7 @@ import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.exception.TokenAlreadyCommittedException;
+import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.security.token.ExtraClaims;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
@@ -17,7 +17,6 @@ import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.security.PrivateKey;
@@ -214,8 +213,7 @@ public class JOSECypheredAccessTokenTest {
         new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), null);
     }
 
-    @Test(expected = TokenAlreadyCommittedException.class)
-    @Ignore
+    @Test(expected = TokenUnmodifiableException.class)
     public void the_id_is_not_modifiable_before_decipher_it() {
         token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
         token.setId(randomString());

@@ -66,6 +66,7 @@ public class JOSEAccessToken extends AbstractToken {
         this.publicKey = publicKey;
         parseCipheredToken(serialize);
         status = TokenStatus.CYPHERED;
+        locked = true;
     }
 
     private void parseCipheredToken(String serialize) {
@@ -83,7 +84,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public void setId(String id) {
-        checkCommitted();
+        checkUnmodifiable();
         builder = builder.jwtID(id);
         status = TokenStatus.FORGED;
     }

@@ -1,7 +1,7 @@
 package com.mlyauth.security.token;
 
 import com.mlyauth.constants.TokenScope;
-import com.mlyauth.exception.TokenAlreadyCommittedException;
+import com.mlyauth.exception.TokenUnmodifiableException;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -10,9 +10,20 @@ import java.util.stream.Collectors;
 public abstract class AbstractToken implements IDPToken {
 
     protected boolean committed = false;
+    protected boolean locked = false;
 
     protected void checkCommitted() {
-        if (committed) throw TokenAlreadyCommittedException.newInstance();
+        if (committed) throw TokenUnmodifiableException.newInstance();
+    }
+
+    protected void checkLocked() {
+        if (locked) throw TokenUnmodifiableException.newInstance();
+    }
+
+
+    protected void checkUnmodifiable() {
+        checkCommitted();
+        checkLocked();
     }
 
     protected String compactScopes(Set<TokenScope> scopes) {
