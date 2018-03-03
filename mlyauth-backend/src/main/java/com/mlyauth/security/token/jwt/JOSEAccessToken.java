@@ -174,6 +174,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public void setVerdict(TokenVerdict verdict) {
+        checkCommitted();
         builder = builder.claim(VERDICT.getValue(), verdict);
         status = TokenStatus.FORGED;
     }

@@ -1,9 +1,6 @@
 package com.mlyauth.utests.security.token.jwt;
 
-import com.mlyauth.constants.TokenNorm;
-import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenStatus;
-import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenAlreadyCommitedException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.security.token.jwt.JOSEAccessToken;
@@ -31,6 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.security.token.ExtraClaims.*;
 import static java.util.stream.Collectors.toSet;
@@ -296,6 +294,15 @@ public class JOSEFreshAccessTokenTest {
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
+    @Test
+    public void when_serialize_cyphered_token_then_the_Verdict_must_be_committed() throws Exception {
+        token.setVerdict(FAIL);
+        token.cypher();
+        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(VERDICT.getValue()), equalTo(FAIL.name()));
+    }
 
     @Test(expected = TokenAlreadyCommitedException.class)
     public void when_set_id_and_already_ciphered_then_error() {
@@ -355,6 +362,12 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_Delegate_and_already_ciphered_then_error() {
         token.cypher();
         token.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenAlreadyCommitedException.class)
+    public void when_set_Verdict_and_already_ciphered_then_error() {
+        token.cypher();
+        token.setVerdict(TokenVerdict.SUCCESS);
     }
 
     @Test
