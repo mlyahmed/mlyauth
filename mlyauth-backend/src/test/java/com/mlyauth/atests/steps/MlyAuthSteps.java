@@ -76,7 +76,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
         authSettings.put(BASIC_AUTH_USERNAME.getCode(), BASIC_AUTH_USERNAME.clone().setAlias("j_username").setValue("gestF"));
         authSettings.put(BASIC_AUTH_PASSWORD.getCode(), BASIC_AUTH_PASSWORD.clone().setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
-        application.setAuthAspect(AuthAspectType.AUTH_BASIC);
+        application.setAuthAspect(AuthAspectType.SP_BASIC);
         restTestHelper.performPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
     }
 

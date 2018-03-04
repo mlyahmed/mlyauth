@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mlyauth.constants.AuthAspectType.AUTH_BASIC;
+import static com.mlyauth.constants.AuthAspectType.SP_BASIC;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 
 @Controller
@@ -37,7 +37,7 @@ public class SPNavigationController {
 
     @GetMapping("/basic/to/{appname}")
     public String basicNavigateTo(@PathVariable String appname, Model model) {
-        final NavigationBean navigation = services.get(AUTH_BASIC).newNavigation(appname);
+        final NavigationBean navigation = services.get(SP_BASIC).newNavigation(appname);
         model.addAttribute("navigation", navigation);
         return "post-navigation";
     }

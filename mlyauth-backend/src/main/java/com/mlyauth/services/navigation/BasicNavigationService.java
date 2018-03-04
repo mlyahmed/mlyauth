@@ -50,7 +50,7 @@ public class BasicNavigationService implements ISPNavigationService {
 
     @Override
     public AuthAspectType getSupportedAspect() {
-        return AuthAspectType.AUTH_BASIC;
+        return AuthAspectType.SP_BASIC;
     }
 
 }
