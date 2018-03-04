@@ -1,4 +1,4 @@
-package com.mlyauth.itests.services;
+package com.mlyauth.services;
 
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.SPSAMLAttribute;
