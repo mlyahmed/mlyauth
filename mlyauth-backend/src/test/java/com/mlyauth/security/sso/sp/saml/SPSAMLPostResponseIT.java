@@ -1,4 +1,4 @@
-package com.mlyauth.itests.sso.sp.saml;
+package com.mlyauth.security.sso.sp.saml;
 
 import com.mlyauth.itests.AbstractIntegrationTest;
 import com.mlyauth.tools.SAMLHelper;
