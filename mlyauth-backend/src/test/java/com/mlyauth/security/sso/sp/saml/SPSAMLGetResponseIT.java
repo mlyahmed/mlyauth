@@ -1,7 +1,6 @@
-package com.mlyauth.itests.sso.sp.saml;
+package com.mlyauth.security.sso.sp.saml;
 
 import com.mlyauth.itests.AbstractIntegrationTest;
-import com.mlyauth.security.sso.sp.saml.SPSAMLConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
