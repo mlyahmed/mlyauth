@@ -55,8 +55,9 @@ public class Application  implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
+    public Application setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public Set<AuthAspectType> getAspects() {

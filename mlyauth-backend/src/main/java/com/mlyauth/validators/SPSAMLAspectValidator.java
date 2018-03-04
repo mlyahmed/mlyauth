@@ -1,6 +1,6 @@
 package com.mlyauth.validators;
 
-import com.mlyauth.constants.SPSAMLAttribute;
+import com.mlyauth.constants.AuthAspectAttribute;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
@@ -16,8 +16,8 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
+import static com.mlyauth.constants.AuthAspectAttribute.*;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
-import static com.mlyauth.constants.SPSAMLAttribute.*;
 
 @Component
 public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
@@ -44,7 +44,7 @@ public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
             throw NotSPSAMLApplicationException.newInstance();
     }
 
-    private ApplicationAspectAttribute validateAttributeExists(List<ApplicationAspectAttribute> attributes, SPSAMLAttribute attribute) {
+    private ApplicationAspectAttribute validateAttributeExists(List<ApplicationAspectAttribute> attributes, AuthAspectAttribute attribute) {
         final ApplicationAspectAttribute found = attributes.stream()
                 .filter(attr -> attribute == attr.getAttributeCode())
                 .findFirst().orElse(null);

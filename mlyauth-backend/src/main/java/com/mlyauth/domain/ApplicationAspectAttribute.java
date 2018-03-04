@@ -1,6 +1,6 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.SPSAMLAttribute;
+import com.mlyauth.constants.AuthAspectAttribute;
 
 import javax.persistence.*;
 
@@ -37,8 +37,8 @@ public class ApplicationAspectAttribute {
     }
 
     @Transient
-    public SPSAMLAttribute getAttributeCode() {
-        return SPSAMLAttribute.create(this.getId().getAttributeCode());
+    public AuthAspectAttribute getAttributeCode() {
+        return AuthAspectAttribute.create(this.getId().getAttributeCode());
     }
 
 }

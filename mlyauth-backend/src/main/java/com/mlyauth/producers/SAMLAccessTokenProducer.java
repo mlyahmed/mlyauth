@@ -19,8 +19,8 @@ import org.springframework.util.Assert;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import static com.mlyauth.constants.AuthAspectAttribute.*;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
-import static com.mlyauth.constants.SPSAMLAttribute.*;
 
 @Component
 public class SAMLAccessTokenProducer implements ITokenProducer {
