@@ -68,7 +68,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
 
     @Autowired
-    private KeyManager keyManeger;
+    private KeyManager keyManager;
 
     @Autowired
     private MetadataManager metadataManager;
@@ -208,11 +208,11 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         KeyInfoGenerator keyInfoGenerator = keyInfoGeneratorFactory.newInstance();
         KeyDescriptor encKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         encKeyDescriptor.setUse(UsageType.ENCRYPTION);
-        encKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
+        encKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManager.getDefaultCredential()));
         idpDescriptor.getKeyDescriptors().add(encKeyDescriptor);
         KeyDescriptor signKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         signKeyDescriptor.setUse(UsageType.SIGNING);
-        signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
+        signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManager.getDefaultCredential()));
         idpDescriptor.getKeyDescriptors().add(signKeyDescriptor);
         idpDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
         metadata.getRoleDescriptors().add(idpDescriptor);
@@ -324,7 +324,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         EncryptionParameters encryptionParameters = new EncryptionParameters();
         encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
         KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
-        keyEncryptionParameters.setEncryptionCredential(keyManeger.getDefaultCredential());
+        keyEncryptionParameters.setEncryptionCredential(keyManager.getDefaultCredential());
         keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
         Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
         encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
@@ -334,7 +334,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
     private void given_response_is_signed() throws MarshallingException, SignatureException {
         Signature signature = samlHelper.buildSAMLObject(Signature.class);
-        signature.setSigningCredential(keyManeger.getDefaultCredential());
+        signature.setSigningCredential(keyManager.getDefaultCredential());
         signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
         response.setSignature(signature);

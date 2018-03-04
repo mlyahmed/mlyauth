@@ -6,7 +6,7 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.token.IDPToken;
-import com.mlyauth.token.saml.SAMLAccessToken;
+import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.tools.SAMLHelper;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
@@ -24,6 +24,9 @@ import static com.mlyauth.constants.SPSAMLAttribute.*;
 
 @Component
 public class SAMLAccessTokenProducer implements ITokenProducer {
+
+    @Autowired
+    private ITokenFactory tokenFactory;
 
     @Autowired
     private ISPSAMLAspectValidator validator;
@@ -47,9 +50,11 @@ public class SAMLAccessTokenProducer implements ITokenProducer {
     public IDPToken produce(Application app) {
         Assert.notNull(app, "The application parameter is null");
         validator.validate(app);
-        final List<ApplicationAspectAttribute> attributes = loadAttributes(app);
+        return buildToken(loadAttributes(app));
+    }
 
-        SAMLAccessToken token = new SAMLAccessToken(buildCredential(attributes));
+    private IDPToken buildToken(List<ApplicationAspectAttribute> attributes) {
+        IDPToken token = tokenFactory.createFreshSAMLResponseToken(buildCredential(attributes));
         token.setId(samlHelper.generateRandomId());
         token.setIssuer(idpEntityId);
         token.setTargetURL(getTargetURL(attributes).getValue());

@@ -12,6 +12,7 @@ import com.mlyauth.producers.SAMLAccessTokenProducer;
 import com.mlyauth.security.context.IContext;
 import com.mlyauth.security.context.MockContext;
 import com.mlyauth.token.IDPToken;
+import com.mlyauth.token.TokenFactory;
 import com.mlyauth.tools.KeysForTests;
 import com.mlyauth.tools.SAMLHelper;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
@@ -62,7 +63,7 @@ public class SAMLAccessTokenProducerTest {
     private SAMLAccessTokenProducer generator;
 
     @Mock
-    private ISPSAMLAspectValidator spsamlAspectValidator;
+    private ISPSAMLAspectValidator aspectValidator;
 
     @Mock
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
@@ -94,6 +95,7 @@ public class SAMLAccessTokenProducerTest {
         DefaultBootstrap.bootstrap();
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(generator, "idpEntityId", IDP_ENTITY_ID);
+        ReflectionTestUtils.setField(generator, "tokenFactory", new TokenFactory());
         appAspectAttrobutes = new LinkedList<>();
         when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, AuthAspectType.SP_SAML.name())).thenReturn(appAspectAttrobutes);
         given_an_application(APPLICATION_ID, new AuthAspectType[]{AuthAspectType.SP_SAML});
@@ -228,7 +230,7 @@ public class SAMLAccessTokenProducerTest {
 
     @Test(expected = IDPException.class)
     public void when_the_sso_url_is_absent_then_error() {
-        Mockito.doThrow(IDPException.newInstance()).when(spsamlAspectValidator).validate(application);
+        Mockito.doThrow(IDPException.newInstance()).when(aspectValidator).validate(application);
         when_generate_a_response();
     }
 
