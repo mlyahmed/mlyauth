@@ -1,9 +1,10 @@
 package com.mlyauth.token;
 
+import com.mlyauth.token.saml.SAMLAccessToken;
 import org.opensaml.xml.security.credential.Credential;
 
 public interface ITokenFactory {
 
-    IDPToken createFreshSAMLResponseToken(Credential credential);
+    SAMLAccessToken createSAMLAccessToken(Credential credential);
 
 }
