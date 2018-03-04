@@ -1,4 +1,4 @@
-package com.mlyauth.itests.api;
+package com.mlyauth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.beans.PersonBean;

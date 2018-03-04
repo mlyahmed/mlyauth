@@ -1,4 +1,4 @@
-package com.mlyauth.itests.api;
+package com.mlyauth.api;
 
 import com.mlyauth.itests.AbstractIntegrationTest;
 import org.junit.Test;
