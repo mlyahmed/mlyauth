@@ -1,7 +1,7 @@
 package com.mlyauth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mlyauth.itests.AbstractIntegrationTest;
+import com.mlyauth.AbstractIntegrationTest;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;

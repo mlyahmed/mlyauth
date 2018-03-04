@@ -1,6 +1,6 @@
 package com.mlyauth.itests.sso.sp.saml;
 
-import com.mlyauth.itests.AbstractIntegrationTest;
+import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.tools.SAMLHelper;
 import org.junit.Before;
 import org.junit.Rule;

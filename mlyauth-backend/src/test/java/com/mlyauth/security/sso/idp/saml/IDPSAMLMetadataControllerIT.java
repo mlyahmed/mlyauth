@@ -1,6 +1,6 @@
 package com.mlyauth.security.sso.idp.saml;
 
-import com.mlyauth.itests.AbstractIntegrationTest;
+import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.tools.SAMLHelper;
 import org.exparity.hamcrest.date.LocalDateMatchers;
 import org.hamcrest.Matchers;

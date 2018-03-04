@@ -1,4 +1,4 @@
-package com.mlyauth.itests;
+package com.mlyauth;
 
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import org.junit.ClassRule;
