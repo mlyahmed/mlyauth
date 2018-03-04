@@ -1,6 +1,6 @@
 package com.mlyauth.api;
 
-import com.mlyauth.AbstractIntegrationTest;
+import com.mlyauth.security.sso.sp.saml.AbstractIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

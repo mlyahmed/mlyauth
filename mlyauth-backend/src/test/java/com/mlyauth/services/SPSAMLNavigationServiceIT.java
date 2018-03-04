@@ -1,12 +1,12 @@
 package com.mlyauth.services;
 
-import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.SPSAMLAttribute;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
+import com.mlyauth.security.sso.sp.saml.AbstractIntegrationTest;
 import com.mlyauth.services.navigation.SPSAMLNavigationService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,9 @@
 package com.mlyauth.itests.sso.sp.saml;
 
-import com.mlyauth.AbstractIntegrationTest;
+import com.mlyauth.security.sso.sp.saml.AbstractIntegrationTest;
 import com.mlyauth.tools.SAMLHelper;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.opensaml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
 import org.opensaml.security.SAMLSignatureProfileValidator;
@@ -34,14 +32,8 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
     public static final String SP_ENTITY_ID = "primainsure4sgi";
     public static final String SP_SAML_METADATA_ENDPOINT = "/sp/saml/metadata";
 
-    @Rule
-    public TemporaryFolder testFolder = new TemporaryFolder();
-
     @Autowired
     private Filter samlFilter;
-
-    @Autowired
-    private Filter metadataDisplayFilter;
 
     @Autowired
     private Filter metadataGeneratorFilter;
@@ -50,18 +42,18 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext wac;
 
-    private MockMvc mockMvc;
 
     @Autowired
-    private KeyManager keyManeger;
+    private KeyManager keyManager;
 
     @Autowired
     private SAMLHelper samlHelper;
 
+    private MockMvc mockMvc;
+
     @Before
     public void setup() {
-        this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, metadataDisplayFilter, samlFilter).build();
-
+        this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
     }
 
     @Test
@@ -98,7 +90,7 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
         assertThat(metadata.isSigned(), equalTo(true));
         SAMLSignatureProfileValidator signatureProfileValidator = new SAMLSignatureProfileValidator();
         signatureProfileValidator.validate(metadata.getSignature());
-        SignatureValidator sigValidator = new SignatureValidator(keyManeger.getDefaultCredential());
+        SignatureValidator sigValidator = new SignatureValidator(keyManager.getDefaultCredential());
         sigValidator.validate(metadata.getSignature());
     }
 

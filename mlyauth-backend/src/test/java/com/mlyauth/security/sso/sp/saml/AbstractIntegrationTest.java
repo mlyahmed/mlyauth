@@ -1,4 +1,4 @@
-package com.mlyauth;
+package com.mlyauth.security.sso.sp.saml;
 
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import org.junit.ClassRule;

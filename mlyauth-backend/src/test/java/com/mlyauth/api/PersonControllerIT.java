@@ -1,12 +1,12 @@
 package com.mlyauth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
+import com.mlyauth.security.sso.sp.saml.AbstractIntegrationTest;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Test;
