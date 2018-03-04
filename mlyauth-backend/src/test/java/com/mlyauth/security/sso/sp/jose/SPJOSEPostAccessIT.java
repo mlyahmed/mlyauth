@@ -8,9 +8,11 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
+import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
 import javafx.util.Pair;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +30,11 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     @Autowired
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
 
+    @Autowired
+    private ITokenFactory tokenFactory;
+
     @Test
+    @Ignore
     public void when_post_a_true_access_from_a_defined_idp_then_OK() throws CertificateEncodingException {
         final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
         Application linkAssu = Application.newInstance()
