@@ -1,6 +1,7 @@
 package com.mlyauth.security.sso.sp.saml;
 
 import com.mlyauth.AbstractIntegrationTest;
+import com.mlyauth.security.basic.BasicSecurityConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class SPSAMLGetResponseIT extends AbstractIntegrationTest {
 
     @Test
     public void when_get_response_then_404() throws Exception {
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(SPSAMLConfig.SP_SAML_SSO_ENDPOINT));
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(BasicSecurityConfig.SP_SAML_SSO_ENDPOINT));
         resultActions.andExpect(status().isNotFound());
     }
 }
