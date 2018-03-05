@@ -7,22 +7,17 @@ import com.mlyauth.security.sso.sp.saml.SPSAMLMetadataDisplayFilter;
 import com.mlyauth.security.sso.sp.saml.SPSAMLProcessingFilter;
 import com.mlyauth.security.sso.sp.saml.SPSAMLWebSSOProfileConsumerImpl;
 import liquibase.util.file.FilenameUtils;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider;
 import org.opensaml.util.resource.ClasspathResource;
 import org.opensaml.util.resource.FilesystemResource;
-import org.opensaml.xml.parse.StaticBasicParserPool;
+import org.opensaml.xml.parse.ParserPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -34,19 +29,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.saml.SAMLAuthenticationProvider;
-import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.security.saml.SAMLProcessingFilter;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
-import org.springframework.security.saml.key.JKSKeyManager;
 import org.springframework.security.saml.key.KeyManager;
-import org.springframework.security.saml.log.SAMLDefaultLogger;
-import org.springframework.security.saml.log.SAMLLogger;
 import org.springframework.security.saml.metadata.*;
-import org.springframework.security.saml.parser.ParserPoolHolder;
-import org.springframework.security.saml.processor.HTTPPostBinding;
-import org.springframework.security.saml.processor.SAMLProcessorImpl;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
-import org.springframework.security.saml.util.VelocityFactory;
 import org.springframework.security.saml.websso.*;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.FilterChainProxy;
@@ -57,8 +44,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.RequestContextFilter;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.servlet.Filter;
 import java.io.File;
 import java.util.*;
@@ -67,68 +52,24 @@ import java.util.*;
 @Configuration
 public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String SP_SAML_METADATA_ENDPOINT = "/sp/saml/metadata";
+    public static final String SP_SAML_SSO_ENDPOINT = "/sp/saml/sso";
+    public static final String SP_ENTITY_ID = "primainsure4sgi";
+
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
     private SAMLUserDetailsService samlUserDetailsService;
 
+    @Autowired
+    private ParserPool parserPool;
 
-    public static final String SP_SAML_METADATA_ENDPOINT = "/sp/saml/metadata";
-    public static final String SP_SAML_SSO_ENDPOINT = "/sp/saml/sso";
-    public static final String SP_ENTITY_ID = "primainsure4sgi";
-
+    @Autowired
+    private KeyManager keyManager;
 
     @Value("${sp.saml.idps-metadata-dir:#{null}}")
     private File idpsMetadataDir;
-
-
-    private MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager;
-
-    @Bean
-    public static SAMLBootstrap samlBootstrap() {
-        return new SAMLBootstrap();
-    }
-
-    @PostConstruct
-    public void init() {
-        this.multiThreadedHttpConnectionManager = new MultiThreadedHttpConnectionManager();
-    }
-
-    @PreDestroy
-    public void destroy() {
-        this.multiThreadedHttpConnectionManager.shutdown();
-    }
-
-    @Bean
-    public SAMLLogger samlLogger() {
-        SAMLDefaultLogger logger = new SAMLDefaultLogger();
-        logger.setLogErrors(true);
-        logger.setLogMessages(true);
-        return logger;
-    }
-
-    @Bean
-    public VelocityEngine velocityEngine() {
-        return VelocityFactory.getEngine();
-    }
-
-    @Bean(initMethod = "initialize")
-    public StaticBasicParserPool parserPool() {
-        final StaticBasicParserPool staticBasicParserPool = new StaticBasicParserPool();
-        staticBasicParserPool.setExpandEntityReferences(false);
-        return staticBasicParserPool;
-    }
-
-    @Bean(name = "parserPoolHolder")
-    public ParserPoolHolder parserPoolHolder() {
-        return new ParserPoolHolder();
-    }
-
-    @Bean
-    public HttpClient httpClient() {
-        return new HttpClient(this.multiThreadedHttpConnectionManager);
-    }
 
 
     @Bean
@@ -162,16 +103,6 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public KeyManager keyManager() {
-        DefaultResourceLoader loader = new DefaultResourceLoader();
-        Resource storeFile = loader.getResource("classpath:/keysstores/saml/samlKS.jks");
-        Map<String, String> passwords = new HashMap<String, String>();
-        passwords.put("sgi.prima-solutions.com", "Bourso$17");
-        return new JKSKeyManager(storeFile, "Bourso$17", passwords, "sgi.prima-solutions.com");
-    }
-
-
-    @Bean
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
         extendedMetadata.setSignMetadata(true);
@@ -185,7 +116,7 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
     public MetadataManager metadata() throws Exception {
         final MetadataManager metadataManager = new CachingMetadataManager(idpMetadata());
         metadataManager.setDefaultExtendedMetadata(extendedMetadata());
-        metadataManager.setKeyManager(keyManager());
+        metadataManager.setKeyManager(keyManager);
         metadataManager.setRefreshRequired(true);
         metadataManager.refreshMetadata();
         return metadataManager;
@@ -218,22 +149,12 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private ExtendedMetadataDelegate createSamlMetadataProvider(org.opensaml.util.resource.Resource metadata) throws MetadataProviderException {
         ResourceBackedMetadataProvider metadataProvider = new ResourceBackedMetadataProvider(new Timer(), metadata);
-        metadataProvider.setParserPool(parserPool());
+        metadataProvider.setParserPool(parserPool);
         ExtendedMetadataDelegate provider = new ExtendedMetadataDelegate(metadataProvider, new ExtendedMetadata());
         provider.setMetadataRequireSignature(false);
         provider.setMetadataTrustCheck(true);
         provider.setRequireValidMetadata(true);
         return provider;
-    }
-
-    @Bean
-    public HTTPPostBinding httpPostBinding() {
-        return new HTTPPostBinding(parserPool(), velocityEngine());
-    }
-
-    @Bean
-    public SAMLProcessorImpl processor() {
-        return new SAMLProcessorImpl(Arrays.asList(httpPostBinding()));
     }
 
 

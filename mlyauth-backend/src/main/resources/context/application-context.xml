@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+    <context:property-placeholder/>
+
+    <bean class="org.springframework.security.saml.SAMLBootstrap"/>
+
+    <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
+        <constructor-arg value="classpath:keysstores/saml/samlKS.jks"/>
+        <constructor-arg type="java.lang.String" value="Bourso$17"/>
+        <constructor-arg>
+            <map>
+                <entry key="sgi.prima-solutions.com" value="Bourso$17"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg type="java.lang.String" value="sgi.prima-solutions.com"/>
+    </bean>
+
+    <bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger">
+        <property name="logErrors" value="true"/>
+        <property name="logMessages" value="true"/>
+    </bean>
+
+    <bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory"
+          factory-method="getEngine"/>
+
+    <bean class="org.springframework.security.saml.SAMLBootstrap"/>
+
+    <bean id="parserPool" class="org.opensaml.xml.parse.StaticBasicParserPool" init-method="initialize">
+        <property name="expandEntityReferences" value="false"/>
+    </bean>
+
+    <bean id="parserPoolHolder" class="org.springframework.security.saml.parser.ParserPoolHolder"/>
+
+    <bean id="postBinding" class="org.springframework.security.saml.processor.HTTPPostBinding">
+        <constructor-arg ref="parserPool"/>
+        <constructor-arg ref="velocityEngine"/>
+    </bean>
+
+    <bean id="processor" class="org.springframework.security.saml.processor.SAMLProcessorImpl">
+        <constructor-arg>
+            <list>
+                <ref bean="postBinding"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>
