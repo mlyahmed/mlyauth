@@ -1,6 +1,6 @@
 package com.mlyauth;
 
-import com.mlyauth.security.sso.sp.jose.JOSEAuthenticationProvider;
+import com.mlyauth.sso.sp.jose.JOSEAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

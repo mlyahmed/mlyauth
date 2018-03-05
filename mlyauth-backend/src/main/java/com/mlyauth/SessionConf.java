@@ -1,6 +1,6 @@
 package com.mlyauth;
 
-import com.mlyauth.security.context.IContextHolder;
+import com.mlyauth.context.IContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

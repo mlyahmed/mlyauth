@@ -1,6 +1,6 @@
 package com.mlyauth.hooks;
 
-import com.mlyauth.security.context.IContext;
+import com.mlyauth.context.IContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

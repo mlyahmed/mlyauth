@@ -1,10 +1,10 @@
 package com.mlyauth.producers;
 
 import com.mlyauth.constants.TokenVerdict;
+import com.mlyauth.context.IContext;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
-import com.mlyauth.security.context.IContext;
 import com.mlyauth.token.IDPToken;
 import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.tools.SAMLHelper;
