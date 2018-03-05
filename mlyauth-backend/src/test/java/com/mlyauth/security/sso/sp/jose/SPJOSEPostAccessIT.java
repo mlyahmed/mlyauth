@@ -57,14 +57,14 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private WebApplicationContext wac;
 
     @Autowired
-    private Filter samlFilter;
+    private Filter joseFilter;
 
     private MockMvc mockMvc;
     private ResultActions resultActions;
 
     @Before
     public void setup() {
-        this.mockMvc = webAppContextSetup(this.wac).addFilters(samlFilter).build();
+        this.mockMvc = webAppContextSetup(this.wac).addFilters(joseFilter).build();
     }
 
     @Test

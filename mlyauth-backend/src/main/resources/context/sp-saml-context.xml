@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-lazy-init="true"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security.xsd
+
+
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <context:annotation-config/>
+    <context:property-placeholder/>
+
+    <bean id="samlFilter" class="org.springframework.security.web.FilterChainProxy">
+        <sec:filter-chain-map request-matcher="ant">
+            <sec:filter-chain pattern="/sp/saml/metadata" filters="metadataDisplayFilter"/>
+            <sec:filter-chain pattern="/sp/saml/sso" filters="samlWebSSOProcessingFilter"/>
+        </sec:filter-chain-map>
+    </bean>
+
+    <bean id="samlWebSSOProcessingFilter" class="com.mlyauth.security.sso.sp.saml.SPSAMLProcessingFilter">
+        <property name="filterProcessesUrl" value="/sp/saml/sso"/>
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationSuccessHandler" ref="IDPUrlAuthenticationSuccessHandler"/>
+        <property name="authenticationFailureHandler" ref="IDPUrlAuthenticationFailureHandler"/>
+    </bean>
+
+    <bean id="metadataDisplayFilter" class="com.mlyauth.security.sso.sp.saml.SPSAMLMetadataDisplayFilter">
+        <property name="filterProcessesUrl" value="/sp/saml/metadata"/>
+    </bean>
+
+    <bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
+        <constructor-arg>
+            <bean class="org.springframework.security.saml.metadata.MetadataGenerator">
+                <property name="wantAssertionSigned" value="false"/>
+                <property name="requestSigned" value="true"/>
+                <property name="entityId" value="primainsure4sgi"/>
+                <property name="nameID">
+                    <list>
+                    </list>
+                </property>
+                <property name="bindingsSSO">
+                    <list>
+                        <value>POST</value>
+                    </list>
+                </property>
+                <property name="bindingsSLO">
+                    <list>
+                        <value>POST</value>
+                    </list>
+                </property>
+                <property name="extendedMetadata">
+                    <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
+                        <property name="signMetadata" value="true"/>
+                        <property name="supportUnsolicitedResponse" value="true"/>
+                    </bean>
+                </property>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="webSSOprofileConsumer" class="com.mlyauth.security.sso.sp.saml.SPSAMLWebSSOProfileConsumerImpl">
+        <property name="includeAllAttributes" value="true"/>
+        <property name="responseSkew" value="600"/> <!-- 10 minutes -->
+        <property name="maxAuthenticationAge" value="72000"/> <!-- 20 heures -->
+        <property name="maxAssertionTime" value="3000"/> <!-- 50 minutes -->
+    </bean>
+
+    <bean id="hokWebSSOprofileConsumer" class="org.springframework.security.saml.websso.WebSSOProfileConsumerHoKImpl"/>
+    <bean id="webSSOprofile" class="org.springframework.security.saml.websso.WebSSOProfileImpl"/>
+    <bean id="logoutprofile" class="org.springframework.security.saml.websso.SingleLogoutProfileImpl"/>
+
+
+    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
+
+    <bean class="org.springframework.security.saml.SAMLBootstrap"/>
+
+    <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
+        <constructor-arg value="classpath:keysstores/saml/samlKS.jks"/>
+        <constructor-arg type="java.lang.String" value="Bourso$17"/>
+        <constructor-arg>
+            <map>
+                <entry key="sgi.prima-solutions.com" value="Bourso$17"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg type="java.lang.String" value="sgi.prima-solutions.com"/>
+    </bean>
+
+    <bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger">
+        <property name="logErrors" value="true"/>
+        <property name="logMessages" value="true"/>
+    </bean>
+
+    <bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory"
+          factory-method="getEngine"/>
+
+    <bean class="org.springframework.security.saml.SAMLBootstrap"/>
+
+    <bean id="parserPool" class="org.opensaml.xml.parse.StaticBasicParserPool" init-method="initialize">
+        <property name="expandEntityReferences" value="false"/>
+    </bean>
+
+    <bean id="parserPoolHolder" class="org.springframework.security.saml.parser.ParserPoolHolder"/>
+
+    <bean id="postBinding" class="org.springframework.security.saml.processor.HTTPPostBinding">
+        <constructor-arg ref="parserPool"/>
+        <constructor-arg ref="velocityEngine"/>
+    </bean>
+
+    <bean id="processor" class="org.springframework.security.saml.processor.SAMLProcessorImpl">
+        <constructor-arg>
+            <list>
+                <ref bean="postBinding"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

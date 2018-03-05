@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-lazy-init="true"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+    <bean id="joseFilter" class="org.springframework.security.web.FilterChainProxy">
+        <sec:filter-chain-map request-matcher="ant">
+            <sec:filter-chain pattern="/sp/jose/sso" filters="spJoseProcessingFilter"/>
+        </sec:filter-chain-map>
+    </bean>
+
+
+    <bean id="spJoseProcessingFilter" class="com.mlyauth.security.sso.sp.jose.SPJOSEProcessingFilter">
+        <property name="filterProcessesUrl" value="/sp/jose/sso"/>
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationSuccessHandler" ref="IDPUrlAuthenticationSuccessHandler"/>
+        <property name="authenticationFailureHandler" ref="IDPUrlAuthenticationFailureHandler"/>
+    </bean>
+
+</beans>
