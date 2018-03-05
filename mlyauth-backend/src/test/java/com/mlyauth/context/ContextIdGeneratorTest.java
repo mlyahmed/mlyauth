@@ -1,5 +1,6 @@
 package com.mlyauth.context;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,6 +34,6 @@ public class ContextIdGeneratorTest {
     public void the_generated_id_must_be_unique() {
         List<String> previousIds = new ArrayList<>(20000);
         IntStream.range(0, 10000).forEach(i -> previousIds.add(generator.generateId()));
-        assertThat(previousIds, not(contains(generator.generateId())));
+        assertThat(previousIds, Matchers.not(Matchers.contains(generator.generateId())));
     }
 }
