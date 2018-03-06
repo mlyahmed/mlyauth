@@ -8,7 +8,6 @@ import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.token.IDPToken;
 import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.ITokenProducer;
-import com.mlyauth.tools.SAMLHelper;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.springframework.beans.factory.annotation.Autowired;

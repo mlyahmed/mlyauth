@@ -1,7 +1,7 @@
 package com.mlyauth.sso.sp.saml;
 
 import com.mlyauth.AbstractIntegrationTest;
-import com.mlyauth.tools.SAMLHelper;
+import com.mlyauth.token.saml.SAMLHelper;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;

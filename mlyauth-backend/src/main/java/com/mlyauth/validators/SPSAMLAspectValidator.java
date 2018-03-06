@@ -7,7 +7,7 @@ import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.exception.BadSPSAMLAspectAttributeValueException;
 import com.mlyauth.exception.MissingSPSAMLAspectAttributeException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
-import com.mlyauth.tools.SAMLHelper;
+import com.mlyauth.token.saml.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;

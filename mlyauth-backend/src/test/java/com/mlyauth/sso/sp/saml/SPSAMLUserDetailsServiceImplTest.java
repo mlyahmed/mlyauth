@@ -8,7 +8,7 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.tools.SAMLHelper;
+import com.mlyauth.token.saml.SAMLHelper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.junit.After;

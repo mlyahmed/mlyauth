@@ -1,7 +1,7 @@
 package com.mlyauth.itests.sso.sp.saml;
 
 import com.mlyauth.AbstractIntegrationTest;
-import com.mlyauth.tools.SAMLHelper;
+import com.mlyauth.token.saml.SAMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml2.metadata.SPSSODescriptor;

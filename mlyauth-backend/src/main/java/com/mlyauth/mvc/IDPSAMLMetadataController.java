@@ -1,7 +1,7 @@
 package com.mlyauth.mvc;
 
 import com.mlyauth.sso.idp.saml.IDPSAMLMetadataGenerator;
-import com.mlyauth.tools.SAMLHelper;
+import com.mlyauth.token.saml.SAMLHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
