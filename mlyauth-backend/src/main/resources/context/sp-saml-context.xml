@@ -86,7 +86,7 @@
     <bean class="org.springframework.security.saml.SAMLBootstrap"/>
 
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-        <constructor-arg value="classpath:keysstores/saml/samlKS.jks"/>
+        <constructor-arg value="classpath:keys/keystore.jks"/>
         <constructor-arg type="java.lang.String" value="Bourso$17"/>
         <constructor-arg>
             <map>

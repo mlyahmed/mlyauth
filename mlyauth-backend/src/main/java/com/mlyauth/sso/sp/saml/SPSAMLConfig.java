@@ -61,16 +61,16 @@ public class SPSAMLConfig {
 
     private List<MetadataProvider> loadSamlIdpMetadataFromClasspath() throws Exception {
         List<MetadataProvider> providers = new LinkedList<>();
-        final String classpathPattern = "classpath*:/sso/saml/idps-metadata/*-idp.xml";
+        final String classpathPattern = "classpath*:/sso/saml/idps/*-idp.xml";
         org.springframework.core.io.Resource[] resources = new PathMatchingResourcePatternResolver().getResources(classpathPattern);
         for (org.springframework.core.io.Resource resource : resources)
-            providers.add(createSamlMetadataProvider(new ClasspathResource(String.format("/sso/saml/idps-metadata/%s", resource.getFilename()))));
+            providers.add(createSamlMetadataProvider(new ClasspathResource(String.format("/sso/saml/idps/%s", resource.getFilename()))));
         return providers;
     }
 
     private List<MetadataProvider> loadSamlIdpMetadataFromFileSystem(File confDir) throws Exception {
         List<MetadataProvider> providers = new LinkedList<>();
-        final String fileSystemPattern = FilenameUtils.separatorsToUnix("file://" + new File(confDir, "/sso/saml/idps-metadata/*-idp.xml").getAbsolutePath());
+        final String fileSystemPattern = FilenameUtils.separatorsToUnix("file://" + new File(confDir, "/sso/saml/idps/*-idp.xml").getAbsolutePath());
         org.springframework.core.io.Resource[] resources = new PathMatchingResourcePatternResolver().getResources(fileSystemPattern);
         for (org.springframework.core.io.Resource resource : resources)
             providers.add(createSamlMetadataProvider(new FilesystemResource(resource.getFile().getAbsolutePath())));
