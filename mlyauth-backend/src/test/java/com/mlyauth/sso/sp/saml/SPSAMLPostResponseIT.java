@@ -38,7 +38,6 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.Filter;
 import java.util.List;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_ACTION;
 import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_APP;
 import static com.mlyauth.token.IDPClaims.*;
 import static org.hamcrest.Matchers.*;
@@ -317,7 +316,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         attributes.add(samlHelper.buildStringAttribute(CLIENT_ID.getValue(), "9000")); //See person-examples.sql
         attributes.add(samlHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), "CL"));
         attributes.add(samlHelper.buildStringAttribute(ENTITY_ID.getValue(), "BA0000000000001"));
-        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
+        attributes.add(samlHelper.buildStringAttribute(ACTION.getValue(), "S"));
         assertion.getAttributeStatements().add(attributeStatement);
     }
 
