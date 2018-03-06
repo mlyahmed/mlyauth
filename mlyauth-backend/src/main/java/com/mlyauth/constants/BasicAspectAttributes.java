@@ -1,6 +1,6 @@
 package com.mlyauth.constants;
 
-public enum SPBasicAspectAttributes implements IStringEnum {
+public enum BasicAspectAttributes implements IStringEnum {
     UNDEFINED("UNDEFINED"),
     SP_BASIC_SSO_URL("Auth:SP:Basic:EndPoint"),
     SP_BASIC_USERNAME("Auth:SP:Basic:Username"),
@@ -8,7 +8,7 @@ public enum SPBasicAspectAttributes implements IStringEnum {
 
     private final String value;
 
-    SPBasicAspectAttributes(String value) {
+    BasicAspectAttributes(String value) {
         this.value = value;
     }
 

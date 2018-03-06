@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import static com.mlyauth.beans.AttributeBean.newAttribute;
-import static com.mlyauth.constants.SPBasicAspectAttributes.*;
+import static com.mlyauth.constants.BasicAspectAttributes.*;
 
 @Service
 public class BasicNavigationService implements ISPNavigationService {

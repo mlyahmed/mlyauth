@@ -22,6 +22,7 @@ import java.util.List;
 import static com.mlyauth.constants.AuthAspectAttribute.*;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 
+
 @Component
 public class SAMLAccessTokenProducer implements ITokenProducer {
 
