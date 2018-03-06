@@ -19,7 +19,9 @@ import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
 
-import static com.mlyauth.beans.AttributeBean.*;
+import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_APP;
+import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_PROFILE;
+import static com.mlyauth.token.IDPClaims.CLIENT_ID;
 
 @Service
 @Transactional
@@ -37,7 +39,7 @@ public class SPSAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
 
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
         checkCredentials(credential);
-        final Person person = personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()));
+        final Person person = personDAO.findByExternalId(credential.getAttributeAsString(CLIENT_ID.getValue()));
         final IContext context = contextHolder.newContext(person);
         credential.getAttributes().forEach(attr -> context.putAttribute(attr.getName(), credential.getAttributeAsString(attr.getName())));
         return new IDPUser(context);
@@ -48,10 +50,10 @@ public class SPSAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
         Assert.notEmpty(credential.getAttributes(), "SAML Credential : Attributes List is empty");
         logAttributes(credential);
 
-        Assert.notNull(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()), "SAML Credential : The clientId attribute is undefined");
+        Assert.notNull(credential.getAttributeAsString(CLIENT_ID.getValue()), "SAML Credential : The clientId attribute is undefined");
         Assert.notNull(credential.getAttributeAsString(SAML_RESPONSE_PROFILE.getCode()), "SAML Credential : The profile code attribute is undefined");
 
-        final Person person = personDAO.findByExternalId(credential.getAttributeAsString(SAML_RESPONSE_CLIENT_ID.getCode()));
+        final Person person = personDAO.findByExternalId(credential.getAttributeAsString(CLIENT_ID.getValue()));
         Assert.notNull(person, "SAML Credential : Person Not Found");
 
         if (credential.getAttributeAsString(SAML_RESPONSE_APP.getCode()) != null) {
