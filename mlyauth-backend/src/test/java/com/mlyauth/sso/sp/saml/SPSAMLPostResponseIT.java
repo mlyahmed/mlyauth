@@ -38,7 +38,6 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.Filter;
 import java.util.List;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_APP;
 import static com.mlyauth.token.IDPClaims.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
@@ -140,7 +139,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
     private void given_the_target_app() {
         final List<Attribute> attributes = attributeStatement.getAttributes();
-        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), "PolicyDev"));
+        attributes.add(samlHelper.buildStringAttribute(APPLICATION.getValue(), "PolicyDev"));
     }
 
     @Test

@@ -8,7 +8,6 @@ import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.token.IDPClaims;
 import com.mlyauth.token.saml.SAMLHelper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
@@ -30,7 +29,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_APP;
 import static com.mlyauth.token.IDPClaims.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -38,11 +36,11 @@ import static org.mockito.Mockito.when;
 public class SPSAMLUserDetailsServiceImplTest {
 
 
-    public static final String CLIENT_ID = "BVCG15487";
+    public static final String A_CLIENT_ID = "BVCG15487";
     public static final String A_USER_PROFILE = "CL";
     public static final String A_PRESTATION_ID = "BA0000000000001";
     public static final String AN_ACTION = "S";
-    public static final String APPLICATION_CODE = "policy";
+    public static final String AN_APP_CODE = "policy";
     public static final String USERNAME = "ahmed.elidrissi";
     public static final String SECRET = RandomStringUtils.random(20, true, true);
     public static final Date FUTURE_TIME = new Date(System.currentTimeMillis() + (1000 * 60));
@@ -106,11 +104,11 @@ public class SPSAMLUserDetailsServiceImplTest {
         given_the_application_is_assigned_to_the_person();
         when_load_user();
         assertThat(contextHolder.getContext(), Matchers.notNullValue());
-        assertThat(contextHolder.getAttribute(IDPClaims.CLIENT_ID.getValue()), Matchers.equalTo(CLIENT_ID));
+        assertThat(contextHolder.getAttribute(CLIENT_ID.getValue()), Matchers.equalTo(A_CLIENT_ID));
         assertThat(contextHolder.getAttribute(CLIENT_PROFILE.getValue()), Matchers.equalTo(A_USER_PROFILE));
         assertThat(contextHolder.getAttribute(ENTITY_ID.getValue()), Matchers.equalTo(A_PRESTATION_ID));
         assertThat(contextHolder.getAttribute(ACTION.getValue()), Matchers.equalTo(AN_ACTION));
-        assertThat(contextHolder.getAttribute(SAML_RESPONSE_APP.getCode()), Matchers.equalTo(APPLICATION_CODE));
+        assertThat(contextHolder.getAttribute(APPLICATION.getValue()), Matchers.equalTo(AN_APP_CODE));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -153,20 +151,20 @@ public class SPSAMLUserDetailsServiceImplTest {
     }
 
     private void given_the_application_is_assigned_to_the_person() {
-        person.setApplications(Sets.newHashSet(Application.newInstance().setAppname(APPLICATION_CODE)));
+        person.setApplications(Sets.newHashSet(Application.newInstance().setAppname(AN_APP_CODE)));
     }
 
     private void given_credential_with_all_attributes() {
-        attributes.add(samlLHelper.buildStringAttribute(IDPClaims.CLIENT_ID.getValue(), CLIENT_ID));
+        attributes.add(samlLHelper.buildStringAttribute(CLIENT_ID.getValue(), A_CLIENT_ID));
         attributes.add(samlLHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), A_USER_PROFILE));
         attributes.add(samlLHelper.buildStringAttribute(ENTITY_ID.getValue(), A_PRESTATION_ID));
         attributes.add(samlLHelper.buildStringAttribute(ACTION.getValue(), AN_ACTION));
-        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        attributes.add(samlLHelper.buildStringAttribute(APPLICATION.getValue(), AN_APP_CODE));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 
     private void given_all_credential_attributes_except_app() {
-        attributes.add(samlLHelper.buildStringAttribute(IDPClaims.CLIENT_ID.getValue(), CLIENT_ID));
+        attributes.add(samlLHelper.buildStringAttribute(CLIENT_ID.getValue(), A_CLIENT_ID));
         attributes.add(samlLHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), A_USER_PROFILE));
         attributes.add(samlLHelper.buildStringAttribute(ENTITY_ID.getValue(), A_PRESTATION_ID));
         attributes.add(samlLHelper.buildStringAttribute(ACTION.getValue(), AN_ACTION));
@@ -174,10 +172,10 @@ public class SPSAMLUserDetailsServiceImplTest {
     }
 
     private void given_all_credential_attributes_except_the_profile_code() {
-        attributes.add(samlLHelper.buildStringAttribute(IDPClaims.CLIENT_ID.getValue(), CLIENT_ID));
+        attributes.add(samlLHelper.buildStringAttribute(CLIENT_ID.getValue(), A_CLIENT_ID));
         attributes.add(samlLHelper.buildStringAttribute(ENTITY_ID.getValue(), A_PRESTATION_ID));
         attributes.add(samlLHelper.buildStringAttribute(ACTION.getValue(), AN_ACTION));
-        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        attributes.add(samlLHelper.buildStringAttribute(APPLICATION.getValue(), AN_APP_CODE));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 
@@ -185,7 +183,7 @@ public class SPSAMLUserDetailsServiceImplTest {
         attributes.add(samlLHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), A_USER_PROFILE));
         attributes.add(samlLHelper.buildStringAttribute(ENTITY_ID.getValue(), A_PRESTATION_ID));
         attributes.add(samlLHelper.buildStringAttribute(ACTION.getValue(), AN_ACTION));
-        attributes.add(samlLHelper.buildStringAttribute(SAML_RESPONSE_APP.getCode(), APPLICATION_CODE));
+        attributes.add(samlLHelper.buildStringAttribute(APPLICATION.getValue(), AN_APP_CODE));
         credential = new SAMLCredential(nameID, assertion, null, null, attributes, null, null);
     }
 
@@ -196,11 +194,11 @@ public class SPSAMLUserDetailsServiceImplTest {
                 .setExpireAt(FUTURE_TIME);
         person = new Person();
         person.setAuthenticationInfo(authenticationInfo);
-        when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(person);
+        when(personDAO.findByExternalId(A_CLIENT_ID)).thenReturn(person);
     }
 
     private void given_the_person_does_not_exist() {
-        when(personDAO.findByExternalId(CLIENT_ID)).thenReturn(null);
+        when(personDAO.findByExternalId(A_CLIENT_ID)).thenReturn(null);
     }
 
     private void when_load_user() {

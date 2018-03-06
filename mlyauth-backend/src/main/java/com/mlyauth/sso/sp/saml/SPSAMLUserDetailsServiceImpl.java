@@ -19,9 +19,7 @@ import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_APP;
-import static com.mlyauth.token.IDPClaims.CLIENT_ID;
-import static com.mlyauth.token.IDPClaims.CLIENT_PROFILE;
+import static com.mlyauth.token.IDPClaims.*;
 
 @Service
 @Transactional
@@ -56,8 +54,8 @@ public class SPSAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
         final Person person = personDAO.findByExternalId(credential.getAttributeAsString(CLIENT_ID.getValue()));
         Assert.notNull(person, "SAML Credential : Person Not Found");
 
-        if (credential.getAttributeAsString(SAML_RESPONSE_APP.getCode()) != null) {
-            final boolean assigned = person.getApplications().stream().anyMatch(app -> app.getAppname().equals(credential.getAttributeAsString(SAML_RESPONSE_APP.getCode())));
+        if (credential.getAttributeAsString(APPLICATION.getValue()) != null) {
+            final boolean assigned = person.getApplications().stream().anyMatch(app -> app.getAppname().equals(credential.getAttributeAsString(APPLICATION.getValue())));
             Assert.isTrue(assigned, "SAML Credential : The application is not assigned to the person");
         }
     }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE_APP;
+import static com.mlyauth.token.IDPClaims.APPLICATION;
 
 @Component("IDPUrlAuthenticationSuccessHandler")
 public class IDPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -26,8 +26,8 @@ public class IDPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthent
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        if (context.getAttribute(SAML_RESPONSE_APP.getCode()) != null) {
-            getRedirectStrategy().sendRedirect(request, response, "/navigate/saml/to/" + context.getAttribute(SAML_RESPONSE_APP.getCode()));
+        if (context.getAttribute(APPLICATION.getValue()) != null) {
+            getRedirectStrategy().sendRedirect(request, response, "/navigate/saml/to/" + context.getAttribute(APPLICATION.getValue()));
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
         }
