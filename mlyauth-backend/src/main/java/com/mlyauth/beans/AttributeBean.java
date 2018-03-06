@@ -2,10 +2,6 @@ package com.mlyauth.beans;
 
 public class AttributeBean implements Cloneable{
 
-    public final static AttributeBean BASIC_AUTH_USERNAME = new AttributeBean("Auth:Basic:Username");
-    public final static AttributeBean BASIC_AUTH_PASSWORD = new AttributeBean("Auth:Basic:Password");
-    public final static AttributeBean BASIC_AUTH_ENDPOINT = new AttributeBean("Auth:Basic:EndPoint");
-
     private String code;
     private String alias;
     private String value;

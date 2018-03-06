@@ -18,7 +18,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static com.mlyauth.beans.AttributeBean.*;
+import static com.mlyauth.beans.AttributeBean.newAttribute;
+import static com.mlyauth.constants.SPBasicAspectAttributes.*;
 
 @Service
 public class BasicNavigationService implements ISPNavigationService {
@@ -39,10 +40,10 @@ public class BasicNavigationService implements ISPNavigationService {
         if (applications.stream().noneMatch(app -> app.getAppname().equals(appname)))
             throw IDPException.newInstance().setErrors(Arrays.asList(new AuthError("", "")));
 
-
-        navigationAttributes.add(BASIC_AUTH_ENDPOINT.setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
-        navigationAttributes.add(BASIC_AUTH_USERNAME.setAlias("j_username").setValue("gestF"));
-        navigationAttributes.add(BASIC_AUTH_PASSWORD.setAlias("j_password").setValue("gestF"));
+        navigationAttributes.add(newAttribute(SP_BASIC_SSO_URL.getValue())
+                .setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
+        navigationAttributes.add(newAttribute(SP_BASIC_USERNAME.getValue()).setAlias("j_username").setValue("gestF"));
+        navigationAttributes.add(newAttribute(SP_BASIC_PASSWORD.getValue()).setAlias("j_password").setValue("gestF"));
         navigation.setAttributes(navigationAttributes);
 
         return navigation;

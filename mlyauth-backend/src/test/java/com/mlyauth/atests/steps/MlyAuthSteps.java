@@ -20,7 +20,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.mlyauth.beans.AttributeBean.*;
+import static com.mlyauth.beans.AttributeBean.newAttribute;
+import static com.mlyauth.constants.SPBasicAspectAttributes.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.HttpStatus.ACCEPTED;
@@ -72,9 +73,10 @@ public class MlyAuthSteps extends AbstractStepsDef{
     public void application_has_the_basic_authentication_aspect(String appname) throws Exception {
         final ApplicationBean application = applicationHolder.getApplication(appname);
         Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
-        authSettings.put(BASIC_AUTH_ENDPOINT.getCode(), BASIC_AUTH_ENDPOINT.clone().setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
-        authSettings.put(BASIC_AUTH_USERNAME.getCode(), BASIC_AUTH_USERNAME.clone().setAlias("j_username").setValue("gestF"));
-        authSettings.put(BASIC_AUTH_PASSWORD.getCode(), BASIC_AUTH_PASSWORD.clone().setAlias("j_password").setValue("gestF"));
+        authSettings.put(SP_BASIC_SSO_URL.getValue(), newAttribute(SP_BASIC_SSO_URL.getValue())
+                .setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
+        authSettings.put(SP_BASIC_USERNAME.getValue(), newAttribute(SP_BASIC_USERNAME.getValue()).setAlias("j_username").setValue("gestF"));
+        authSettings.put(SP_BASIC_PASSWORD.getValue(), newAttribute(SP_BASIC_PASSWORD.getValue()).setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
         application.setAuthAspect(AuthAspectType.SP_BASIC);
         restTestHelper.performPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
