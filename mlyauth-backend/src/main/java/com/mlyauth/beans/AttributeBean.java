@@ -56,23 +56,6 @@ public class AttributeBean implements Cloneable{
         return this;
     }
 
-    public AttributeCategory getCategory() {
-        return category;
-    }
-
-    public AttributeBean setCategory(AttributeCategory category) {
-        this.category = category;
-        return this;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    public AttributeBean setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-        return this;
-    }
 
     public String getValue() {
         return value;
@@ -83,14 +66,7 @@ public class AttributeBean implements Cloneable{
         return this;
     }
 
-    public boolean isMandatory() {
-        return mandatory;
-    }
 
-    public AttributeBean setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
-        return this;
-    }
 
     public static AttributeBean createAuthAttr(String code){
         return new AttributeBean(code, AUTHENTICATION);
