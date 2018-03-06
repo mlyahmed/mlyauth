@@ -1,6 +1,5 @@
-package com.mlyauth.mocks.dao;
+package com.mlyauth.dao;
 
-import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationSession;
 
 import java.util.HashMap;

@@ -7,8 +7,8 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
-import com.mlyauth.producers.SAMLAccessTokenProducer;
 import com.mlyauth.token.IDPToken;
+import com.mlyauth.token.saml.SAMLAccessTokenProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

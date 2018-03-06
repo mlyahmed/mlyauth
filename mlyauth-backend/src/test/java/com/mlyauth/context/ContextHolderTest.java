@@ -2,11 +2,11 @@ package com.mlyauth.context;
 
 import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.AuthenticationSessionDAO;
+import com.mlyauth.dao.MockAuthenticationSessionDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
-import com.mlyauth.mocks.dao.MockAuthenticationSessionDAO;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;

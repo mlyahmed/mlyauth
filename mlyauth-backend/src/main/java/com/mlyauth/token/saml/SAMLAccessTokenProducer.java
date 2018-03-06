@@ -1,4 +1,4 @@
-package com.mlyauth.producers;
+package com.mlyauth.token.saml;
 
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.context.IContext;
@@ -7,6 +7,7 @@ import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.token.IDPToken;
 import com.mlyauth.token.ITokenFactory;
+import com.mlyauth.token.ITokenProducer;
 import com.mlyauth.tools.SAMLHelper;
 import com.mlyauth.validators.ISPSAMLAspectValidator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
