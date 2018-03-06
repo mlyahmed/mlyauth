@@ -1,41 +1,25 @@
 package com.mlyauth.beans;
 
-import com.mlyauth.constants.AttributeCategory;
-
-import static com.mlyauth.constants.AttributeCategory.AUTHENTICATION;
-
 public class AttributeBean implements Cloneable{
 
-    public final static AttributeBean BASIC_AUTH_USERNAME = new AttributeBean("Auth:Basic:Username", AUTHENTICATION);
-    public final static AttributeBean BASIC_AUTH_PASSWORD = new AttributeBean("Auth:Basic:Password", AUTHENTICATION);
-    public final static AttributeBean BASIC_AUTH_ENDPOINT = new AttributeBean("Auth:Basic:EndPoint", AUTHENTICATION);
+    public final static AttributeBean BASIC_AUTH_USERNAME = new AttributeBean("Auth:Basic:Username");
+    public final static AttributeBean BASIC_AUTH_PASSWORD = new AttributeBean("Auth:Basic:Password");
+    public final static AttributeBean BASIC_AUTH_ENDPOINT = new AttributeBean("Auth:Basic:EndPoint");
 
     private String code;
     private String alias;
-    private AttributeCategory category;
-    private String defaultValue;
     private String value;
-    private boolean mandatory;
 
     public AttributeBean(){
 
     }
 
-    public AttributeBean(String code, AttributeCategory category) {
+    private AttributeBean(String code) {
         this.code = this.alias = code;
-        this.category = category;
-        this.mandatory = false;
     }
 
-    public AttributeBean(String code, AttributeCategory category, String defaultValue, boolean mandatory) {
-        this.code = code;
-        this.defaultValue = defaultValue;
-        this.mandatory = mandatory;
-        this.category = category;
-    }
-
-    public static AttributeBean newAuthenticationAttribute(String uri) {
-        return new AttributeBean(uri, AUTHENTICATION);
+    public static AttributeBean newAttribute(String uri) {
+        return new AttributeBean(uri);
     }
 
     public String getCode() {
@@ -64,12 +48,6 @@ public class AttributeBean implements Cloneable{
     public AttributeBean setValue(String value) {
         this.value = value;
         return this;
-    }
-
-
-
-    public static AttributeBean createAuthAttr(String code){
-        return new AttributeBean(code, AUTHENTICATION);
     }
 
     public AttributeBean clone() {
