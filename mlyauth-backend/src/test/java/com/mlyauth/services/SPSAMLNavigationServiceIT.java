@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE;
 import static com.mlyauth.constants.AuthAspectAttribute.SP_SAML_SSO_URL;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
 import static org.hamcrest.Matchers.equalTo;
@@ -40,7 +39,7 @@ public class SPSAMLNavigationServiceIT extends AbstractIntegrationTest {
         final NavigationBean navigation = navigationService.newNavigation(POLICY_DEV);
         assertThat(navigation, notNullValue());
         assertThat(navigation.getTarget(), equalTo(attributes.get(SP_SAML_SSO_URL).getValue()));
-        assertThat(navigation.getAttribute(SAML_RESPONSE.getCode()), notNullValue());
-        assertThat(navigation.getAttribute(SAML_RESPONSE.getCode()).getValue(), notNullValue());
+        assertThat(navigation.getAttribute("SAMLResponse"), notNullValue());
+        assertThat(navigation.getAttribute("SAMLResponse").getValue(), notNullValue());
     }
 }

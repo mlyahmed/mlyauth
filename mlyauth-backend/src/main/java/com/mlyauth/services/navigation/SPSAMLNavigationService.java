@@ -15,8 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static com.mlyauth.beans.AttributeBean.SAML_RESPONSE;
+import static com.mlyauth.beans.AttributeBean.newAuthenticationAttribute;
 import static com.mlyauth.constants.AuthAspectType.SP_SAML;
+import static com.mlyauth.constants.SAMLNavigationAttributes.SAML_RESPONSE;
 
 @Service
 public class SPSAMLNavigationService implements ISPNavigationService {
@@ -33,7 +34,7 @@ public class SPSAMLNavigationService implements ISPNavigationService {
         NavigationBean navigation = new NavigationBean();
         checkApplication(applicationDAO.findByAppname(appname));
         final IDPToken token = responseGenerator.produce(applicationDAO.findByAppname(appname));
-        navigationAttributes.add(SAML_RESPONSE.setValue(token.serialize()));
+        navigationAttributes.add(newAuthenticationAttribute(SAML_RESPONSE.getValue()).setValue(token.serialize()));
         navigation.setTarget(token.getTargetURL());
         navigation.setAttributes(navigationAttributes);
         return navigation;

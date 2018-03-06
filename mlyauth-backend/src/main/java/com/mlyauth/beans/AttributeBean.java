@@ -9,12 +9,12 @@ public class AttributeBean implements Cloneable{
     public final static AttributeBean BASIC_AUTH_USERNAME = new AttributeBean("Auth:Basic:Username", AUTHENTICATION);
     public final static AttributeBean BASIC_AUTH_PASSWORD = new AttributeBean("Auth:Basic:Password", AUTHENTICATION);
     public final static AttributeBean BASIC_AUTH_ENDPOINT = new AttributeBean("Auth:Basic:EndPoint", AUTHENTICATION);
+
     public final static AttributeBean SAML_RESPONSE_CLIENT_ID = new AttributeBean("idClient", AUTHENTICATION);
     public final static AttributeBean SAML_RESPONSE_PROFILE = new AttributeBean("profilUtilisateur", AUTHENTICATION);
     public final static AttributeBean SAML_RESPONSE_PRESTATION_ID = new AttributeBean("idPrestation", AUTHENTICATION);
     public final static AttributeBean SAML_RESPONSE_ACTION = new AttributeBean("action", AUTHENTICATION);
     public final static AttributeBean SAML_RESPONSE_APP = new AttributeBean("application", AUTHENTICATION);
-    public final static AttributeBean SAML_RESPONSE = new AttributeBean("SAMLResponse", AUTHENTICATION);
 
     private String code;
     private String alias;
@@ -40,6 +40,9 @@ public class AttributeBean implements Cloneable{
         this.category = category;
     }
 
+    public static AttributeBean newAuthenticationAttribute(String uri) {
+        return new AttributeBean(uri, AUTHENTICATION);
+    }
 
     public String getCode() {
         return code;
