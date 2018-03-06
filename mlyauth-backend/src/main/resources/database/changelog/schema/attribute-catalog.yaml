@@ -13,16 +13,6 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: CATEGORY
-                  type: varchar(50)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: DEFAULT_VALUE
-                  type: CLOB
-                  constraints:
-                    nullable: true
-              - column:
                   name: TITLE
                   type: varchar(255)
                   constraints:

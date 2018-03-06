@@ -1,8 +1,9 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.AttributeCategory;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
@@ -12,13 +13,6 @@ public class Attribute implements Serializable {
     @Id
     @Column(name = "ID", nullable = false)
     private String code;
-
-    @Column(name = "CATEGORY", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private AttributeCategory category;
-
-    @Column(name = "DEFAULT_VALUE", nullable = false)
-    private String defaultValue;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -36,24 +30,6 @@ public class Attribute implements Serializable {
 
     public Attribute setCode(String code) {
         this.code = code;
-        return this;
-    }
-
-    public AttributeCategory getCategory() {
-        return category;
-    }
-
-    public Attribute setCategory(AttributeCategory category) {
-        this.category = category;
-        return this;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    public Attribute setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
         return this;
     }
 
