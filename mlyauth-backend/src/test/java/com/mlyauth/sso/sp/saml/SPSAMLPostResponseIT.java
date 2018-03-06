@@ -40,6 +40,7 @@ import java.util.List;
 
 import static com.mlyauth.beans.AttributeBean.*;
 import static com.mlyauth.token.IDPClaims.CLIENT_ID;
+import static com.mlyauth.token.IDPClaims.CLIENT_PROFILE;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -314,7 +315,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
         attributes.add(samlHelper.buildStringAttribute(CLIENT_ID.getValue(), "9000")); //See person-examples.sql
-        attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_PROFILE.getCode(), "CL"));
+        attributes.add(samlHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), "CL"));
         attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_PRESTATION_ID.getCode(), "BA0000000000001"));
         attributes.add(samlHelper.buildStringAttribute(SAML_RESPONSE_ACTION.getCode(), "S"));
         assertion.getAttributeStatements().add(attributeStatement);
