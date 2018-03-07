@@ -7,6 +7,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.exception.JOSEErrorException;
+import com.mlyauth.token.IDPClaims;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.util.Base64URL;
@@ -85,7 +86,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             EncryptedJWT tokenHolder = EncryptedJWT.parse(encodedToken);
             tokenHolder.decrypt(new RSADecrypter(keyManager.getDefaultCredential().getPrivateKey()));
             final SignedJWT signedJWT = tokenHolder.getPayload().toSignedJWT();
-            return signedJWT.getHeader().getKeyID();
+            return (String) signedJWT.getHeader().getCustomParam(IDPClaims.ISSUER.getValue());
         } catch (Exception e) {
             throw new BadCredentialsException("Couldn't verify the credentials", e);
         }
