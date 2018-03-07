@@ -84,7 +84,7 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     public JOSEAccessToken(String serialize) {
-        super();
+        parseCipheredToken(serialize);
         status = TokenStatus.CYPHERED;
     }
 
@@ -301,13 +301,18 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     private SignedJWT decipherClaims() throws JOSEException {
-        token.decrypt(new RSADecrypter(privateKey));
+        token.decrypt(new RSADecrypter(getPrivateKey()));
         final SignedJWT signedJWT = token.getPayload().toSignedJWT();
         checkSignature(signedJWT);
         return signedJWT;
     }
 
+    private PrivateKey getPrivateKey() {
+        return privateKey != null ? privateKey : credentialManager.getLocalPrivateKey();
+    }
+
     private void checkSignature(SignedJWT signedJWT) throws JOSEException {
+        PublicKey publicKey = this.publicKey != null ? this.publicKey : credentialManager.getPeerCertificate(null, null).getPublicKey();
         if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))
             throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
     }

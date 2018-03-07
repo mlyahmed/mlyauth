@@ -3,7 +3,6 @@ package com.mlyauth.token.jwt;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
-import com.mlyauth.key.CredentialManager;
 import com.mlyauth.key.MockCredentialManager;
 import com.mlyauth.token.IDPClaims;
 import com.mlyauth.token.jose.JOSEAccessToken;
@@ -15,6 +14,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
 import org.apache.commons.lang.RandomStringUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -35,27 +35,40 @@ import static org.junit.Assert.assertThat;
 
 public class JOSECypheredAccessTokenAndDefaultCredentialsTests {
 
-    private CredentialManager credentialManager;
+    private MockCredentialManager credentialManager;
     private JOSEAccessToken token;
     private JWTClaimsSet expectedClaims;
     private JWEObject tokenEncrypted;
     private KeyPair cypherCred;
     private KeyPair decipherCred;
 
-    @Test
-    public void the_token_status_must_be_cyphered() throws JOSEException {
-
-        final Pair<PrivateKey, X509Certificate> peerCred = KeysForTests.generateRSACredential();
-        final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
-        cypherCred = new KeyPair(peerCred.getValue().getPublicKey(), localCred.getKey());
-        decipherCred = new KeyPair(localCred.getValue().getPublicKey(), peerCred.getKey());
-        credentialManager = new MockCredentialManager(decipherCred.getPrivate(), decipherCred.getPublic());
+    @Before
+    public void setup() throws JOSEException {
+        given_the_credentials();
         given_expected_claims();
         given_the_claims_are_cyphered();
-
         token = new JOSEAccessToken(tokenEncrypted.serialize());
         ReflectionTestUtils.setField(token, "credentialManager", credentialManager);
+    }
+
+    private void given_the_credentials() {
+        final Pair<PrivateKey, X509Certificate> peerCred = KeysForTests.generateRSACredential();
+        final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
+        cypherCred = new KeyPair(localCred.getValue().getPublicKey(), peerCred.getKey());
+        decipherCred = new KeyPair(peerCred.getValue().getPublicKey(), localCred.getKey());
+        credentialManager = new MockCredentialManager(decipherCred.getPrivate(), decipherCred.getPublic());
+        credentialManager.setPeerCertificate(null, null, peerCred.getValue());
+    }
+
+    @Test
+    public void the_token_status_must_be_cyphered() {
         assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+    }
+
+    @Test
+    public void when_decipher_then_it_must_be_deciphered() {
+        token.decipher();
+        assertThat(token.getStatus(), equalTo(TokenStatus.DECIPHERED));
     }
 
 

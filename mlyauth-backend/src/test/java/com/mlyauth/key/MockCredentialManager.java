@@ -11,6 +11,7 @@ public class MockCredentialManager implements CredentialManager {
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
+    private Certificate peerCertificate;
 
     public MockCredentialManager(PrivateKey privateKey, PublicKey publicKey) {
         this.privateKey = privateKey;
@@ -34,7 +35,12 @@ public class MockCredentialManager implements CredentialManager {
 
     @Override
     public Certificate getPeerCertificate(Application app, AspectType aspectType) {
-        return null;
+        return peerCertificate;
+    }
+
+
+    public void setPeerCertificate(Application app, AspectType aspectType, Certificate certificate) {
+        peerCertificate = certificate;
     }
 
 }
