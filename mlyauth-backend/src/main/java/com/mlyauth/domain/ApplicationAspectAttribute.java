@@ -1,6 +1,6 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.AuthAspectAttribute;
+import com.mlyauth.constants.AspectAttribute;
 
 import javax.persistence.*;
 
@@ -37,8 +37,8 @@ public class ApplicationAspectAttribute {
     }
 
     @Transient
-    public AuthAspectAttribute getAttributeCode() {
-        return AuthAspectAttribute.create(this.getId().getAttributeCode());
+    public AspectAttribute getAttributeCode() {
+        return AspectAttribute.create(this.getId().getAttributeCode());
     }
 
 }

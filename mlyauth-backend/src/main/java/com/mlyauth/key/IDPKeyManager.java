@@ -1,6 +1,6 @@
 package com.mlyauth.key;
 
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.domain.Application;
 
 import java.security.PrivateKey;
@@ -15,6 +15,6 @@ public interface IDPKeyManager {
 
     Certificate getLocalCertificate();
 
-    Certificate getPeerCertificate(Application app, AuthAspectType aspectType);
+    Certificate getPeerCertificate(Application app, AspectType aspectType);
 
 }

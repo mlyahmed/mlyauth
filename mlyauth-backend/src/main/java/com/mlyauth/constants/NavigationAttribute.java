@@ -1,17 +1,17 @@
 package com.mlyauth.constants;
 
-public enum SAMLNavigationAttributes implements IStringEnum {
+public enum NavigationAttribute implements IStringEnum {
     UNDEFINED("UNDEFINED"),
     SAML_RESPONSE("SAMLResponse");
 
     private final String value;
 
-    SAMLNavigationAttributes(String value) {
+    NavigationAttribute(String value) {
         this.value = value;
     }
 
-    public static AuthAspectAttribute create(String value) {
-        return UNDEFINED.create(AuthAspectAttribute.class, value);
+    public static AspectAttribute create(String value) {
+        return UNDEFINED.create(AspectAttribute.class, value);
     }
 
     @Override

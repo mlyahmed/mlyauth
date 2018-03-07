@@ -1,5 +1,5 @@
 package com.mlyauth.constants;
 
-public enum AuthAspectType {
+public enum AspectType {
     UNDEFINED, SP_BASIC, SP_SAML, IDP_JOSE
 }

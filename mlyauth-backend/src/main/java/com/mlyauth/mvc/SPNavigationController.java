@@ -1,7 +1,7 @@
 package com.mlyauth.mvc;
 
 import com.mlyauth.beans.NavigationBean;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.services.navigation.ISPNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,14 +14,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mlyauth.constants.AuthAspectType.SP_BASIC;
-import static com.mlyauth.constants.AuthAspectType.SP_SAML;
+import static com.mlyauth.constants.AspectType.SP_BASIC;
+import static com.mlyauth.constants.AspectType.SP_SAML;
 
 @Controller
 @RequestMapping("/navigate")
 public class SPNavigationController {
 
-    private final Map<AuthAspectType, ISPNavigationService> services = new HashMap<>();
+    private final Map<AspectType, ISPNavigationService> services = new HashMap<>();
 
     @Autowired
     public void init(Collection<ISPNavigationService> services) {

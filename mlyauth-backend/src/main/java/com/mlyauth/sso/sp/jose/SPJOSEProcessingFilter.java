@@ -1,7 +1,7 @@
 package com.mlyauth.sso.sp.jose;
 
-import com.mlyauth.constants.AuthAspectAttribute;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectAttribute;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
@@ -68,8 +68,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     private RSAPublicKey loadPublicKey(String issuer) {
         try {
             final Application app = applicationDAO.findByAppname(issuer);
-            final Map<AuthAspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(app.getId(), AuthAspectType.IDP_JOSE.name());
-            final ApplicationAspectAttribute certificate = attributes.get(AuthAspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE);
+            final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(app.getId(), AspectType.IDP_JOSE.name());
+            final ApplicationAspectAttribute certificate = attributes.get(AspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE);
             Base64URL decoder = new Base64URL(certificate.getValue());
             ByteArrayInputStream inputStream = new ByteArrayInputStream(decoder.decode());
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");

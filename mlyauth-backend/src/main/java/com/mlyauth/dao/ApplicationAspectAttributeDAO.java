@@ -1,6 +1,6 @@
 package com.mlyauth.dao;
 
-import com.mlyauth.constants.AuthAspectAttribute;
+import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +16,7 @@ public interface ApplicationAspectAttributeDAO extends CrudRepository<Applicatio
     List<ApplicationAspectAttribute> findByAppAndAspect(long applicationId, String aspectId);
 
 
-    default Map<AuthAspectAttribute, ApplicationAspectAttribute> findAndIndex(long applicationId, String aspectId) {
+    default Map<AspectAttribute, ApplicationAspectAttribute> findAndIndex(long applicationId, String aspectId) {
         final List<ApplicationAspectAttribute> attributes = this.findByAppAndAspect(applicationId, aspectId);
         return attributes.stream().collect(Collectors.toMap(attr -> attr.getAttributeCode(), attr -> attr));
     }

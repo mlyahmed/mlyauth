@@ -1,6 +1,6 @@
 package com.mlyauth.key;
 
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.domain.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.saml.key.KeyManager;
@@ -32,7 +32,7 @@ public class IDPKeyManagerImpl implements IDPKeyManager {
     }
 
     @Override
-    public Certificate getPeerCertificate(Application app, AuthAspectType aspectType) {
+    public Certificate getPeerCertificate(Application app, AspectType aspectType) {
         return null;
     }
 

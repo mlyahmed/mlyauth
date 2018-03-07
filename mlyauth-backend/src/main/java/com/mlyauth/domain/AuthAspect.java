@@ -1,6 +1,6 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +12,7 @@ public class AuthAspect implements Serializable {
     @Id
     @Column(name = "TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
-    private AuthAspectType type;
+    private AspectType type;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -20,11 +20,11 @@ public class AuthAspect implements Serializable {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    public AuthAspectType getType() {
+    public AspectType getType() {
         return type;
     }
 
-    public void setType(AuthAspectType type) {
+    public void setType(AspectType type) {
         this.type = type;
     }
 

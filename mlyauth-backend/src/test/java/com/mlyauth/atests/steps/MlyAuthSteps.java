@@ -8,7 +8,7 @@ import com.mlyauth.atests.world.ResultActionHolder;
 import com.mlyauth.beans.ApplicationBean;
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.PersonBean;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.mlyauth.beans.AttributeBean.newAttribute;
-import static com.mlyauth.constants.AuthAspectAttribute.*;
+import static com.mlyauth.constants.AspectAttribute.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.HttpStatus.ACCEPTED;
@@ -78,7 +78,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
         authSettings.put(SP_BASIC_USERNAME.getValue(), newAttribute(SP_BASIC_USERNAME.getValue()).setAlias("j_username").setValue("gestF"));
         authSettings.put(SP_BASIC_PASSWORD.getValue(), newAttribute(SP_BASIC_PASSWORD.getValue()).setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
-        application.setAuthAspect(AuthAspectType.SP_BASIC);
+        application.setAuthAspect(AspectType.SP_BASIC);
         restTestHelper.performPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
     }
 

@@ -1,7 +1,7 @@
 package com.mlyauth.services;
 
 import com.mlyauth.beans.NavigationBean;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
@@ -66,7 +66,7 @@ public class SPSAMLNavigationServiceTest {
 
     @Test
     public void when_create_new_navigation_to_an_assigned_app_then_return_it() {
-        application.setAspects(new HashSet<>(Arrays.asList(AuthAspectType.SP_SAML)));
+        application.setAspects(new HashSet<>(Arrays.asList(AspectType.SP_SAML)));
         when(applicationDAO.findByAppname(TARGET_APP)).thenReturn(application);
         final NavigationBean navigation = service.newNavigation(TARGET_APP);
         assertThat(navigation, notNullValue());

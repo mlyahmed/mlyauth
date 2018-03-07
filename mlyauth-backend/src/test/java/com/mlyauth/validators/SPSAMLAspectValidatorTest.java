@@ -1,7 +1,7 @@
 package com.mlyauth.validators;
 
-import com.mlyauth.constants.AuthAspectAttribute;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectAttribute;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.mlyauth.constants.AuthAspectType.SP_SAML;
+import static com.mlyauth.constants.AspectType.SP_SAML;
 import static org.mockito.Mockito.when;
 
 public class SPSAMLAspectValidatorTest {
@@ -155,8 +155,8 @@ public class SPSAMLAspectValidatorTest {
     private void given_the_application_holds_encryption_certificate() throws CertificateEncodingException {
         final ApplicationAspectAttributeId encryptionCertificateId = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(APPLICATION_ID)
-                .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(AuthAspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
+                .setAspectCode(AspectType.SP_SAML.name())
+                .setAttributeCode(AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
         final Pair<PrivateKey, X509Certificate> credentialPair = KeysForTests.generateRSACredential();
         final String certificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
         certificateAttribute = ApplicationAspectAttribute.newInstance()
@@ -168,8 +168,8 @@ public class SPSAMLAspectValidatorTest {
     private void given_the_application_holds_the_entity_id() {
         ApplicationAspectAttributeId ssoEntityIdAttribute = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(APPLICATION_ID)
-                .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(AuthAspectAttribute.SP_SAML_ENTITY_ID.getValue());
+                .setAspectCode(AspectType.SP_SAML.name())
+                .setAttributeCode(AspectAttribute.SP_SAML_ENTITY_ID.getValue());
         entityIdAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ssoEntityIdAttribute)
                 .setValue("APP_SP_SAML_ID");
@@ -179,8 +179,8 @@ public class SPSAMLAspectValidatorTest {
     private void given_the_application_holds_sso_url() {
         final ApplicationAspectAttributeId ssoUrlId = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(APPLICATION_ID)
-                .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(AuthAspectAttribute.SP_SAML_SSO_URL.getValue());
+                .setAspectCode(AspectType.SP_SAML.name())
+                .setAttributeCode(AspectAttribute.SP_SAML_SSO_URL.getValue());
         ssoUrlAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ssoUrlId)
                 .setValue("http://localhost/sp/saml/sso");

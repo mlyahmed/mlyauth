@@ -1,8 +1,8 @@
 package com.mlyauth.sso.sp.jose;
 
 import com.mlyauth.AbstractIntegrationTest;
-import com.mlyauth.constants.AuthAspectAttribute;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectAttribute;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
@@ -73,28 +73,28 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         Application linkAssu = Application.newInstance()
                 .setAppname("LinkAssuDev")
                 .setTitle("Link ASSU")
-                .setAspects(new HashSet<>(Arrays.asList(AuthAspectType.IDP_JOSE)));
+                .setAspects(new HashSet<>(Arrays.asList(AspectType.IDP_JOSE)));
         linkAssu = applicationDAO.save(linkAssu);
 
         final ApplicationAspectAttribute linkAssuID = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(linkAssu.getId())
-                        .setAspectCode(AuthAspectType.IDP_JOSE.name())
-                        .setAttributeCode(AuthAspectAttribute.IDP_JOSE_ENTITY_ID.getValue()))
+                        .setAspectCode(AspectType.IDP_JOSE.name())
+                        .setAttributeCode(AspectAttribute.IDP_JOSE_ENTITY_ID.getValue()))
                 .setValue("LinkAssuDev");
 
         final ApplicationAspectAttribute linkAssuSSOURL = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(linkAssu.getId())
-                        .setAspectCode(AuthAspectType.IDP_JOSE.name())
-                        .setAttributeCode(AuthAspectAttribute.IDP_JOSE_SSO_URL.getValue()))
+                        .setAspectCode(AspectType.IDP_JOSE.name())
+                        .setAttributeCode(AspectAttribute.IDP_JOSE_SSO_URL.getValue()))
                 .setValue("http://localhost/idp/jose/sso");
 
         final ApplicationAspectAttribute linkAssuCertificate = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(linkAssu.getId())
-                        .setAspectCode(AuthAspectType.IDP_JOSE.name())
-                        .setAttributeCode(AuthAspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
+                        .setAspectCode(AspectType.IDP_JOSE.name())
+                        .setAttributeCode(AspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
                 .setValue(Base64URL.encode(credential.getValue().getEncoded()).toString());
 
 

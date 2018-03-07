@@ -1,6 +1,6 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,11 +23,11 @@ public class Application  implements Serializable {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @ElementCollection(targetClass = AuthAspectType.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = AspectType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "APPLICATION_ASPECT", joinColumns = @JoinColumn(name = "APPLICATION_ID"))
     @Column(name = "ASPECT_CODE")
-    private Set<AuthAspectType> aspects;
+    private Set<AspectType> aspects;
 
     public static Application newInstance(){
         return new Application();
@@ -60,11 +60,11 @@ public class Application  implements Serializable {
         return this;
     }
 
-    public Set<AuthAspectType> getAspects() {
+    public Set<AspectType> getAspects() {
         return aspects;
     }
 
-    public Application setAspects(Set<AuthAspectType> aspects) {
+    public Application setAspects(Set<AspectType> aspects) {
         this.aspects = aspects;
         return this;
     }

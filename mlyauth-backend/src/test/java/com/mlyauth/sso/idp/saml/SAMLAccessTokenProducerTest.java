@@ -1,8 +1,8 @@
 package com.mlyauth.sso.idp.saml;
 
 import com.google.common.collect.Sets;
-import com.mlyauth.constants.AuthAspectAttribute;
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectAttribute;
+import com.mlyauth.constants.AspectType;
 import com.mlyauth.context.IContext;
 import com.mlyauth.context.MockContext;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
@@ -97,8 +97,8 @@ public class SAMLAccessTokenProducerTest {
         ReflectionTestUtils.setField(generator, "idpEntityId", IDP_ENTITY_ID);
         ReflectionTestUtils.setField(generator, "tokenFactory", new TokenFactory());
         appAspectAttrobutes = new LinkedList<>();
-        when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, AuthAspectType.SP_SAML.name())).thenReturn(appAspectAttrobutes);
-        given_an_application(APPLICATION_ID, new AuthAspectType[]{AuthAspectType.SP_SAML});
+        when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, AspectType.SP_SAML.name())).thenReturn(appAspectAttrobutes);
+        given_an_application(APPLICATION_ID, new AspectType[]{AspectType.SP_SAML});
         given_the_application_sp_sso_url(APPLICATION_ID, SP_SAML_SSO_URL);
         given_the_application_sp_entity_id(APPLICATION_ID, SP_ENTITY_ID);
         givent_the_application_sp_encryption_certificate(APPLICATION_ID);
@@ -239,7 +239,7 @@ public class SAMLAccessTokenProducerTest {
         encodedCertificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
     }
 
-    private void given_an_application(long applicationId, AuthAspectType[] supportedAspects) {
+    private void given_an_application(long applicationId, AspectType[] supportedAspects) {
         application = Application.newInstance()
                 .setAppname(APP_NAME).setId(applicationId)
                 .setAspects(Sets.newHashSet(supportedAspects));
@@ -248,24 +248,24 @@ public class SAMLAccessTokenProducerTest {
     private void given_the_application_sp_sso_url(long applicationId, String spSAMLSSOUrl) {
         final ApplicationAspectAttributeId ssoUrl = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(applicationId)
-                .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(AuthAspectAttribute.SP_SAML_SSO_URL.getValue());
+                .setAspectCode(AspectType.SP_SAML.name())
+                .setAttributeCode(AspectAttribute.SP_SAML_SSO_URL.getValue());
         ssoUrlAttribute = ApplicationAspectAttribute.newInstance().setId(ssoUrl).setValue(spSAMLSSOUrl);
         appAspectAttrobutes.add(ssoUrlAttribute);
     }
 
     private void given_the_application_sp_entity_id(long applicationId, String entityId) {
         final ApplicationAspectAttributeId ssoEntityId = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
-                .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(AuthAspectAttribute.SP_SAML_ENTITY_ID.getValue());
+                .setAspectCode(AspectType.SP_SAML.name())
+                .setAttributeCode(AspectAttribute.SP_SAML_ENTITY_ID.getValue());
         ssoEntityIdAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEntityId).setValue(entityId);
         appAspectAttrobutes.add(ssoEntityIdAttribute);
     }
 
     private void givent_the_application_sp_encryption_certificate(long applicationId) {
         final ApplicationAspectAttributeId ssoEncryptionCertificate = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
-                .setAspectCode(AuthAspectType.SP_SAML.name())
-                .setAttributeCode(AuthAspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
+                .setAspectCode(AspectType.SP_SAML.name())
+                .setAttributeCode(AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
         ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEncryptionCertificate).setValue(encodedCertificate);
         appAspectAttrobutes.add(ssoEncryptionCertificateAttribute);
     }

@@ -1,6 +1,6 @@
 package com.mlyauth.beans;
 
-import com.mlyauth.constants.AuthAspectType;
+import com.mlyauth.constants.AspectType;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ public class ApplicationBean {
     private long id;
     private String appname;
     private String title;
-    private AuthAspectType authAspect = AuthAspectType.UNDEFINED;
+    private AspectType authAspect = AspectType.UNDEFINED;
     private Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
 
 
@@ -38,11 +38,11 @@ public class ApplicationBean {
         this.title = title;
     }
 
-    public AuthAspectType getAuthAspect() {
+    public AspectType getAuthAspect() {
         return authAspect;
     }
 
-    public void setAuthAspect(AuthAspectType authAspect) {
+    public void setAuthAspect(AspectType authAspect) {
         this.authAspect = authAspect;
     }
 
