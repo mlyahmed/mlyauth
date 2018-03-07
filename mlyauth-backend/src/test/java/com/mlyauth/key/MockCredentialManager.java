@@ -7,12 +7,12 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 
-public class MockKeyManager implements IDPKeyManager {
+public class MockCredentialManager implements CredentialManager {
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    public MockKeyManager(PrivateKey privateKey, PublicKey publicKey) {
+    public MockCredentialManager(PrivateKey privateKey, PublicKey publicKey) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }

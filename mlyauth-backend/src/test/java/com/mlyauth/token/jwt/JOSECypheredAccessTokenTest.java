@@ -5,7 +5,6 @@ import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
-import com.mlyauth.key.IDPKeyManager;
 import com.mlyauth.token.IDPClaims;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
@@ -21,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
@@ -37,9 +37,8 @@ import static org.junit.Assert.assertThat;
 
 public class JOSECypheredAccessTokenTest {
 
-    private IDPKeyManager keyManager;
-    private Pair<PrivateKey, RSAPublicKey> cypherCred;
-    private Pair<PrivateKey, RSAPublicKey> decipherCred;
+    private Pair<PrivateKey, PublicKey> cypherCred;
+    private Pair<PrivateKey, PublicKey> decipherCred;
     private JOSEAccessToken token;
     private JWTClaimsSet expectedClaims;
     private JWEObject tokenEncrypted;
@@ -48,8 +47,8 @@ public class JOSECypheredAccessTokenTest {
     public void setup() throws JOSEException {
         final Pair<PrivateKey, X509Certificate> peerCred = KeysForTests.generateRSACredential();
         final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
-        cypherCred = new Pair<>(localCred.getKey(), (RSAPublicKey) peerCred.getValue().getPublicKey());
-        decipherCred = new Pair<>(peerCred.getKey(), (RSAPublicKey) localCred.getValue().getPublicKey());
+        cypherCred = new Pair<>(localCred.getKey(), peerCred.getValue().getPublicKey());
+        decipherCred = new Pair<>(peerCred.getKey(), localCred.getValue().getPublicKey());
         given_expected_claims();
         given_the_claims_are_cyphered();
     }
@@ -190,7 +189,7 @@ public class JOSECypheredAccessTokenTest {
     public void when_the_token_is_not_signed_then_error() throws JOSEException {
         final JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
         EncryptedJWT tokenHolder = new EncryptedJWT(header, expectedClaims);
-        tokenHolder.encrypt(new RSAEncrypter(cypherCred.getValue()));
+        tokenHolder.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
         token = new JOSEAccessToken(tokenHolder.serialize(), decipherCred.getKey(), decipherCred.getValue());
         token.decipher();
     }
@@ -374,7 +373,7 @@ public class JOSECypheredAccessTokenTest {
         tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
         final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
         tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));
-        tokenEncrypted.encrypt(new RSAEncrypter(cypherCred.getValue()));
+        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
     }
 
     private static String randomString() {

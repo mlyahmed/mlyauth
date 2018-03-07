@@ -11,7 +11,7 @@ import java.security.PublicKey;
 import java.security.cert.Certificate;
 
 @Component
-public class IDPKeyManagerImpl implements IDPKeyManager {
+public class CredentialManagerImpl implements CredentialManager {
 
     @Autowired
     private KeyManager keyManager;

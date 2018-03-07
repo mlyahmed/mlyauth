@@ -7,7 +7,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 
-public interface IDPKeyManager {
+public interface CredentialManager {
 
     PrivateKey getLocalPrivateKey();
 

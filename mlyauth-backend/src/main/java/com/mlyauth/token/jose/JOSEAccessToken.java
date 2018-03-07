@@ -3,6 +3,7 @@ package com.mlyauth.token.jose;
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
+import com.mlyauth.key.CredentialManager;
 import com.mlyauth.token.AbstractToken;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSADecrypter;
@@ -12,9 +13,11 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 import java.time.Instant;
@@ -35,13 +38,16 @@ public class JOSEAccessToken extends AbstractToken {
 
     private TokenStatus status = TokenStatus.FRESH;
 
-    private final PrivateKey privateKey;
-    private final RSAPublicKey publicKey;
+    @Autowired
+    private CredentialManager credentialManager;
+
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
 
     private JWEObject token;
     private JWTClaimsSet.Builder builder;
 
-    public JOSEAccessToken(PrivateKey privateKey, RSAPublicKey publicKey) {
+    public JOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         Assert.notNull(privateKey, "The private key is mandatory");
         Assert.notNull(publicKey, "The public key is mandatory");
         this.privateKey = privateKey;
@@ -58,7 +64,7 @@ public class JOSEAccessToken extends AbstractToken {
                 .issueTime(Date.from(aSecondAgo));
     }
 
-    public JOSEAccessToken(String serialize, PrivateKey privateKey, RSAPublicKey publicKey) {
+    public JOSEAccessToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
         Assert.notNull(serialize, "The cyphered token is mandatory");
         Assert.notNull(privateKey, "The private key is mandatory");
         Assert.notNull(publicKey, "The public key is mandatory");
@@ -75,6 +81,11 @@ public class JOSEAccessToken extends AbstractToken {
         } catch (ParseException e) {
             throw JOSEErrorException.newInstance(e);
         }
+    }
+
+    public JOSEAccessToken(String serialize) {
+        super();
+        status = TokenStatus.CYPHERED;
     }
 
     @Override
@@ -270,7 +281,7 @@ public class JOSEAccessToken extends AbstractToken {
         SignedJWT tokenSigned = new SignedJWT(buildJWSHeader(), builder.build());
         tokenSigned.sign(new RSASSASigner(privateKey));
         token = new JWEObject(new JWEHeader.Builder(RSA_OAEP_256, A128GCM).keyID(getAudience()).build(), new Payload(tokenSigned));
-        token.encrypt(new RSAEncrypter(publicKey));
+        token.encrypt(new RSAEncrypter((RSAPublicKey) publicKey));
     }
 
     private JWSHeader buildJWSHeader() {
@@ -297,7 +308,7 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     private void checkSignature(SignedJWT signedJWT) throws JOSEException {
-        if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier(publicKey)))
+        if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))
             throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
     }
 
