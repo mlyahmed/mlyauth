@@ -1,10 +1,9 @@
-package com.mlyauth.token.jwt;
+package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.token.IDPClaims;
-import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
