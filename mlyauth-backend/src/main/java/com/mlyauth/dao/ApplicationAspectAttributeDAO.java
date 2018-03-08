@@ -15,6 +15,8 @@ public interface ApplicationAspectAttributeDAO extends CrudRepository<Applicatio
     @Query("SELECT att from ApplicationAspectAttribute att WHERE att.id.applicationId = ?1 and att.id.aspectCode = ?2")
     List<ApplicationAspectAttribute> findByAppAndAspect(long applicationId, String aspectId);
 
+    @Query("SELECT att from ApplicationAspectAttribute att WHERE att.id.attributeCode = ?1 and att.value = ?2")
+    ApplicationAspectAttribute findByAttribute(String attribute, String value);
 
     default Map<AspectAttribute, ApplicationAspectAttribute> findAndIndex(long applicationId, String aspectId) {
         final List<ApplicationAspectAttribute> attributes = this.findByAppAndAspect(applicationId, aspectId);
