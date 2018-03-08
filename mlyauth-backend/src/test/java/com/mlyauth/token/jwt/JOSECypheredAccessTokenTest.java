@@ -75,7 +75,6 @@ public class JOSECypheredAccessTokenTest {
     @Test
     public void when_given_cyphered_token_then_the_subject_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getId(), equalTo(expectedClaims.getJWTID()));
         assertThat(token.getSubject(), equalTo(expectedClaims.getSubject()));
     }
 

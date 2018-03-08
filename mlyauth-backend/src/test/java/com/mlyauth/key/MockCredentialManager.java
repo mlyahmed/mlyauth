@@ -1,17 +1,19 @@
 package com.mlyauth.key;
 
 import com.mlyauth.constants.AspectType;
-import com.mlyauth.domain.Application;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MockCredentialManager implements CredentialManager {
 
+    private Map<String, Map<AspectType, Certificate>> peerCredentials = new HashMap<>();
+
     private PrivateKey privateKey;
     private PublicKey publicKey;
-    private Certificate peerCertificate;
 
     public MockCredentialManager(PrivateKey privateKey, PublicKey publicKey) {
         this.privateKey = privateKey;
@@ -34,13 +36,21 @@ public class MockCredentialManager implements CredentialManager {
     }
 
     @Override
-    public Certificate getPeerCertificate(Application app, AspectType aspectType) {
-        return peerCertificate;
+    public Certificate getPeerCertificate(String entityId, AspectType aspectType) {
+        return peerCredentials.get(entityId) != null ? peerCredentials.get(entityId).get(aspectType) : null;
+    }
+
+    @Override
+    public PublicKey getPeerKey(String entityId, AspectType aspectType) {
+        final Certificate certificate = getPeerCertificate(entityId, aspectType);
+        return certificate != null ? certificate.getPublicKey() : null;
     }
 
 
-    public void setPeerCertificate(Application app, AspectType aspectType, Certificate certificate) {
-        peerCertificate = certificate;
+    public void setPeerCertificate(String entityId, AspectType aspectType, Certificate certificate) {
+        final Map<AspectType, Certificate> credentials = peerCredentials.get(entityId);
+        if (credentials == null) peerCredentials.put(entityId, new HashMap<>());
+        peerCredentials.get(entityId).put(aspectType, certificate);
     }
 
 }

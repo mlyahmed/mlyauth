@@ -3,7 +3,6 @@ package com.mlyauth.token.jose;
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
-import com.mlyauth.key.CredentialManager;
 import com.mlyauth.token.AbstractToken;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSADecrypter;
@@ -13,8 +12,6 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -33,23 +30,21 @@ import static com.mlyauth.token.IDPClaims.*;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
+import static org.springframework.util.Assert.notNull;
 
 public class JOSEAccessToken extends AbstractToken {
 
     private TokenStatus status = TokenStatus.FRESH;
 
-    @Autowired
-    private CredentialManager credentialManager;
-
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    private final PrivateKey privateKey;
+    private final PublicKey publicKey;
 
     private JWEObject token;
     private JWTClaimsSet.Builder builder;
 
     public JOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
-        Assert.notNull(privateKey, "The private key is mandatory");
-        Assert.notNull(publicKey, "The public key is mandatory");
+        notNull(privateKey, "The private key is mandatory");
+        notNull(publicKey, "The public key is mandatory");
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         builder = new JWTClaimsSet.Builder();
@@ -65,12 +60,12 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     public JOSEAccessToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
-        Assert.notNull(serialize, "The cyphered token is mandatory");
-        Assert.notNull(privateKey, "The private key is mandatory");
-        Assert.notNull(publicKey, "The public key is mandatory");
+        notNull(serialize, "The cyphered token is mandatory");
+        notNull(privateKey, "The private key is mandatory");
+        notNull(publicKey, "The public key is mandatory");
+        parseCipheredToken(serialize);
         this.privateKey = privateKey;
         this.publicKey = publicKey;
-        parseCipheredToken(serialize);
         status = TokenStatus.CYPHERED;
         locked = true;
     }
@@ -81,11 +76,6 @@ public class JOSEAccessToken extends AbstractToken {
         } catch (ParseException e) {
             throw JOSEErrorException.newInstance(e);
         }
-    }
-
-    public JOSEAccessToken(String serialize) {
-        parseCipheredToken(serialize);
-        status = TokenStatus.CYPHERED;
     }
 
     @Override
@@ -301,21 +291,18 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     private SignedJWT decipherClaims() throws JOSEException {
-        token.decrypt(new RSADecrypter(getPrivateKey()));
+        token.decrypt(new RSADecrypter(privateKey));
         final SignedJWT signedJWT = token.getPayload().toSignedJWT();
         checkSignature(signedJWT);
         return signedJWT;
     }
 
-    private PrivateKey getPrivateKey() {
-        return privateKey != null ? privateKey : credentialManager.getLocalPrivateKey();
-    }
 
     private void checkSignature(SignedJWT signedJWT) throws JOSEException {
-        PublicKey publicKey = this.publicKey != null ? this.publicKey : credentialManager.getPeerCertificate(null, null).getPublicKey();
         if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))
             throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
     }
+
 
     @Override
     public String serialize() {

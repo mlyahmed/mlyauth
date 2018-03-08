@@ -1,7 +1,6 @@
 package com.mlyauth.key;
 
 import com.mlyauth.constants.AspectType;
-import com.mlyauth.domain.Application;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -15,6 +14,8 @@ public interface CredentialManager {
 
     Certificate getLocalCertificate();
 
-    Certificate getPeerCertificate(Application app, AspectType aspectType);
+    Certificate getPeerCertificate(String entityId, AspectType aspectType);
+
+    PublicKey getPeerKey(String entityId, AspectType aspectType);
 
 }

@@ -1,7 +1,6 @@
 package com.mlyauth.key;
 
 import com.mlyauth.constants.AspectType;
-import com.mlyauth.domain.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,12 @@ public class CredentialManagerImpl implements CredentialManager {
     }
 
     @Override
-    public Certificate getPeerCertificate(Application app, AspectType aspectType) {
+    public Certificate getPeerCertificate(String entityId, AspectType aspectType) {
+        return null;
+    }
+
+    @Override
+    public PublicKey getPeerKey(String entityId, AspectType aspectType) {
         return null;
     }
 
