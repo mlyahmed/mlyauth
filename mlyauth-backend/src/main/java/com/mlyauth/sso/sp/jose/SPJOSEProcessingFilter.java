@@ -74,9 +74,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     private PublicKey loadPublicKey(String issuer) {
         try {
             final Application app = applicationDAO.findByAppname(issuer);
-            final AspectAttribute certificateAttribute = AspectAttribute.get(IDP_JOSE, CERTIFICATE);
             final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(app.getId(), IDP_JOSE.name());
-            final ApplicationAspectAttribute certificate = attributes.get(certificateAttribute);
+            final ApplicationAspectAttribute certificate = attributes.get(AspectAttribute.get(IDP_JOSE, CERTIFICATE));
             ByteArrayInputStream inputStream = new ByteArrayInputStream(new Base64URL(certificate.getValue()).decode());
             return CertificateFactory.getInstance("X.509").generateCertificate(inputStream).getPublicKey();
         } catch (Exception e) {
