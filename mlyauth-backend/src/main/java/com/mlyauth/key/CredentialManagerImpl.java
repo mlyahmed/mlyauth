@@ -55,9 +55,9 @@ public class CredentialManagerImpl implements CredentialManager {
     }
 
 
-    private Certificate loadCertificate(String issuer, AspectType aspect) {
+    private Certificate loadCertificate(String entityId, AspectType aspect) {
         try {
-            final ApplicationAspectAttribute issAttributes = attributeDAO.findByAttribute(get(aspect, ENTITYID).getValue(), issuer);
+            final ApplicationAspectAttribute issAttributes = attributeDAO.findByAttribute(get(aspect, ENTITYID).getValue(), entityId);
             final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(issAttributes.getId().getApplicationId(), aspect.name());
             final ApplicationAspectAttribute certificate = attributes.get(get(aspect, CERTIFICATE));
             ByteArrayInputStream inputStream = new ByteArrayInputStream(new Base64URL(certificate.getValue()).decode());

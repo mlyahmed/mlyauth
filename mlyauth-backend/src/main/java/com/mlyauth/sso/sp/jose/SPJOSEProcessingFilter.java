@@ -45,9 +45,9 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     }
 
     private JOSEAccessToken reconstituteAccessToken(String header) {
-        final JOSEAccessToken joseAccessToken = new JOSEAccessToken(getToken(header), localKey(), peerKey(header));
-        joseAccessToken.decipher();
-        return joseAccessToken;
+        final JOSEAccessToken token = new JOSEAccessToken(getToken(header), localKey(), peerKey(header));
+        token.decipher();
+        return token;
     }
 
     private PrivateKey localKey() {
@@ -55,7 +55,11 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     }
 
     private PublicKey peerKey(String header) {
-        return credentialManager.getPeerKey(joseHelper.loadIssuer(getToken(header), localKey()), IDP_JOSE);
+        return credentialManager.getPeerKey(issuer(header), IDP_JOSE);
+    }
+
+    private String issuer(String header) {
+        return joseHelper.loadIssuer(getToken(header), localKey());
     }
 
     private String getToken(String header) {
