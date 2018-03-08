@@ -1,37 +1,37 @@
 package com.mlyauth.sso.sp.jose;
 
 import com.mlyauth.constants.AspectAttribute;
-import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.token.IDPClaims;
+import com.mlyauth.key.CredentialManager;
 import com.mlyauth.token.jose.JOSEAccessToken;
-import com.nimbusds.jose.crypto.RSADecrypter;
+import com.mlyauth.token.jose.JOSEHelper;
 import com.nimbusds.jose.util.Base64URL;
-import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.SignedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.saml.key.KeyManager;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
+
+import static com.mlyauth.constants.AspectType.IDP_JOSE;
+import static com.mlyauth.constants.AttributeType.CERTIFICATE;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     @Autowired
-    private KeyManager keyManager;
+    private CredentialManager credentialManager;
+
+    @Autowired
+    private JOSEHelper joseHelper;
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -52,44 +52,37 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
         String header = request.getHeader("Authorization");
-
         if (header == null || !header.startsWith("Bearer "))
             throw JOSEErrorException.newInstance();
 
-        final String encodedToken = header.substring(7);
-        String issuer = loadIssuer(encodedToken);
-        final JOSEAccessToken joseAccessToken = new JOSEAccessToken(encodedToken, keyManager.getDefaultCredential().getPrivateKey(), loadPublicKey(issuer));
-        joseAccessToken.decipher();
-        JOSEAuthenticationToken token = new JOSEAuthenticationToken(joseAccessToken);
-        return getAuthenticationManager().authenticate(token);
+        return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(reconstituteAccessToken(header)));
     }
 
-    private RSAPublicKey loadPublicKey(String issuer) {
+    private JOSEAccessToken reconstituteAccessToken(String header) {
+        final JOSEAccessToken joseAccessToken = new JOSEAccessToken(getToken(header),
+                credentialManager.getLocalPrivateKey(),
+                loadPublicKey(joseHelper.loadIssuer(getToken(header), credentialManager.getLocalPrivateKey())));
+        joseAccessToken.decipher();
+        return joseAccessToken;
+    }
+
+    private String getToken(String header) {
+        return header.substring(7);
+    }
+
+    private PublicKey loadPublicKey(String issuer) {
         try {
             final Application app = applicationDAO.findByAppname(issuer);
-            final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(app.getId(), AspectType.IDP_JOSE.name());
-            final ApplicationAspectAttribute certificate = attributes.get(AspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE);
-            Base64URL decoder = new Base64URL(certificate.getValue());
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(decoder.decode());
-            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-            final X509Certificate x509Certificate = (X509Certificate) certFactory.generateCertificate(inputStream);
-            return (RSAPublicKey) x509Certificate.getPublicKey();
+            final AspectAttribute certificateAttribute = AspectAttribute.get(IDP_JOSE, CERTIFICATE);
+            final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(app.getId(), IDP_JOSE.name());
+            final ApplicationAspectAttribute certificate = attributes.get(certificateAttribute);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(new Base64URL(certificate.getValue()).decode());
+            return CertificateFactory.getInstance("X.509").generateCertificate(inputStream).getPublicKey();
         } catch (Exception e) {
             throw JOSEErrorException.newInstance(e);
         }
     }
 
-    private String loadIssuer(String encodedToken) {
-        try {
-            EncryptedJWT tokenHolder = EncryptedJWT.parse(encodedToken);
-            tokenHolder.decrypt(new RSADecrypter(keyManager.getDefaultCredential().getPrivateKey()));
-            final SignedJWT signedJWT = tokenHolder.getPayload().toSignedJWT();
-            return (String) signedJWT.getHeader().getCustomParam(IDPClaims.ISSUER.getValue());
-        } catch (Exception e) {
-            throw new BadCredentialsException("Couldn't verify the credentials", e);
-        }
-    }
 
 }
