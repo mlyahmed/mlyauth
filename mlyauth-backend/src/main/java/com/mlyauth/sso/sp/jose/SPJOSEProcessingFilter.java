@@ -1,7 +1,7 @@
 package com.mlyauth.sso.sp.jose;
 
+import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.key.CredentialManager;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEHelper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.mlyauth.key;
+package com.mlyauth.credentials;
 
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.AspectType;

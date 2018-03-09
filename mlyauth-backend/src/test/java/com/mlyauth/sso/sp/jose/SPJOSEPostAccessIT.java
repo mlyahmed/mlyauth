@@ -4,6 +4,7 @@ import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.constants.TokenVerdict;
+import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
@@ -18,7 +19,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.saml.key.KeyManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,7 +42,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
 
     @Autowired
-    private KeyManager keyManager;
+    private CredentialManager credentialManager;
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -69,40 +69,40 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     @Test
     public void when_post_a_true_access_from_a_defined_idp_then_OK() throws Exception {
-        final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        Application linkAssu = Application.newInstance()
+        final Pair<PrivateKey, X509Certificate> applicationCredentials = KeysForTests.generateRSACredential();
+        Application application = Application.newInstance()
                 .setAppname("LinkAssuDev")
-                .setTitle("Link ASSU")
+                .setTitle("Application")
                 .setAspects(new HashSet<>(Arrays.asList(AspectType.IDP_JOSE)));
-        linkAssu = applicationDAO.save(linkAssu);
+        application = applicationDAO.save(application);
 
         final ApplicationAspectAttribute linkAssuID = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
-                        .setApplicationId(linkAssu.getId())
+                        .setApplicationId(application.getId())
                         .setAspectCode(AspectType.IDP_JOSE.name())
                         .setAttributeCode(AspectAttribute.IDP_JOSE_ENTITY_ID.getValue()))
                 .setValue("LinkAssuDev");
 
         final ApplicationAspectAttribute linkAssuSSOURL = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
-                        .setApplicationId(linkAssu.getId())
+                        .setApplicationId(application.getId())
                         .setAspectCode(AspectType.IDP_JOSE.name())
                         .setAttributeCode(AspectAttribute.IDP_JOSE_SSO_URL.getValue()))
                 .setValue("http://localhost/idp/jose/sso");
 
         final ApplicationAspectAttribute linkAssuCertificate = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
-                        .setApplicationId(linkAssu.getId())
+                        .setApplicationId(application.getId())
                         .setAspectCode(AspectType.IDP_JOSE.name())
                         .setAttributeCode(AspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
-                .setValue(Base64URL.encode(credential.getValue().getEncoded()).toString());
+                .setValue(Base64URL.encode(applicationCredentials.getValue().getEncoded()).toString());
 
 
         appAspectAttrDAO.save(Arrays.asList(linkAssuID, linkAssuSSOURL, linkAssuCertificate));
 
 
-        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(credential.getKey()
-                , (RSAPublicKey) keyManager.getDefaultCredential().getPublicKey());
+        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey()
+                , (RSAPublicKey) credentialManager.getLocalPublicKey());
 
         token.setId(randomString());
         token.setAudience("http://localhost/sp/jose/sso");
