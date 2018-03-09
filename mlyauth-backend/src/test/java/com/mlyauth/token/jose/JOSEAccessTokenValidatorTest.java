@@ -135,6 +135,13 @@ public class JOSEAccessTokenValidatorTest {
         validator.validate(access);
     }
 
+    @Test(expected = InvalidTokenException.class)
+    public void when_the_token_issuance_is_effective_time_is_later_then_error() {
+        MockJOSEAccessToken access = given_access_token();
+        access.setEffectiveTime(LocalDateTime.now().plusSeconds(1));
+        validator.validate(access);
+    }
+
     private MockJOSEAccessToken given_access_token() {
         final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
         MockJOSEAccessToken access = new MockJOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());

@@ -8,6 +8,7 @@ public class MockJOSEAccessToken extends JOSEAccessToken {
 
     private LocalDateTime expiryTime;
     private LocalDateTime issuanceTime;
+    private LocalDateTime effectiveTime;
 
     public MockJOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         super(privateKey, publicKey);
@@ -31,5 +32,14 @@ public class MockJOSEAccessToken extends JOSEAccessToken {
     @Override
     public LocalDateTime getIssuanceTime() {
         return issuanceTime != null ? issuanceTime : super.getIssuanceTime();
+    }
+
+    public void setEffectiveTime(LocalDateTime effectiveTime) {
+        this.effectiveTime = effectiveTime;
+    }
+
+    @Override
+    public LocalDateTime getEffectiveTime() {
+        return effectiveTime != null ? effectiveTime : super.getEffectiveTime();
     }
 }

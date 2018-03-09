@@ -39,11 +39,11 @@ public class JOSEAccessTokenValidator {
         if (LocalDateTime.now().isAfter(access.getExpiryTime()))
             throw InvalidTokenException.newInstance("The token is expired");
 
-        System.out.println(LocalDateTime.now());
-        System.out.println(access.getIssuanceTime());
-
         if (LocalDateTime.now().isBefore(access.getIssuanceTime()))
             throw InvalidTokenException.newInstance("The token issuance time is inconsistency");
+
+        if (LocalDateTime.now().isBefore(access.getEffectiveTime()))
+            throw InvalidTokenException.newInstance("The token effective time is inconsistency");
 
         return true;
     }
