@@ -3,6 +3,7 @@ package com.mlyauth.sso.sp.jose;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.token.jose.JOSEAccessToken;
+import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSEHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     @Autowired
     private JOSEHelper joseHelper;
 
+    @Autowired
+    private JOSEAccessTokenValidator accessTokenValidator;
 
     public static final String FILTER_URL = "/sp/jose/sso";
 
@@ -48,11 +51,11 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             if (header == null || !header.startsWith("Bearer "))
                 throw JOSEErrorException.newInstance();
             final JOSEAccessToken accessToken = reconstituteAccessToken(header);
-            //validate token
+            accessTokenValidator.validate(accessToken);
             return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
 
         } catch (Exception e) {
-            logger.debug("Incoming JOSE token is invalid", e);
+            logger.warn("Incoming JOSE token is invalid", e);
             throw new AuthenticationServiceException("Incoming JOSE token is invalid", e);
         }
     }

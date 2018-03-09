@@ -99,7 +99,7 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = InvalidTokenException.class)
-    public void when_the_issuer_in_header_and_as_claim_are_diffrent_then_error() throws JOSEException {
+    public void when_the_issuer_in_header_and_as_claim_are_different_then_error() throws JOSEException {
         given_the_claims_are_cyphered_with_mismatch_issue_in_header();
         when_decipher_the_token();
     }

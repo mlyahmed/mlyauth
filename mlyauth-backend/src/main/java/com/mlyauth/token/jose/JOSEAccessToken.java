@@ -212,7 +212,7 @@ public class JOSEAccessToken extends AbstractToken {
     @Override
     public void setVerdict(TokenVerdict verdict) {
         checkUnmodifiable();
-        builder = builder.claim(VERDICT.getValue(), verdict.name());
+        builder = builder.claim(VERDICT.getValue(), verdict != null ? verdict.name() : null);
         status = TokenStatus.FORGED;
     }
 

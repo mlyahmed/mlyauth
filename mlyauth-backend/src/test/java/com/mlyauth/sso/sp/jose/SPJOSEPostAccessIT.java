@@ -3,6 +3,7 @@ package com.mlyauth.sso.sp.jose;
 import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.AspectType;
+import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
@@ -15,10 +16,10 @@ import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
 import javafx.util.Pair;
-import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,8 +30,8 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Random;
 
+import static com.mlyauth.tools.RandomForTests.randomString;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,6 +41,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
+    @Value("${sp.jose.entityId}")
+    private String localEntityId;
 
     @Autowired
     private CredentialManager credentialManager;
@@ -105,9 +108,14 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                 , (RSAPublicKey) credentialManager.getLocalPublicKey());
 
         token.setId(randomString());
-        token.setAudience("http://localhost/sp/jose/sso");
-        token.setIssuer("LinkAssuDev");
         token.setSubject("1");
+        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.PERSON)));
+        token.setBP(randomString());
+        token.setState(randomString());
+        token.setAudience(localEntityId);
+        token.setIssuer("LinkAssuDev");
+        token.setDelegator(randomString());
+        token.setDelegate(randomString());
         token.setTargetURL("http://localhost/sp/jose/sso");
         token.setVerdict(TokenVerdict.SUCCESS);
         token.cypher();
@@ -120,10 +128,5 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                 .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", nullValue()))
                 .andExpect(redirectedUrl("/home.html"));
 
-    }
-
-    private static String randomString() {
-        final int length = (new Random()).nextInt(50);
-        return RandomStringUtils.random(length > 0 ? length : 50, true, true);
     }
 }
