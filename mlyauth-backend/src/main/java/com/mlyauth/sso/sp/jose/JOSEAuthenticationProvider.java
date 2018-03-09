@@ -17,7 +17,7 @@ import java.util.Date;
 public class JOSEAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private JOSEUserDetailsService userDetailsService;
+    private SPJOSEUserDetailsService userDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

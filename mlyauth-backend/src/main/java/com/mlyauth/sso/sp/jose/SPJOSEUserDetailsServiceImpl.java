@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.util.Assert.notNull;
+
 @Service
 @Transactional
-public class JOSEUserDetailsServiceImpl implements JOSEUserDetailsService {
+public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
 
     @Autowired
     private PersonDAO personDAO;
@@ -25,6 +27,7 @@ public class JOSEUserDetailsServiceImpl implements JOSEUserDetailsService {
 
     @Override
     public IDPUser loadUserByJOSE(JOSEAccessToken credential) throws UsernameNotFoundException {
+        notNull(credential, "The JOSE Token is null");
         final Person person = personDAO.findByExternalId(credential.getSubject());
         final IContext context = contextHolder.newContext(person);
         return new IDPUser(context);
