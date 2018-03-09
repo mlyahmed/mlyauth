@@ -1,6 +1,7 @@
 package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.InvalidTokenException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +50,7 @@ public class JOSEAccessTokenValidator {
     }
 
     private void checkVerdict(JOSEAccessToken access) {
-        if (access.getVerdict() == null)
+        if (access.getVerdict() == null || access.getVerdict() == TokenVerdict.FAIL)
             throw InvalidTokenException.newInstance("The token verdict is not acceptable");
     }
 

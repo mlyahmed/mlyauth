@@ -122,6 +122,13 @@ public class JOSEAccessTokenValidatorTest {
     }
 
     @Test(expected = InvalidTokenException.class)
+    public void when_the_verdict_is_a_fail_then_error() {
+        JOSEAccessToken access = given_access_token();
+        access.setVerdict(TokenVerdict.FAIL);
+        validator.validate(access);
+    }
+
+    @Test(expected = InvalidTokenException.class)
     public void when_the_token_is_expired_then_error() {
         MockJOSEAccessToken access = given_access_token();
         access.setExpiryTime(LocalDateTime.now().minusSeconds(1));
