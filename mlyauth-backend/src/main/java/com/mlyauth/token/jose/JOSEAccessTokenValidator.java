@@ -29,22 +29,11 @@ public class JOSEAccessTokenValidator {
         assertClaimNotBlank(access.getTargetURL(), "The token target URL is blank");
         assertClaimNotBlank(access.getDelegator(), "The token delegator is blank");
         assertClaimNotBlank(access.getDelegate(), "The token delegate is blank");
-
-        if (access.getVerdict() == null)
-            throw InvalidTokenException.newInstance("The token verdict is not acceptable");
-
-        if (!localEntityId.equalsIgnoreCase(access.getAudience()))
-            throw InvalidTokenException.newInstance("The token audience is not acceptable");
-
-        if (LocalDateTime.now().isAfter(access.getExpiryTime()))
-            throw InvalidTokenException.newInstance("The token is expired");
-
-        if (LocalDateTime.now().isBefore(access.getIssuanceTime()))
-            throw InvalidTokenException.newInstance("The token issuance time is inconsistency");
-
-        if (LocalDateTime.now().isBefore(access.getEffectiveTime()))
-            throw InvalidTokenException.newInstance("The token effective time is inconsistency");
-
+        checkVerdict(access);
+        checkAudience(access);
+        checkExpiryTime(access);
+        checkIssuanceTime(access);
+        checkEffectiveTime(access);
         return true;
     }
 
@@ -57,5 +46,30 @@ public class JOSEAccessTokenValidator {
     private void assertScopesNotBlank(Set<TokenScope> scopes, String message) {
         if (scopes == null || scopes.isEmpty())
             throw InvalidTokenException.newInstance(message);
+    }
+
+    private void checkVerdict(JOSEAccessToken access) {
+        if (access.getVerdict() == null)
+            throw InvalidTokenException.newInstance("The token verdict is not acceptable");
+    }
+
+    private void checkAudience(JOSEAccessToken access) {
+        if (!localEntityId.equalsIgnoreCase(access.getAudience()))
+            throw InvalidTokenException.newInstance("The token audience is not acceptable");
+    }
+
+    private void checkExpiryTime(JOSEAccessToken access) {
+        if (LocalDateTime.now().isAfter(access.getExpiryTime()))
+            throw InvalidTokenException.newInstance("The token is expired");
+    }
+
+    private void checkIssuanceTime(JOSEAccessToken access) {
+        if (LocalDateTime.now().isBefore(access.getIssuanceTime()))
+            throw InvalidTokenException.newInstance("The token issuance time is inconsistency");
+    }
+
+    private void checkEffectiveTime(JOSEAccessToken access) {
+        if (LocalDateTime.now().isBefore(access.getEffectiveTime()))
+            throw InvalidTokenException.newInstance("The token effective time is inconsistency");
     }
 }

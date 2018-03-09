@@ -47,10 +47,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
 
-            String header = request.getHeader("Authorization");
-            if (header == null || !header.startsWith("Bearer "))
-                throw JOSEErrorException.newInstance();
-            final JOSEAccessToken accessToken = reconstituteAccessToken(header);
+            checkHeader(getAuthorizationHeader(request));
+            final JOSEAccessToken accessToken = reconstituteAccessToken(getAuthorizationHeader(request));
             accessTokenValidator.validate(accessToken);
             return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
 
@@ -58,6 +56,15 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             logger.warn("Incoming JOSE token is invalid", e);
             throw new AuthenticationServiceException("Incoming JOSE token is invalid", e);
         }
+    }
+
+    private String getAuthorizationHeader(HttpServletRequest request) {
+        return request.getHeader("Authorization");
+    }
+
+    private void checkHeader(String header) {
+        if (header == null || !header.startsWith("Bearer "))
+            throw JOSEErrorException.newInstance();
     }
 
     private JOSEAccessToken reconstituteAccessToken(String header) {
