@@ -1,4 +1,4 @@
-package com.mlyauth.validators;
+package com.mlyauth.sso.sp.saml;
 
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.AspectType;

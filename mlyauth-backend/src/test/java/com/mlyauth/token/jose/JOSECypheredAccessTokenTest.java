@@ -92,13 +92,13 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test
-    public void when_given_cyphered_token_then_the_state_is_loaded() {
+    public void when_given_cyphered_token_then_the_issuer_is_loaded() {
         when_decipher_the_token();
         assertThat(token.getIssuer(), equalTo(expectedClaims.getIssuer()));
     }
 
     @Test
-    public void when_given_cyphered_token_then_the_issuer_is_loaded() {
+    public void when_given_cyphered_token_then_the_state_is_loaded() {
         when_decipher_the_token();
         assertThat(token.getState(), equalTo(expectedClaims.getClaim(STATE.getValue())));
     }
