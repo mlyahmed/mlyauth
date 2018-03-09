@@ -13,7 +13,6 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import javafx.util.Pair;
-import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,6 +33,7 @@ import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -359,13 +358,13 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_then_it_is_effective_now() {
         assertThat(token.getEffectiveTime(), notNullValue());
-        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_effective_time_must_be_committed() throws Exception {
         token.cypher();
-        Instant instant = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
+        Instant instant = LocalDateTime.now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(token.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
@@ -375,13 +374,13 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_then_it_is_issued_now() {
         assertThat(token.getIssuanceTime(), notNullValue());
-        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(1)), equalTo(true));
+        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_issuance_time_must_be_committed() throws Exception {
         token.cypher();
-        Instant instant = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
+        Instant instant = LocalDateTime.now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(token.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
@@ -485,10 +484,5 @@ public class JOSEFreshAccessTokenTest {
     @Test(expected = TokenNotCipheredException.class)
     public void when_serialize_a_non_cyphered_token_then_error() {
         token.serialize();
-    }
-
-    private static String randomString() {
-        final int length = (new Random()).nextInt(50);
-        return RandomStringUtils.random(length > 0 ? length : 50, true, true);
     }
 }

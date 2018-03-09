@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static org.springframework.util.Assert.notNull;
@@ -34,6 +35,15 @@ public class JOSEAccessTokenValidator {
 
         if (!localEntityId.equalsIgnoreCase(access.getAudience()))
             throw InvalidTokenException.newInstance("The token audience is not acceptable");
+
+        if (LocalDateTime.now().isAfter(access.getExpiryTime()))
+            throw InvalidTokenException.newInstance("The token is expired");
+
+        System.out.println(LocalDateTime.now());
+        System.out.println(access.getIssuanceTime());
+
+        if (LocalDateTime.now().isBefore(access.getIssuanceTime()))
+            throw InvalidTokenException.newInstance("The token issuance time is inconsistency");
 
         return true;
     }

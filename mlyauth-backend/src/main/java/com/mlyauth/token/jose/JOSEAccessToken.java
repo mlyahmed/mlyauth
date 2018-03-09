@@ -55,7 +55,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     private void initTimes() {
         Instant threeMinutesAfter = LocalDateTime.now().plusSeconds(179).atZone(ZoneId.systemDefault()).toInstant();
-        Instant aSecondAgo = LocalDateTime.now().plusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
+        Instant aSecondAgo = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
         builder = builder.expirationTime(Date.from(threeMinutesAfter))
                 .notBeforeTime(Date.from(aSecondAgo))
                 .issueTime(Date.from(aSecondAgo));

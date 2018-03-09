@@ -13,6 +13,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -120,9 +121,23 @@ public class JOSEAccessTokenValidatorTest {
         validator.validate(access);
     }
 
-    private JOSEAccessToken given_access_token() {
+    @Test(expected = InvalidTokenException.class)
+    public void when_the_token_is_expired_then_error() {
+        MockJOSEAccessToken access = given_access_token();
+        access.setExpiryTime(LocalDateTime.now().minusSeconds(1));
+        validator.validate(access);
+    }
+
+    @Test(expected = InvalidTokenException.class)
+    public void when_the_token_issuance_is_issuance_time_is_later_then_error() {
+        MockJOSEAccessToken access = given_access_token();
+        access.setIssuanceTime(LocalDateTime.now().plusSeconds(1));
+        validator.validate(access);
+    }
+
+    private MockJOSEAccessToken given_access_token() {
         final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        JOSEAccessToken access = new JOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
+        MockJOSEAccessToken access = new MockJOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
         access.setId(randomString());
         access.setSubject(randomString());
         access.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
