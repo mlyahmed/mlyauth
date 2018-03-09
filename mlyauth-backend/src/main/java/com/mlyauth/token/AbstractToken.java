@@ -27,7 +27,7 @@ public abstract class AbstractToken implements IDPToken {
     }
 
     protected String compactScopes(Set<TokenScope> scopes) {
-        return scopes.stream().map(TokenScope::name).collect(Collectors.joining("|"));
+        return scopes != null ? scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")) : null;
     }
 
     protected Set<TokenScope> splitScopes(String scopes) {

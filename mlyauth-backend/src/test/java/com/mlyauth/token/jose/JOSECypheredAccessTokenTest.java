@@ -3,6 +3,7 @@ package com.mlyauth.token.jose;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
+import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.token.IDPClaims;
@@ -95,6 +96,12 @@ public class JOSECypheredAccessTokenTest {
     public void when_given_cyphered_token_then_the_issuer_is_loaded() {
         when_decipher_the_token();
         assertThat(token.getIssuer(), equalTo(expectedClaims.getIssuer()));
+    }
+
+    @Test(expected = InvalidTokenException.class)
+    public void when_the_issuer_in_header_and_as_claim_are_diffrent_then_error() throws JOSEException {
+        given_the_claims_are_cyphered_with_mismatch_issue_in_header();
+        when_decipher_the_token();
     }
 
     @Test
@@ -367,7 +374,20 @@ public class JOSECypheredAccessTokenTest {
     }
 
     private void given_the_claims_are_cyphered() throws JOSEException {
-        SignedJWT tokenSigned = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), expectedClaims);
+        final JWSHeader sHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).customParam(ISSUER.getValue(),
+                expectedClaims.getIssuer()).build();
+        SignedJWT tokenSigned = new SignedJWT(sHeader, expectedClaims);
+
+        tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
+        final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
+        tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));
+        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
+    }
+
+    private void given_the_claims_are_cyphered_with_mismatch_issue_in_header() throws JOSEException {
+        SignedJWT tokenSigned = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).
+                customParam(ISSUER.getValue(), randomString())
+                .build(), expectedClaims);
         tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
         final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
         tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));

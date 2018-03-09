@@ -4,7 +4,10 @@ import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -17,6 +20,7 @@ import java.security.PublicKey;
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
+    protected final static Logger logger = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
 
     @Autowired
     private CredentialManager credentialManager;
@@ -38,10 +42,19 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer "))
-            throw JOSEErrorException.newInstance();
-        return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(reconstituteAccessToken(header)));
+        try {
+
+            String header = request.getHeader("Authorization");
+            if (header == null || !header.startsWith("Bearer "))
+                throw JOSEErrorException.newInstance();
+            final JOSEAccessToken accessToken = reconstituteAccessToken(header);
+            //validate token
+            return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
+
+        } catch (Exception e) {
+            logger.debug("Incoming JOSE token is invalid", e);
+            throw new AuthenticationServiceException("Incoming JOSE token is invalid", e);
+        }
     }
 
     private JOSEAccessToken reconstituteAccessToken(String header) {

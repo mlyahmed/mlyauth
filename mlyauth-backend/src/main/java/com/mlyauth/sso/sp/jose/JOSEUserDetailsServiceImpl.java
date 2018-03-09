@@ -25,7 +25,7 @@ public class JOSEUserDetailsServiceImpl implements JOSEUserDetailsService {
 
     @Override
     public IDPUser loadUserByJOSE(JOSEAccessToken credential) throws UsernameNotFoundException {
-        final Person person = personDAO.findByExternalId("1");
+        final Person person = personDAO.findByExternalId(credential.getSubject());
         final IContext context = contextHolder.newContext(person);
         return new IDPUser(context);
     }

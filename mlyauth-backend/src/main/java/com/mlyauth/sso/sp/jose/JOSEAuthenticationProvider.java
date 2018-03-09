@@ -26,8 +26,7 @@ public class JOSEAuthenticationProvider implements AuthenticationProvider {
             throw new IllegalArgumentException("Only JOSEAuthenticationToken is supported, " + authentication.getClass() + " was attempted");
         }
 
-        JOSEAuthenticationToken token = (JOSEAuthenticationToken) authentication;
-        final JOSEAccessToken credentials = token.getCredentials();
+        final JOSEAccessToken credentials = ((JOSEAuthenticationToken) authentication).getCredentials();
 
         if (credentials == null)
             throw new AuthenticationServiceException("The JOSE Token is not available in the authentication token");

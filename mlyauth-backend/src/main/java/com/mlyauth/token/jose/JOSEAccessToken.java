@@ -1,9 +1,11 @@
 package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.*;
+import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.token.AbstractToken;
+import com.mlyauth.token.IDPClaims;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
@@ -290,13 +292,18 @@ public class JOSEAccessToken extends AbstractToken {
         }
     }
 
-    private SignedJWT decipherClaims() throws JOSEException {
+    private SignedJWT decipherClaims() throws JOSEException, ParseException {
         token.decrypt(new RSADecrypter(privateKey));
         final SignedJWT signedJWT = token.getPayload().toSignedJWT();
         checkSignature(signedJWT);
+        checkIssuerMatch(signedJWT);
         return signedJWT;
     }
 
+    private void checkIssuerMatch(SignedJWT signedJWT) throws ParseException {
+        if (!String.valueOf(signedJWT.getHeader().getCustomParam(IDPClaims.ISSUER.getValue())).equals(signedJWT.getJWTClaimsSet().getIssuer()))
+            throw InvalidTokenException.newInstance("Issuer mismatch");
+    }
 
     private void checkSignature(SignedJWT signedJWT) throws JOSEException {
         if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))

@@ -107,7 +107,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         token.setId(randomString());
         token.setAudience("http://localhost/sp/jose/sso");
         token.setIssuer("LinkAssuDev");
-        token.setSubject("ahmed.elidrissi.attach@gmail.com");
+        token.setSubject("1");
         token.setTargetURL("http://localhost/sp/jose/sso");
         token.setVerdict(TokenVerdict.SUCCESS);
         token.cypher();
