@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 
 import java.security.PrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PublicKey;
 
 @Configuration
 public class TokenFactory implements ITokenFactory {
@@ -27,7 +27,7 @@ public class TokenFactory implements ITokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Override
-    public JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, RSAPublicKey publicKey) {
+    public JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         return new JOSEAccessToken(privateKey, publicKey);
     }
 

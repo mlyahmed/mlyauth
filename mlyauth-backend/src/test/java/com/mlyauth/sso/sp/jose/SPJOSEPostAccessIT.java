@@ -2,7 +2,6 @@ package com.mlyauth.sso.sp.jose;
 
 import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.constants.AspectAttribute;
-import com.mlyauth.constants.AspectType;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.credentials.CredentialManager;
@@ -26,17 +25,19 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
 import java.security.PrivateKey;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
 import java.util.HashSet;
 
+import static com.mlyauth.constants.AspectType.IDP_JOSE;
+import static com.mlyauth.domain.Application.newInstance;
 import static com.mlyauth.tools.RandomForTests.randomString;
+import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
@@ -65,68 +66,122 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private MockMvc mockMvc;
     private ResultActions resultActions;
 
+    private Application application;
+    private Pair<PrivateKey, X509Certificate> applicationCredentials;
+    private String appname;
+    private String entityId;
+    private String ssoUrl;
+
+    private JOSEAccessToken token;
+
     @Before
     public void setup() {
         this.mockMvc = webAppContextSetup(this.wac).addFilters(joseFilter).build();
+        applicationCredentials = KeysForTests.generateRSACredential();
+        appname = "LinkAssuDev";
+        entityId = randomString();
+        ssoUrl = "http://localhost/idp/jose/sso";
     }
 
     @Test
     public void when_post_a_true_access_from_a_defined_idp_then_OK() throws Exception {
-        final Pair<PrivateKey, X509Certificate> applicationCredentials = KeysForTests.generateRSACredential();
-        Application application = Application.newInstance()
-                .setAppname("LinkAssuDev")
-                .setTitle("Application")
-                .setAspects(new HashSet<>(Arrays.asList(AspectType.IDP_JOSE)));
+        given_a_peer_jose_idp_app();
+        given_a_peer_jose_idp_app_attributes();
+        given_success_token();
+        when_post_the_token();
+        then_authenticated();
+
+    }
+
+
+    @Test
+    public void when_post_a_true_fail_from_a_defined_idp_then_Error() throws Exception {
+        given_a_peer_jose_idp_app();
+        given_a_peer_jose_idp_app_attributes();
+        given_fail_token();
+        when_post_the_token();
+        then_error();
+
+    }
+
+    private void given_a_peer_jose_idp_app() {
+        application = newInstance().setAppname(appname).setTitle(appname).setAspects(new HashSet<>(asList(IDP_JOSE)));
         application = applicationDAO.save(application);
+    }
 
-        final ApplicationAspectAttribute linkAssuID = ApplicationAspectAttribute.newInstance()
+    private void given_a_peer_jose_idp_app_attributes() throws CertificateEncodingException {
+        final ApplicationAspectAttribute entityIdAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(application.getId())
-                        .setAspectCode(AspectType.IDP_JOSE.name())
+                        .setAspectCode(IDP_JOSE.name())
                         .setAttributeCode(AspectAttribute.IDP_JOSE_ENTITY_ID.getValue()))
-                .setValue("LinkAssuDev");
+                .setValue(entityId);
 
-        final ApplicationAspectAttribute linkAssuSSOURL = ApplicationAspectAttribute.newInstance()
+        final ApplicationAspectAttribute ssoUrlAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(application.getId())
-                        .setAspectCode(AspectType.IDP_JOSE.name())
+                        .setAspectCode(IDP_JOSE.name())
                         .setAttributeCode(AspectAttribute.IDP_JOSE_SSO_URL.getValue()))
-                .setValue("http://localhost/idp/jose/sso");
+                .setValue(ssoUrl);
 
-        final ApplicationAspectAttribute linkAssuCertificate = ApplicationAspectAttribute.newInstance()
+        final ApplicationAspectAttribute certificateAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(application.getId())
-                        .setAspectCode(AspectType.IDP_JOSE.name())
+                        .setAspectCode(IDP_JOSE.name())
                         .setAttributeCode(AspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
                 .setValue(Base64URL.encode(applicationCredentials.getValue().getEncoded()).toString());
 
 
-        appAspectAttrDAO.save(Arrays.asList(linkAssuID, linkAssuSSOURL, linkAssuCertificate));
+        appAspectAttrDAO.save(asList(entityIdAttribute, ssoUrlAttribute, certificateAttribute));
+    }
 
-
-        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey()
-                , (RSAPublicKey) credentialManager.getLocalPublicKey());
-
+    private void given_success_token() {
+        token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey(), credentialManager.getLocalPublicKey());
         token.setId(randomString());
         token.setSubject("1");
-        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.PERSON)));
+        token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
         token.setBP(randomString());
         token.setState(randomString());
         token.setAudience(localEntityId);
-        token.setIssuer("LinkAssuDev");
+        token.setIssuer(entityId);
         token.setDelegator(randomString());
         token.setDelegate(randomString());
-        token.setTargetURL("http://localhost/sp/jose/sso");
+        token.setTargetURL(ssoUrl);
         token.setVerdict(TokenVerdict.SUCCESS);
         token.cypher();
+    }
 
+    private void given_fail_token() {
+        token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey(), credentialManager.getLocalPublicKey());
+        token.setId(randomString());
+        token.setSubject("1");
+        token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
+        token.setBP(randomString());
+        token.setState(randomString());
+        token.setAudience(localEntityId);
+        token.setIssuer(entityId);
+        token.setDelegator(randomString());
+        token.setDelegate(randomString());
+        token.setTargetURL(ssoUrl);
+        token.setVerdict(TokenVerdict.FAIL);
+        token.cypher();
+    }
+
+    private void when_post_the_token() throws Exception {
         resultActions = mockMvc.perform(post("/sp/jose/sso")
                 .contentType(APPLICATION_FORM_URLENCODED_VALUE)
                 .header("Authorization", "Bearer " + token.serialize()));
+    }
 
+    private void then_authenticated() throws Exception {
         resultActions
                 .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", nullValue()))
                 .andExpect(redirectedUrl("/home.html"));
+    }
 
+    private void then_error() throws Exception {
+        resultActions
+                .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", notNullValue()))
+                .andExpect(forwardedUrl("/error.html"));
     }
 }

@@ -5,12 +5,12 @@ import com.mlyauth.token.saml.SAMLAccessToken;
 import org.opensaml.xml.security.credential.Credential;
 
 import java.security.PrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PublicKey;
 
 public interface ITokenFactory {
 
     SAMLAccessToken createSAMLAccessToken(Credential credential);
 
-    JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, RSAPublicKey publicKey);
+    JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, PublicKey publicKey);
 
 }
