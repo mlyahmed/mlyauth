@@ -19,7 +19,7 @@ import static com.mlyauth.constants.AspectType.SP_SAML;
 
 @Controller
 @RequestMapping("/navigate")
-public class SPNavigationController {
+public class IDPNavigationController {
 
     private final Map<AspectType, ISPNavigationService> services = new HashMap<>();
 
