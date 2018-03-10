@@ -68,6 +68,36 @@ public class SPSAMLProcessingFilterTest {
         set_up_authentication_manager();
     }
 
+    @Test
+    @UseDataProvider("mothodsNotAllowed")
+    public void when_the_method_is_not_allowed_then_error(HttpMethod method) {
+        request.setMethod(method.name());
+        final Authentication authentication = filter.attemptAuthentication(request, response);
+        assertThat(authentication, Matchers.nullValue());
+        assertThat(response.getStatus(), Matchers.equalTo(HttpServletResponse.SC_NOT_FOUND));
+    }
+
+
+    @Test
+    public void when_the_method_is_POST_then_process() throws Exception {
+        request.setMethod(HttpMethod.POST.name());
+        final Authentication authentication = filter.attemptAuthentication(request, response);
+        assertThat(authentication, Matchers.notNullValue());
+        assertThat(authentication, Matchers.equalTo(expectedAuthentication));
+    }
+
+    @Test(expected = SAMLRuntimeException.class)
+    public void when_response_processing_error__throws_error_then_throw_saml_error() {
+        request.setMethod(HttpMethod.GET.name());
+        response = new MockHttpServletResponse() {
+            @Override
+            public void sendError(int status, String errorMessage) throws IOException {
+                throw new IOException();
+            }
+        };
+        filter.attemptAuthentication(request, response);
+    }
+
     private void set_up_request_and_response() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
@@ -97,36 +127,6 @@ public class SPSAMLProcessingFilterTest {
     private void set_up_authentication_manager() {
         expectedAuthentication = mock(Authentication.class);
         when(authenticationManager.authenticate(Mockito.any())).thenReturn(expectedAuthentication);
-    }
-
-    @Test
-    @UseDataProvider("mothodsNotAllowed")
-    public void when_the_method_is_not_allowed_then_error(HttpMethod method) {
-        request.setMethod(method.name());
-        final Authentication authentication = filter.attemptAuthentication(request, response);
-        assertThat(authentication, Matchers.nullValue());
-        assertThat(response.getStatus(), Matchers.equalTo(HttpServletResponse.SC_NOT_FOUND));
-    }
-
-
-    @Test
-    public void when_the_method_is_POST_then_process() throws Exception {
-        request.setMethod(HttpMethod.POST.name());
-        final Authentication authentication = filter.attemptAuthentication(request, response);
-        assertThat(authentication, Matchers.notNullValue());
-        assertThat(authentication, Matchers.equalTo(expectedAuthentication));
-    }
-
-    @Test(expected = SAMLRuntimeException.class)
-    public void when_response_processing_error__throws_error_then_throw_saml_error() {
-        request.setMethod(HttpMethod.GET.name());
-        response = new MockHttpServletResponse() {
-            @Override
-            public void sendError(int status, String errorMessage) throws IOException {
-                throw new IOException();
-            }
-        };
-        filter.attemptAuthentication(request, response);
     }
 
 }

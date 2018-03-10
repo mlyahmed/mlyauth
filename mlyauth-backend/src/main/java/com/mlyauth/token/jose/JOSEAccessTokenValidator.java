@@ -16,7 +16,7 @@ import static org.springframework.util.Assert.notNull;
 public class JOSEAccessTokenValidator {
 
     @Value("${sp.jose.entityId}")
-    private String localEntityId;
+    protected String localEntityId;
 
 
     public boolean validate(JOSEAccessToken access) {
