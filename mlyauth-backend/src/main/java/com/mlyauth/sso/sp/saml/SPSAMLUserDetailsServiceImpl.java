@@ -20,6 +20,8 @@ import org.springframework.util.Assert;
 import java.util.stream.Stream;
 
 import static com.mlyauth.token.IDPClaims.*;
+import static org.springframework.util.Assert.notEmpty;
+import static org.springframework.util.Assert.notNull;
 
 @Service
 @Transactional
@@ -44,15 +46,15 @@ public class SPSAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
     }
 
     private void checkCredentials(SAMLCredential credential) {
-        Assert.notNull(credential, "SAML Credential is null");
-        Assert.notEmpty(credential.getAttributes(), "SAML Credential : Attributes List is empty");
+        notNull(credential, "SAML Credential is null");
+        notEmpty(credential.getAttributes(), "SAML Credential : Attributes List is empty");
         logAttributes(credential);
 
-        Assert.notNull(credential.getAttributeAsString(CLIENT_ID.getValue()), "SAML Credential : The clientId attribute is undefined");
-        Assert.notNull(credential.getAttributeAsString(CLIENT_PROFILE.getValue()), "SAML Credential : The profile code attribute is undefined");
+        notNull(credential.getAttributeAsString(CLIENT_ID.getValue()), "SAML Credential : The clientId attribute is undefined");
+        notNull(credential.getAttributeAsString(CLIENT_PROFILE.getValue()), "SAML Credential : The profile code attribute is undefined");
 
         final Person person = personDAO.findByExternalId(credential.getAttributeAsString(CLIENT_ID.getValue()));
-        Assert.notNull(person, "SAML Credential : Person Not Found");
+        notNull(person, "SAML Credential : Person Not Found");
 
         if (credential.getAttributeAsString(APPLICATION.getValue()) != null) {
             final boolean assigned = person.getApplications().stream().anyMatch(app -> app.getAppname().equals(credential.getAttributeAsString(APPLICATION.getValue())));

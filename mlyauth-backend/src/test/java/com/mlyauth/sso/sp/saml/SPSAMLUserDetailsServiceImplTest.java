@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.mlyauth.token.IDPClaims.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -104,11 +105,11 @@ public class SPSAMLUserDetailsServiceImplTest {
         given_the_application_is_assigned_to_the_person();
         when_load_user();
         assertThat(contextHolder.getContext(), Matchers.notNullValue());
-        assertThat(contextHolder.getAttribute(CLIENT_ID.getValue()), Matchers.equalTo(A_CLIENT_ID));
-        assertThat(contextHolder.getAttribute(CLIENT_PROFILE.getValue()), Matchers.equalTo(A_USER_PROFILE));
-        assertThat(contextHolder.getAttribute(ENTITY_ID.getValue()), Matchers.equalTo(A_PRESTATION_ID));
-        assertThat(contextHolder.getAttribute(ACTION.getValue()), Matchers.equalTo(AN_ACTION));
-        assertThat(contextHolder.getAttribute(APPLICATION.getValue()), Matchers.equalTo(AN_APP_CODE));
+        assertThat(contextHolder.getAttribute(CLIENT_ID.getValue()), equalTo(A_CLIENT_ID));
+        assertThat(contextHolder.getAttribute(CLIENT_PROFILE.getValue()), equalTo(A_USER_PROFILE));
+        assertThat(contextHolder.getAttribute(ENTITY_ID.getValue()), equalTo(A_PRESTATION_ID));
+        assertThat(contextHolder.getAttribute(ACTION.getValue()), equalTo(AN_ACTION));
+        assertThat(contextHolder.getAttribute(APPLICATION.getValue()), equalTo(AN_APP_CODE));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -208,7 +209,7 @@ public class SPSAMLUserDetailsServiceImplTest {
     private void then_user_is_loaded() {
         assertThat(user, Matchers.notNullValue());
         assertThat(user, Matchers.instanceOf(IDPUser.class));
-        assertThat(((IDPUser) user).getPerson(), Matchers.equalTo(person));
+        assertThat(((IDPUser) user).getPerson(), equalTo(person));
     }
 
 }

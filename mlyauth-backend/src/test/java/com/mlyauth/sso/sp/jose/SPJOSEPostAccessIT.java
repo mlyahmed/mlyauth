@@ -31,6 +31,7 @@ import java.util.HashSet;
 
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.domain.Application.newInstance;
+import static com.mlyauth.token.IDPClaims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.notNullValue;
@@ -148,6 +149,10 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         token.setDelegate(randomString());
         token.setTargetURL(ssoUrl);
         token.setVerdict(TokenVerdict.SUCCESS);
+        token.setClaim(CLIENT_ID.getValue(), randomString());
+        token.setClaim(CLIENT_PROFILE.getValue(), randomString());
+        token.setClaim(ENTITY_ID.getValue(), randomString());
+        token.setClaim(ACTION.getValue(), randomString());
         token.cypher();
     }
 
