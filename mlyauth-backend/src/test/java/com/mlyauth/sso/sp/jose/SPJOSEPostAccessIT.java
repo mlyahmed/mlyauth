@@ -144,7 +144,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         token.setId(randomString());
         token.setSubject("1");
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
-        token.setBP(randomString());
+        token.setBP("SSO");
         token.setState(randomString());
         token.setAudience(localEntityId);
         token.setIssuer(entityId);

@@ -1,10 +1,12 @@
 package com.mlyauth.sso.sp.jose;
 
+import com.mlyauth.constants.TokenScope;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSEHelper;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.HashSet;
 
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
+import static com.mlyauth.constants.TokenScope.PERSON;
+import static java.util.Collections.singletonList;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
     protected final static Logger logger = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
@@ -55,6 +60,11 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             checkHeader(getAuthorizationHeader(request));
             final JOSEAccessToken accessToken = reconstituteAccessToken(getAuthorizationHeader(request));
             accessTokenValidator.validate(accessToken);
+            checkScope(accessToken);
+
+            if (!"SSO".equals(accessToken.getBP()))
+                throw JOSEErrorException.newInstance("The Token BP must be SSO");
+
             return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
 
         } catch (Exception e) {
@@ -94,6 +104,9 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         return header.substring(7);
     }
 
-
+    private void checkScope(JOSEAccessToken accessToken) {
+        if (!CollectionUtils.isEqualCollection(accessToken.getScopes(), new HashSet<TokenScope>(singletonList(PERSON))))
+            throw JOSEErrorException.newInstance("The Token scopes list must be [PERSON]");
+    }
 
 }
