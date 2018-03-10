@@ -89,6 +89,7 @@ public class SPJOSEProcessingFilterTest {
     @Test
     public void when_post_a_valid_token_then_process() {
         given_valid_token();
+        given_the_target_url_does_match();
         final Authentication authentication = when_attempt_authentication();
         assertThat(authentication, Matchers.notNullValue());
         assertThat(authentication, Matchers.equalTo(expectedAuthentication));
@@ -118,11 +119,14 @@ public class SPJOSEProcessingFilterTest {
         when_attempt_authentication();
     }
 
+    @Test(expected = AuthenticationException.class)
+    public void when_the_target_url_does_not_match_the_request_then_error() {
+        given_valid_token();
+        given_the_target_url_does_not_match();
+        when_attempt_authentication();
+    }
 
-
-    //TODO Test Target URL
     //TODO Test token is not Bearer
-
 
     private void set_up_credentials() {
         localCredential = generateRSACredential();
@@ -135,16 +139,17 @@ public class SPJOSEProcessingFilterTest {
         expectedAuthentication = mock(Authentication.class);
         when(authenticationManager.authenticate(Mockito.any())).thenReturn(expectedAuthentication);
     }
+
     private void set_up_token() {
         token = new JOSEAccessToken(peerCredential.getKey(), credentialManager.getLocalPublicKey());
     }
+
     private void set_up_request_response() {
         request = new MockHttpServletRequest();
         request.setMethod(HttpMethod.POST.name());
         response = new MockHttpServletResponse();
         request.setRequestURI("/sp/jose/sso");
     }
-
     private void set_up_filter() {
         filter = new SPJOSEProcessingFilter();
         setField(filter, "credentialManager", credentialManager);
@@ -152,11 +157,11 @@ public class SPJOSEProcessingFilterTest {
         setField(filter, "accessTokenValidator", new MockJOSEAccessTokenValidator(true));
         setField(filter, "authenticationManager", authenticationManager);
     }
-
     private void given_valid_token() {
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(new HashSet<>(singletonList(TokenScope.PERSON)));
         token.setBP("SSO");
+        token.setTargetURL("https://sp.prima-idp.com/sp/jose/sso");
         token.cypher();
     }
 
@@ -164,6 +169,7 @@ public class SPJOSEProcessingFilterTest {
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(null);
         token.setBP("SSO");
+        token.setTargetURL("https://sp.prima-idp.com/sp/jose/sso");
         token.cypher();
     }
 
@@ -171,6 +177,7 @@ public class SPJOSEProcessingFilterTest {
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
         token.setBP("SSO");
+        token.setTargetURL("https://sp.prima-idp.com/sp/jose/sso");
         token.cypher();
     }
 
@@ -178,6 +185,7 @@ public class SPJOSEProcessingFilterTest {
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(new HashSet<>(singletonList(POLICY)));
         token.setBP("SSO");
+        token.setTargetURL("https://sp.prima-idp.com/sp/jose/sso");
         token.cypher();
     }
 
@@ -185,7 +193,22 @@ public class SPJOSEProcessingFilterTest {
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(new HashSet<>(singletonList(TokenScope.PERSON)));
         token.setBP(RandomForTests.randomString());
+        token.setTargetURL("https://sp.prima-idp.com/sp/jose/sso");
         token.cypher();
+    }
+
+    private void given_the_target_url_does_match() {
+        request.setScheme("https");
+        request.setServerName("sp.prima-idp.com");
+        request.setServerPort(443);
+        request.setRequestURI("/sp/jose/sso");
+    }
+
+    private void given_the_target_url_does_not_match() {
+        request.setScheme("http");
+        request.setServerName(RandomForTests.randomString());
+        request.setServerPort(443);
+        request.setRequestURI(RandomForTests.randomString());
     }
 
     private Authentication when_attempt_authentication() {

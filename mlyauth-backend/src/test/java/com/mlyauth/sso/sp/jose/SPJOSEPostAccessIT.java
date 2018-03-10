@@ -150,7 +150,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         token.setIssuer(entityId);
         token.setDelegator(randomString());
         token.setDelegate(randomString());
-        token.setTargetURL(ssoUrl);
+        token.setTargetURL("http://localhost/sp/jose/sso");
         token.setVerdict(TokenVerdict.SUCCESS);
         token.setClaim(CLIENT_ID.getValue(), randomString());
         token.setClaim(CLIENT_PROFILE.getValue(), randomString());
@@ -164,13 +164,13 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         token.setId(randomString());
         token.setSubject("1");
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
-        token.setBP(randomString());
+        token.setBP("SSO");
         token.setState(randomString());
         token.setAudience(localEntityId);
         token.setIssuer(entityId);
         token.setDelegator(randomString());
         token.setDelegate(randomString());
-        token.setTargetURL(ssoUrl);
+        token.setTargetURL("http://localhost/sp/jose/sso");
         token.setVerdict(TokenVerdict.FAIL);
         token.cypher();
     }

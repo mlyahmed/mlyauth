@@ -65,6 +65,9 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             if (!"SSO".equals(accessToken.getBP()))
                 throw JOSEErrorException.newInstance("The Token BP must be SSO");
 
+            if (!getFullURL(request).equals(accessToken.getTargetURL()))
+                throw JOSEErrorException.newInstance("The Token Target URL does not match");
+
             return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
 
         } catch (Exception e) {
@@ -109,4 +112,10 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             throw JOSEErrorException.newInstance("The Token scopes list must be [PERSON]");
     }
 
+
+    public String getFullURL(HttpServletRequest request) {
+        StringBuffer requestURL = request.getRequestURL();
+        return request.getQueryString() == null
+                ? requestURL.toString() : requestURL.append('?').append(request.getQueryString()).toString();
+    }
 }
