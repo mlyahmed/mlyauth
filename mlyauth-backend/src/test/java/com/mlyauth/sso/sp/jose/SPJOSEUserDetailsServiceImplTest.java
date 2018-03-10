@@ -6,6 +6,7 @@ import com.mlyauth.context.IContextHolder;
 import com.mlyauth.context.IDPUser;
 import com.mlyauth.context.MockContextHolder;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.token.jose.MockJOSEAccessToken;
@@ -21,9 +22,11 @@ import org.mockito.Spy;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static com.mlyauth.token.IDPClaims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
@@ -52,6 +55,11 @@ public class SPJOSEUserDetailsServiceImplTest {
         MockitoAnnotations.initMocks(this);
         given_the_token();
         given_the_person_exists();
+        given_the_application_is_assigned_to_the_person();
+    }
+
+    private void given_the_application_is_assigned_to_the_person() {
+        person.setApplications(newHashSet(Application.newInstance().setAppname(token.getClaim(APPLICATION.getValue()))));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -105,6 +113,32 @@ public class SPJOSEUserDetailsServiceImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void when_the_client_profile_is_empty_then_error() {
         token.setClaim(CLIENT_PROFILE.getValue(), "");
+        when_load_the_user();
+    }
+
+    @Test
+    public void when_the_application_claim_is_null_then_OK() {
+        token.setClaim(APPLICATION.getValue(), null);
+        when_load_the_user();
+        then_user_is_loaded();
+    }
+
+    @Test
+    public void when_the_application_claim_is_empty_then_OK() {
+        token.setClaim(APPLICATION.getValue(), "");
+        when_load_the_user();
+        then_user_is_loaded();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_person_is_not_found_then_error() {
+        when(personDAO.findByExternalId(token.getSubject())).thenReturn(null);
+        when_load_the_user();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_application_is_not_assigned_to_the_person_then_error() {
+        person.setApplications(Collections.emptySet());
         when_load_the_user();
     }
 
