@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 @Configuration
-public class SessionConf {
-    private static final Logger logger = LoggerFactory.getLogger(SessionConf.class);
+public class SessionConfig {
+    private static final Logger logger = LoggerFactory.getLogger(SessionConfig.class);
 
     @Autowired
     private IContextHolder contextHolder;
@@ -29,6 +29,7 @@ public class SessionConf {
 
             @Override
             public void sessionDestroyed(HttpSessionEvent se) {
+                //TODO fix the NullPointerException Exception we get.
                 contextHolder.reset();
             }
 

@@ -14,8 +14,8 @@ import javax.persistence.EntityManagerFactory;
 
 @Configuration
 @EnableTransactionManagement
-public class AppConf implements TransactionManagementConfigurer {
-    private static final Logger logger = LoggerFactory.getLogger(AppConf.class);
+public class AppConfig implements TransactionManagementConfigurer {
+    private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
     @Autowired
     private EntityManagerFactory emf;

@@ -91,6 +91,12 @@ public class SPJOSEProcessingFilterTest {
         assertThat(authentication, Matchers.equalTo(expectedAuthentication));
     }
 
+
+    //TODO Test token is not Bearer
+    //TODO Test Target URL
+    //TODO Test SCOPE must be PERSON
+    //TODO Test BP must be SSO
+
     private void set_up_authentication_manager() {
         expectedAuthentication = mock(Authentication.class);
         when(authenticationManager.authenticate(Mockito.any())).thenReturn(expectedAuthentication);
