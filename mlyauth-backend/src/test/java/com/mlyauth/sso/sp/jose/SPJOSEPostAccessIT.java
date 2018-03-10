@@ -105,6 +105,9 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     }
 
+
+    //TODO: When post and application claim is set. Then navigate to the application
+
     private void given_a_peer_jose_idp_app() {
         application = newInstance().setAppname(appname).setTitle(appname).setAspects(new HashSet<>(asList(IDP_JOSE)));
         application = applicationDAO.save(application);

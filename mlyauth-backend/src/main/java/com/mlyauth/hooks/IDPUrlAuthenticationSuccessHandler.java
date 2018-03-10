@@ -32,7 +32,6 @@ public class IDPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthent
             super.onAuthenticationSuccess(request, response, authentication);
         }
 
-
     }
 
 }

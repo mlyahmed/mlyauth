@@ -1,4 +1,4 @@
-package com.mlyauth.mvc;
+package com.mlyauth.navigation;
 
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;

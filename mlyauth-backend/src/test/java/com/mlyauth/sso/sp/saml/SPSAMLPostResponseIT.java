@@ -109,8 +109,8 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_minim_valid_attributes();
-        given_assertnion_is_encrypted();
+        given_the_assertion_minimum_valid_attributes();
+        given_assertion_is_encrypted();
         given_response_is_signed();
         when_post_response();
         then_authenticated();
@@ -123,9 +123,9 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_minim_valid_attributes();
+        given_the_assertion_minimum_valid_attributes();
         given_the_target_app();
-        given_assertnion_is_encrypted();
+        given_assertion_is_encrypted();
         given_response_is_signed();
         when_post_response();
         then_navigate_to_the_app();
@@ -149,7 +149,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_auth_statement();
         given_assertion_audience();
         and_the_response_issuer_is_undefined();
-        given_assertnion_is_encrypted();
+        given_assertion_is_encrypted();
         given_response_is_signed();
         when_post_response();
         then_error();
@@ -161,7 +161,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertnion_is_encrypted();
+        given_assertion_is_encrypted();
         given_response_is_signed();
         when_post_response();
         then_error();
@@ -174,8 +174,8 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_minim_valid_attributes();
-        given_assertnion_is_encrypted();
+        given_the_assertion_minimum_valid_attributes();
+        given_assertion_is_encrypted();
         when_post_response();
         then_error();
     }
@@ -187,11 +187,13 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_subject();
         given_assertion_auth_statement();
         given_assertion_audience();
-        given_assertion_minim_valid_attributes();
+        given_the_assertion_minimum_valid_attributes();
         given_response_is_signed();
         when_post_response();
         then_error();
     }
+
+    //TODO: When post and application attribute is set. Then navigate to the application
 
     private void and_the_response_issuer_is_undefined() {
         artifactResponse.getIssuer().setValue("undefined");
@@ -309,7 +311,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         assertion.setConditions(assertionConditions);
     }
 
-    private void given_assertion_minim_valid_attributes() {
+    private void given_the_assertion_minimum_valid_attributes() {
         attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
         attributes.add(samlHelper.buildStringAttribute(CLIENT_ID.getValue(), "9000")); //See person-examples.sql
@@ -320,7 +322,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
 
-    private void given_assertnion_is_encrypted() throws EncryptionException {
+    private void given_assertion_is_encrypted() throws EncryptionException {
         EncryptionParameters encryptionParameters = new EncryptionParameters();
         encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
         KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();

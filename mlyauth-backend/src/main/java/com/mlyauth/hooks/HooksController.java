@@ -1,4 +1,4 @@
-package com.mlyauth.mvc;
+package com.mlyauth.hooks;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
