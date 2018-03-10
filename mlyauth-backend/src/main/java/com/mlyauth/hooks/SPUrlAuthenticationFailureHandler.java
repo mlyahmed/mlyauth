@@ -3,10 +3,10 @@ package com.mlyauth.hooks;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-@Component("IDPUrlAuthenticationFailureHandler")
-public class IDPUrlAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+@Component("SPUrlAuthenticationFailureHandler")
+public class SPUrlAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    public IDPUrlAuthenticationFailureHandler() {
+    public SPUrlAuthenticationFailureHandler() {
         setUseForward(true);
         setDefaultFailureUrl("/error.html");
     }

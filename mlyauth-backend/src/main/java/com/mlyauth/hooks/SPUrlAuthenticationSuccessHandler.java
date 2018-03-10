@@ -13,13 +13,13 @@ import java.io.IOException;
 
 import static com.mlyauth.token.IDPClaims.APPLICATION;
 
-@Component("IDPUrlAuthenticationSuccessHandler")
-public class IDPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+@Component("SPUrlAuthenticationSuccessHandler")
+public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Autowired
     private IContext context;
 
-    public IDPUrlAuthenticationSuccessHandler() {
+    public SPUrlAuthenticationSuccessHandler() {
         this.setDefaultTargetUrl("/home.html");
     }
 

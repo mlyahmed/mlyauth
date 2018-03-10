@@ -30,8 +30,8 @@
     <bean id="samlWebSSOProcessingFilter" class="com.mlyauth.sso.sp.saml.SPSAMLProcessingFilter">
         <property name="filterProcessesUrl" value="/sp/saml/sso"/>
         <property name="authenticationManager" ref="authenticationManager"/>
-        <property name="authenticationSuccessHandler" ref="IDPUrlAuthenticationSuccessHandler"/>
-        <property name="authenticationFailureHandler" ref="IDPUrlAuthenticationFailureHandler"/>
+        <property name="authenticationSuccessHandler" ref="SPUrlAuthenticationSuccessHandler"/>
+        <property name="authenticationFailureHandler" ref="SPUrlAuthenticationFailureHandler"/>
     </bean>
 
     <bean id="metadataDisplayFilter" class="com.mlyauth.sso.sp.saml.SPSAMLMetadataDisplayFilter">

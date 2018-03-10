@@ -28,6 +28,13 @@ public class IDPNavigationController {
         services.forEach(service -> this.services.put(service.getSupportedAspect(), service));
     }
 
+    @GetMapping("/to/{appname}")
+    public String navigateTo(@PathVariable String appname, Model model) {
+        final NavigationBean navigation = services.get(SP_SAML).newNavigation(appname);
+        model.addAttribute("navigation", navigation);
+        return "post-navigation";
+    }
+
     @GetMapping("/saml/to/{appname}")
     public String samlNavigateTo(@PathVariable String appname, Model model) {
         final NavigationBean navigation = services.get(SP_SAML).newNavigation(appname);

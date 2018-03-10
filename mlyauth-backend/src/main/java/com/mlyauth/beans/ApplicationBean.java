@@ -10,7 +10,7 @@ public class ApplicationBean {
     private long id;
     private String appname;
     private String title;
-    private AspectType authAspect = AspectType.UNDEFINED;
+    private AspectType authAspect;
     private Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
 
 
