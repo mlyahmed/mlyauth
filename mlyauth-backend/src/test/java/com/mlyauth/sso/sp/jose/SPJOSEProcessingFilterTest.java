@@ -6,7 +6,6 @@ import com.mlyauth.credentials.MockCredentialManager;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEHelper;
 import com.mlyauth.token.jose.MockJOSEAccessTokenValidator;
-import com.mlyauth.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -33,6 +32,7 @@ import java.util.HashSet;
 
 import static com.mlyauth.constants.TokenScope.POLICY;
 import static com.mlyauth.tools.KeysForTests.generateRSACredential;
+import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -126,7 +126,20 @@ public class SPJOSEProcessingFilterTest {
         when_attempt_authentication();
     }
 
-    //TODO Test token is not Bearer
+    @Test(expected = AuthenticationException.class)
+    public void when_the_token_type_is_not_bearer_then_error() {
+        given_valid_token();
+        given_the_target_url_does_match();
+        request.addHeader("Authorization", randomString() + " " + token.serialize());
+        filter.attemptAuthentication(request, response);
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void when_the_authorization_header_is_missing_then_error() {
+        given_valid_token();
+        given_the_target_url_does_match();
+        filter.attemptAuthentication(request, response);
+    }
 
     private void set_up_credentials() {
         localCredential = generateRSACredential();
@@ -192,7 +205,7 @@ public class SPJOSEProcessingFilterTest {
     private void given_token_with_bp_not_as_sso() {
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(new HashSet<>(singletonList(TokenScope.PERSON)));
-        token.setBP(RandomForTests.randomString());
+        token.setBP(randomString());
         token.setTargetURL("https://sp.prima-idp.com/sp/jose/sso");
         token.cypher();
     }
@@ -206,9 +219,9 @@ public class SPJOSEProcessingFilterTest {
 
     private void given_the_target_url_does_not_match() {
         request.setScheme("http");
-        request.setServerName(RandomForTests.randomString());
+        request.setServerName(randomString());
         request.setServerPort(443);
-        request.setRequestURI(RandomForTests.randomString());
+        request.setRequestURI(randomString());
     }
 
     private Authentication when_attempt_authentication() {
