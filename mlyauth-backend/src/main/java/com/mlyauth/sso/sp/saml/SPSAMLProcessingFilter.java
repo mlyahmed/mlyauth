@@ -1,13 +1,12 @@
 package com.mlyauth.sso.sp.saml;
 
-import org.opensaml.common.SAMLRuntimeException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.saml.SAMLProcessingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
 
@@ -24,10 +23,9 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
                 return super.attemptAuthentication(request, response);
             }
 
-        } catch (IOException e) {
-            throw new SAMLRuntimeException(e);
         } catch (Exception e) {
-            throw e;
+            logger.debug("Incoming SAML message is invalid", e);
+            throw new AuthenticationServiceException("Incoming SAML message is invalid", e);
         }
     }
 

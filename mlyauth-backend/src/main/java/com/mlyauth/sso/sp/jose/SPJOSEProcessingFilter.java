@@ -47,6 +47,11 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
 
+            if (!"POST".equals(request.getMethod())) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource Not Found");
+                return null;
+            }
+
             checkHeader(getAuthorizationHeader(request));
             final JOSEAccessToken accessToken = reconstituteAccessToken(getAuthorizationHeader(request));
             accessTokenValidator.validate(accessToken);

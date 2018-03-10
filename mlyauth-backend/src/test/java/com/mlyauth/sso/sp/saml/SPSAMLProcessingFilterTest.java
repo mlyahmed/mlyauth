@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.opensaml.common.SAMLRuntimeException;
 import org.opensaml.saml2.metadata.Endpoint;
 import org.opensaml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml2.metadata.impl.AssertionConsumerServiceBuilder;
@@ -21,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.saml.context.SAMLContextProvider;
 import org.springframework.security.saml.context.SAMLMessageContext;
 import org.springframework.security.saml.processor.SAMLProcessor;
@@ -79,15 +79,15 @@ public class SPSAMLProcessingFilterTest {
 
 
     @Test
-    public void when_the_method_is_POST_then_process() throws Exception {
+    public void when_the_method_is_POST_then_process() {
         request.setMethod(HttpMethod.POST.name());
         final Authentication authentication = filter.attemptAuthentication(request, response);
         assertThat(authentication, Matchers.notNullValue());
         assertThat(authentication, Matchers.equalTo(expectedAuthentication));
     }
 
-    @Test(expected = SAMLRuntimeException.class)
-    public void when_response_processing_error__throws_error_then_throw_saml_error() {
+    @Test(expected = AuthenticationException.class)
+    public void when_response_processing_error_throws_error_then_throw_saml_error() {
         request.setMethod(HttpMethod.GET.name());
         response = new MockHttpServletResponse() {
             @Override
