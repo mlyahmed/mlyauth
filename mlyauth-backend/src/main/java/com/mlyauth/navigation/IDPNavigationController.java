@@ -2,7 +2,6 @@ package com.mlyauth.navigation;
 
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
-import com.mlyauth.services.navigation.ISPNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,9 +29,7 @@ public class IDPNavigationController {
 
     @GetMapping("/to/{appname}")
     public String navigateTo(@PathVariable String appname, Model model) {
-        final NavigationBean navigation = services.get(SP_SAML).newNavigation(appname);
-        model.addAttribute("navigation", navigation);
-        return "post-navigation";
+        return samlNavigateTo(appname, model);
     }
 
     @GetMapping("/saml/to/{appname}")

@@ -79,7 +79,7 @@ public class JOSEFreshAccessTokenTest {
         assertThat(token.getDelegator(), nullValue());
         assertThat(token.getDelegate(), nullValue());
         assertThat(token.getVerdict(), nullValue());
-        assertThat(token.getNorm(), equalTo(TokenNorm.JWT));
+        assertThat(token.getNorm(), equalTo(TokenNorm.JOSE));
         assertThat(token.getType(), equalTo(TokenType.ACCESS));
         assertThat(token.getStatus(), equalTo(TokenStatus.FRESH));
     }

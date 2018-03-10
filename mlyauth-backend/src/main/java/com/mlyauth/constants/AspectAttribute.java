@@ -5,7 +5,7 @@ import static com.mlyauth.constants.AttributeType.*;
 import static java.util.Arrays.stream;
 
 public enum AspectAttribute implements IStringEnum {
-    UNDEFINED(null, null, "UNDEFINED"),
+
     SP_BASIC_SSO_URL(SP_BASIC, ENDPOINT, "Auth:SP:Basic:EndPoint"),
     SP_BASIC_USERNAME(SP_BASIC, USERNAME, "Auth:SP:Basic:Username"),
     SP_BASIC_PASSWORD(SP_BASIC, PASSWORD, "Auth:SP:Basic:Password"),

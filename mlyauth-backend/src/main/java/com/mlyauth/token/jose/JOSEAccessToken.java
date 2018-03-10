@@ -233,7 +233,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public TokenNorm getNorm() {
-        return TokenNorm.JWT;
+        return TokenNorm.JOSE;
     }
 
     @Override

@@ -1,5 +1,5 @@
 package com.mlyauth.constants;
 
 public enum TokenNorm {
-    SAML, JWT
+    BASIC, SAML, JOSE
 }

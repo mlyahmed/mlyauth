@@ -1,4 +1,4 @@
-package com.mlyauth.services;
+package com.mlyauth.navigation;
 
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
@@ -6,7 +6,6 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
-import com.mlyauth.services.navigation.SPSAMLNavigationService;
 import com.mlyauth.token.IDPToken;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLAccessTokenProducer;
