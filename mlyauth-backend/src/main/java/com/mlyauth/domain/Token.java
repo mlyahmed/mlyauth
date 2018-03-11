@@ -4,7 +4,7 @@ import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenType;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -30,13 +30,13 @@ public class Token {
     private TokenNorm norm;
 
     @Column(name = "ISSUANCE_TIME", nullable = false)
-    private Date issuanceTime;
+    private LocalDateTime issuanceTime;
 
     @Column(name = "EFFECTIVE_TIME", nullable = false)
-    private Date effectiveTime;
+    private LocalDateTime effectiveTime;
 
     @Column(name = "EXPIRY_TIME", nullable = false)
-    private Date expiryTime;
+    private LocalDateTime expiryTime;
 
     @OneToMany(mappedBy = "token", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TokenClaim> claims;
@@ -45,76 +45,88 @@ public class Token {
     @JoinColumn(name = "APPLICATION_ID")
     private Application application;
 
+    public static Token newInstance() {
+        return new Token();
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public Token setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getStamp() {
         return stamp;
     }
 
-    public void setStamp(String stamp) {
+    public Token setStamp(String stamp) {
         this.stamp = stamp;
+        return this;
     }
 
     public TokenType getType() {
         return type;
     }
 
-    public void setType(TokenType type) {
+    public Token setType(TokenType type) {
         this.type = type;
+        return this;
     }
 
     public TokenNorm getNorm() {
         return norm;
     }
 
-    public void setNorm(TokenNorm norm) {
+    public Token setNorm(TokenNorm norm) {
         this.norm = norm;
+        return this;
     }
 
-    public Date getIssuanceTime() {
+    public LocalDateTime getIssuanceTime() {
         return issuanceTime;
     }
 
-    public void setIssuanceTime(Date issuanceTime) {
+    public Token setIssuanceTime(LocalDateTime issuanceTime) {
         this.issuanceTime = issuanceTime;
+        return this;
     }
 
-    public Date getEffectiveTime() {
+    public LocalDateTime getEffectiveTime() {
         return effectiveTime;
     }
 
-    public void setEffectiveTime(Date effectiveTime) {
+    public Token setEffectiveTime(LocalDateTime effectiveTime) {
         this.effectiveTime = effectiveTime;
+        return this;
     }
 
-    public Date getExpiryTime() {
+    public LocalDateTime getExpiryTime() {
         return expiryTime;
     }
 
-    public void setExpiryTime(Date expiryTime) {
+    public Token setExpiryTime(LocalDateTime expiryTime) {
         this.expiryTime = expiryTime;
+        return this;
     }
 
     public Set<TokenClaim> getClaims() {
         return claims;
     }
 
-    public void setClaims(Set<TokenClaim> claims) {
+    public Token setClaims(Set<TokenClaim> claims) {
         this.claims = claims;
+        return this;
     }
 
     public Application getApplication() {
         return application;
     }
 
-    public void setApplication(Application application) {
+    public Token setApplication(Application application) {
         this.application = application;
+        return this;
     }
 }

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public abstract class IDPAbstractNavigationService implements IDPNavigationServi
                             .setAlias(att.getAlias()).setValue(att.getValue())).collect(Collectors.toSet());
 
             Navigation navigation = Navigation.newInstance()
-                    .setCreatedAt(new Date())
+                    .setCreatedAt(LocalDateTime.now())
                     .setTimeConsumed(consumedTime)
                     .setAttributes(attributes)
                     .setDirection(OUTBOUND)
