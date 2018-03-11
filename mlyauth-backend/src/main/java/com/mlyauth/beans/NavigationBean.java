@@ -5,9 +5,17 @@ import java.util.Collection;
 public class NavigationBean {
 
 
+    private long tokenId;
     private String target;
     private Collection<AttributeBean> attributes;
 
+    public long getTokenId() {
+        return tokenId;
+    }
+
+    public void setTokenId(long tokenId) {
+        this.tokenId = tokenId;
+    }
 
     public String getTarget() {
         return target;

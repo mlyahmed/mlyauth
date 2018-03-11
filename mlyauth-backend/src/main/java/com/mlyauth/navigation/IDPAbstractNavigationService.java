@@ -28,8 +28,11 @@ public abstract class IDPAbstractNavigationService implements IDPNavigationServi
     public NavigationBean newNavigation(String appname) {
         long start = System.currentTimeMillis();
         final NavigationBean navigationBean = process(appname);
-        long consumedTime = System.currentTimeMillis() - start;
+        traceNavigation(navigationBean, System.currentTimeMillis() - start);
+        return navigationBean;
+    }
 
+    private void traceNavigation(NavigationBean navigationBean, long consumedTime) {
         try {
             final Set<NavigationAttribute> attributes = navigationBean.getAttributes().stream()
                     .map(att -> NavigationAttribute.newInstance().setCode(att.getCode())
@@ -47,8 +50,6 @@ public abstract class IDPAbstractNavigationService implements IDPNavigationServi
         } catch (Exception e) {
             logger.error("Error when tracing navigation : ", e);
         }
-
-        return navigationBean;
     }
 
     abstract NavigationBean process(String appname);
