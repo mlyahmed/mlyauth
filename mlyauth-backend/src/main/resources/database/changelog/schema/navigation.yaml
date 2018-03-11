@@ -33,6 +33,11 @@ databaseChangeLog:
                   constraints:
                       nullable: false
               - column:
+                  name: TOKEN_ID
+                  type: bigint
+                  constraints:
+                      nullable: false
+              - column:
                   name: AUTHENTICATION_SESSION_ID
                   type: bigint
                   constraints:
@@ -42,6 +47,12 @@ databaseChangeLog:
       id: 2
       author: mlyahmed
       changes:
+        - addForeignKeyConstraint:
+            baseTableName: NAVIGATION
+            baseColumnNames: TOKEN_ID
+            referencedTableName: TOKEN
+            referencedColumnNames: ID
+            constraintName: navigation_fk_token_id
         - addForeignKeyConstraint:
             baseTableName: NAVIGATION
             baseColumnNames: AUTHENTICATION_SESSION_ID

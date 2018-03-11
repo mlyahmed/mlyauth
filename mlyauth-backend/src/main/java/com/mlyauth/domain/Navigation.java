@@ -36,6 +36,10 @@ public class Navigation {
     @JoinColumn(name = "AUTHENTICATION_SESSION_ID", nullable = false, updatable = false)
     private AuthenticationSession session;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TOKEN_ID", nullable = false, updatable = false)
+    private Token token;
+
     public static Navigation newInstance() {
         return new Navigation();
     }
@@ -102,5 +106,13 @@ public class Navigation {
     public Navigation setSession(AuthenticationSession session) {
         this.session = session;
         return this;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
     }
 }
