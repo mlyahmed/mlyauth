@@ -2,9 +2,11 @@ package com.mlyauth.navigation;
 
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
+import com.mlyauth.context.IContext;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Application;
+import com.mlyauth.domain.AuthenticationSession;
 import com.mlyauth.domain.Token;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
@@ -38,6 +40,9 @@ public class IDPSAMLNavigationServiceTest {
     public static final String TARGET_APP_URL = "http://application.com/sp/saml/sso";
 
     @Mock
+    private IContext context;
+
+    @Mock
     private TokenMapper tokenMapper;
 
     @Mock
@@ -64,6 +69,7 @@ public class IDPSAMLNavigationServiceTest {
         MockitoAnnotations.initMocks(this);
         DefaultBootstrap.bootstrap();
         application = new Application();
+        when(context.getAuthenticationSession()).thenReturn(AuthenticationSession.newInstance());
         set_up_access();
         set_up_token();
     }

@@ -4,10 +4,18 @@ import java.util.Collection;
 
 public class NavigationBean {
 
-
+    private long id;
     private long tokenId;
     private String target;
     private Collection<AttributeBean> attributes;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getTokenId() {
         return tokenId;
@@ -32,7 +40,6 @@ public class NavigationBean {
     public void setAttributes(Collection<AttributeBean> attributes) {
         this.attributes = attributes;
     }
-
 
     public AttributeBean getAttribute(String code){
         return attributes.stream().filter(attr -> attr.getCode().equals(code)).findFirst().orElse(null);

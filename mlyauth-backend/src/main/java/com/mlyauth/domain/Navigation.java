@@ -99,6 +99,11 @@ public class Navigation {
         return this;
     }
 
+    @Transient
+    public NavigationAttribute getAttribute(String code) {
+        return this.getAttributes().stream().filter(att -> att.getCode().equals(code)).findFirst().orElse(null);
+    }
+
     public AuthenticationSession getSession() {
         return session;
     }

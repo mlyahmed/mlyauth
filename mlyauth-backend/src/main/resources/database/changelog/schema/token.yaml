@@ -47,6 +47,11 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                       nullable: false
+              - column:
+                  name: AUTHENTICATION_SESSION_ID
+                  type: bigint
+                  constraints:
+                      nullable: false
 
   - changeSet:
       id: 2
@@ -58,3 +63,9 @@ databaseChangeLog:
             referencedTableName: APPLICATION
             referencedColumnNames: ID
             constraintName: token_fk_application_id
+        - addForeignKeyConstraint:
+            baseTableName: TOKEN
+            baseColumnNames: AUTHENTICATION_SESSION_ID
+            referencedTableName: AUTHENTICATION_SESSION
+            referencedColumnNames: ID
+            constraintName: token_fk_session_id

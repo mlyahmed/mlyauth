@@ -37,7 +37,8 @@ public abstract class IDPAbstractNavigationService implements IDPNavigationServi
 
     private void traceNavigation(NavigationBean navigationBean, long consumedTime) {
         try {
-            navigationDAO.save(buildNavigation(navigationBean, consumedTime));
+            final Navigation navigation = navigationDAO.save(buildNavigation(navigationBean, consumedTime));
+            navigationBean.setId(navigation.getId());
         } catch (Exception e) {
             logger.error("Error when tracing navigation : ", e);
         }

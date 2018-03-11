@@ -47,6 +47,10 @@ public class Token {
     @JoinColumn(name = "APPLICATION_ID")
     private Application application;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "AUTHENTICATION_SESSION_ID", nullable = false, updatable = false)
+    private AuthenticationSession session;
+
     public static Token newInstance() {
         return new Token();
     }
@@ -135,6 +139,15 @@ public class Token {
 
     public Token setApplication(Application application) {
         this.application = application;
+        return this;
+    }
+
+    public AuthenticationSession getSession() {
+        return session;
+    }
+
+    public Token setSession(AuthenticationSession session) {
+        this.session = session;
         return this;
     }
 }

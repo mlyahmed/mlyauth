@@ -21,7 +21,7 @@ databaseChangeLog:
                   name: VALUE
                   type: varchar(300)
                   constraints:
-                      nullable: true
+                      nullable: false
               - column:
                   name: TOKEN_ID
                   type: bigint

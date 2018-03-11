@@ -3,6 +3,7 @@ package com.mlyauth.navigation;
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
+import com.mlyauth.context.IContext;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Application;
@@ -36,6 +37,9 @@ public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
     @Autowired
     private TokenMapper tokenMapper;
 
+    @Autowired
+    private IContext context;
+
     @Override
     public NavigationBean process(String appname) {
         checkApplication(applicationDAO.findByAppname(appname));
@@ -50,6 +54,7 @@ public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
     private Token saveToken(String appname, SAMLAccessToken access) {
         Token token = tokenMapper.toToken(access);
         token.setApplication(applicationDAO.findByAppname(appname));
+        token.setSession(context.getAuthenticationSession());
         token = tokenDAO.save(token);
         return token;
     }
