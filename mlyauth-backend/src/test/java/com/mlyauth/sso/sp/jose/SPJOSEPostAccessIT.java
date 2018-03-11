@@ -94,6 +94,14 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    public void when_post_success_token_with_application_claim_then_navigate_to_it() throws Exception {
+        given_a_peer_jose_idp_app();
+        given_a_peer_jose_idp_app_attributes();
+        given_success_token_with_application_claim_already_assigned();
+        when_post_the_token();
+        then_navigate_to_the_app();
+    }
 
     @Test
     public void when_post_a_true_fail_from_a_defined_idp_then_Error() throws Exception {
@@ -104,9 +112,6 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         then_error();
 
     }
-
-
-    //TODO: When post and application claim is set. Then navigate to the application
 
     private void given_a_peer_jose_idp_app() {
         application = newInstance().setAppname(appname).setTitle(appname).setAspects(new HashSet<>(asList(IDP_JOSE)));
@@ -175,6 +180,27 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         token.cypher();
     }
 
+    private void given_success_token_with_application_claim_already_assigned() {
+        token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey(), credentialManager.getLocalPublicKey());
+        token.setId(randomString());
+        token.setSubject("9000");
+        token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
+        token.setBP("SSO");
+        token.setState(randomString());
+        token.setAudience(localEntityId);
+        token.setIssuer(entityId);
+        token.setDelegator(randomString());
+        token.setDelegate(randomString());
+        token.setTargetURL("http://localhost/sp/jose/sso");
+        token.setVerdict(TokenVerdict.SUCCESS);
+        token.setClaim(CLIENT_ID.getValue(), randomString());
+        token.setClaim(CLIENT_PROFILE.getValue(), randomString());
+        token.setClaim(ENTITY_ID.getValue(), randomString());
+        token.setClaim(ACTION.getValue(), randomString());
+        token.setClaim(APPLICATION.getValue(), "PolicyDev");
+        token.cypher();
+    }
+
     private void when_post_the_token() throws Exception {
         resultActions = mockMvc.perform(post("/sp/jose/sso")
                 .contentType(APPLICATION_FORM_URLENCODED_VALUE)
@@ -185,6 +211,12 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         resultActions
                 .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", nullValue()))
                 .andExpect(redirectedUrl("/home.html"));
+    }
+
+    private void then_navigate_to_the_app() throws Exception {
+        resultActions
+                .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", nullValue()))
+                .andExpect(redirectedUrl("/navigate/forward/to/PolicyDev"));
     }
 
     private void then_error() throws Exception {

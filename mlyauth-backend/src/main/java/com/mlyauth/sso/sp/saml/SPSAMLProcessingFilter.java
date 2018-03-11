@@ -24,7 +24,7 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
             }
 
         } catch (Exception e) {
-            logger.debug("Incoming SAML message is invalid", e);
+            logger.error("Incoming SAML message is invalid", e);
             throw new AuthenticationServiceException("Incoming SAML message is invalid", e);
         }
     }

@@ -116,7 +116,6 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         then_authenticated();
     }
 
-
     @Test
     public void when_post_a_true_response_from_a_defined_idp_and_target_an_existed_app_then_navigate_to_the_app() throws Exception {
         given_response_is_success();
@@ -134,7 +133,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     private void then_navigate_to_the_app() throws Exception {
         resultActions
                 .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
-                .andExpect(redirectedUrl("/navigate/saml/to/PolicyDev"));
+                .andExpect(redirectedUrl("/navigate/forward/to/PolicyDev"));
     }
 
     private void given_the_target_app() {
@@ -192,8 +191,6 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         when_post_response();
         then_error();
     }
-
-    //TODO: When post and application attribute is set. Then navigate to the application
 
     private void and_the_response_issuer_is_undefined() {
         artifactResponse.getIssuer().setValue("undefined");
@@ -364,9 +361,6 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
 
-
-
-    //    When REDIRECT, true or false, assertion then error
-    //    When PAOS assertion then error
-//    when POST false assertion then error
+    //TODO    When REDIRECT, true or false, assertion then error
+    //TODO    When PAOS assertion then error
 }

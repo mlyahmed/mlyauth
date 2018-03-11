@@ -27,7 +27,7 @@ public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         if (context.getAttribute(APPLICATION.getValue()) != null) {
-            getRedirectStrategy().sendRedirect(request, response, "/navigate/saml/to/" + context.getAttribute(APPLICATION.getValue()));
+            getRedirectStrategy().sendRedirect(request, response, "/navigate/forward/to/" + context.getAttribute(APPLICATION.getValue()));
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
         }

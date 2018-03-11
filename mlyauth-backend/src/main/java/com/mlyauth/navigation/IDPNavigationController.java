@@ -17,7 +17,7 @@ import static com.mlyauth.constants.AspectType.SP_BASIC;
 import static com.mlyauth.constants.AspectType.SP_SAML;
 
 @Controller
-@RequestMapping("/navigate")
+@RequestMapping("/navigate/forward")
 public class IDPNavigationController {
 
     private final Map<AspectType, ISPNavigationService> services = new HashMap<>();

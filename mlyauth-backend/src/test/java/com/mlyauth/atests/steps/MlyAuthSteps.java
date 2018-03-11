@@ -85,7 +85,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
 
     @When("^(.+) navigates to (.+)$")
     public void user_navigate_to_app(String username, String appname) throws Exception {
-        resultActionHolder.setResultActions(restTestHelper.performGet("/navigate/basic/to/" + appname));
+        resultActionHolder.setResultActions(restTestHelper.performGet("/navigate/forward/basic/to/" + appname));
     }
 
     @Then("^(.+) is posted to (.+)")
