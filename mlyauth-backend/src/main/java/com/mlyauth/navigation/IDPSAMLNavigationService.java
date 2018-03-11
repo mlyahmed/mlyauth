@@ -38,18 +38,26 @@ public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
 
     @Override
     public NavigationBean process(String appname) {
-        Collection<AttributeBean> attributes = new LinkedList<>();
-        NavigationBean navigation = new NavigationBean();
         checkApplication(applicationDAO.findByAppname(appname));
         final SAMLAccessToken access = responseGenerator.produce(applicationDAO.findByAppname(appname));
-        Token token = tokenMapper.toToken(access);
-        token.setApplication(applicationDAO.findByAppname(appname));
-        token = tokenDAO.save(token);
+        return buildNavigation(access, saveToken(appname, access));
+    }
+
+    private NavigationBean buildNavigation(SAMLAccessToken access, Token token) {
+        Collection<AttributeBean> attributes = new LinkedList<>();
         attributes.add(newAttribute("SAMLResponse").setValue(access.serialize()));
+        NavigationBean navigation = new NavigationBean();
         navigation.setTarget(access.getTargetURL());
         navigation.setTokenId(token.getId());
         navigation.setAttributes(attributes);
         return navigation;
+    }
+
+    private Token saveToken(String appname, SAMLAccessToken access) {
+        Token token = tokenMapper.toToken(access);
+        token.setApplication(applicationDAO.findByAppname(appname));
+        token = tokenDAO.save(token);
+        return token;
     }
 
     @Override

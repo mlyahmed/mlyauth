@@ -37,23 +37,27 @@ public abstract class IDPAbstractNavigationService implements IDPNavigationServi
 
     private void traceNavigation(NavigationBean navigationBean, long consumedTime) {
         try {
-            final Set<NavigationAttribute> attributes = navigationBean.getAttributes().stream()
-                    .map(att -> NavigationAttribute.newInstance().setCode(att.getCode())
-                            .setAlias(att.getAlias()).setValue(att.getValue())).collect(Collectors.toSet());
-
-            Navigation navigation = Navigation.newInstance()
-                    .setCreatedAt(new Date())
-                    .setTimeConsumed(consumedTime)
-                    .setAttributes(attributes)
-                    .setDirection(OUTBOUND)
-                    .setTargetURL(navigationBean.getTarget())
-                    .setToken(tokenDAO.findOne(navigationBean.getTokenId()))
-                    .setSession(context.getAuthenticationSession());
-
-            navigationDAO.save(navigation);
+            navigationDAO.save(buildNavigation(navigationBean, consumedTime));
         } catch (Exception e) {
             logger.error("Error when tracing navigation : ", e);
         }
+    }
+
+    private Navigation buildNavigation(NavigationBean navigationBean, long consumedTime) {
+        return Navigation.newInstance()
+                .setCreatedAt(new Date())
+                .setTimeConsumed(consumedTime)
+                .setAttributes(buildNavigationAttributes(navigationBean))
+                .setDirection(OUTBOUND)
+                .setTargetURL(navigationBean.getTarget())
+                .setToken(tokenDAO.findOne(navigationBean.getTokenId()))
+                .setSession(context.getAuthenticationSession());
+    }
+
+    private Set<NavigationAttribute> buildNavigationAttributes(NavigationBean navigationBean) {
+        return navigationBean.getAttributes().stream()
+                .map(att -> NavigationAttribute.newInstance().setCode(att.getCode())
+                        .setAlias(att.getAlias()).setValue(att.getValue())).collect(Collectors.toSet());
     }
 
     abstract NavigationBean process(String appname);
