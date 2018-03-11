@@ -6,26 +6,40 @@ import static java.util.Arrays.stream;
 
 public enum AspectAttribute implements IStringEnum {
 
-    SP_BASIC_SSO_URL(SP_BASIC, ENDPOINT, "Auth:SP:Basic:EndPoint"),
-    SP_BASIC_USERNAME(SP_BASIC, USERNAME, "Auth:SP:Basic:Username"),
-    SP_BASIC_PASSWORD(SP_BASIC, PASSWORD, "Auth:SP:Basic:Password"),
+    SP_BASIC_SSO_URL(SP_BASIC, ENDPOINT, "Auth:SP:Basic:EndPoint", false),
+    SP_BASIC_USERNAME(SP_BASIC, USERNAME, "Auth:SP:Basic:Username", false),
+    SP_BASIC_PASSWORD(SP_BASIC, PASSWORD, "Auth:SP:Basic:Password", true),
 
-    SP_SAML_SSO_URL(SP_SAML, ENDPOINT, "Auth:SP:SAML:EndPoint"),
-    SP_SAML_ENTITY_ID(SP_SAML, ENTITYID, "Auth:SP:SAML:Entity:ID"),
-    SP_SAML_ENCRYPTION_CERTIFICATE(SP_SAML, CERTIFICATE, "Auth:SP:SAML:Encryption:Certificate"),
+    SP_SAML_SSO_URL(SP_SAML, ENDPOINT, "Auth:SP:SAML:EndPoint", false),
+    SP_SAML_ENTITY_ID(SP_SAML, ENTITYID, "Auth:SP:SAML:Entity:ID", false),
+    SP_SAML_ENCRYPTION_CERTIFICATE(SP_SAML, CERTIFICATE, "Auth:SP:SAML:Encryption:Certificate", false),
 
-    IDP_JOSE_SSO_URL(IDP_JOSE, ENDPOINT, "Auth:IDP:JOSE:EndPoint"),
-    IDP_JOSE_ENTITY_ID(IDP_JOSE, ENTITYID, "Auth:IDP:JOSE:Entity:ID"),
-    IDP_JOSE_ENCRYPTION_CERTIFICATE(IDP_JOSE, CERTIFICATE, "Auth:IDP:JOSE:Encryption:Certificate");
+    IDP_JOSE_SSO_URL(IDP_JOSE, ENDPOINT, "Auth:IDP:JOSE:EndPoint", false),
+    IDP_JOSE_ENTITY_ID(IDP_JOSE, ENTITYID, "Auth:IDP:JOSE:Entity:ID", false),
+    IDP_JOSE_ENCRYPTION_CERTIFICATE(IDP_JOSE, CERTIFICATE, "Auth:IDP:JOSE:Encryption:Certificate", false);
 
     private final AttributeType type;
     private final AspectType aspect;
     private final String value;
+    private final boolean secret;
 
-    AspectAttribute(AspectType aspect, AttributeType type, String value) {
+    AspectAttribute(AspectType aspect, AttributeType type, String value, boolean secret) {
         this.aspect = aspect;
         this.type = type;
         this.value = value;
+        this.secret = secret;
+    }
+
+    public AttributeType getType() {
+        return type;
+    }
+
+    public AspectType getAspect() {
+        return aspect;
+    }
+
+    public boolean isSecret() {
+        return secret;
     }
 
     @Override
@@ -36,14 +50,6 @@ public enum AspectAttribute implements IStringEnum {
     @Override
     public String getName() {
         return name();
-    }
-
-    public AttributeType getType() {
-        return type;
-    }
-
-    public AspectType getAspect() {
-        return aspect;
     }
 
     @Override

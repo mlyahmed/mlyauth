@@ -39,18 +39,12 @@ public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
     @Override
     public NavigationBean process(String appname) {
         checkApplication(applicationDAO.findByAppname(appname));
-        final SAMLAccessToken access = responseGenerator.produce(applicationDAO.findByAppname(appname));
+        final SAMLAccessToken access = generateAccess(appname);
         return buildNavigation(access, saveToken(appname, access));
     }
 
-    private NavigationBean buildNavigation(SAMLAccessToken access, Token token) {
-        Collection<AttributeBean> attributes = new LinkedList<>();
-        attributes.add(newAttribute("SAMLResponse").setValue(access.serialize()));
-        NavigationBean navigation = new NavigationBean();
-        navigation.setTarget(access.getTargetURL());
-        navigation.setTokenId(token.getId());
-        navigation.setAttributes(attributes);
-        return navigation;
+    private SAMLAccessToken generateAccess(String appname) {
+        return responseGenerator.produce(applicationDAO.findByAppname(appname));
     }
 
     private Token saveToken(String appname, SAMLAccessToken access) {
@@ -58,6 +52,20 @@ public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
         token.setApplication(applicationDAO.findByAppname(appname));
         token = tokenDAO.save(token);
         return token;
+    }
+
+    private NavigationBean buildNavigation(SAMLAccessToken access, Token token) {
+        NavigationBean navigation = new NavigationBean();
+        navigation.setTarget(access.getTargetURL());
+        navigation.setTokenId(token.getId());
+        navigation.setAttributes(buildAttributes(access));
+        return navigation;
+    }
+
+    private Collection<AttributeBean> buildAttributes(SAMLAccessToken access) {
+        Collection<AttributeBean> attributes = new LinkedList<>();
+        attributes.add(newAttribute("SAMLResponse").setValue(access.serialize()));
+        return attributes;
     }
 
     @Override

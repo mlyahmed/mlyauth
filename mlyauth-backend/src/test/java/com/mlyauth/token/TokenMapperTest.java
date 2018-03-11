@@ -11,6 +11,7 @@ import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.DefaultBootstrap;
+import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -25,8 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.token.IDPClaims.SCOPES;
-import static com.mlyauth.token.IDPClaims.SUBJECT;
+import static com.mlyauth.token.IDPClaims.*;
 import static com.mlyauth.tools.KeysForTests.generateRSACredential;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -91,15 +91,105 @@ public class TokenMapperTest {
     }
 
     @Test
-    public void when_map_a_saml_access_token_then_claims_must_be_mapped() {
+    public void when_map_a_saml_access_token_then_subject_must_be_mapped() {
         final SAMLAccessToken access = given_an_access_saml_token();
         final Token token = mapper.toToken(access);
         assertThat(token.getClaimsMap().get(SUBJECT.getValue()), notNullValue());
         assertThat(token.getClaimsMap().get(SUBJECT.getValue()).getValue(), equalTo(access.getSubject()));
         assertThat(token.getClaimsMap().get(SUBJECT.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_scopes_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
         assertThat(token.getClaimsMap().get(SCOPES.getValue()), notNullValue());
         assertThat(token.getClaimsMap().get(SCOPES.getValue()).getValue(), equalTo(compactScopes(access.getScopes())));
         assertThat(token.getClaimsMap().get(SCOPES.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_bp_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(BP.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(BP.getValue()).getValue(), equalTo(access.getBP()));
+        assertThat(token.getClaimsMap().get(BP.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_state_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(STATE.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(STATE.getValue()).getValue(), equalTo(access.getState()));
+        assertThat(token.getClaimsMap().get(STATE.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_issuer_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(ISSUER.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(ISSUER.getValue()).getValue(), equalTo(access.getIssuer()));
+        assertThat(token.getClaimsMap().get(ISSUER.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_audience_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(AUDIENCE.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(AUDIENCE.getValue()).getValue(), equalTo(access.getAudience()));
+        assertThat(token.getClaimsMap().get(AUDIENCE.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_target_url_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(TARGET_URL.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(TARGET_URL.getValue()).getValue(), equalTo(access.getTargetURL()));
+        assertThat(token.getClaimsMap().get(TARGET_URL.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_delegator_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(DELEGATOR.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(DELEGATOR.getValue()).getValue(), equalTo(access.getDelegator()));
+        assertThat(token.getClaimsMap().get(DELEGATOR.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_delegate_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(DELEGATE.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(DELEGATE.getValue()).getValue(), equalTo(access.getDelegate()));
+        assertThat(token.getClaimsMap().get(DELEGATE.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_verdict_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(VERDICT.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(VERDICT.getValue()).getValue(), equalTo(access.getVerdict().name()));
+        assertThat(token.getClaimsMap().get(VERDICT.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_without_claims_then_claims_set_must_ne_empty() throws ConfigurationException {
+        DefaultBootstrap.bootstrap();
+        SAMLHelper samlHelper = new SAMLHelper();
+        final Pair<PrivateKey, X509Certificate> pair = generateRSACredential();
+        final Credential credential = samlHelper.toCredential(pair.getKey(), pair.getValue());
+        SAMLAccessToken access = new SAMLAccessToken(credential);
+        access.setStamp(randomString());
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaims(), is(empty()));
     }
 
     private LocalDateTime toDateTime(Date date) {
