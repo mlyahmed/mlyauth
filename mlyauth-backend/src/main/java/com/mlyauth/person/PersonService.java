@@ -1,4 +1,4 @@
-package com.mlyauth.services.domain;
+package com.mlyauth.person;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.AuthenticationInfoStatus;

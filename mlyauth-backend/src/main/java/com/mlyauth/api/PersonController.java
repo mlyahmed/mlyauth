@@ -2,7 +2,7 @@ package com.mlyauth.api;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.services.domain.IPersonService;
+import com.mlyauth.person.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
