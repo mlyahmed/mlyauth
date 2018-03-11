@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: TOKEN_CLAIM
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
+                  name: CODE
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: VALUE
+                  type: varchar(300)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: TOKEN_ID
+                  type: bigint
+                  constraints:
+                      nullable: false
+
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: TOKEN_CLAIM
+            baseColumnNames: TOKEN_ID
+            referencedTableName: TOKEN
+            referencedColumnNames: ID
+            constraintName: token_claim_fk_token_id

@@ -18,12 +18,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class SPSAMLNavigationServiceIT extends AbstractIntegrationTest {
+public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
 
     public static final String POLICY_DEV = "PolicyDev";
 
     @Autowired
-    private SPSAMLNavigationService navigationService;
+    private IDPSAMLNavigationService navigationService;
 
     @Autowired
     private ApplicationDAO applicationDAO;

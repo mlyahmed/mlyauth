@@ -20,10 +20,10 @@ import static com.mlyauth.constants.AspectType.SP_SAML;
 @RequestMapping("/navigate/forward")
 public class IDPNavigationController {
 
-    private final Map<AspectType, ISPNavigationService> services = new HashMap<>();
+    private final Map<AspectType, IDPNavigationService> services = new HashMap<>();
 
     @Autowired
-    public void init(Collection<ISPNavigationService> services) {
+    public void init(Collection<IDPNavigationService> services) {
         services.forEach(service -> this.services.put(service.getSupportedAspect(), service));
     }
 

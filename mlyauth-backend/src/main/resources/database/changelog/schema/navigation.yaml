@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: NAVIGATION
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
+                  name: TARGET_URL
+                  type: varchar(1000)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: DIRECTION
+                  type: varchar(100)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: CREATED_AT
+                  type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
+                  name: TIME_CONSUMED
+                  type: bigint
+                  constraints:
+                      nullable: false
+              - column:
+                  name: AUTHENTICATION_SESSION_ID
+                  type: bigint
+                  constraints:
+                      nullable: false
+
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: NAVIGATION
+            baseColumnNames: AUTHENTICATION_SESSION_ID
+            referencedTableName: AUTHENTICATION_SESSION
+            referencedColumnNames: ID
+            constraintName: navigation_fk_session_id

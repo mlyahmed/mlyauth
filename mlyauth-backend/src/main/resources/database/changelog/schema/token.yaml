@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: TOKEN
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
+                  name: STAMP
+                  type: varchar(1000)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: TYPE
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: NORM
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: ISSUANCE_TIME
+                  type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
+                  name: EFFECTIVE_TIME
+                  type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
+                  name: EXPIRY_TIME
+                  type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
+                  name: APPLICATION_ID
+                  type: bigint
+                  constraints:
+                      nullable: false
+
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: TOKEN
+            baseColumnNames: APPLICATION_ID
+            referencedTableName: APPLICATION
+            referencedColumnNames: ID
+            constraintName: token_fk_application_id

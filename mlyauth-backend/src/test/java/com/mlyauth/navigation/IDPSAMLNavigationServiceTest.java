@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-public class SPSAMLNavigationServiceTest {
+public class IDPSAMLNavigationServiceTest {
 
     public static final String TARGET_APP = "TargetApp";
     public static final String TARGET_APP_URL = "http://application.com/sp/saml/sso";
@@ -45,7 +45,7 @@ public class SPSAMLNavigationServiceTest {
     private SAMLHelper samlHelper = new SAMLHelper();
 
     @InjectMocks
-    private SPSAMLNavigationService service;
+    private IDPSAMLNavigationService service;
 
     private IDPToken token;
 

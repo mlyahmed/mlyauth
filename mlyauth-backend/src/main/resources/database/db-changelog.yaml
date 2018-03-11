@@ -23,6 +23,15 @@ databaseChangeLog:
       file: database/changelog/schema/application-aspect.yaml
   - include:
       file: database/changelog/schema/application-aspect-attribute.yaml
+  - include:
+      file: database/changelog/schema/navigation.yaml
+  - include:
+      file: database/changelog/schema/navigation-attribute.yaml
+  - include:
+      file: database/changelog/schema/token.yaml
+  - include:
+      file: database/changelog/schema/token-claim.yaml
+
 
   - include:
       file: database/changelog/data/init/id-sequence.sql

@@ -17,10 +17,9 @@ import java.util.LinkedList;
 
 import static com.mlyauth.beans.AttributeBean.newAttribute;
 import static com.mlyauth.constants.AspectType.SP_SAML;
-import static com.mlyauth.constants.NavigationAttribute.SAML_RESPONSE;
 
 @Service
-public class SPSAMLNavigationService implements ISPNavigationService {
+public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -29,14 +28,14 @@ public class SPSAMLNavigationService implements ISPNavigationService {
     private SAMLAccessTokenProducer responseGenerator;
 
     @Override
-    public NavigationBean newNavigation(String appname) {
-        Collection<AttributeBean> navigationAttributes = new LinkedList<>();
+    public NavigationBean process(String appname) {
+        Collection<AttributeBean> attributes = new LinkedList<>();
         NavigationBean navigation = new NavigationBean();
         checkApplication(applicationDAO.findByAppname(appname));
         final IDPToken token = responseGenerator.produce(applicationDAO.findByAppname(appname));
-        navigationAttributes.add(newAttribute(SAML_RESPONSE.getValue()).setValue(token.serialize()));
+        attributes.add(newAttribute("SAMLResponse").setValue(token.serialize()));
         navigation.setTarget(token.getTargetURL());
-        navigation.setAttributes(navigationAttributes);
+        navigation.setAttributes(attributes);
         return navigation;
     }
 

@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: NAVIGATION_ATTRIBUTE
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
+                  name: CODE
+                  type: varchar(300)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: ALIAS
+                  type: varchar(300)
+                  constraints:
+                      nullable: false
+              - column:
+                  name: VALUE
+                  type: CLOB
+                  constraints:
+                      nullable: false
+              - column:
+                  name: NAVIGATION_ID
+                  type: bigint
+                  constraints:
+                      nullable: false
+
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: NAVIGATION_ATTRIBUTE
+            baseColumnNames: NAVIGATION_ID
+            referencedTableName: NAVIGATION
+            referencedColumnNames: ID
+            constraintName: navigation_attr_fk_navigation_id
