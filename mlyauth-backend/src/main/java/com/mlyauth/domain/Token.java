@@ -4,7 +4,7 @@ import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenType;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -30,13 +30,13 @@ public class Token {
     private TokenNorm norm;
 
     @Column(name = "ISSUANCE_TIME", nullable = false)
-    private LocalDateTime issuanceTime;
+    private Date issuanceTime;
 
     @Column(name = "EFFECTIVE_TIME", nullable = false)
-    private LocalDateTime effectiveTime;
+    private Date effectiveTime;
 
     @Column(name = "EXPIRY_TIME", nullable = false)
-    private LocalDateTime expiryTime;
+    private Date expiryTime;
 
     @OneToMany(mappedBy = "token", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TokenClaim> claims;
@@ -85,29 +85,29 @@ public class Token {
         return this;
     }
 
-    public LocalDateTime getIssuanceTime() {
+    public Date getIssuanceTime() {
         return issuanceTime;
     }
 
-    public Token setIssuanceTime(LocalDateTime issuanceTime) {
+    public Token setIssuanceTime(Date issuanceTime) {
         this.issuanceTime = issuanceTime;
         return this;
     }
 
-    public LocalDateTime getEffectiveTime() {
+    public Date getEffectiveTime() {
         return effectiveTime;
     }
 
-    public Token setEffectiveTime(LocalDateTime effectiveTime) {
+    public Token setEffectiveTime(Date effectiveTime) {
         this.effectiveTime = effectiveTime;
         return this;
     }
 
-    public LocalDateTime getExpiryTime() {
+    public Date getExpiryTime() {
         return expiryTime;
     }
 
-    public Token setExpiryTime(LocalDateTime expiryTime) {
+    public Token setExpiryTime(Date expiryTime) {
         this.expiryTime = expiryTime;
         return this;
     }

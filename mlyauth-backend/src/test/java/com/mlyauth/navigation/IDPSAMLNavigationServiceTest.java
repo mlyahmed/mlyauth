@@ -3,10 +3,12 @@ package com.mlyauth.navigation;
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Application;
+import com.mlyauth.domain.Token;
 import com.mlyauth.exception.ApplicationNotFoundException;
 import com.mlyauth.exception.NotSPSAMLApplicationException;
-import com.mlyauth.token.IDPToken;
+import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLAccessTokenProducer;
 import com.mlyauth.token.saml.SAMLHelper;
@@ -36,6 +38,12 @@ public class IDPSAMLNavigationServiceTest {
     public static final String TARGET_APP_URL = "http://application.com/sp/saml/sso";
 
     @Mock
+    private TokenMapper tokenMapper;
+
+    @Mock
+    private TokenDAO tokenDAO;
+
+    @Mock
     private ApplicationDAO applicationDAO;
 
     @Mock
@@ -47,7 +55,7 @@ public class IDPSAMLNavigationServiceTest {
     @InjectMocks
     private IDPSAMLNavigationService service;
 
-    private IDPToken token;
+    private SAMLAccessToken access;
 
     private Application application;
 
@@ -56,11 +64,22 @@ public class IDPSAMLNavigationServiceTest {
         MockitoAnnotations.initMocks(this);
         DefaultBootstrap.bootstrap();
         application = new Application();
+        set_up_access();
+        set_up_token();
+    }
+
+    private void set_up_access() {
         final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
-        token = new SAMLAccessToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
-        token.setTargetURL(TARGET_APP_URL);
-        token.cypher();
-        when(responseGenerator.produce(application)).thenReturn(token);
+        access = new SAMLAccessToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
+        access.setTargetURL(TARGET_APP_URL);
+        access.cypher();
+        when(responseGenerator.produce(application)).thenReturn(access);
+    }
+
+    private void set_up_token() {
+        final Token token = Token.newInstance();
+        when(tokenMapper.toToken(this.access)).thenReturn(token);
+        when(tokenDAO.save(token)).thenReturn(token);
     }
 
     @Test
@@ -72,7 +91,7 @@ public class IDPSAMLNavigationServiceTest {
         assertThat(navigation.getTarget(), equalTo(TARGET_APP_URL));
         assertThat(navigation.getAttributes(), hasSize(1));
         assertThat(navigation.getAttribute("SAMLResponse"), notNullValue());
-        assertThat(navigation.getAttribute("SAMLResponse").getValue(), equalTo(token.serialize()));
+        assertThat(navigation.getAttribute("SAMLResponse").getValue(), equalTo(access.serialize()));
     }
 
     @Test(expected = NotSPSAMLApplicationException.class)
@@ -87,5 +106,5 @@ public class IDPSAMLNavigationServiceTest {
         service.newNavigation(TARGET_APP);
     }
 
-    // app saml attributes misses
+    //TODO app saml attributes misses
 }

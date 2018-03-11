@@ -17,11 +17,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 
 import static com.mlyauth.tools.KeysForTests.generateRSACredential;
 import static com.mlyauth.tools.RandomForTests.randomString;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -51,6 +56,19 @@ public class TokenMapperTest {
         final Token token = mapper.toToken(access);
         assertThat(token, notNullValue());
         assertThat(encoder.matches(access.getStamp(), token.getStamp()), equalTo(true));
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(toDateTime(token.getIssuanceTime()), within(0, SECONDS, access.getIssuanceTime()));
+        assertThat(toDateTime(token.getEffectiveTime()), within(0, SECONDS, access.getEffectiveTime()));
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(toDateTime(token.getExpiryTime()), within(0, SECONDS, access.getExpiryTime()));
+        assertThat(token.getType(), notNullValue());
+        assertThat(token.getType(), equalTo(access.getType()));
+        assertThat(token.getNorm(), notNullValue());
+        assertThat(token.getNorm(), equalTo(access.getNorm()));
+    }
+
+    private LocalDateTime toDateTime(Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
     private SAMLAccessToken given_an_access_saml_token() {

@@ -3,7 +3,7 @@ package com.mlyauth.domain;
 import com.mlyauth.constants.NavigationDirection;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -20,7 +20,7 @@ public class Navigation {
     private String targetURL;
 
     @Column(name = "CREATED_AT", nullable = false)
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @Column(name = "DIRECTION", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -62,11 +62,11 @@ public class Navigation {
         return this;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public Navigation setCreatedAt(LocalDateTime createdAt) {
+    public Navigation setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -112,7 +112,8 @@ public class Navigation {
         return token;
     }
 
-    public void setToken(Token token) {
+    public Navigation setToken(Token token) {
         this.token = token;
+        return this;
     }
 }
