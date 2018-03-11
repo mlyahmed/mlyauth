@@ -5,19 +5,21 @@ import com.mlyauth.constants.IStringEnum;
 
 public enum IDPClaims implements IStringEnum {
     UNDEFINED("UNDEFINED"),
+    SUBJECT("subject"),
+    SCOPES("scopes"),
+    BP("bp"),
+    STATE("state"),
+    ISSUER("iss"),
+    AUDIENCE("audience"),
+    TARGET_URL("targetURL"),
+    DELEGATOR("delegator"),
+    DELEGATE("delegate"),
+    VERDICT("verdict"),
     CLIENT_ID("idClient"),
     CLIENT_PROFILE("profilUtilisateur"),
     ENTITY_ID("idPrestation"),
     ACTION("action"),
-    APPLICATION("application"),
-    BP("bp"),
-    SCOPES("scopes"),
-    DELEGATOR("delegator"),
-    DELEGATE("delegate"),
-    VERDICT("verdict"),
-    TARGET_URL("targetURL"),
-    ISSUER("iss"),
-    STATE("state");
+    APPLICATION("application");
 
     private final String value;
 

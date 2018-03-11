@@ -22,7 +22,11 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.mlyauth.token.IDPClaims.SCOPES;
+import static com.mlyauth.token.IDPClaims.SUBJECT;
 import static com.mlyauth.tools.KeysForTests.generateRSACredential;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -51,25 +55,61 @@ public class TokenMapperTest {
     }
 
     @Test
-    public void when_map_a_saml_access_token_then_map_it() {
+    public void when_map_a_saml_access_token_then_map_to_non_null_token() {
         final SAMLAccessToken access = given_an_access_saml_token();
         final Token token = mapper.toToken(access);
         assertThat(token, notNullValue());
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_the_stamp_must_be_encoded() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
         assertThat(encoder.matches(access.getStamp(), token.getStamp()), equalTo(true));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_the_times_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
         assertThat(token.getIssuanceTime(), notNullValue());
         assertThat(toDateTime(token.getIssuanceTime()), within(0, SECONDS, access.getIssuanceTime()));
         assertThat(toDateTime(token.getEffectiveTime()), within(0, SECONDS, access.getEffectiveTime()));
         assertThat(token.getExpiryTime(), notNullValue());
         assertThat(toDateTime(token.getExpiryTime()), within(0, SECONDS, access.getExpiryTime()));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_type_and_norm_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
         assertThat(token.getType(), notNullValue());
         assertThat(token.getType(), equalTo(access.getType()));
         assertThat(token.getNorm(), notNullValue());
         assertThat(token.getNorm(), equalTo(access.getNorm()));
+
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_claims_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(SUBJECT.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(SUBJECT.getValue()).getValue(), equalTo(access.getSubject()));
+        assertThat(token.getClaimsMap().get(SUBJECT.getValue()).getToken(), equalTo(token));
+        assertThat(token.getClaimsMap().get(SCOPES.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(SCOPES.getValue()).getValue(), equalTo(compactScopes(access.getScopes())));
+        assertThat(token.getClaimsMap().get(SCOPES.getValue()).getToken(), equalTo(token));
     }
 
     private LocalDateTime toDateTime(Date date) {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
+
+    protected String compactScopes(Set<TokenScope> scopes) {
+        return scopes != null ? scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")) : null;
+    }
+
 
     private SAMLAccessToken given_an_access_saml_token() {
         try {

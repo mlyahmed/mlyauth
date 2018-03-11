@@ -22,35 +22,43 @@ public class TokenClaim {
     @JoinColumn(name = "TOKEN_ID")
     private Token token;
 
+    public static TokenClaim newInstance() {
+        return new TokenClaim();
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public TokenClaim setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public TokenClaim setCode(String code) {
         this.code = code;
+        return this;
     }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public TokenClaim setValue(String value) {
         this.value = value;
+        return this;
     }
 
     public Token getToken() {
         return token;
     }
 
-    public void setToken(Token token) {
+    public TokenClaim setToken(Token token) {
         this.token = token;
+        return this;
     }
 }

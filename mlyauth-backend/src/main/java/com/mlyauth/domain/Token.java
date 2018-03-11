@@ -5,7 +5,9 @@ import com.mlyauth.constants.TokenType;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "TOKEN")
@@ -116,7 +118,13 @@ public class Token {
         return claims;
     }
 
+    @Transient
+    public Map<String, TokenClaim> getClaimsMap() {
+        return this.claims.stream().collect(Collectors.toMap(c -> c.getCode(), c -> c));
+    }
+
     public Token setClaims(Set<TokenClaim> claims) {
+        claims.stream().forEach(claim -> claim.setToken(this));
         this.claims = claims;
         return this;
     }
