@@ -7,9 +7,9 @@ import java.util.Set;
 
 public interface IDPToken {
 
-    String getId();
+    String getStamp();
 
-    void setId(String id);
+    void setStamp(String stamp);
 
     String getSubject();
 

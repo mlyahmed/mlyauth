@@ -58,7 +58,7 @@ public class TokenCompressorTest {
         final Pair<PrivateKey, X509Certificate> pair = generateRSACredential();
         final Credential credential = samlHelper.toCredential(pair.getKey(), pair.getValue());
         SAMLAccessToken samlAccessToken = new SAMLAccessToken(credential);
-        samlAccessToken.setId(randomString());
+        samlAccessToken.setStamp(randomString());
         samlAccessToken.setSubject(randomString());
         samlAccessToken.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
         samlAccessToken.setBP(randomString());
@@ -76,7 +76,7 @@ public class TokenCompressorTest {
     private JOSEAccessToken given_cyphered_jose_token() {
         final Pair<PrivateKey, X509Certificate> credential = generateRSACredential();
         JOSEAccessToken access = new JOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
-        access.setId(randomString());
+        access.setStamp(randomString());
         access.setSubject(randomString());
         access.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
         access.setBP(randomString());

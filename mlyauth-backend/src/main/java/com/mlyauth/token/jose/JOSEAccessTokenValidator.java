@@ -21,7 +21,7 @@ public class JOSEAccessTokenValidator {
 
     public boolean validate(JOSEAccessToken access) {
         notNull(access, "The token is null");
-        assertClaimNotBlank(access.getId(), "The token Id is blank");
+        assertClaimNotBlank(access.getStamp(), "The token Id is blank");
         assertClaimNotBlank(access.getSubject(), "The token Subject is blank");
         assertScopesNotBlank(access.getScopes(), "The token scopes list is blank");
         assertClaimNotBlank(access.getBP(), "The token BP is blank");

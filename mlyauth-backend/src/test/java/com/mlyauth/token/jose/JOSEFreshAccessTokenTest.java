@@ -69,7 +69,7 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_fresh_response_then_token_claims_must_be_fresh() {
-        assertThat(token.getId(), nullValue());
+        assertThat(token.getStamp(), nullValue());
         assertThat(token.getSubject(), nullValue());
         assertThat(token.getScopes(), empty());
         assertThat(token.getBP(), nullValue());
@@ -85,17 +85,17 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_Id_then_must_be_set() {
+    public void when_create_a_fresh_token_and_set_stamp_then_must_be_set() {
         String id = randomString();
-        token.setId(id);
-        assertThat(token.getId(), equalTo(id));
+        token.setStamp(id);
+        assertThat(token.getStamp(), equalTo(id));
         assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
-    public void when_serialize_cyphered_token_then_the_id_must_be_committed() throws Exception {
+    public void when_serialize_cyphered_token_then_the_stamp_must_be_committed() throws Exception {
         final String id = randomString();
-        token.setId(id);
+        token.setStamp(id);
         token.cypher();
         JWEObject loadedToken = JWEObject.parse(token.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
@@ -388,9 +388,9 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_id_and_already_ciphered_then_error() {
+    public void when_set_stamp_and_already_ciphered_then_error() {
         token.cypher();
-        token.setId(randomString());
+        token.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)

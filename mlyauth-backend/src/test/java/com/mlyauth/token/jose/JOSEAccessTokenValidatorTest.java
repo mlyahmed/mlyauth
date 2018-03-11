@@ -47,7 +47,7 @@ public class JOSEAccessTokenValidatorTest {
     @Test(expected = InvalidTokenException.class)
     public void when_the_id_is_null_then_error() {
         JOSEAccessToken access = given_access_token();
-        access.setId(null);
+        access.setStamp(null);
         validator.validate(access);
     }
 
@@ -152,7 +152,7 @@ public class JOSEAccessTokenValidatorTest {
     private MockJOSEAccessToken given_access_token() {
         final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
         MockJOSEAccessToken access = new MockJOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
-        access.setId(randomString());
+        access.setStamp(randomString());
         access.setSubject(randomString());
         access.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
         access.setBP(randomString());

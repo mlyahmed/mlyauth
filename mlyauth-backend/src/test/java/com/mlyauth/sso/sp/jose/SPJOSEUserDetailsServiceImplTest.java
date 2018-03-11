@@ -145,7 +145,7 @@ public class SPJOSEUserDetailsServiceImplTest {
     private void given_the_token() {
         Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
         token = new MockJOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
-        token.setId(randomString());
+        token.setStamp(randomString());
         token.setSubject(randomString());
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
         token.setBP(randomString());

@@ -81,14 +81,14 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     @Override
-    public String getId() {
+    public String getStamp() {
         return builder.build().getJWTID();
     }
 
     @Override
-    public void setId(String id) {
+    public void setStamp(String stamp) {
         checkUnmodifiable();
-        builder = builder.jwtID(id);
+        builder = builder.jwtID(stamp);
         status = TokenStatus.FORGED;
     }
 

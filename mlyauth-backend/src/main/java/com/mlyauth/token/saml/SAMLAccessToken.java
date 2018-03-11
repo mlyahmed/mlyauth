@@ -119,15 +119,15 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public String getId() {
+    public String getStamp() {
         return response.getID();
     }
 
     @Override
-    public void setId(String id) {
+    public void setStamp(String stamp) {
         checkCommitted();
-        response.setID(id);
-        assertion.setID(id);
+        response.setID(stamp);
+        assertion.setID(stamp);
         status = FORGED;
     }
 

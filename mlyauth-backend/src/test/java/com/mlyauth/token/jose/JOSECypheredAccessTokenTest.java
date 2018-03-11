@@ -67,9 +67,9 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test
-    public void when_given_cyphered_token_then_the_id_is_loaded() {
+    public void when_given_cyphered_token_then_the_stamp_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getId(), equalTo(expectedClaims.getJWTID()));
+        assertThat(token.getStamp(), equalTo(expectedClaims.getJWTID()));
     }
 
     @Test
@@ -217,15 +217,15 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void the_id_is_not_modifiable_before_decipher() {
+    public void the_stamp_is_not_modifiable_before_decipher() {
         token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setId(randomString());
+        token.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void the_id_is_not_modifiable_after_decipher() {
+    public void the_stamp_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setId(randomString());
+        token.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)

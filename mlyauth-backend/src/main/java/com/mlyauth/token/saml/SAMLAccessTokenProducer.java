@@ -56,7 +56,7 @@ public class SAMLAccessTokenProducer implements ITokenProducer {
 
     private IDPToken buildToken(List<ApplicationAspectAttribute> attributes) {
         IDPToken token = tokenFactory.createSAMLAccessToken(buildCredential(attributes));
-        token.setId(samlHelper.generateRandomId());
+        token.setStamp(samlHelper.generateRandomId());
         token.setIssuer(idpEntityId);
         token.setTargetURL(getTargetURL(attributes).getValue());
         token.setVerdict(TokenVerdict.SUCCESS);
