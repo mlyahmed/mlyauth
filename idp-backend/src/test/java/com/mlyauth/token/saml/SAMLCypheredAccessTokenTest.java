@@ -1,8 +1,10 @@
 package com.mlyauth.token.saml;
 
+import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.IDPSAMLErrorException;
+import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
@@ -18,6 +20,7 @@ import org.opensaml.xml.encryption.EncryptionConstants;
 import org.opensaml.xml.encryption.EncryptionParameters;
 import org.opensaml.xml.encryption.KeyEncryptionParameters;
 import org.opensaml.xml.security.credential.Credential;
+import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
 import org.opensaml.xml.signature.Signer;
@@ -30,6 +33,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.mlyauth.token.IDPClaims.*;
@@ -172,6 +176,199 @@ public class SAMLCypheredAccessTokenTest {
         assertThat(token.getIssuanceTime(), within(0, ChronoUnit.SECONDS, expected));
     }
 
+    @Test(expected = IDPSAMLErrorException.class)
+    public void when_the_decryption_key_does_not_match_then_error() {
+        final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
+        BasicX509Credential credential = (BasicX509Credential) decipherCred;
+        credential.setPrivateKey(rsaCred.getKey());
+        token = new SAMLAccessToken(serialized, credential);
+        token.decipher();
+    }
+
+    @Test(expected = IDPSAMLErrorException.class)
+    public void when_the_signature_key_does_not_match_then_error() {
+        final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
+        BasicX509Credential credential = (BasicX509Credential) decipherCred;
+        credential.setEntityCertificate(rsaCred.getValue());
+        token = new SAMLAccessToken(serialized, credential);
+        token.decipher();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_cyphered_token_is_null_then_error() {
+        new SAMLAccessToken(null, decipherCred);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_credential_is_null_then_error() {
+        new SAMLAccessToken(serialized, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_private_key_is_null_then_error() {
+        BasicX509Credential credential = (BasicX509Credential) decipherCred;
+        credential.setPrivateKey(null);
+        new SAMLAccessToken(serialized, decipherCred);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_the_certificate_is_null_then_error() {
+        BasicX509Credential credential = (BasicX509Credential) decipherCred;
+        credential.setEntityCertificate(null);
+        new SAMLAccessToken(serialized, decipherCred);
+    }
+
+    @Test(expected = IDPSAMLErrorException.class)
+    public void when_the_cyphered_token_is_not_well_formatted_then_error() {
+        new SAMLAccessToken(randomString(), decipherCred);
+    }
+
+    @Test(expected = IDPSAMLErrorException.class)
+    public void when_the_token_is_not_signed_then_error() {
+        given_the_claims_are_encrypted_and_not_signed_and_serialized();
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.decipher();
+    }
+
+    @Test(expected = IDPSAMLErrorException.class)
+    public void when_the_token_is_signed_but_not_encrypted_then_error() {
+        given_the_claims_are_not_encrypted_but_signed_and_serialized();
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.decipher();
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_stamp_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setStamp(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_stamp_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setStamp(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_subject_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setSubject(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_subject_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setSubject(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_scopes_are_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_scopes_are_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_bp_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setBP(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_bp_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setBP(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_state_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setState(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_state_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setState(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_issuer_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setIssuer(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_issuer_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setIssuer(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_audience_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setAudience(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_audience_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setAudience(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_target_url_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_target_url_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegator_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegator_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegate_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_delegate_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_verdict_is_not_modifiable_before_decipher() {
+        token = new SAMLAccessToken(serialized, decipherCred);
+        token.setVerdict(TokenVerdict.SUCCESS);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_verdict_is_not_modifiable_after_decipher() {
+        when_decipher_the_token();
+        token.setVerdict(TokenVerdict.SUCCESS);
+    }
+
     private void set_up_token() {
         token = new SAMLAccessToken(cypherCred);
         ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
@@ -264,6 +461,42 @@ public class SAMLCypheredAccessTokenTest {
             EncryptedAssertion encryptedAssertion = encrypter.encrypt(assertion);
             response.getEncryptedAssertions().add(encryptedAssertion);
 
+            Signature signature = samlHelper.buildSAMLObject(Signature.class);
+            signature.setSigningCredential(cypherCred);
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
+            signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+            response.setSignature(signature);
+            Configuration.getMarshallerFactory().getMarshaller(response).marshall(response);
+            Signer.signObject(signature);
+
+            serialized = encodeBytes(samlHelper.toString(response).getBytes());
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
+
+    private void given_the_claims_are_encrypted_and_not_signed_and_serialized() {
+        try {
+            EncryptionParameters encryptionParameters = new EncryptionParameters();
+            encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+            KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
+            keyEncryptionParameters.setEncryptionCredential(cypherCred);
+            keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
+            Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
+            encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
+            EncryptedAssertion encryptedAssertion = encrypter.encrypt(assertion);
+            response.getEncryptedAssertions().add(encryptedAssertion);
+
+            serialized = encodeBytes(samlHelper.toString(response).getBytes());
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
+
+    private void given_the_claims_are_not_encrypted_but_signed_and_serialized() {
+        try {
+            response.getEncryptedAssertions().clear();
+            response.getAssertions().add(assertion);
             Signature signature = samlHelper.buildSAMLObject(Signature.class);
             signature.setSigningCredential(cypherCred);
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);

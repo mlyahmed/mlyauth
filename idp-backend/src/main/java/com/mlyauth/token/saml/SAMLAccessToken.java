@@ -45,9 +45,14 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     public SAMLAccessToken(String serialized, Credential credential) {
+        notNull(serialized, "The serialized token argument is mandatory !");
+        notNull(credential, "The credential argument is mandatory !");
+        notNull(credential.getPrivateKey(), "The private key argument is mandatory !");
+        notNull(credential.getPublicKey(), "The public key argument is mandatory !");
         this.credential = credential;
         response = (Response) samlHelper.decode(serialized);
         status = TokenStatus.CYPHERED;
+        locked = true;
     }
 
     private void init() {
@@ -130,7 +135,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setStamp(String stamp) {
-        checkCommitted();
+        checkUnmodifiable();
         response.setID(stamp);
         assertion.setID(stamp);
         status = FORGED;
@@ -143,7 +148,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setSubject(String value) {
-        checkCommitted();
+        checkUnmodifiable();
         subject.getNameID().setValue(value);
         status = FORGED;
     }
@@ -156,7 +161,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setScopes(Set<TokenScope> scopes) {
-        checkCommitted();
+        checkUnmodifiable();
         setAttributeValue(SCOPES.getValue(), compactScopes(scopes));
         status = FORGED;
     }
@@ -168,7 +173,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setBP(String bp) {
-        checkCommitted();
+        checkUnmodifiable();
         setAttributeValue(BP.getValue(), bp);
         status = FORGED;
     }
@@ -180,7 +185,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setState(String state) {
-        checkCommitted();
+        checkUnmodifiable();
         setAttributeValue(STATE.getValue(), state);
         status = FORGED;
     }
@@ -192,7 +197,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setIssuer(String issuerURI) {
-        checkCommitted();
+        checkUnmodifiable();
         response.getIssuer().setValue(issuerURI);
         assertion.getIssuer().setValue(issuerURI);
         status = FORGED;
@@ -205,7 +210,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setAudience(String audienceURI) {
-        checkCommitted();
+        checkUnmodifiable();
         audience.setAudienceURI(audienceURI);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setInResponseTo(audienceURI);
         status = FORGED;
@@ -218,7 +223,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setTargetURL(String url) {
-        checkCommitted();
+        checkUnmodifiable();
         response.setDestination(url);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setRecipient(url);
         status = FORGED;
@@ -231,7 +236,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setDelegator(String delegatorID) {
-        checkCommitted();
+        checkUnmodifiable();
         setAttributeValue(DELEGATOR.getValue(), delegatorID);
         status = FORGED;
     }
@@ -243,7 +248,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setDelegate(String delegateURI) {
-        checkCommitted();
+        checkUnmodifiable();
         setAttributeValue(DELEGATE.getValue(), delegateURI);
         status = FORGED;
     }
@@ -256,7 +261,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public void setVerdict(TokenVerdict verdict) {
-        checkCommitted();
+        checkUnmodifiable();
         response.getStatus().getStatusCode().setValue((SUCCESS == verdict) ? SUCCESS_URI : AUTHN_FAILED_URI);
         status = FORGED;
     }
@@ -324,6 +329,7 @@ public class SAMLAccessToken extends AbstractToken {
     @Override
     public void decipher() {
         checkCommitted();
+        samlHelper.validateSignature(response, credential);
         assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), credential);
         subject = assertion.getSubject();
         audience = assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0);

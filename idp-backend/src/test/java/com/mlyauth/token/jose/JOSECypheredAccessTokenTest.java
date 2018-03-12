@@ -181,7 +181,7 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_the_cyphered_token_is_null_then_erro() {
+    public void when_the_cyphered_token_is_null_then_error() {
         new JOSEAccessToken(null, decipherCred.getKey(), decipherCred.getValue());
     }
 
@@ -207,7 +207,7 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_the_private_key_is_null_then_erro() {
+    public void when_the_private_key_is_null_then_error() {
         new JOSEAccessToken(tokenEncrypted.serialize(), null, decipherCred.getValue());
     }
 
