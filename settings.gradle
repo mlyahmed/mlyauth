@@ -1,5 +1,6 @@
-include('mlyauth-frontend')
-include('mlyauth-backend')
+include('idp-backend')
+include('idp-frontend')
+include('idp-samples')
 
 rootProject.name = 'mly-auth'
 

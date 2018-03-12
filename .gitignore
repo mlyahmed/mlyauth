@@ -12,5 +12,5 @@ out
 .gradle
 logs
 dist
-/mlyauth-backend/h2/
 /h2/
+/idp-backend/h2/
