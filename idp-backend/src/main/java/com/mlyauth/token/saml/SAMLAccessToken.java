@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.mlyauth.constants.TokenStatus.CYPHERED;
-import static com.mlyauth.constants.TokenStatus.FORGED;
+import static com.mlyauth.constants.TokenStatus.*;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.IDPClaims.*;
@@ -43,6 +42,12 @@ public class SAMLAccessToken extends AbstractToken {
         notNull(credential.getPublicKey(), "The public key argument is mandatory !");
         this.credential = credential;
         init();
+    }
+
+    public SAMLAccessToken(String serialized, Credential credential) {
+        this.credential = credential;
+        response = (Response) samlHelper.decode(serialized);
+        status = TokenStatus.CYPHERED;
     }
 
     private void init() {
@@ -319,6 +324,9 @@ public class SAMLAccessToken extends AbstractToken {
     @Override
     public void decipher() {
         checkCommitted();
+        assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), credential);
+        subject = assertion.getSubject();
+        status = DECIPHERED;
     }
 
     @Override
