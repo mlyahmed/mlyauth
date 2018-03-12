@@ -16,8 +16,9 @@ import java.util.Map;
 
 import static com.mlyauth.constants.AspectAttribute.SP_SAML_SSO_URL;
 import static com.mlyauth.constants.AspectType.SP_SAML;
-import static com.mlyauth.constants.NavigationDirection.OUTBOUND;
+import static com.mlyauth.constants.Direction.OUTBOUND;
 import static com.mlyauth.constants.TokenNorm.SAML;
+import static com.mlyauth.constants.TokenPurpose.NAVIGATION;
 import static com.mlyauth.constants.TokenType.ACCESS;
 import static com.mlyauth.token.IDPClaims.TARGET_URL;
 import static org.hamcrest.Matchers.equalTo;
@@ -87,6 +88,7 @@ public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
         assertThat(token, notNullValue());
         assertThat(token.getNorm(), equalTo(SAML));
         assertThat(token.getType(), equalTo(ACCESS));
+        assertThat(token.getPurpose(), equalTo(NAVIGATION));
         assertThat(token.getIssuanceTime(), notNullValue());
         assertThat(token.getEffectiveTime(), notNullValue());
         assertThat(token.getExpiryTime(), notNullValue());

@@ -28,6 +28,11 @@ databaseChangeLog:
                   constraints:
                       nullable: false
               - column:
+                  name: PURPOSE
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+              - column:
                   name: ISSUANCE_TIME
                   type: DATETIME
                   constraints:

@@ -1,5 +1,5 @@
 package com.mlyauth.constants;
 
-public enum NavigationDirection {
+public enum Direction {
     INBOUND, OUTBOUND
 }

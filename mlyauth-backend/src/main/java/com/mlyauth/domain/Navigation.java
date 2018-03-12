@@ -1,6 +1,6 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.NavigationDirection;
+import com.mlyauth.constants.Direction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,7 +24,7 @@ public class Navigation {
 
     @Column(name = "DIRECTION", nullable = false)
     @Enumerated(EnumType.STRING)
-    private NavigationDirection direction;
+    private Direction direction;
 
     @Column(name = "TIME_CONSUMED", nullable = false)
     private long timeConsumed;
@@ -71,11 +71,11 @@ public class Navigation {
         return this;
     }
 
-    public NavigationDirection getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
-    public Navigation setDirection(NavigationDirection direction) {
+    public Navigation setDirection(Direction direction) {
         this.direction = direction;
         return this;
     }

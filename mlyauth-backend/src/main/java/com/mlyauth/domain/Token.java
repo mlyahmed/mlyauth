@@ -1,6 +1,7 @@
 package com.mlyauth.domain;
 
 import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenPurpose;
 import com.mlyauth.constants.TokenType;
 
 import javax.persistence.*;
@@ -30,6 +31,10 @@ public class Token {
     @Column(name = "NORM", nullable = false)
     @Enumerated(EnumType.STRING)
     private TokenNorm norm;
+
+    @Column(name = "PURPOSE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TokenPurpose purpose;
 
     @Column(name = "ISSUANCE_TIME", nullable = false)
     private Date issuanceTime;
@@ -89,6 +94,14 @@ public class Token {
     public Token setNorm(TokenNorm norm) {
         this.norm = norm;
         return this;
+    }
+
+    public TokenPurpose getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(TokenPurpose purpose) {
+        this.purpose = purpose;
     }
 
     public Date getIssuanceTime() {
