@@ -14,3 +14,4 @@ logs
 dist
 /h2/
 /idp-backend/h2/
+/idp-backend/h2/*
