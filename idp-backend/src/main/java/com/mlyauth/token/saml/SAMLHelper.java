@@ -201,6 +201,10 @@ public class SAMLHelper {
         }
     }
 
+    public String getAttributeValue(Attribute attribute) {
+        return attribute != null ? ((XSString) attribute.getAttributeValues().get(0)).getValue() : null;
+    }
+
     public String toString(XMLObject xmlObject) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

@@ -326,6 +326,7 @@ public class SAMLAccessToken extends AbstractToken {
         checkCommitted();
         assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), credential);
         subject = assertion.getSubject();
+        audience = assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0);
         status = DECIPHERED;
     }
 

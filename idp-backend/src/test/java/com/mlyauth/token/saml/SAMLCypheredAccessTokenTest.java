@@ -1,10 +1,12 @@
 package com.mlyauth.token.saml;
 
 import com.mlyauth.constants.TokenStatus;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.DefaultBootstrap;
@@ -23,12 +25,18 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.mlyauth.token.IDPClaims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
+import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.opensaml.xml.util.Base64.encodeBytes;
 
@@ -87,6 +95,81 @@ public class SAMLCypheredAccessTokenTest {
     public void when_given_cyphered_token_then_the_subject_is_loaded() {
         when_decipher_the_token();
         assertThat(token.getSubject(), equalTo(subject.getNameID().getValue()));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_bp_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getBP(), equalTo(samlHelper.getAttributeValue(bp)));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_issuer_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getIssuer(), equalTo(response.getIssuer().getValue()));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_state_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getState(), equalTo(samlHelper.getAttributeValue(state)));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_audience_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getAudience(), equalTo(audience.getAudienceURI()));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_target_url_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getTargetURL(), equalTo(response.getDestination()));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_delegator_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getDelegator(), equalTo(samlHelper.getAttributeValue(delegator)));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_delegate_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getDelegate(), equalTo(samlHelper.getAttributeValue(delegate)));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_verdict_is_loaded() {
+        when_decipher_the_token();
+        assertThat(token.getVerdict(), equalTo(TokenVerdict.FAIL));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_expiry_time_is_loaded() {
+        when_decipher_the_token();
+        final Date date = assertion.getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault()).toDate();
+        final LocalDateTime expected = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        assertThat(token.getExpiryTime(), notNullValue());
+        assertThat(token.getExpiryTime(), within(0, ChronoUnit.SECONDS, expected));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_effective_time_is_loaded() {
+        when_decipher_the_token();
+        final Date date = assertion.getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault()).toDate();
+        final LocalDateTime expected = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        assertThat(token.getEffectiveTime(), notNullValue());
+        assertThat(token.getEffectiveTime(), within(0, ChronoUnit.SECONDS, expected));
+    }
+
+    @Test
+    public void when_given_cyphered_token_then_the_issuance_time_is_loaded() {
+        when_decipher_the_token();
+        final Date date = response.getIssueInstant().toDateTime(DateTimeZone.getDefault()).toDate();
+        final LocalDateTime expected = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        assertThat(token.getIssuanceTime(), notNullValue());
+        assertThat(token.getIssuanceTime(), within(0, ChronoUnit.SECONDS, expected));
     }
 
     private void set_up_token() {
@@ -166,6 +249,7 @@ public class SAMLCypheredAccessTokenTest {
         response.setID(assertion.getID());
         response.getIssuer().setValue(assertion.getIssuer().getValue());
         response.getStatus().getStatusCode().setValue(randomString());
+        response.setDestination(randomString());
     }
 
     private void given_the_claims_are_cyphered_and_serialized() {

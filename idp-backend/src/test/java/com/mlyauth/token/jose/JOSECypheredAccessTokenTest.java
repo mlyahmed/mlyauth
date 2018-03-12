@@ -79,13 +79,13 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test
-    public void when_given_cyphered_token_then_the_scopes_are_loaded() {
+    public void when_given_cyphered_token_then_the_bp_is_loaded() {
         when_decipher_the_token();
         assertThat(token.getBP(), equalTo(expectedClaims.getClaim(BP.getValue())));
     }
 
     @Test
-    public void when_given_cyphered_token_then_the_bp_is_loaded() {
+    public void when_given_cyphered_token_then_the_copes_are_loaded() {
         when_decipher_the_token();
         assertThat(expectedClaims.getClaim(SCOPES.getValue()), notNullValue());
         assertThat(token.getScopes(), equalTo(Arrays.stream(expectedClaims.getClaim(SCOPES.getValue())
