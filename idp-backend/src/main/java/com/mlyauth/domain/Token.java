@@ -100,8 +100,9 @@ public class Token {
         return purpose;
     }
 
-    public void setPurpose(TokenPurpose purpose) {
+    public Token setPurpose(TokenPurpose purpose) {
         this.purpose = purpose;
+        return this;
     }
 
     public Date getIssuanceTime() {

@@ -82,22 +82,36 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
     }
 
     private void traceNavigation(HttpServletRequest request, HttpServletResponse response, Stopwatch started) {
-        try {
+        String serialized = request.getParameter("SAMLResponse");
+        final SAMLAccessToken access = loadAccess(serialized, request, response);
+        final Token token = saveToken(access);
+        final Navigation navigation = buildNavigation(access, token);
+        navigation.setAttributes(buildAttributes(serialized));
+        navigation.setTimeConsumed(started.elapsed(TimeUnit.MILLISECONDS));
+        navigationDAO.save(navigation);
+    }
 
+    private SAMLAccessToken loadAccess(String serialized, HttpServletRequest request, HttpServletResponse response) {
+        SAMLMessageContext messageContext = retrieveMessageContext(request, response);
+        final SAMLAccessToken access = tokenFactory.createSAMLAccessToken(serialized, buildCredential(messageContext));
+        access.decipher();
+        return access;
+    }
+
+    private SAMLMessageContext retrieveMessageContext(HttpServletRequest request, HttpServletResponse response) {
+        try {
             SAMLMessageContext messageContext = contextProvider.getLocalAndPeerEntity(request, response);
             processor.retrieveMessage(messageContext);
-            String serializedAccess = request.getParameter("SAMLResponse");
-            final SAMLAccessToken access = tokenFactory.createSAMLAccessToken(serializedAccess, buildCredential(messageContext));
-            access.decipher();
-            final Token token = saveToken(access);
-            final Navigation navigation = buildNavigation(access, token);
-            navigation.setAttributes(buildAttributes(serializedAccess));
-            navigation.setTimeConsumed(started.elapsed(TimeUnit.MILLISECONDS));
-            navigationDAO.save(navigation);
-
+            return messageContext;
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }
+    }
+
+    private Token saveToken(SAMLAccessToken access) {
+        Token token = tokenMapper.toToken(access);
+        token.setPurpose(TokenPurpose.NAVIGATION).setSession(context.getAuthenticationSession());
+        return tokenDAO.save(token);
     }
 
     private Navigation buildNavigation(SAMLAccessToken access, Token token) {
@@ -132,13 +146,5 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
         }
     }
 
-
-    private Token saveToken(SAMLAccessToken access) {
-        Token token = tokenMapper.toToken(access);
-        token.setPurpose(TokenPurpose.NAVIGATION);
-        token.setSession(context.getAuthenticationSession());
-        token = tokenDAO.save(token);
-        return token;
-    }
 
 }
