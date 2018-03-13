@@ -1,0 +1,36 @@
+
+configure(subprojects){ project ->
+
+    buildscript {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+            jcenter()
+            maven { url "https://plugins.gradle.org/m2/" }
+            maven { url 'https://repo.spring.io/milestone' }
+        }
+    }
+
+    apply plugin: 'java'
+
+    dependencies {
+        compile("javax.inject:javax.inject:1")
+        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+        compile("org.springframework.boot:spring-boot-devtools")
+        compile("org.springframework.boot:spring-boot-starter-jdbc")
+        compile("org.springframework.boot:spring-boot-starter-web")
+        compile("org.springframework.boot:spring-boot-starter-actuator")
+        compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4")
+        compile("io.rest-assured:rest-assured:3.0.3")
+        compile("io.rest-assured:json-schema-validator:3.0.3")
+        compile("joda-time:joda-time:2.2")
+        compile("com.jayway.jsonpath:json-path:2.0.0")
+        compile("commons-validator:commons-validator:1.6")
+        compile("com.nimbusds:nimbus-jose-jwt:4.23")
+        compile("com.h2database:h2")
+        compile("org.bouncycastle:bcpkix-jdk15on:1.47")
+    }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}

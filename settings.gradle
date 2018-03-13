@@ -1,6 +1,7 @@
 include('idp-backend')
 include('idp-frontend')
 include('idp-samples')
+include('idp-samples:idp')
 
 rootProject.name = 'mly-auth'
 

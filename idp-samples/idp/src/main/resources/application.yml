@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: idp-sample
+  jpa:
+    database: H2
+  datasource:
+    generate-unique-name: true
+    url: jdbc:h2:file:./h2/idp-sample
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+server:
+  port: 19999
+  error:
+    whitelabel:
+      enabled: true
+
+logging:
+  file: logs/idp-sample.log
+  level:
+    ROOT: INFO
+
+
+info:
+  build:
+    artifact: idp-sample
+    name: idp-sample
+    description: A Sample IDP
+    version: 1.0
+
+
+management:
+  security:
+    enabled: false
+security:
+  basic:
+    enabled: false
