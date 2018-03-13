@@ -27,6 +27,14 @@ public class TokenFactory implements ITokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Override
+    public SAMLAccessToken createSAMLAccessToken(String seialized, Credential credential) {
+        return new SAMLAccessToken(seialized, credential);
+    }
+
+    @Bean
+    @Lazy
+    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Override
     public JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         return new JOSEAccessToken(privateKey, publicKey);
     }

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.domain.TokenClaim.newInstance;
 import static com.mlyauth.token.IDPClaims.*;
 
 @Component
@@ -42,34 +43,49 @@ public class TokenMapper {
     private HashSet<TokenClaim> mapClaims(IDPToken token) {
         final HashSet<TokenClaim> claims = new HashSet<>();
         if (StringUtils.isNotBlank(token.getSubject()))
-            claims.add(TokenClaim.newInstance().setCode(SUBJECT.getValue()).setValue(token.getSubject()));
+            claims.add(newInstance().setCode(SUBJECT.getValue()).setValue(token.getSubject()));
 
         if (CollectionUtils.isNotEmpty(token.getScopes()))
-            claims.add(TokenClaim.newInstance().setCode(SCOPES.getValue()).setValue(compactScopes(token.getScopes())));
+            claims.add(newInstance().setCode(SCOPES.getValue()).setValue(compactScopes(token.getScopes())));
 
         if (StringUtils.isNotBlank(token.getBP()))
-            claims.add(TokenClaim.newInstance().setCode(BP.getValue()).setValue(token.getBP()));
+            claims.add(newInstance().setCode(BP.getValue()).setValue(token.getBP()));
 
         if (StringUtils.isNotBlank(token.getState()))
-            claims.add(TokenClaim.newInstance().setCode(STATE.getValue()).setValue(token.getState()));
+            claims.add(newInstance().setCode(STATE.getValue()).setValue(token.getState()));
 
         if (StringUtils.isNotBlank(token.getIssuer()))
-            claims.add(TokenClaim.newInstance().setCode(ISSUER.getValue()).setValue(token.getIssuer()));
+            claims.add(newInstance().setCode(ISSUER.getValue()).setValue(token.getIssuer()));
 
         if (StringUtils.isNotBlank(token.getAudience()))
-            claims.add(TokenClaim.newInstance().setCode(AUDIENCE.getValue()).setValue(token.getAudience()));
+            claims.add(newInstance().setCode(AUDIENCE.getValue()).setValue(token.getAudience()));
 
         if (StringUtils.isNotBlank(token.getTargetURL()))
-            claims.add(TokenClaim.newInstance().setCode(TARGET_URL.getValue()).setValue(token.getTargetURL()));
+            claims.add(newInstance().setCode(TARGET_URL.getValue()).setValue(token.getTargetURL()));
 
         if (StringUtils.isNotBlank(token.getDelegator()))
-            claims.add(TokenClaim.newInstance().setCode(DELEGATOR.getValue()).setValue(token.getDelegator()));
+            claims.add(newInstance().setCode(DELEGATOR.getValue()).setValue(token.getDelegator()));
 
         if (StringUtils.isNotBlank(token.getDelegate()))
-            claims.add(TokenClaim.newInstance().setCode(DELEGATE.getValue()).setValue(token.getDelegate()));
+            claims.add(newInstance().setCode(DELEGATE.getValue()).setValue(token.getDelegate()));
 
         if (token.getVerdict() != null)
-            claims.add(TokenClaim.newInstance().setCode(VERDICT.getValue()).setValue(token.getVerdict().name()));
+            claims.add(newInstance().setCode(VERDICT.getValue()).setValue(token.getVerdict().name()));
+
+        if (StringUtils.isNotBlank(token.getClaim(CLIENT_ID.getValue())))
+            claims.add(newInstance().setCode(CLIENT_ID.getValue()).setValue(token.getClaim(CLIENT_ID.getValue())));
+
+        if (StringUtils.isNotBlank(token.getClaim(CLIENT_PROFILE.getValue())))
+            claims.add(newInstance().setCode(CLIENT_PROFILE.getValue()).setValue(token.getClaim(CLIENT_PROFILE.getValue())));
+
+        if (StringUtils.isNotBlank(token.getClaim(ENTITY_ID.getValue())))
+            claims.add(newInstance().setCode(ENTITY_ID.getValue()).setValue(token.getClaim(ENTITY_ID.getValue())));
+
+        if (StringUtils.isNotBlank(token.getClaim(ACTION.getValue())))
+            claims.add(newInstance().setCode(ACTION.getValue()).setValue(token.getClaim(ACTION.getValue())));
+
+        if (StringUtils.isNotBlank(token.getClaim(APPLICATION.getValue())))
+            claims.add(newInstance().setCode(APPLICATION.getValue()).setValue(token.getClaim(APPLICATION.getValue())));
 
         return claims;
     }

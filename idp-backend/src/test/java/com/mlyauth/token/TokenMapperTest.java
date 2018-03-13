@@ -181,6 +181,56 @@ public class TokenMapperTest {
     }
 
     @Test
+    public void when_map_a_saml_access_token_then_client_Id_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        access.setClaim(CLIENT_ID.getValue(), randomString());
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(CLIENT_ID.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(CLIENT_ID.getValue()).getValue(), equalTo(access.getClaim(CLIENT_ID.getValue())));
+        assertThat(token.getClaimsMap().get(CLIENT_ID.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_client_profile_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        access.setClaim(CLIENT_PROFILE.getValue(), randomString());
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(CLIENT_PROFILE.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(CLIENT_PROFILE.getValue()).getValue(), equalTo(access.getClaim(CLIENT_PROFILE.getValue())));
+        assertThat(token.getClaimsMap().get(CLIENT_PROFILE.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_entity_id_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        access.setClaim(ENTITY_ID.getValue(), randomString());
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(ENTITY_ID.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(ENTITY_ID.getValue()).getValue(), equalTo(access.getClaim(ENTITY_ID.getValue())));
+        assertThat(token.getClaimsMap().get(ENTITY_ID.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_action_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        access.setClaim(ACTION.getValue(), randomString());
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(ACTION.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(ACTION.getValue()).getValue(), equalTo(access.getClaim(ACTION.getValue())));
+        assertThat(token.getClaimsMap().get(ACTION.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
+    public void when_map_a_saml_access_token_then_application_must_be_mapped() {
+        final SAMLAccessToken access = given_an_access_saml_token();
+        access.setClaim(APPLICATION.getValue(), randomString());
+        final Token token = mapper.toToken(access);
+        assertThat(token.getClaimsMap().get(APPLICATION.getValue()), notNullValue());
+        assertThat(token.getClaimsMap().get(APPLICATION.getValue()).getValue(), equalTo(access.getClaim(APPLICATION.getValue())));
+        assertThat(token.getClaimsMap().get(APPLICATION.getValue()).getToken(), equalTo(token));
+    }
+
+    @Test
     public void when_map_a_saml_access_without_claims_then_claims_set_must_ne_empty() throws ConfigurationException {
         DefaultBootstrap.bootstrap();
         SAMLHelper samlHelper = new SAMLHelper();

@@ -11,6 +11,8 @@ public interface ITokenFactory {
 
     SAMLAccessToken createSAMLAccessToken(Credential credential);
 
+    SAMLAccessToken createSAMLAccessToken(String seialized, Credential credential);
+
     JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, PublicKey publicKey);
 
 }

@@ -68,7 +68,10 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             if (!getFullURL(request).equals(accessToken.getTargetURL()))
                 throw JOSEErrorException.newInstance("The Token Target URL does not match");
 
-            return getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
+            final Authentication authenticate = getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
+
+
+            return authenticate;
 
         } catch (Exception e) {
             logger.warn("Incoming JOSE token is invalid", e);

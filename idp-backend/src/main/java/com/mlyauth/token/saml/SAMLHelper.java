@@ -4,6 +4,7 @@ import com.mlyauth.exception.IDPSAMLErrorException;
 import org.opensaml.Configuration;
 import org.opensaml.common.SignableSAMLObject;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeValue;
@@ -11,7 +12,11 @@ import org.opensaml.saml2.core.EncryptedAssertion;
 import org.opensaml.saml2.encryption.Decrypter;
 import org.opensaml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
 import org.opensaml.saml2.encryption.Encrypter;
+import org.opensaml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
+import org.opensaml.security.MetadataCriteria;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
@@ -23,7 +28,13 @@ import org.opensaml.xml.parse.BasicParserPool;
 import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.schema.impl.XSStringBuilder;
+import org.opensaml.xml.security.CriteriaSet;
 import org.opensaml.xml.security.credential.Credential;
+import org.opensaml.xml.security.credential.UsageType;
+import org.opensaml.xml.security.criteria.EntityIDCriteria;
+import org.opensaml.xml.security.criteria.UsageCriteria;
+import org.opensaml.xml.security.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xml.security.keyinfo.KeyInfoCriteria;
 import org.opensaml.xml.security.keyinfo.StaticKeyInfoCredentialResolver;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
@@ -113,6 +124,26 @@ public class SAMLHelper {
         return attribute;
     }
 
+    public Credential getSigningCredential(EntityDescriptor descriptor, KeyInfoCredentialResolver keyInfoResolver) {
+        final IDPSSODescriptor idpssoDescriptor = descriptor.getIDPSSODescriptor(SAMLConstants.SAML20P_NS);
+        return idpssoDescriptor.getKeyDescriptors().stream()
+                .map(desc -> resolvePeerSigningCred(descriptor.getEntityID(), keyInfoResolver, desc))
+                .filter(keyInfo -> keyInfo != null)
+                .findFirst().get();
+    }
+
+    public Credential resolvePeerSigningCred(String entityId, KeyInfoCredentialResolver keyRes, KeyDescriptor keyDes) {
+        try {
+            CriteriaSet criteriaSet = new CriteriaSet();
+            criteriaSet.add(new EntityIDCriteria(entityId));
+            criteriaSet.add(new MetadataCriteria(IDPSSODescriptor.DEFAULT_ELEMENT_NAME, SAMLConstants.SAML20P_NS));
+            criteriaSet.add(new UsageCriteria(UsageType.SIGNING));
+            criteriaSet.add(new KeyInfoCriteria(keyDes.getKeyInfo()));
+            return keyRes.resolveSingle(criteriaSet);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
 
     public X509Certificate toX509Certificate(String encodedCertificate) {
         try {
