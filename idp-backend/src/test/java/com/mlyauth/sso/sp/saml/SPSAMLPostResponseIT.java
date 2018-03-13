@@ -1,6 +1,11 @@
 package com.mlyauth.sso.sp.saml;
 
+import com.google.common.collect.Iterators;
 import com.mlyauth.AbstractIntegrationTest;
+import com.mlyauth.context.IContext;
+import com.mlyauth.dao.NavigationDAO;
+import com.mlyauth.domain.Navigation;
+import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.token.saml.SAMLHelper;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -14,17 +19,14 @@ import org.opensaml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.encryption.EncryptionConstants;
-import org.opensaml.xml.encryption.EncryptionException;
 import org.opensaml.xml.encryption.EncryptionParameters;
 import org.opensaml.xml.encryption.KeyEncryptionParameters;
-import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
 import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
-import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +40,10 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.Filter;
 import java.util.List;
 
+import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.token.IDPClaims.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -55,6 +59,12 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     public static final String SP_SSO_ENDPOINT = "/sp/saml/sso";
 
     @Autowired
+    private IContext context;
+
+    @Autowired
+    private NavigationDAO navigationDAO;
+
+    @Autowired
     private SAMLHelper samlHelper;
 
     @Autowired
@@ -65,7 +75,6 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
     @Autowired
     private WebApplicationContext wac;
-
 
     @Autowired
     private KeyManager keyManager;
@@ -104,7 +113,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void when_post_a_true_response_from_a_defined_idp_then_OK() throws Exception {
+    public void when_post_a_true_response_from_a_defined_idp_then_OK() {
         given_response_is_success();
         given_assertion_subject();
         given_assertion_auth_statement();
@@ -117,7 +126,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void when_post_a_true_response_from_a_defined_idp_and_target_an_existed_app_then_navigate_to_the_app() throws Exception {
+    public void when_post_a_true_response_from_a_defined_idp_and_target_an_existed_app_then_navigate_to_the_app() {
         given_response_is_success();
         given_assertion_subject();
         given_assertion_auth_statement();
@@ -130,19 +139,33 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         then_navigate_to_the_app();
     }
 
-    private void then_navigate_to_the_app() throws Exception {
-        resultActions
-                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
-                .andExpect(redirectedUrl("/navigate/forward/to/PolicyDev"));
-    }
+    @Test
+    public void when_post_a_true_response_from_a_defined_idp_then_trace_a_navigation() {
+        navigationDAO.deleteAll();
+        given_response_is_success();
+        given_assertion_subject();
+        given_assertion_auth_statement();
+        given_assertion_audience();
+        given_the_assertion_minimum_valid_attributes();
+        given_the_target_app();
+        given_assertion_is_encrypted();
+        given_response_is_signed();
+        when_post_response();
 
-    private void given_the_target_app() {
-        final List<Attribute> attributes = attributeStatement.getAttributes();
-        attributes.add(samlHelper.buildStringAttribute(APPLICATION.getValue(), "PolicyDev"));
+        final Iterable<Navigation> navigations = navigationDAO.findAll();
+        assertThat(navigations, notNullValue());
+        assertThat(Iterators.size(navigations.iterator()), equalTo(1));
+
+        final Navigation navigation = Iterators.getLast(navigations.iterator());
+        assertThat(navigation.getCreatedAt(), notNullValue());
+        assertThat(navigation.getDirection(), equalTo(INBOUND));
+        assertThat(navigation.getTargetURL(), equalTo(response.getDestination()));
+        assertThat(navigation.getToken(), notNullValue());
+        assertThat(navigation.getSession(), notNullValue());
     }
 
     @Test
-    public void when_post_a_true_response_from_undefined_idp_then_error() throws Exception {
+    public void when_post_a_true_response_from_undefined_idp_then_error() {
         given_response_is_success();
         given_assertion_subject();
         given_assertion_auth_statement();
@@ -155,7 +178,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void when_post_a_false_response_then_error() throws Exception {
+    public void when_post_a_false_response_then_error() {
         given_response_is_false();
         given_assertion_subject();
         given_assertion_auth_statement();
@@ -168,7 +191,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
 
     @Test
-    public void when_post_a_true_response_not_signed_then_error() throws Exception {
+    public void when_post_a_true_response_not_signed_then_error() {
         given_response_is_success();
         given_assertion_subject();
         given_assertion_auth_statement();
@@ -181,7 +204,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
 
     @Test
-    public void when_post_an_true_response_not_encrypted_then_error() throws Exception {
+    public void when_post_an_true_response_not_encrypted_then_error() {
         given_response_is_success();
         given_assertion_subject();
         given_assertion_auth_statement();
@@ -319,45 +342,80 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     }
 
 
-    private void given_assertion_is_encrypted() throws EncryptionException {
-        EncryptionParameters encryptionParameters = new EncryptionParameters();
-        encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
-        KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
-        keyEncryptionParameters.setEncryptionCredential(keyManager.getDefaultCredential());
-        keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
-        Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
-        encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
-        EncryptedAssertion encryptedAssertion = encrypter.encrypt(assertion);
-        response.getEncryptedAssertions().add(encryptedAssertion);
+    private void given_assertion_is_encrypted() {
+        try {
+            EncryptionParameters encryptionParameters = new EncryptionParameters();
+            encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+            KeyEncryptionParameters keyEncryptionParameters = new KeyEncryptionParameters();
+            keyEncryptionParameters.setEncryptionCredential(keyManager.getDefaultCredential());
+            keyEncryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
+            Encrypter encrypter = new Encrypter(encryptionParameters, keyEncryptionParameters);
+            encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
+            EncryptedAssertion encryptedAssertion = encrypter.encrypt(assertion);
+            response.getEncryptedAssertions().add(encryptedAssertion);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
-    private void given_response_is_signed() throws MarshallingException, SignatureException {
-        Signature signature = samlHelper.buildSAMLObject(Signature.class);
-        signature.setSigningCredential(keyManager.getDefaultCredential());
-        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
-        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        response.setSignature(signature);
-        Configuration.getMarshallerFactory().getMarshaller(response).marshall(response);
-        Signer.signObject(signature);
+    private void given_response_is_signed() {
+        try {
+            Signature signature = samlHelper.buildSAMLObject(Signature.class);
+            signature.setSigningCredential(keyManager.getDefaultCredential());
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
+            signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+            response.setSignature(signature);
+            Configuration.getMarshallerFactory().getMarshaller(response).marshall(response);
+            Signer.signObject(signature);
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
-    private void when_post_response() throws Exception {
-        resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
-                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                .param("SAMLResponse", Base64.encodeBytes(samlHelper.toString(response).getBytes())));
+    private void given_the_target_app() {
+        final List<Attribute> attributes = attributeStatement.getAttributes();
+        attributes.add(samlHelper.buildStringAttribute(APPLICATION.getValue(), "PolicyDev"));
+    }
+
+    private void when_post_response() {
+        try {
+            resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
+                    .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("SAMLResponse", Base64.encodeBytes(samlHelper.toString(response).getBytes())));
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
 
-    private void then_authenticated() throws Exception {
-        resultActions
-                .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
-                .andExpect(redirectedUrl("/home.html"));
+    private void then_authenticated() {
+        try {
+            resultActions
+                    .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
+                    .andExpect(redirectedUrl("/home.html"));
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
-    private void then_error() throws Exception {
-        resultActions.andExpect(forwardedUrl("/error.html"))
-                .andExpect(unauthenticated())
-                .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", notNullValue())));
+    private void then_navigate_to_the_app() {
+        try {
+            resultActions
+                    .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
+                    .andExpect(redirectedUrl("/navigate/forward/to/PolicyDev"));
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
+    }
+
+    private void then_error() {
+        try {
+            resultActions.andExpect(forwardedUrl("/error.html"))
+                    .andExpect(unauthenticated())
+                    .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", notNullValue())));
+        } catch (Exception e) {
+            throw IDPSAMLErrorException.newInstance(e);
+        }
     }
 
 

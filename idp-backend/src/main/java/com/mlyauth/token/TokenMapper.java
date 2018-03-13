@@ -3,7 +3,6 @@ package com.mlyauth.token;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.domain.Token;
 import com.mlyauth.domain.TokenClaim;
-import com.mlyauth.token.saml.SAMLAccessToken;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,52 +24,52 @@ public class TokenMapper {
     @Autowired
     private PasswordEncoder encoder;
 
-    public Token toToken(SAMLAccessToken access) {
-        if (access == null) return null;
-        return mapToken(access).setClaims(mapClaims(access));
+    public Token toToken(IDPToken token) {
+        if (token == null) return null;
+        return mapToken(token).setClaims(mapClaims(token));
     }
 
-    private Token mapToken(SAMLAccessToken access) {
+    private Token mapToken(IDPToken token) {
         return Token.newInstance()
-                .setStamp(encoder.encode(access.getStamp()))
-                .setIssuanceTime(toDate(access.getIssuanceTime()))
-                .setEffectiveTime(toDate(access.getEffectiveTime()))
-                .setExpiryTime(toDate(access.getExpiryTime()))
-                .setType(access.getType())
-                .setNorm(access.getNorm());
+                .setStamp(encoder.encode(token.getStamp()))
+                .setIssuanceTime(toDate(token.getIssuanceTime()))
+                .setEffectiveTime(toDate(token.getEffectiveTime()))
+                .setExpiryTime(toDate(token.getExpiryTime()))
+                .setType(token.getType())
+                .setNorm(token.getNorm());
     }
 
-    private HashSet<TokenClaim> mapClaims(SAMLAccessToken access) {
+    private HashSet<TokenClaim> mapClaims(IDPToken token) {
         final HashSet<TokenClaim> claims = new HashSet<>();
-        if (StringUtils.isNotBlank(access.getSubject()))
-            claims.add(TokenClaim.newInstance().setCode(SUBJECT.getValue()).setValue(access.getSubject()));
+        if (StringUtils.isNotBlank(token.getSubject()))
+            claims.add(TokenClaim.newInstance().setCode(SUBJECT.getValue()).setValue(token.getSubject()));
 
-        if (CollectionUtils.isNotEmpty(access.getScopes()))
-            claims.add(TokenClaim.newInstance().setCode(SCOPES.getValue()).setValue(compactScopes(access.getScopes())));
+        if (CollectionUtils.isNotEmpty(token.getScopes()))
+            claims.add(TokenClaim.newInstance().setCode(SCOPES.getValue()).setValue(compactScopes(token.getScopes())));
 
-        if (StringUtils.isNotBlank(access.getBP()))
-            claims.add(TokenClaim.newInstance().setCode(BP.getValue()).setValue(access.getBP()));
+        if (StringUtils.isNotBlank(token.getBP()))
+            claims.add(TokenClaim.newInstance().setCode(BP.getValue()).setValue(token.getBP()));
 
-        if (StringUtils.isNotBlank(access.getState()))
-            claims.add(TokenClaim.newInstance().setCode(STATE.getValue()).setValue(access.getState()));
+        if (StringUtils.isNotBlank(token.getState()))
+            claims.add(TokenClaim.newInstance().setCode(STATE.getValue()).setValue(token.getState()));
 
-        if (StringUtils.isNotBlank(access.getIssuer()))
-            claims.add(TokenClaim.newInstance().setCode(ISSUER.getValue()).setValue(access.getIssuer()));
+        if (StringUtils.isNotBlank(token.getIssuer()))
+            claims.add(TokenClaim.newInstance().setCode(ISSUER.getValue()).setValue(token.getIssuer()));
 
-        if (StringUtils.isNotBlank(access.getAudience()))
-            claims.add(TokenClaim.newInstance().setCode(AUDIENCE.getValue()).setValue(access.getAudience()));
+        if (StringUtils.isNotBlank(token.getAudience()))
+            claims.add(TokenClaim.newInstance().setCode(AUDIENCE.getValue()).setValue(token.getAudience()));
 
-        if (StringUtils.isNotBlank(access.getTargetURL()))
-            claims.add(TokenClaim.newInstance().setCode(TARGET_URL.getValue()).setValue(access.getTargetURL()));
+        if (StringUtils.isNotBlank(token.getTargetURL()))
+            claims.add(TokenClaim.newInstance().setCode(TARGET_URL.getValue()).setValue(token.getTargetURL()));
 
-        if (StringUtils.isNotBlank(access.getDelegator()))
-            claims.add(TokenClaim.newInstance().setCode(DELEGATOR.getValue()).setValue(access.getDelegator()));
+        if (StringUtils.isNotBlank(token.getDelegator()))
+            claims.add(TokenClaim.newInstance().setCode(DELEGATOR.getValue()).setValue(token.getDelegator()));
 
-        if (StringUtils.isNotBlank(access.getDelegate()))
-            claims.add(TokenClaim.newInstance().setCode(DELEGATE.getValue()).setValue(access.getDelegate()));
+        if (StringUtils.isNotBlank(token.getDelegate()))
+            claims.add(TokenClaim.newInstance().setCode(DELEGATE.getValue()).setValue(token.getDelegate()));
 
-        if (access.getVerdict() != null)
-            claims.add(TokenClaim.newInstance().setCode(VERDICT.getValue()).setValue(access.getVerdict().name()));
+        if (token.getVerdict() != null)
+            claims.add(TokenClaim.newInstance().setCode(VERDICT.getValue()).setValue(token.getVerdict().name()));
 
         return claims;
     }

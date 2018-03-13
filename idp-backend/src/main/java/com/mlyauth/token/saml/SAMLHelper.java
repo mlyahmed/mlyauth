@@ -9,15 +9,13 @@ import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.saml2.core.EncryptedAssertion;
 import org.opensaml.saml2.encryption.Decrypter;
+import org.opensaml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
 import org.opensaml.saml2.encryption.Encrypter;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.encryption.EncryptionConstants;
-import org.opensaml.xml.encryption.EncryptionParameters;
-import org.opensaml.xml.encryption.InlineEncryptedKeyResolver;
-import org.opensaml.xml.encryption.KeyEncryptionParameters;
+import org.opensaml.xml.encryption.*;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
@@ -58,6 +56,13 @@ import java.security.cert.X509Certificate;
 public class SAMLHelper {
     private static Logger logger = LoggerFactory.getLogger(SAMLHelper.class);
 
+    private static ChainingEncryptedKeyResolver encryptedKeyResolver = new ChainingEncryptedKeyResolver();
+
+    static {
+        encryptedKeyResolver.getResolverChain().add(new InlineEncryptedKeyResolver());
+        encryptedKeyResolver.getResolverChain().add(new EncryptedElementTypeEncryptedKeyResolver());
+        encryptedKeyResolver.getResolverChain().add(new SimpleRetrievalMethodEncryptedKeyResolver());
+    }
 
     @Autowired
     private ParserPool parserPool = new BasicParserPool();
@@ -130,7 +135,7 @@ public class SAMLHelper {
     public Assertion decryptAssertion(EncryptedAssertion encryptedAssertion, Credential credential) {
         try {
             StaticKeyInfoCredentialResolver keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(credential);
-            Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());
+            Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, encryptedKeyResolver);
             decrypter.setRootInNewDocument(true);
             return decrypter.decrypt(encryptedAssertion);
         } catch (Exception e) {

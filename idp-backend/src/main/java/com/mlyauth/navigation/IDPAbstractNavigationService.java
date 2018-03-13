@@ -1,5 +1,6 @@
 package com.mlyauth.navigation;
 
+import com.google.common.base.Stopwatch;
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.context.IContext;
 import com.mlyauth.dao.NavigationDAO;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.Direction.OUTBOUND;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public abstract class IDPAbstractNavigationService implements IDPNavigationService {
     protected final static Logger logger = LoggerFactory.getLogger(IDPNavigationService.class);
@@ -29,9 +31,9 @@ public abstract class IDPAbstractNavigationService implements IDPNavigationServi
     private IContext context;
 
     public NavigationBean newNavigation(String appname) {
-        long start = System.currentTimeMillis();
+        final Stopwatch started = Stopwatch.createStarted();
         final NavigationBean navigationBean = process(appname);
-        traceNavigation(navigationBean, System.currentTimeMillis() - start);
+        traceNavigation(navigationBean, started.elapsed(MILLISECONDS));
         return navigationBean;
     }
 
