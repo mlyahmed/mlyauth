@@ -1,11 +1,49 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Getting Started: Handling Form Submission</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
-<body>
-<h1>Result</h1>
+    <title>Navigate</title>
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
 
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body onload="setTimeout(document.forms[0].submit(), 10000)">
+
+<noscript>
+    <p>
+        <strong>Note:</strong> Since your browser does not support JavaScript,
+        you must press the Continue button once to proceed.
+    </p>
+</noscript>
+
+<div class="loader"></div>
+
+<form id="post-navigation-form" name="post-navigation-form" action="#" th:action="@{${navigation.target}}"
+      th:object="${navigation}" th:method="POST">
+    <tr th:each="attribute :${navigation.attributes}">
+        <input type="hidden" th:name="${attribute.code}" th:value="${attribute.value}"/>
+    </tr>
+
+    <noscript>
+        <div>
+            <input type="submit" value="Continue"/>
+        </div>
+    </noscript>
+</form>
 </body>
 </html>
