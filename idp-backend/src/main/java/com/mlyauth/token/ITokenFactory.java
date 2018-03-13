@@ -15,4 +15,6 @@ public interface ITokenFactory {
 
     JOSEAccessToken createJOSEAccessToken(PrivateKey privateKey, PublicKey publicKey);
 
+    JOSEAccessToken createJOSEAccessToken(String seialized, PrivateKey privateKey, PublicKey publicKey);
+
 }

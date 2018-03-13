@@ -39,4 +39,9 @@ public class TokenFactory implements ITokenFactory {
         return new JOSEAccessToken(privateKey, publicKey);
     }
 
+    @Override
+    public JOSEAccessToken createJOSEAccessToken(String seialized, PrivateKey privateKey, PublicKey publicKey) {
+        return new JOSEAccessToken(seialized, privateKey, publicKey);
+    }
+
 }

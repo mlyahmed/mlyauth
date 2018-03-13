@@ -1,8 +1,18 @@
 package com.mlyauth.sso.sp.jose;
 
+import com.google.common.base.Stopwatch;
+import com.mlyauth.constants.TokenPurpose;
 import com.mlyauth.constants.TokenScope;
+import com.mlyauth.context.IContext;
 import com.mlyauth.credentials.CredentialManager;
+import com.mlyauth.dao.NavigationDAO;
+import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.domain.Navigation;
+import com.mlyauth.domain.NavigationAttribute;
+import com.mlyauth.domain.Token;
 import com.mlyauth.exception.JOSEErrorException;
+import com.mlyauth.token.ITokenFactory;
+import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSEHelper;
@@ -19,14 +29,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
+import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.constants.TokenScope.PERSON;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
     protected final static Logger logger = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
+
+    @Autowired
+    private IContext context;
+
+    @Autowired
+    private ITokenFactory tokenFactory;
+
+    @Autowired
+    private TokenDAO tokenDAO;
+
+    @Autowired
+    private NavigationDAO navigationDAO;
+
+    @Autowired
+    private TokenMapper tokenMapper;
 
     @Autowired
     private CredentialManager credentialManager;
@@ -50,6 +79,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        final Stopwatch started = Stopwatch.createStarted();
         try {
 
             if (!"POST".equals(request.getMethod())) {
@@ -70,6 +100,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
             final Authentication authenticate = getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
 
+            traceNavigation(request, started, accessToken);
 
             return authenticate;
 
@@ -89,7 +120,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     }
 
     private JOSEAccessToken reconstituteAccessToken(String header) {
-        final JOSEAccessToken token = new JOSEAccessToken(getToken(header), localKey(), peerKey(header));
+        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(getToken(header), localKey(), peerKey(header));
         token.decipher();
         return token;
     }
@@ -115,10 +146,36 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             throw JOSEErrorException.newInstance("The Token scopes list must be [PERSON]");
     }
 
-
     public String getFullURL(HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         return request.getQueryString() == null
                 ? requestURL.toString() : requestURL.append('?').append(request.getQueryString()).toString();
+    }
+
+    private void traceNavigation(HttpServletRequest request, Stopwatch started, JOSEAccessToken accessToken) {
+        final Navigation navigation = Navigation.newInstance()
+                .setCreatedAt(new Date())
+                .setDirection(INBOUND)
+                .setTargetURL(accessToken.getTargetURL())
+                .setToken(saveToken(accessToken))
+                .setSession(this.context.getAuthenticationSession());
+
+        navigation.setAttributes(buildAttributes(request));
+        navigation.setTimeConsumed(started.elapsed(TimeUnit.MILLISECONDS));
+        navigationDAO.save(navigation);
+    }
+
+    private Token saveToken(JOSEAccessToken accessToken) {
+        Token token = tokenMapper.toToken(accessToken);
+        token.setPurpose(TokenPurpose.NAVIGATION).setSession(context.getAuthenticationSession());
+        token = tokenDAO.save(token);
+        return token;
+    }
+
+    private HashSet<NavigationAttribute> buildAttributes(HttpServletRequest request) {
+        return new HashSet<>(asList(NavigationAttribute.newInstance()
+                .setCode("Bearer")
+                .setAlias("Bearer")
+                .setValue(getToken(getAuthorizationHeader(request)))));
     }
 }

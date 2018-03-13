@@ -2,7 +2,14 @@ package com.mlyauth.sso.sp.jose;
 
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.constants.TokenScope;
+import com.mlyauth.context.MockContext;
 import com.mlyauth.credentials.MockCredentialManager;
+import com.mlyauth.dao.NavigationDAO;
+import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.domain.Navigation;
+import com.mlyauth.domain.Token;
+import com.mlyauth.token.TokenFactory;
+import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEHelper;
 import com.mlyauth.token.jose.MockJOSEAccessTokenValidator;
@@ -23,6 +30,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
@@ -35,8 +43,7 @@ import static com.mlyauth.tools.KeysForTests.generateRSACredential;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -48,10 +55,18 @@ public class SPJOSEProcessingFilterTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
+    @Mock
+    private TokenDAO tokenDAO;
+
+    @Mock
+    private NavigationDAO navigationDAO;
+
     private SPJOSEProcessingFilter filter;
 
     private MockHttpServletRequest request;
+
     private MockHttpServletResponse response;
+
     private MockCredentialManager credentialManager;
 
     private Authentication expectedAuthentication;
@@ -93,6 +108,15 @@ public class SPJOSEProcessingFilterTest {
         final Authentication authentication = when_attempt_authentication();
         assertThat(authentication, Matchers.notNullValue());
         assertThat(authentication, Matchers.equalTo(expectedAuthentication));
+    }
+
+    @Test
+    public void when_post_a_valid_token_then_trace_navigation() {
+        given_valid_token();
+        given_the_target_url_does_match();
+        when_attempt_authentication();
+        verify(tokenDAO).save(Mockito.any(Token.class));
+        verify(navigationDAO).save(Mockito.any(Navigation.class));
     }
 
     @Test(expected = AuthenticationException.class)
@@ -165,12 +189,20 @@ public class SPJOSEProcessingFilterTest {
     }
     private void set_up_filter() {
         filter = new SPJOSEProcessingFilter();
+        final TokenMapper tokenMapper = new TokenMapper();
+        setField(tokenMapper, "encoder", new BCryptPasswordEncoder(13));
         setField(filter, "credentialManager", credentialManager);
         setField(filter, "joseHelper", new JOSEHelper());
         setField(filter, "accessTokenValidator", new MockJOSEAccessTokenValidator(true));
         setField(filter, "authenticationManager", authenticationManager);
+        setField(filter, "tokenFactory", new TokenFactory());
+        setField(filter, "tokenMapper", tokenMapper);
+        setField(filter, "context", new MockContext());
+        setField(filter, "tokenDAO", tokenDAO);
+        setField(filter, "navigationDAO", navigationDAO);
     }
     private void given_valid_token() {
+        token.setStamp(randomString());
         token.setIssuer(PEER_IDP_ID);
         token.setScopes(new HashSet<>(singletonList(TokenScope.PERSON)));
         token.setBP("SSO");

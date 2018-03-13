@@ -151,17 +151,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         given_assertion_is_encrypted();
         given_response_is_signed();
         when_post_response();
-
-        final Iterable<Navigation> navigations = navigationDAO.findAll();
-        assertThat(navigations, notNullValue());
-        assertThat(Iterators.size(navigations.iterator()), equalTo(1));
-
-        final Navigation navigation = Iterators.getLast(navigations.iterator());
-        assertThat(navigation.getCreatedAt(), notNullValue());
-        assertThat(navigation.getDirection(), equalTo(INBOUND));
-        assertThat(navigation.getTargetURL(), equalTo(response.getDestination()));
-        assertThat(navigation.getToken(), notNullValue());
-        assertThat(navigation.getSession(), notNullValue());
+        then_a_navigation_is_traced();
     }
 
     @Test
@@ -418,7 +408,20 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         }
     }
 
+    private void then_a_navigation_is_traced() {
+        final Iterable<Navigation> navigations = navigationDAO.findAll();
+        assertThat(navigations, notNullValue());
+        assertThat(Iterators.size(navigations.iterator()), equalTo(1));
 
-    //TODO    When REDIRECT, true or false, assertion then error
+        final Navigation navigation = Iterators.getLast(navigations.iterator());
+        assertThat(navigation.getCreatedAt(), notNullValue());
+        assertThat(navigation.getDirection(), equalTo(INBOUND));
+        assertThat(navigation.getTargetURL(), equalTo(response.getDestination()));
+        assertThat(navigation.getToken(), notNullValue());
+        assertThat(navigation.getSession(), notNullValue());
+    }
+
+
     //TODO    When PAOS assertion then error
+    //TODO    When REDIRECT, true or false, assertion then error
 }
