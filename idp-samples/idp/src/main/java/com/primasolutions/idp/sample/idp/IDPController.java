@@ -1,42 +1,46 @@
 package com.primasolutions.idp.sample.idp;
 
+import com.primasolutions.idp.sample.idp.jose.IDPJOSETokenInitializer;
+import com.primasolutions.idp.sample.idp.navigation.IDPNavigationService;
+import com.primasolutions.idp.sample.idp.saml.IDPSAMLTokenInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class IDPController {
 
-    @Value("${sp.jose.endpoint}")
-    private String targetURL;
+    @Autowired
+    private IDPJOSETokenInitializer joseInitializer;
 
     @Autowired
-    private IDPService idpService;
+    private IDPSAMLTokenInitializer samlInitializer;
 
     @Autowired
-    private IDPTokenInitializer tokenInitializer;
+    private IDPNavigationService navigationService;
 
-    @GetMapping("/idp-form")
-    public String greetingForm(Model model) {
-        model.addAttribute("token", tokenInitializer.newToken());
+
+    @GetMapping("/idp-form-jose")
+    public String joseForm(Model model) {
+        model.addAttribute("token", joseInitializer.newToken());
+        return "idp-form";
+    }
+
+    @GetMapping("/idp-form-saml")
+    public String samlForm(Model model) {
+        model.addAttribute("token", samlInitializer.newToken());
         return "idp-form";
     }
 
     @PostMapping("/idp-navigation")
-    public String greetingSubmit(@ModelAttribute Token token, Model model, HttpServletResponse response) {
-        Navigation navigation = new Navigation();
-        navigation.setTarget(targetURL);
-        model.addAttribute("navigation", navigation);
-        Cookie foo = new Cookie("Bearer", idpService.generateJOSEAccess(token));
-        foo.setMaxAge(30);
-        response.addCookie(foo);
+    public String greetingSubmit(@ModelAttribute Token token, Model model, HttpServletRequest request, HttpServletResponse response) {
+        model.addAttribute("navigation", navigationService.buildNavigation(token, request, response));
         return "idp-navigation";
     }
 

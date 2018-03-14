@@ -19,6 +19,8 @@ public class Token {
     private String action;
     private String application;
 
+    private String norm;
+
 
     public String getId() {
         return id;
@@ -146,5 +148,13 @@ public class Token {
 
     public void setApplication(String application) {
         this.application = application;
+    }
+
+    public String getNorm() {
+        return norm;
+    }
+
+    public void setNorm(String norm) {
+        this.norm = norm;
     }
 }

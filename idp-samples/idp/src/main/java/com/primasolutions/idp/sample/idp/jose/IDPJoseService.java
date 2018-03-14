@@ -1,10 +1,11 @@
-package com.primasolutions.idp.sample.idp;
+package com.primasolutions.idp.sample.idp.jose;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.primasolutions.idp.sample.idp.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class IDPService {
+public class IDPJoseService {
 
     @Autowired
     private KeyManager keyManager;
