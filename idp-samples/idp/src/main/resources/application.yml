@@ -11,11 +11,15 @@ spring:
     driver-class-name: org.h2.Driver
 
 idp:
-  entityId: sample-idp
+  jose:
+    entityId: sample-idp
+  saml:
+    entityId: sample-idp
 
 sp:
-  entityId: primainsureIDP
-  endpoint: http://localhost:16666/sp/jose/sso
+  jose:
+    entityId: primainsureIDP
+    endpoint: http://localhost:16666/sp/jose/sso
 
 
 

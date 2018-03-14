@@ -22,6 +22,11 @@ public class HooksController {
         return "login";
     }
 
+    @RequestMapping("/401.html")
+    public String Unauthorized() {
+        return "error/401";
+    }
+
     @RequestMapping("/login-error.html")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);

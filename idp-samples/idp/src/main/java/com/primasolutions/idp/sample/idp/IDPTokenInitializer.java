@@ -8,13 +8,13 @@ import java.util.UUID;
 @Component
 public class IDPTokenInitializer {
 
-    @Value("${idp.entityId}")
+    @Value("${idp.jose.entityId}")
     private String localEntityId;
 
-    @Value("${sp.entityId}")
+    @Value("${sp.jose.entityId}")
     private String peerEntityId;
 
-    @Value("${sp.endpoint}")
+    @Value("${sp.jose.endpoint}")
     private String targetURL;
 
     public Token newToken() {

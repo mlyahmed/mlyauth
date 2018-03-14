@@ -400,7 +400,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
     private void then_error() {
         try {
-            resultActions.andExpect(forwardedUrl("/error.html"))
+            resultActions.andExpect(forwardedUrl("/401.html"))
                     .andExpect(unauthenticated())
                     .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", notNullValue())));
         } catch (Exception e) {

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class IDPController {
 
-    @Value("${sp.endpoint}")
+    @Value("${sp.jose.endpoint}")
     private String targetURL;
 
     @Autowired
@@ -39,8 +39,5 @@ public class IDPController {
         response.addCookie(foo);
         return "idp-navigation";
     }
-
-
-
 
 }

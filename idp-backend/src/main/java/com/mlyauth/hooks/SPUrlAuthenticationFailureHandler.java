@@ -8,6 +8,6 @@ public class SPUrlAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
 
     public SPUrlAuthenticationFailureHandler() {
         setUseForward(true);
-        setDefaultFailureUrl("/error.html");
+        setDefaultFailureUrl("/401.html");
     }
 }

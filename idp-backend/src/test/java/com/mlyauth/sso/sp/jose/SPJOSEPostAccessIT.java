@@ -265,7 +265,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         try {
             resultActions
                     .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", notNullValue()))
-                    .andExpect(forwardedUrl("/error.html"));
+                    .andExpect(forwardedUrl("/401.html"));
         } catch (Exception e) {
             throw JOSEErrorException.newInstance(e);
         }

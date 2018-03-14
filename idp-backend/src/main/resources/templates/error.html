@@ -8,14 +8,6 @@
 
 <body>
 <h1>Error</h1>
-<table>
-    <tr th:each="var : ${#vars}">
-        <td th:text="${var.key}"></td>
-        <td th:text="${var.value}"></td>
-    </tr>
-</table>
-
-<p th:utext="${errorMessage}">Error java.lang.NullPointerException</p>
 <a href="index.html" th:href="@{/index.html}">Back to Home Page</a>
 </body>
 </html>
