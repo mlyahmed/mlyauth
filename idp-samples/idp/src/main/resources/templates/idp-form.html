@@ -3,8 +3,19 @@
 <head>
     <title>Getting Started: Handling Form Submission</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
 </head>
 <body>
+<div class="container"><br/>
+    <div class="alert alert-success">
+        <strong>Success!</strong> It is working as we expected.
+    </div>
+</div>
+
 <h1>Form</h1>
 <form action="#" th:action="@{/idp-jose}" th:object="${token}" method="post">
     <p>Id: <input type="text" th:field="*{id}"/></p>

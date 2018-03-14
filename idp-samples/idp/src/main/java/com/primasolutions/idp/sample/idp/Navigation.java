@@ -5,6 +5,7 @@ import java.util.Set;
 public class Navigation {
 
     private String target;
+    private String bearer;
     private Set<NavigationAttribute> attributes;
 
     public String getTarget() {
@@ -13,6 +14,14 @@ public class Navigation {
 
     public void setTarget(String target) {
         this.target = target;
+    }
+
+    public String getBearer() {
+        return bearer;
+    }
+
+    public void setBearer(String bearer) {
+        this.bearer = bearer;
     }
 
     public Set<NavigationAttribute> getAttributes() {

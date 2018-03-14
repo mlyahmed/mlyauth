@@ -32,6 +32,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -106,6 +107,19 @@ public class SPJOSEProcessingFilterTest {
         given_valid_token();
         given_the_target_url_does_match();
         final Authentication authentication = when_attempt_authentication();
+        assertThat(authentication, Matchers.notNullValue());
+        assertThat(authentication, Matchers.equalTo(expectedAuthentication));
+    }
+
+    @Test
+    public void when_post_valid_token_as_cookie_then_process() {
+        given_valid_token();
+        given_the_target_url_does_match();
+
+        Cookie bearer = new Cookie("Bearer", token.serialize());
+        request.setCookies(bearer);
+
+        final Authentication authentication = filter.attemptAuthentication(request, response);
         assertThat(authentication, Matchers.notNullValue());
         assertThat(authentication, Matchers.equalTo(expectedAuthentication));
     }

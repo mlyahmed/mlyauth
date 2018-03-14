@@ -17,6 +17,7 @@ import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSEHelper;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
@@ -37,6 +39,7 @@ import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.constants.TokenScope.PERSON;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
@@ -87,8 +90,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
                 return null;
             }
 
-            checkHeader(getAuthorizationHeader(request));
-            final JOSEAccessToken accessToken = reconstituteAccessToken(getAuthorizationHeader(request));
+            final String rawBearer = getRawBearer(request);
+            final JOSEAccessToken accessToken = reconstituteAccessToken(rawBearer);
             accessTokenValidator.validate(accessToken);
             checkScope(accessToken);
 
@@ -114,13 +117,26 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         return request.getHeader("Authorization");
     }
 
-    private void checkHeader(String header) {
-        if (header == null || !header.startsWith("Bearer "))
+    private Cookie getBearerCookie(HttpServletRequest request) {
+        if(request.getCookies() == null) return null;
+        return stream(request.getCookies()).filter(c -> "Bearer".equals(c.getName())).findFirst().orElse(null);
+    }
+
+    private String getRawBearer(HttpServletRequest request) {
+        final String header = getAuthorizationHeader(request);
+        final Cookie bearer = getBearerCookie(request);
+        if (header != null && header.startsWith("Bearer "))
+            return header.substring(7);
+        else if(bearer != null && StringUtils.isNotBlank(bearer.getValue()))
+            return bearer.getValue();
+        else
             throw JOSEErrorException.newInstance();
     }
 
-    private JOSEAccessToken reconstituteAccessToken(String header) {
-        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(getToken(header), localKey(), peerKey(header));
+
+
+    private JOSEAccessToken reconstituteAccessToken(String rawToken) {
+        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(rawToken, localKey(), peerKey(rawToken));
         token.decipher();
         return token;
     }
@@ -133,12 +149,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         return credentialManager.getPeerKey(issuer(header), IDP_JOSE);
     }
 
-    private String issuer(String header) {
-        return joseHelper.loadIssuer(getToken(header), localKey());
-    }
-
-    private String getToken(String header) {
-        return header.substring(7);
+    private String issuer(String rawToken) {
+        return joseHelper.loadIssuer(rawToken, localKey());
     }
 
     private void checkScope(JOSEAccessToken accessToken) {
@@ -176,6 +188,6 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         return new HashSet<>(asList(NavigationAttribute.newInstance()
                 .setCode("Bearer")
                 .setAlias("Bearer")
-                .setValue(getToken(getAuthorizationHeader(request)))));
+                .setValue(getRawBearer(request))));
     }
 }
