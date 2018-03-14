@@ -10,6 +10,15 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+idp:
+  entityId: sample-idp
+
+sp:
+  entityId: primainsureIDP
+  endpoint: http://localhost:16666/sp/jose/sso
+
+
+
 server:
   port: 19999
   error:

@@ -1,26 +1,115 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Handling Form Submission</title>
+    <title>Link ASSU Simulator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
     <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-
 </head>
 <body>
-<div class="container"><br/>
-    <div class="alert alert-success">
-        <strong>Success!</strong> It is working as we expected.
-    </div>
+
+<div class="container">
+    <form class="form-horizontal" action="#" th:action="@{/idp-navigation}" th:object="${token}" method="post">
+        <p class="col-md-12 h1 text-center">LinkASSU Simulator</p>
+        <div class='row'/>
+        <div class="row col-md-12">
+            <div class='row'>
+                <div class='col-md-6'>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="id">Token ID:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="id" th:field="*{id}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="subject">Subject:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="subject"
+                                                     th:field="*{subject}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="scopes">Scopes:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="scopes" th:field="*{scopes}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="bp">Business Process:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="bp" th:field="*{bp}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="state">State:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="state" th:field="*{state}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="issuer">Issuer:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="issuer" th:field="*{issuer}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="audience">Audience:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="audience"
+                                                     th:field="*{audience}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="targetURL">Target URL:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="targetURL"
+                                                     th:field="*{targetURL}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="delegator">Delegator:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="delegator"
+                                                     th:field="*{delegator}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="delegate">Delegate:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="delegate"
+                                                     th:field="*{delegate}"/></div>
+                    </div>
+                </div>
+                <div class='col-md-6'>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="verdict">Verdict:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="verdict"
+                                                     th:field="*{verdict}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="clientId">Client ID:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="clientId"
+                                                     th:field="*{clientId}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="clientProfile">Client Profile:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="clientProfile"
+                                                     th:field="*{clientProfile}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="entityId">Entity ID (idPrestation):</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="entityId"
+                                                     th:field="*{entityId}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="action">Action (S, FS, E, PR) :</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="action" th:field="*{action}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="application">Application:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="application"
+                                                     th:field="*{application}"/></div>
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <div class="form-group row">
+                        <div class="col-sm-offset-10 col-sm-10">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
-<h1>Form</h1>
-<form action="#" th:action="@{/idp-jose}" th:object="${token}" method="post">
-    <p>Id: <input type="text" th:field="*{id}"/></p>
-    <p>Subject: <input type="text" th:field="*{subject}"/></p>
-    <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
-</form>
 </body>
 </html>

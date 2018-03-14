@@ -1,6 +1,7 @@
 package com.mlyauth.hooks;
 
 import com.mlyauth.context.IContext;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -26,7 +27,7 @@ public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        if (context.getAttribute(APPLICATION.getValue()) != null) {
+        if (StringUtils.isNotBlank(context.getAttribute(APPLICATION.getValue()))) {
             getRedirectStrategy().sendRedirect(request, response, "/navigate/forward/to/" + context.getAttribute(APPLICATION.getValue()));
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
