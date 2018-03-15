@@ -29,6 +29,10 @@ public class Application  implements Serializable {
     @Column(name = "ASPECT_CODE")
     private Set<AspectType> aspects;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "AUTHENTICATION_INFO_ID")
+    private AuthenticationInfo authenticationInfo;
+
     public static Application newInstance(){
         return new Application();
     }
@@ -69,4 +73,12 @@ public class Application  implements Serializable {
         return this;
     }
 
+    public AuthenticationInfo getAuthenticationInfo() {
+        return authenticationInfo;
+    }
+
+    public Application setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
+        this.authenticationInfo = authenticationInfo;
+        return this;
+    }
 }

@@ -23,3 +23,19 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: AUTHENTICATION_INFO_ID
+                  type: bigint
+                  constraints:
+                      nullable: true
+                      unique: true
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION
+            baseColumnNames: AUTHENTICATION_INFO_ID
+            referencedTableName: AUTHENTICATION_INFO
+            referencedColumnNames: ID
+            constraintName: application_auth_fk_auth_id

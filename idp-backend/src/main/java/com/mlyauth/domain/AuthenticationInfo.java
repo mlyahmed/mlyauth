@@ -34,6 +34,8 @@ public class AuthenticationInfo {
     @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER)
     private Person person;
 
+    @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER)
+    private Application application;
 
     public static AuthenticationInfo newInstance() {
         return new AuthenticationInfo();
@@ -99,5 +101,24 @@ public class AuthenticationInfo {
     public AuthenticationInfo setPerson(Person person) {
         this.person = person;
         return this;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public AuthenticationInfo setApplication(Application application) {
+        this.application = application;
+        return this;
+    }
+
+    @Transient
+    public boolean isApplication() {
+        return this.getApplication() != null;
+    }
+
+    @Transient
+    public boolean isPerson() {
+        return this.getPerson() != null;
     }
 }

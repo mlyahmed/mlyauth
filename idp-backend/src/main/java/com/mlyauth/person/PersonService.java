@@ -2,6 +2,7 @@ package com.mlyauth.person;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.AuthenticationInfoStatus;
+import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
@@ -19,6 +20,9 @@ import java.util.Date;
 public class PersonService implements IPersonService {
 
     @Autowired
+    private AuthenticationInfoDAO authenticationInfoDAO;
+
+    @Autowired
     private PersonDAO personDAO;
 
     @Autowired
@@ -34,6 +38,7 @@ public class PersonService implements IPersonService {
     public PersonBean createPerson(PersonBean bean) {
         personValidator.validateNewPerson(bean);
         final Person person = personDAO.save(toEntity(bean));
+        authenticationInfoDAO.save(person.getAuthenticationInfo().setPerson(person));
         return personMapper.toBean(person);
     }
 
