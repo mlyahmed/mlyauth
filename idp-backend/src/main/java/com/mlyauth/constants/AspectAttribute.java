@@ -20,7 +20,11 @@ public enum AspectAttribute implements IStringEnum {
 
     CL_JOSE_CONTEXT(CL_JOSE, CONTEXT, "Auth:CL:JOSE:Context", false),
     CL_JOSE_ENTITY_ID(CL_JOSE, ENTITYID, "Auth:CL:JOSE:Entity:ID", false),
-    CL_JOSE_ENCRYPTION_CERTIFICATE(CL_JOSE, CERTIFICATE, "Auth:CL:JOSE:Encryption:Certificate", false),;
+    CL_JOSE_ENCRYPTION_CERTIFICATE(CL_JOSE, CERTIFICATE, "Auth:CL:JOSE:Encryption:Certificate", false),
+
+    RS_JOSE_CONTEXT(RS_JOSE, CONTEXT, "Auth:RS:JOSE:Context", false),
+    RS_JOSE_ENTITY_ID(RS_JOSE, ENTITYID, "Auth:RS:JOSE:Entity:ID", false),
+    RS_JOSE_ENCRYPTION_CERTIFICATE(RS_JOSE, CERTIFICATE, "Auth:RS:JOSE:Encryption:Certificate", false);
 
     private final AttributeType type;
     private final AspectType aspect;
