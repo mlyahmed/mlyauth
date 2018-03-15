@@ -16,7 +16,11 @@ public enum AspectAttribute implements IStringEnum {
 
     IDP_JOSE_SSO_URL(IDP_JOSE, ENDPOINT, "Auth:IDP:JOSE:EndPoint", false),
     IDP_JOSE_ENTITY_ID(IDP_JOSE, ENTITYID, "Auth:IDP:JOSE:Entity:ID", false),
-    IDP_JOSE_ENCRYPTION_CERTIFICATE(IDP_JOSE, CERTIFICATE, "Auth:IDP:JOSE:Encryption:Certificate", false);
+    IDP_JOSE_ENCRYPTION_CERTIFICATE(IDP_JOSE, CERTIFICATE, "Auth:IDP:JOSE:Encryption:Certificate", false),
+
+    CL_JOSE_CONTEXT(CL_JOSE, CONTEXT, "Auth:CL:JOSE:Context", false),
+    CL_JOSE_ENTITY_ID(CL_JOSE, ENTITYID, "Auth:CL:JOSE:Entity:ID", false),
+    CL_JOSE_ENCRYPTION_CERTIFICATE(CL_JOSE, CERTIFICATE, "Auth:CL:JOSE:Encryption:Certificate", false),;
 
     private final AttributeType type;
     private final AspectType aspect;

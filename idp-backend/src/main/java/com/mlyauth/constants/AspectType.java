@@ -3,18 +3,19 @@ package com.mlyauth.constants;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.constants.AspectType.MetaType.IDP;
-import static com.mlyauth.constants.AspectType.MetaType.SP;
+import static com.mlyauth.constants.AspectType.MetaType.*;
 import static com.mlyauth.constants.TokenNorm.*;
 import static java.util.Arrays.stream;
 
 public enum AspectType implements IStringEnum {
     SP_BASIC("SP_BASIC", SP, BASIC),
     SP_SAML("SP_SAML", SP, SAML),
-    IDP_JOSE("IDP_JOSE", IDP, JOSE);
+    IDP_JOSE("IDP_JOSE", IDP, JOSE),
+    CL_JOSE("CL_JOSE", CL, JOSE),
+    RS_JOSE("CL_JOSE", RS, JOSE);
 
 
-    public enum MetaType {IDP, SP, CLIENT, RS}
+    public enum MetaType {IDP, SP, CL, RS}
 
     private final String value;
     private final MetaType metaType;
