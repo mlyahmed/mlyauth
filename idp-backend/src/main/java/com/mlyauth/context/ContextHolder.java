@@ -222,7 +222,7 @@ public class ContextHolder implements IContextHolder {
 
         @Override
         public String getPassword() {
-            return person.getAuthenticationInfo().getPassword();
+            return getAuthenticationInfo().getPassword();
         }
 
         @Override

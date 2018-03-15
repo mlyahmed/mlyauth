@@ -1,5 +1,6 @@
 package com.mlyauth.context;
 
+import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -33,5 +34,17 @@ public class IDPUser extends User {
 
     public IContext getContext() {
         return context;
+    }
+
+    public Application getApplication() {
+        return context.getApplication();
+    }
+
+    public boolean isAPerson() {
+        return context.isAPerson();
+    }
+
+    public boolean isAnApplication() {
+        return context.isAnApplication();
     }
 }
