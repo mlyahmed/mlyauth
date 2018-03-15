@@ -40,7 +40,7 @@ public class SPSAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
     public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
         checkCredentials(credential);
         final Person person = personDAO.findByExternalId(credential.getAttributeAsString(CLIENT_ID.getValue()));
-        final IContext context = contextHolder.newContext(person);
+        final IContext context = contextHolder.newPersonContext(person);
         credential.getAttributes().forEach(attr -> context.putAttribute(attr.getName(), credential.getAttributeAsString(attr.getName())));
         return new IDPUser(context);
     }

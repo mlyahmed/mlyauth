@@ -1,9 +1,6 @@
 package com.mlyauth.context;
 
-import com.mlyauth.domain.AuthenticationInfo;
-import com.mlyauth.domain.AuthenticationSession;
-import com.mlyauth.domain.Person;
-import com.mlyauth.domain.Profile;
+import com.mlyauth.domain.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -26,6 +23,11 @@ public class MockContext implements IContext {
 
     @Override
     public Person getPerson() {
+        return null;
+    }
+
+    @Override
+    public Application getApplication() {
         return null;
     }
 
@@ -67,6 +69,16 @@ public class MockContext implements IContext {
     @Override
     public boolean putAttribute(String key, String value) {
         return String.valueOf(attributes.get(key)).equals(attributes.put(key, value));
+    }
+
+    @Override
+    public boolean isAnApplication() {
+        return false;
+    }
+
+    @Override
+    public boolean isAPerson() {
+        return false;
     }
 
     public void resetMock() {

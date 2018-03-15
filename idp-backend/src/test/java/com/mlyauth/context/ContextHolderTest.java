@@ -3,10 +3,7 @@ package com.mlyauth.context;
 import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.dao.MockAuthenticationSessionDAO;
-import com.mlyauth.domain.AuthenticationInfo;
-import com.mlyauth.domain.AuthenticationSession;
-import com.mlyauth.domain.Person;
-import com.mlyauth.domain.Profile;
+import com.mlyauth.domain.*;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -19,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -29,6 +27,7 @@ import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
 import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;
 import static com.mlyauth.constants.ProfileCode.MASTER;
 import static com.mlyauth.constants.ProfileCode.NAVIGATOR;
+import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.lang.System.currentTimeMillis;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -39,28 +38,31 @@ public class ContextHolderTest {
 
     private AuthenticationInfo authenticationInfo;
     private Person person;
+    private Application application;
     private MockHttpServletRequest request;
-
-    @Spy
-    private IContextIdGenerator contextIdGenerator = new ContextIdGenerator();
 
     @Spy
     private AuthenticationSessionDAO sessionDAO = new MockAuthenticationSessionDAO();
 
     @InjectMocks
     private ContextHolder holder;
+    private IContext context;
 
     @Before
     public void setup() {
         authenticationInfo = new AuthenticationInfo();
         authenticationInfo.setLogin(RandomStringUtils.random(20, true, true));
         authenticationInfo.setPassword(RandomStringUtils.random(20, true, true));
-        person = new Person();
+        person = Person.newInstance();
         person.setAuthenticationInfo(authenticationInfo);
+        application = Application.newInstance();
+        application.setAuthenticationInfo(authenticationInfo);
         request = new MockHttpServletRequest();
+        request.setSession(new MockHttpSession());
         ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request);
         RequestContextHolder.setRequestAttributes(requestAttributes);
         MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(holder, "idGenerator", new ContextIdGenerator());
     }
 
     @Test
@@ -69,17 +71,16 @@ public class ContextHolderTest {
     }
 
     @Test
-    public void given_there_is_a_session_when_create_a_context_then_save_it() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
-        final IContext context = holder.newContext(person);
+    public void given_there_is_a_session_when_create_a_person_context_then_save_it() {
+        context = holder.newPersonContext(person);
         assertThat(context, notNullValue());
         assertThat(holder.getId(), notNullValue());
         assertThat(context.getId(), notNullValue());
         assertThat(holder.getId(), equalTo(context.getId()));
         assertThat(holder.getContext(), equalTo(context));
-        assertThat(context.getSession(), equalTo(session));
+        assertThat(context.getSession(), equalTo(request.getSession()));
         assertThat(context.getPerson(), equalTo(person));
+        assertThat(context.getApplication(), nullValue());
         assertThat(holder.getAuthenticationInfo(), equalTo(authenticationInfo));
         assertThat(context.getAuthenticationInfo(), equalTo(authenticationInfo));
         assertThat(context.getLogin(), equalTo(authenticationInfo.getLogin()));
@@ -87,9 +88,35 @@ public class ContextHolderTest {
     }
 
     @Test
-    public void when_create_a_new_context_then_create_a_new_auth_session() {
-        request.setSession(new MockHttpSession());
-        final IContext context = holder.newContext(person);
+    public void given_there_is_a_session_when_create_an_application_context_then_save_it() {
+        context = holder.newApplicationContext(application);
+        assertThat(context, notNullValue());
+        assertThat(holder.getId(), notNullValue());
+        assertThat(context.getId(), notNullValue());
+        assertThat(holder.getId(), equalTo(context.getId()));
+        assertThat(holder.getContext(), equalTo(context));
+        assertThat(context.getSession(), equalTo(request.getSession()));
+        assertThat(context.getPerson(), nullValue());
+        assertThat(context.getApplication(), equalTo(application));
+        assertThat(holder.getAuthenticationInfo(), equalTo(authenticationInfo));
+        assertThat(context.getAuthenticationInfo(), equalTo(authenticationInfo));
+        assertThat(context.getLogin(), equalTo(authenticationInfo.getLogin()));
+        assertThat(holder.getLogin(), equalTo(authenticationInfo.getLogin()));
+    }
+
+    @Test
+    public void when_create_a_new_person_context_then_create_a_new_auth_session() {
+        context = holder.newPersonContext(person);
+        then_a_new_auth_session_is_created();
+    }
+
+    @Test
+    public void when_create_a_new_application_context_then_create_a_new_auth_session() {
+        context = holder.newApplicationContext(application);
+        then_a_new_auth_session_is_created();
+    }
+
+    private void then_a_new_auth_session_is_created() {
         assertThat(holder.getAuthenticationSession(), notNullValue());
         assertThat(context.getAuthenticationSession(), notNullValue());
         assertThat(holder.getAuthenticationSession(), equalTo(context.getAuthenticationSession()));
@@ -102,73 +129,112 @@ public class ContextHolderTest {
         assertThat(context.getAuthenticationSession().getAuthenticationInfo(), equalTo(authenticationInfo));
     }
 
+
     @Test
-    public void given_an_existing_context_when_create_a_new_one_then_the_old_session_is_closed() {
-        request.setSession(new MockHttpSession());
-        IContext context = holder.newContext(person);
-        final AuthenticationSession authSession1 = context.getAuthenticationSession();
-        context = holder.newContext(person);
-        final AuthenticationSession authSession2 = context.getAuthenticationSession();
-        assertThat(authSession1, not(equalTo(authSession2)));
-        assertThat(sessionDAO.findOne(authSession1.getId()).getStatus(), equalTo(CLOSED));
-        assertThat(sessionDAO.findOne(authSession1.getId()).getClosedAt(), notNullValue());
-        assertTrue(sessionDAO.findOne(authSession1.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+    public void given_an_existing_context_when_create_a_new_person_context_then_the_old_session_is_closed() {
+        context = holder.newPersonContext(person);
+        final AuthenticationSession firstSession = context.getAuthenticationSession();
+        context = holder.newPersonContext(person);
+        final AuthenticationSession secondSession = context.getAuthenticationSession();
+        then_the_first_session_is_closed_and_new_one_is_created(firstSession, secondSession);
     }
 
     @Test
-    public void given_an_existing_context_when_reset_it_then_close_the_session() {
-        request.setSession(new MockHttpSession());
-        IContext context = holder.newContext(person);
+    public void given_an_existing_context_when_create_a_new_application_context_then_the_old_session_is_closed() {
+        context = holder.newApplicationContext(application);
+        final AuthenticationSession firstSession = context.getAuthenticationSession();
+        context = holder.newApplicationContext(application);
+        final AuthenticationSession secondSession = context.getAuthenticationSession();
+        then_the_first_session_is_closed_and_new_one_is_created(firstSession, secondSession);
+    }
+
+    @Test
+    public void given_an_existing_person_context_when_reset_it_then_close_the_session() {
+        context = holder.newPersonContext(person);
         final AuthenticationSession authSession = context.getAuthenticationSession();
         holder.reset();
-        assertThat(sessionDAO.findOne(authSession.getId()).getStatus(), equalTo(CLOSED));
-        assertThat(sessionDAO.findOne(authSession.getId()).getClosedAt(), notNullValue());
-        assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+        then_the_auth_session_is_closed(authSession);
     }
 
     @Test
-    public void given_there_are_many_sessions_when_create_a_context_then_it_must_be_bound_to_the_right_session() {
+    public void given_an_existing_application_context_when_reset_it_then_close_the_session() {
+        context = holder.newApplicationContext(application);
+        final AuthenticationSession authSession = context.getAuthenticationSession();
+        holder.reset();
+        then_the_auth_session_is_closed(authSession);
+    }
+
+    @Test
+    public void given_many_sessions_when_create_a_person_context_then_it_must_be_bound_to_the_right_session() {
         MockHttpSession session1 = new MockHttpSession();
         MockHttpSession session2 = new MockHttpSession();
         request.setSession(session1);
-        holder.newContext(person);
+        holder.newPersonContext(person);
         request.setSession(session2);
         assertThat(holder.getContext(), nullValue());
     }
 
     @Test
-    public void bind_attribute_to_the_current_context() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
-        final IContext context = holder.newContext(person);
-        context.putAttribute("clientId", "NBHG5487NJ");
+    public void given_many_sessions_when_create_an_application_context_then_it_must_be_bound_to_the_right_session() {
+        MockHttpSession session1 = new MockHttpSession();
+        MockHttpSession session2 = new MockHttpSession();
+        request.setSession(session1);
+        holder.newApplicationContext(application);
+        request.setSession(session2);
+        assertThat(holder.getContext(), nullValue());
+    }
+
+    @Test
+    public void bind_attribute_to_the_current_person_context() {
+        context = holder.newPersonContext(person);
+        context.putAttribute("bp", "NBHG5487NJ");
         context.putAttribute("clientProfile", "CL");
         context.putAttribute("prestationId", "BA0000215487985");
-        assertThat(holder.getAttribute("clientId"), equalTo("NBHG5487NJ"));
+        assertThat(holder.getAttribute("bp"), equalTo("NBHG5487NJ"));
         assertThat(holder.getAttribute("clientProfile"), equalTo("CL"));
         assertThat(holder.getAttribute("prestationId"), equalTo("BA0000215487985"));
     }
 
     @Test
-    public void bind_attribute_to_the_right_context() {
-        MockHttpSession session1 = new MockHttpSession();
-        MockHttpSession session2 = new MockHttpSession();
-        request.setSession(session1);
-        final IContext context = holder.newContext(person);
-        context.putAttribute("clientId", "NBHG5487NJ");
-        context.putAttribute("clientProfile", "CL");
-        context.putAttribute("prestationId", "BA0000215487985");
-        request.setSession(session2);
-        assertThat(holder.getAttribute("clientId"), nullValue());
+    public void bind_attribute_to_the_current_application_context() {
+        context = holder.newApplicationContext(application);
+        context.putAttribute("audience", "NCBHDY5485DS");
+        context.putAttribute("profile", "GS");
+        context.putAttribute("prestation", "BA002154548s");
+        assertThat(holder.getAttribute("audience"), equalTo("NCBHDY5485DS"));
+        assertThat(holder.getAttribute("profile"), equalTo("GS"));
+        assertThat(holder.getAttribute("prestation"), equalTo("BA002154548s"));
+    }
+
+    @Test
+    public void bind_attribute_to_the_right_person_context() {
+        request.setSession(new MockHttpSession());
+        final IContext context = holder.newPersonContext(person);
+        context.putAttribute("target", randomString());
+        context.putAttribute("clientProfile", randomString());
+        context.putAttribute("prestationId", randomString());
+        request.setSession(new MockHttpSession());
+        assertThat(holder.getAttribute("target"), nullValue());
         assertThat(holder.getAttribute("clientProfile"), nullValue());
         assertThat(holder.getAttribute("prestationId"), nullValue());
     }
 
     @Test
-    public void bind_holder_attribute_to_the_right_context() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
-        holder.newContext(person);
+    public void bind_attribute_to_the_right_application_context() {
+        request.setSession(new MockHttpSession());
+        final IContext context = holder.newApplicationContext(application);
+        context.putAttribute("verdict", randomString());
+        context.putAttribute("delegator", randomString());
+        context.putAttribute("delegate", randomString());
+        request.setSession(new MockHttpSession());
+        assertThat(holder.getAttribute("verdict"), nullValue());
+        assertThat(holder.getAttribute("delegator"), nullValue());
+        assertThat(holder.getAttribute("delegate"), nullValue());
+    }
+
+    @Test
+    public void bind_holder_attribute_to_the_right_person_context() {
+        holder.newPersonContext(person);
         holder.putAttribute("clientId", "NBHG5487NJ");
         holder.putAttribute("clientProfile", "CL");
         holder.putAttribute("prestationId", "BA0000215487985");
@@ -178,63 +244,98 @@ public class ContextHolderTest {
     }
 
     @Test
-    public void bind_the_context_attributes_map_to_the_corrent_context() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
-        final IContext context = holder.newContext(person);
-        context.putAttribute("clientId", "NBHG5487NJ");
-        context.putAttribute("clientProfile", "CL");
-        context.putAttribute("prestationId", "BA0000215487985");
+    public void bind_holder_attribute_to_the_right_application_context() {
+        holder.newApplicationContext(application);
+        holder.putAttribute("state", "NBHGS2514548SSS");
+        holder.putAttribute("client", "XT");
+        holder.putAttribute("stamp", "BA000021SADSD2323");
+        assertThat(holder.getAttribute("state"), equalTo("NBHGS2514548SSS"));
+        assertThat(holder.getAttribute("client"), equalTo("XT"));
+        assertThat(holder.getAttribute("stamp"), equalTo("BA000021SADSD2323"));
+    }
+
+    @Test
+    public void bind_the_context_attributes_map_to_the_current_person_context() {
+        context = holder.newPersonContext(person);
+        context.putAttribute("subject", "BVSGFSGFS");
+        context.putAttribute("issuer", "CXFST");
+        context.putAttribute("audience", "BA00002154215487");
         assertThat(context.getAttributes(), notNullValue());
-        assertThat(context.getAttributes().get("clientId"), equalTo("NBHG5487NJ"));
-        assertThat(context.getAttributes().get("clientProfile"), equalTo("CL"));
-        assertThat(context.getAttributes().get("prestationId"), equalTo("BA0000215487985"));
+        assertThat(context.getAttributes().get("subject"), equalTo("BVSGFSGFS"));
+        assertThat(context.getAttributes().get("issuer"), equalTo("CXFST"));
+        assertThat(context.getAttributes().get("audience"), equalTo("BA00002154215487"));
         assertThat(holder.getAttributes(), equalTo(context.getAttributes()));
     }
 
     @Test
-    public void when_reset_then_remove_the_context() {
-        MockHttpSession session = new MockHttpSession();
-        request.setSession(session);
-        holder.newContext(person);
+    public void bind_the_context_attributes_map_to_the_current_application_context() {
+        context = holder.newApplicationContext(application);
+        context.putAttribute("BP", "JHSJHSJS");
+        context.putAttribute("STATE", "SAD54545454D");
+        context.putAttribute("AUD", "TA21212121DEFT");
+        assertThat(context.getAttributes(), notNullValue());
+        assertThat(context.getAttributes().get("BP"), equalTo("JHSJHSJS"));
+        assertThat(context.getAttributes().get("STATE"), equalTo("SAD54545454D"));
+        assertThat(context.getAttributes().get("AUD"), equalTo("TA21212121DEFT"));
+        assertThat(holder.getAttributes(), equalTo(context.getAttributes()));
+    }
+
+    @Test
+    public void when_reset_then_remove_the_person_context() {
+        holder.newPersonContext(person);
         holder.reset();
         the_no_context_is_set();
     }
 
-    private void the_no_context_is_set() {
-        assertThat(holder.getId(), nullValue());
-        assertThat(holder.getContext(), nullValue());
-        assertThat(holder.getAuthenticationInfo(), nullValue());
-        assertThat(holder.getAuthenticationSession(), nullValue());
-        assertThat(holder.getLogin(), nullValue());
-        assertThat(holder.getPassword(), nullValue());
-        assertThat(holder.getPerson(), nullValue());
-        assertThat(holder.getAttributes(), notNullValue());
-        assertThat(holder.getAttributes().size(), equalTo(0));
-        assertThat(holder.putAttribute("key", "value"), equalTo(false));
+    @Test
+    public void when_reset_then_remove_the_application_context() {
+        holder.newApplicationContext(application);
+        holder.reset();
+        the_no_context_is_set();
     }
 
     @Test
-    public void when_create_new_context_and_same_session_then_keep_the_same_id() {
-        request.setSession(new MockHttpSession());
-        final IContext context1 = holder.newContext(person);
-        final IContext context2 = holder.newContext(person);
-        assertThat(context1.getId(), equalTo(context2.getId()));
+    public void when_create_new_person_context_and_same_session_then_keep_the_same_id() {
+        final IContext firstContext = holder.newPersonContext(person);
+        final IContext secondContext = holder.newPersonContext(person);
+        assertThat(firstContext.getId(), equalTo(secondContext.getId()));
     }
 
     @Test
-    public void when_create_new_context_and_different_session_then_new_context_id() {
-        request.setSession(new MockHttpSession());
-        final IContext context1 = holder.newContext(person);
-        request.setSession(new MockHttpSession());
-        final IContext context2 = holder.newContext(person);
-        assertThat(context1.getId(), not(equalTo(context2.getId())));
+    public void when_create_new_application_context_and_same_session_then_keep_the_same_id() {
+        final IContext firstContext = holder.newApplicationContext(application);
+        final IContext secondContext = holder.newApplicationContext(application);
+        assertThat(firstContext.getId(), equalTo(secondContext.getId()));
     }
 
     @Test
-    public void when_there_is_no_profile_then_the_context_must_return_empty_collection() {
+    public void when_create_new_person_context_and_different_session_then_new_context_id() {
         request.setSession(new MockHttpSession());
-        final IContext context = holder.newContext(person);
+        final IContext firstContext = holder.newPersonContext(person);
+        request.setSession(new MockHttpSession());
+        final IContext secondContext = holder.newPersonContext(person);
+        assertThat(firstContext.getId(), not(equalTo(secondContext.getId())));
+    }
+
+    @Test
+    public void when_create_new_appplication_context_and_different_session_then_new_context_id() {
+        request.setSession(new MockHttpSession());
+        final IContext firstContext = holder.newApplicationContext(application);
+        request.setSession(new MockHttpSession());
+        final IContext secondContext = holder.newApplicationContext(application);
+        assertThat(firstContext.getId(), not(equalTo(secondContext.getId())));
+    }
+
+    @Test
+    public void when_there_is_no_profile_then_the_person_context_must_return_empty_collection() {
+        final IContext context = holder.newPersonContext(person);
+        assertThat(context.getProfiles(), hasSize(0));
+        assertThat(holder.getProfiles(), hasSize(0));
+    }
+
+    @Test
+    public void when_there_is_no_profile_then_the_application_context_must_return_empty_collection() {
+        final IContext context = holder.newApplicationContext(application);
         assertThat(context.getProfiles(), hasSize(0));
         assertThat(holder.getProfiles(), hasSize(0));
     }
@@ -252,12 +353,37 @@ public class ContextHolderTest {
     @Test
     @UseDataProvider("profiles")
     public void the_context_must_return_the_profiles(String profile) {
-        request.setSession(new MockHttpSession());
         person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
-        final IContext context = holder.newContext(person);
+        final IContext context = holder.newPersonContext(person);
         assertThat(context.getProfiles(), hasSize(1));
         assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
         assertThat(holder.getProfiles(), hasSize(1));
         assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
+    }
+
+    private void then_the_first_session_is_closed_and_new_one_is_created(AuthenticationSession firstSession, AuthenticationSession secondSession) {
+        assertThat(firstSession, not(equalTo(secondSession)));
+        assertThat(sessionDAO.findOne(firstSession.getId()).getStatus(), equalTo(CLOSED));
+        assertThat(sessionDAO.findOne(firstSession.getId()).getClosedAt(), notNullValue());
+        assertTrue(sessionDAO.findOne(firstSession.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+    }
+
+    private void then_the_auth_session_is_closed(AuthenticationSession authSession) {
+        assertThat(sessionDAO.findOne(authSession.getId()).getStatus(), equalTo(CLOSED));
+        assertThat(sessionDAO.findOne(authSession.getId()).getClosedAt(), notNullValue());
+        assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+    }
+
+    private void the_no_context_is_set() {
+        assertThat(holder.getId(), nullValue());
+        assertThat(holder.getContext(), nullValue());
+        assertThat(holder.getAuthenticationInfo(), nullValue());
+        assertThat(holder.getAuthenticationSession(), nullValue());
+        assertThat(holder.getLogin(), nullValue());
+        assertThat(holder.getPassword(), nullValue());
+        assertThat(holder.getPerson(), nullValue());
+        assertThat(holder.getAttributes(), notNullValue());
+        assertThat(holder.getAttributes().size(), equalTo(0));
+        assertThat(holder.putAttribute("key", "value"), equalTo(false));
     }
 }

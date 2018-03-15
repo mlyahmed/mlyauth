@@ -1,10 +1,7 @@
 package com.mlyauth.context;
 
 import com.mlyauth.dao.AuthenticationSessionDAO;
-import com.mlyauth.domain.AuthenticationInfo;
-import com.mlyauth.domain.AuthenticationSession;
-import com.mlyauth.domain.Person;
-import com.mlyauth.domain.Profile;
+import com.mlyauth.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -40,10 +37,19 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
-    public IContext newContext(Person person) {
+    public IContext newPersonContext(Person person) {
         final String contextId = newId();
         closeCurrentSession();
         final Context context = new Context(contextId, person, newAuthSession(person, contextId));
+        contexts.put(contextId, context);
+        return context;
+    }
+
+    @Override
+    public IContext newApplicationContext(Application application) {
+        final String contextId = newId();
+        closeCurrentSession();
+        final Context context = new Context(contextId, application, newAuthSession(application, contextId));
         contexts.put(contextId, context);
         return context;
     }
@@ -65,8 +71,17 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
+    public Application getApplication() {
+        return getContext() != null ? getContext().getApplication() : null;
+    }
+
+    @Override
     public AuthenticationInfo getAuthenticationInfo() {
-        return getPerson() != null ? getPerson().getAuthenticationInfo() : null;
+        if (isAPerson()) {
+            return getPerson() != null ? getPerson().getAuthenticationInfo() : null;
+        } else {
+            return getApplication() != null ? getApplication().getAuthenticationInfo() : null;
+        }
     }
 
     @Override
@@ -104,6 +119,16 @@ public class ContextHolder implements IContextHolder {
         return getContext() != null && getContext().putAttribute(key, value);
     }
 
+    @Override
+    public boolean isAnApplication() {
+        return this.getApplication() != null;
+    }
+
+    @Override
+    public boolean isAPerson() {
+        return this.getPerson() != null;
+    }
+
     private void closeCurrentSession() {
         final AuthenticationSession currentAuthSession = getAuthenticationSession();
         if (currentAuthSession != null) {
@@ -122,6 +147,15 @@ public class ContextHolder implements IContextHolder {
         return sauthSessionDAO.save(authSession);
     }
 
+    private AuthenticationSession newAuthSession(Application application, String contextId) {
+        AuthenticationSession authSession = AuthenticationSession.newInstance()
+                .setContextId(contextId)
+                .setStatus(ACTIVE)
+                .setCreatedAt(new Date())
+                .setAuthenticationInfo(application.getAuthenticationInfo());
+        return sauthSessionDAO.save(authSession);
+    }
+
     private String newId() {
         return getContext() != null ? getContext().getId() : idGenerator.generateId();
     }
@@ -131,12 +165,22 @@ public class ContextHolder implements IContextHolder {
 
         private final String id;
         private final Person person;
+        private final Application application;
         private final AuthenticationSession authSession;
         private Map<String, String> attributes = new HashMap<>();
 
         protected Context(String id, Person person, AuthenticationSession authSession) {
             this.id = id;
             this.person = person;
+            this.application = null;
+            this.authSession = authSession;
+            getSession().setAttribute(CONTEXT_ID_ATTRIBUTE, id);
+        }
+
+        protected Context(String id, Application application, AuthenticationSession authSession) {
+            this.id = id;
+            this.person = null;
+            this.application = application;
             this.authSession = authSession;
             getSession().setAttribute(CONTEXT_ID_ATTRIBUTE, id);
         }
@@ -157,8 +201,13 @@ public class ContextHolder implements IContextHolder {
         }
 
         @Override
+        public Application getApplication() {
+            return application;
+        }
+
+        @Override
         public AuthenticationInfo getAuthenticationInfo() {
-            return person.getAuthenticationInfo();
+            return isAPerson() ? person.getAuthenticationInfo() : application.getAuthenticationInfo();
         }
 
         @Override
@@ -168,7 +217,7 @@ public class ContextHolder implements IContextHolder {
 
         @Override
         public String getLogin() {
-            return person.getAuthenticationInfo().getLogin();
+            return getAuthenticationInfo().getLogin();
         }
 
         @Override
@@ -178,7 +227,7 @@ public class ContextHolder implements IContextHolder {
 
         @Override
         public Set<Profile> getProfiles() {
-            return person.getProfiles() != null ? person.getProfiles() : Collections.emptySet();
+            return isAPerson() && person.getProfiles() != null ? person.getProfiles() : Collections.emptySet();
         }
 
         @Override
@@ -194,6 +243,16 @@ public class ContextHolder implements IContextHolder {
         @Override
         public boolean putAttribute(String key, String value) {
             return String.valueOf(attributes.get(key)).equals(attributes.put(key, value));
+        }
+
+        @Override
+        public boolean isAnApplication() {
+            return application != null;
+        }
+
+        @Override
+        public boolean isAPerson() {
+            return person != null;
         }
     }
 }

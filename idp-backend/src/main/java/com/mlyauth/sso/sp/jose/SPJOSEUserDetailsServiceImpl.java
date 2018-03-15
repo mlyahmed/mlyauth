@@ -32,7 +32,7 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
         checkParams(credential);
         final Person person = getPerson(credential);
         checkTheApplicationAssignement(credential, person);
-        final IContext context = contextHolder.newContext(person);
+        final IContext context = contextHolder.newPersonContext(person);
         setAttributesIntoTheContext(credential, context);
         return new IDPUser(context);
     }

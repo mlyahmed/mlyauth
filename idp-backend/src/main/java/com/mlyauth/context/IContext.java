@@ -1,9 +1,6 @@
 package com.mlyauth.context;
 
-import com.mlyauth.domain.AuthenticationInfo;
-import com.mlyauth.domain.AuthenticationSession;
-import com.mlyauth.domain.Person;
-import com.mlyauth.domain.Profile;
+import com.mlyauth.domain.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -16,6 +13,8 @@ public interface IContext {
     HttpSession getSession();
 
     Person getPerson();
+
+    Application getApplication();
 
     AuthenticationInfo getAuthenticationInfo();
 
@@ -32,5 +31,9 @@ public interface IContext {
     String getAttribute(String key);
 
     boolean putAttribute(String key, String value);
+
+    boolean isAnApplication();
+
+    boolean isAPerson();
 
 }

@@ -44,7 +44,7 @@ public class IDPUserTest {
         authInfo.setLogin(RANDOM_LOGIN);
         authInfo.setPassword(RANDOM_PASSWORD);
         person.setAuthenticationInfo(authInfo);
-        context = contextHolder.newContext(person);
+        context = contextHolder.newPersonContext(person);
     }
 
     @Test
