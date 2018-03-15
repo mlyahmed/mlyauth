@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
 
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static org.springframework.util.Assert.notEmpty;
 import static org.springframework.util.Assert.notNull;
 

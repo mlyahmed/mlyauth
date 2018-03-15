@@ -20,7 +20,7 @@ import static com.mlyauth.constants.Direction.OUTBOUND;
 import static com.mlyauth.constants.TokenNorm.SAML;
 import static com.mlyauth.constants.TokenPurpose.NAVIGATION;
 import static com.mlyauth.constants.TokenType.ACCESS;
-import static com.mlyauth.token.IDPClaims.TARGET_URL;
+import static com.mlyauth.token.Claims.TARGET_URL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;

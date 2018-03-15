@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.mlyauth.token.IDPClaims.APPLICATION;
+import static com.mlyauth.token.Claims.APPLICATION;
 
 @Component("SPUrlAuthenticationSuccessHandler")
 public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {

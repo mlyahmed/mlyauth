@@ -3,7 +3,7 @@ package com.mlyauth.token.jose;
 import com.mlyauth.constants.*;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.exception.TokenUnmodifiableException;
-import com.mlyauth.token.IDPClaims;
+import com.mlyauth.token.Claims;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
@@ -212,7 +212,7 @@ public class JOSEFreshAccessTokenTest {
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getIssuer(), equalTo(issuer));
-        assertThat(signedJWT.getHeader().getCustomParam(IDPClaims.ISSUER.getValue()), equalTo(issuer));
+        assertThat(signedJWT.getHeader().getCustomParam(Claims.ISSUER.getValue()), equalTo(issuer));
     }
 
     @Test

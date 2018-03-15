@@ -35,7 +35,7 @@ import java.util.HashSet;
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.domain.Application.newInstance;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;

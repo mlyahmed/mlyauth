@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.KeysForTests.generateRSACredential;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.time.temporal.ChronoUnit.SECONDS;

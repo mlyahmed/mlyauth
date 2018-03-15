@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractToken implements IDPToken {
+public abstract class AbstractToken implements IToken {
 
     protected boolean committed = false;
     protected boolean locked = false;

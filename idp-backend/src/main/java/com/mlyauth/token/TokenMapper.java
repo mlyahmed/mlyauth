@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.domain.TokenClaim.newInstance;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 
 @Component
 public class TokenMapper {
@@ -25,12 +25,12 @@ public class TokenMapper {
     @Autowired
     private PasswordEncoder encoder;
 
-    public Token toToken(IDPToken token) {
+    public Token toToken(IToken token) {
         if (token == null) return null;
         return mapToken(token).setClaims(mapClaims(token));
     }
 
-    private Token mapToken(IDPToken token) {
+    private Token mapToken(IToken token) {
         return Token.newInstance()
                 .setStamp(encoder.encode(token.getStamp()))
                 .setIssuanceTime(toDate(token.getIssuanceTime()))
@@ -40,7 +40,7 @@ public class TokenMapper {
                 .setNorm(token.getNorm());
     }
 
-    private HashSet<TokenClaim> mapClaims(IDPToken token) {
+    private HashSet<TokenClaim> mapClaims(IToken token) {
         final HashSet<TokenClaim> claims = new HashSet<>();
         if (StringUtils.isNotBlank(token.getSubject()))
             claims.add(newInstance().setCode(SUBJECT.getValue()).setValue(token.getSubject()));

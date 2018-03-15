@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;

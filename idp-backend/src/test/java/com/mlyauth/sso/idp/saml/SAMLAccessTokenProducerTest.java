@@ -11,7 +11,7 @@ import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.exception.IDPException;
 import com.mlyauth.sso.sp.saml.ISPSAMLAspectValidator;
-import com.mlyauth.token.IDPToken;
+import com.mlyauth.token.IToken;
 import com.mlyauth.token.TokenFactory;
 import com.mlyauth.token.saml.SAMLAccessTokenProducer;
 import com.mlyauth.token.saml.SAMLHelper;
@@ -271,7 +271,7 @@ public class SAMLAccessTokenProducerTest {
     }
 
     private void when_generate_a_response() {
-        final IDPToken token = generator.produce(application);
+        final IToken token = generator.produce(application);
         response = (Response) samlHelper.decode(token.serialize());
     }
 

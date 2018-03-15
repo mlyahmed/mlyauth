@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
 import static org.hamcrest.Matchers.equalTo;

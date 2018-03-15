@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;

@@ -41,7 +41,7 @@ import javax.servlet.Filter;
 import java.util.List;
 
 import static com.mlyauth.constants.Direction.INBOUND;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;

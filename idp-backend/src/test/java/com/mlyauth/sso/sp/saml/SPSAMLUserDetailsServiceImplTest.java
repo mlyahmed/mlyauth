@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;

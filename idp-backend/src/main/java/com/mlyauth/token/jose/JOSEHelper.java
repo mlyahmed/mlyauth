@@ -1,6 +1,6 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.token.IDPClaims;
+import com.mlyauth.token.Claims;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.SignedJWT;
@@ -17,7 +17,7 @@ public class JOSEHelper {
             EncryptedJWT tokenHolder = EncryptedJWT.parse(encodedToken);
             tokenHolder.decrypt(new RSADecrypter(key));
             final SignedJWT signedJWT = tokenHolder.getPayload().toSignedJWT();
-            return (String) signedJWT.getHeader().getCustomParam(IDPClaims.ISSUER.getValue());
+            return (String) signedJWT.getHeader().getCustomParam(Claims.ISSUER.getValue());
         } catch (Exception e) {
             throw new BadCredentialsException("Couldn't verify the credentials", e);
         }

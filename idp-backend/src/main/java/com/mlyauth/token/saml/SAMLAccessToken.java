@@ -18,7 +18,7 @@ import java.util.*;
 import static com.mlyauth.constants.TokenStatus.*;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static org.opensaml.saml2.core.StatusCode.AUTHN_FAILED_URI;
 import static org.opensaml.saml2.core.StatusCode.SUCCESS_URI;
 import static org.opensaml.xml.util.Base64.encodeBytes;

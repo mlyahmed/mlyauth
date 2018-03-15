@@ -5,7 +5,7 @@ import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.token.AbstractToken;
-import com.mlyauth.token.IDPClaims;
+import com.mlyauth.token.Claims;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
@@ -28,7 +28,7 @@ import java.util.Set;
 
 import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.mlyauth.constants.TokenStatus.DECIPHERED;
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
@@ -301,7 +301,7 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     private void checkIssuerMatch(SignedJWT signedJWT) throws ParseException {
-        if (!String.valueOf(signedJWT.getHeader().getCustomParam(IDPClaims.ISSUER.getValue())).equals(signedJWT.getJWTClaimsSet().getIssuer()))
+        if (!String.valueOf(signedJWT.getHeader().getCustomParam(Claims.ISSUER.getValue())).equals(signedJWT.getJWTClaimsSet().getIssuer()))
             throw InvalidTokenException.newInstance("Issuer mismatch");
     }
 

@@ -6,7 +6,7 @@ import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
-import com.mlyauth.token.IDPClaims;
+import com.mlyauth.token.Claims;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
@@ -29,7 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.token.IDPClaims.*;
+import static com.mlyauth.token.Claims.*;
 import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -354,14 +354,14 @@ public class JOSECypheredAccessTokenTest {
                 .subject(randomString())
                 .claim(SCOPES.getValue(), Arrays.stream(TokenScope.values()).map(TokenScope::name)
                         .collect(Collectors.joining("|")))
-                .claim(IDPClaims.BP.getValue(), randomString())
+                .claim(Claims.BP.getValue(), randomString())
                 .claim(STATE.getValue(), randomString())
                 .issuer(randomString())
                 .audience(randomString())
-                .claim(IDPClaims.TARGET_URL.getValue(), randomString())
-                .claim(IDPClaims.DELEGATOR.getValue(), randomString())
-                .claim(IDPClaims.DELEGATE.getValue(), randomString())
-                .claim(IDPClaims.VERDICT.getValue(), TokenVerdict.SUCCESS)
+                .claim(Claims.TARGET_URL.getValue(), randomString())
+                .claim(Claims.DELEGATOR.getValue(), randomString())
+                .claim(Claims.DELEGATE.getValue(), randomString())
+                .claim(Claims.VERDICT.getValue(), TokenVerdict.SUCCESS)
                 .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 3))
                 .notBeforeTime(new Date())
                 .issueTime(new Date())
