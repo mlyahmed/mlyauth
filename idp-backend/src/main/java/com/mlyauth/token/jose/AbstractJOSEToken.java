@@ -32,6 +32,7 @@ import static com.mlyauth.token.Claims.*;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
+import static org.springframework.util.Assert.notNull;
 
 public abstract class AbstractJOSEToken extends AbstractToken {
 
@@ -42,6 +43,33 @@ public abstract class AbstractJOSEToken extends AbstractToken {
 
     protected JWEObject token;
     protected JWTClaimsSet.Builder builder;
+
+    public AbstractJOSEToken(PrivateKey privateKey, PublicKey publicKey) {
+        notNull(privateKey, "The private key is mandatory");
+        notNull(publicKey, "The public key is mandatory");
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+        builder = new JWTClaimsSet.Builder();
+    }
+
+    public AbstractJOSEToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
+        notNull(serialize, "The cyphered token is mandatory");
+        notNull(privateKey, "The private key is mandatory");
+        notNull(publicKey, "The public key is mandatory");
+        parseCipheredToken(serialize);
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+        status = TokenStatus.CYPHERED;
+        locked = true;
+    }
+
+    private void parseCipheredToken(String serialize) {
+        try {
+            token = JWEObject.parse(serialize);
+        } catch (ParseException e) {
+            throw JOSEErrorException.newInstance(e);
+        }
+    }
 
     @Override
     public String getStamp() {

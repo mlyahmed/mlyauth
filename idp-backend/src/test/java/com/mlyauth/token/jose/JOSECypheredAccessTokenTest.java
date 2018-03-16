@@ -39,9 +39,9 @@ public class JOSECypheredAccessTokenTest {
 
     private Pair<PrivateKey, PublicKey> cypherCred;
     private Pair<PrivateKey, PublicKey> decipherCred;
-    private JOSEAccessToken token;
-    private JWTClaimsSet expectedClaims;
-    private JWEObject tokenEncrypted;
+    private JOSEAccessToken accessToken;
+    private JWTClaimsSet accessClaims;
+    private JWEObject cyphered;
 
     @Before
     public void setup() throws JOSEException {
@@ -49,53 +49,52 @@ public class JOSECypheredAccessTokenTest {
         final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
         cypherCred = new Pair<>(localCred.getKey(), peerCred.getValue().getPublicKey());
         decipherCred = new Pair<>(peerCred.getKey(), localCred.getValue().getPublicKey());
-        given_expected_claims();
-        given_the_claims_are_cyphered();
+        given_expected_access_claims();
+        given_the_access_claims_are_cyphered();
     }
 
     @Test
-    public void the_token_status_must_be_cyphered() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+    public void the_access_token_status_must_be_cyphered() {
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.CYPHERED));
     }
 
     @Test
     public void when_decipher_then_it_must_be_deciphered() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.decipher();
-        assertThat(token.getStatus(), equalTo(TokenStatus.DECIPHERED));
+        when_decipher_the_token();
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.DECIPHERED));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_stamp_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getStamp(), equalTo(expectedClaims.getJWTID()));
+        assertThat(accessToken.getStamp(), equalTo(accessClaims.getJWTID()));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_subject_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getSubject(), equalTo(expectedClaims.getSubject()));
+        assertThat(accessToken.getSubject(), equalTo(accessClaims.getSubject()));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_bp_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getBP(), equalTo(expectedClaims.getClaim(BP.getValue())));
+        assertThat(accessToken.getBP(), equalTo(accessClaims.getClaim(BP.getValue())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_copes_are_loaded() {
         when_decipher_the_token();
-        assertThat(expectedClaims.getClaim(SCOPES.getValue()), notNullValue());
-        assertThat(token.getScopes(), equalTo(Arrays.stream(expectedClaims.getClaim(SCOPES.getValue())
+        assertThat(accessClaims.getClaim(SCOPES.getValue()), notNullValue());
+        assertThat(accessToken.getScopes(), equalTo(Arrays.stream(accessClaims.getClaim(SCOPES.getValue())
                 .toString().split("\\|")).map(TokenScope::valueOf).collect(Collectors.toSet())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_issuer_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getIssuer(), equalTo(expectedClaims.getIssuer()));
+        assertThat(accessToken.getIssuer(), equalTo(accessClaims.getIssuer()));
     }
 
     @Test(expected = InvalidTokenException.class)
@@ -107,77 +106,77 @@ public class JOSECypheredAccessTokenTest {
     @Test
     public void when_given_cyphered_token_then_the_state_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getState(), equalTo(expectedClaims.getClaim(STATE.getValue())));
+        assertThat(accessToken.getState(), equalTo(accessClaims.getClaim(STATE.getValue())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_audience_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getAudience(), equalTo(expectedClaims.getAudience().get(0)));
+        assertThat(accessToken.getAudience(), equalTo(accessClaims.getAudience().get(0)));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_target_url_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getTargetURL(), equalTo(expectedClaims.getClaim(TARGET_URL.getValue())));
+        assertThat(accessToken.getTargetURL(), equalTo(accessClaims.getClaim(TARGET_URL.getValue())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_delegator_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getDelegator(), equalTo(expectedClaims.getClaim(DELEGATOR.getValue())));
+        assertThat(accessToken.getDelegator(), equalTo(accessClaims.getClaim(DELEGATOR.getValue())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_delegate_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getDelegate(), equalTo(expectedClaims.getClaim(DELEGATE.getValue())));
+        assertThat(accessToken.getDelegate(), equalTo(accessClaims.getClaim(DELEGATE.getValue())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_verdict_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getVerdict(), equalTo(expectedClaims.getClaim(VERDICT.getValue())));
+        assertThat(accessToken.getVerdict(), equalTo(accessClaims.getClaim(VERDICT.getValue())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_expiry_time_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getExpiryTime(), notNullValue());
-        assertThat(token.getExpiryTime(), within(1, ChronoUnit.SECONDS,
-                LocalDateTime.ofInstant(expectedClaims.getExpirationTime().toInstant(), ZoneId.systemDefault())));
+        assertThat(accessToken.getExpiryTime(), notNullValue());
+        assertThat(accessToken.getExpiryTime(), within(1, ChronoUnit.SECONDS,
+                LocalDateTime.ofInstant(accessClaims.getExpirationTime().toInstant(), ZoneId.systemDefault())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_effective_time_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getEffectiveTime(), notNullValue());
-        assertThat(token.getEffectiveTime(), within(1, ChronoUnit.SECONDS,
-                LocalDateTime.ofInstant(expectedClaims.getNotBeforeTime().toInstant(), ZoneId.systemDefault())));
+        assertThat(accessToken.getEffectiveTime(), notNullValue());
+        assertThat(accessToken.getEffectiveTime(), within(1, ChronoUnit.SECONDS,
+                LocalDateTime.ofInstant(accessClaims.getNotBeforeTime().toInstant(), ZoneId.systemDefault())));
     }
 
     @Test
     public void when_given_cyphered_token_then_the_issuance_time_is_loaded() {
         when_decipher_the_token();
-        assertThat(token.getIssuanceTime(), notNullValue());
-        assertThat(token.getIssuanceTime(), within(1, ChronoUnit.SECONDS,
-                LocalDateTime.ofInstant(expectedClaims.getIssueTime().toInstant(), ZoneId.systemDefault())));
+        assertThat(accessToken.getIssuanceTime(), notNullValue());
+        assertThat(accessToken.getIssuanceTime(), within(1, ChronoUnit.SECONDS,
+                LocalDateTime.ofInstant(accessClaims.getIssueTime().toInstant(), ZoneId.systemDefault())));
     }
 
     @Test(expected = JOSEErrorException.class)
     public void when_the_decryption_key_does_not_match_then_error() {
         final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
-        Pair<PrivateKey, RSAPublicKey> wrongCred = new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), wrongCred.getKey(), decipherCred.getValue());
-        token.decipher();
+        Pair<PrivateKey, RSAPublicKey> wrongCred = given_wrong_Credential(rsaCred);
+        accessToken = new JOSEAccessToken(cyphered.serialize(), wrongCred.getKey(), decipherCred.getValue());
+        accessToken.decipher();
     }
 
     @Test(expected = JOSEErrorException.class)
     public void when_the_signature_key_does_not_match_then_error() {
         final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
-        Pair<PrivateKey, RSAPublicKey> wrongCred = new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), wrongCred.getValue());
-        token.decipher();
+        Pair<PrivateKey, RSAPublicKey> wrongCred = given_wrong_Credential(rsaCred);
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), wrongCred.getValue());
+        accessToken.decipher();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -193,163 +192,163 @@ public class JOSECypheredAccessTokenTest {
     @Test(expected = JOSEErrorException.class)
     public void when_the_token_is_not_signed_then_error() throws JOSEException {
         final JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
-        EncryptedJWT tokenHolder = new EncryptedJWT(header, expectedClaims);
+        EncryptedJWT tokenHolder = new EncryptedJWT(header, accessClaims);
         tokenHolder.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
-        token = new JOSEAccessToken(tokenHolder.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.decipher();
+        accessToken = new JOSEAccessToken(tokenHolder.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.decipher();
     }
 
     @Test(expected = JOSEErrorException.class)
     public void when_the_token_is_signed_but_not_encrypted_then_error() throws JOSEException {
-        SignedJWT tokenSigned = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), expectedClaims);
+        SignedJWT tokenSigned = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), accessClaims);
         tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
-        token = new JOSEAccessToken(tokenSigned.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken = new JOSEAccessToken(tokenSigned.serialize(), decipherCred.getKey(), decipherCred.getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_the_private_key_is_null_then_error() {
-        new JOSEAccessToken(tokenEncrypted.serialize(), null, decipherCred.getValue());
+        new JOSEAccessToken(cyphered.serialize(), null, decipherCred.getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_the_public_key_is_null_then_error() {
-        new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), null);
+        new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), null);
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_stamp_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setStamp(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_stamp_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setStamp(randomString());
+        accessToken.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_subject_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setSubject(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setSubject(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_subject_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setSubject(randomString());
+        accessToken.setSubject(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_scopes_are_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_scopes_are_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
+        accessToken.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_bp_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setBP(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setBP(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_bp_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setBP(randomString());
+        accessToken.setBP(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_state_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setState(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setState(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_state_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setState(randomString());
+        accessToken.setState(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_issuer_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setIssuer(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setIssuer(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_issuer_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setIssuer(randomString());
+        accessToken.setIssuer(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_audience_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setAudience(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setAudience(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_audience_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setAudience(randomString());
+        accessToken.setAudience(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_target_url_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setTargetURL(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setTargetURL(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_target_url_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setTargetURL(randomString());
+        accessToken.setTargetURL(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_delegator_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setDelegator(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setDelegator(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_delegator_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setDelegator(randomString());
+        accessToken.setDelegator(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_delegate_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setDelegate(randomString());
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setDelegate(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_delegate_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setDelegate(randomString());
+        accessToken.setDelegate(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_verdict_is_not_modifiable_before_decipher() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.setVerdict(TokenVerdict.SUCCESS);
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setVerdict(TokenVerdict.SUCCESS);
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_verdict_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
-        token.setVerdict(TokenVerdict.SUCCESS);
+        accessToken.setVerdict(TokenVerdict.SUCCESS);
     }
 
-    private void given_expected_claims() {
-        expectedClaims = new JWTClaimsSet.Builder()
+    private void given_expected_access_claims() {
+        accessClaims = new JWTClaimsSet.Builder()
                 .jwtID(UUID.randomUUID().toString())
                 .subject(randomString())
                 .claim(SCOPES.getValue(), Arrays.stream(TokenScope.values()).map(TokenScope::name)
@@ -369,29 +368,34 @@ public class JOSECypheredAccessTokenTest {
     }
 
     private void when_decipher_the_token() {
-        token = new JOSEAccessToken(tokenEncrypted.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        token.decipher();
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.decipher();
     }
 
-    private void given_the_claims_are_cyphered() throws JOSEException {
-        final JWSHeader sHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).customParam(ISSUER.getValue(),
-                expectedClaims.getIssuer()).build();
-        SignedJWT tokenSigned = new SignedJWT(sHeader, expectedClaims);
-
-        tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
+    @SuppressWarnings("Duplicates")
+    private void given_the_access_claims_are_cyphered() throws JOSEException {
+        final JWSHeader signatureHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
+                .customParam(ISSUER.getValue(), accessClaims.getIssuer())
+                .build();
+        SignedJWT signature = new SignedJWT(signatureHeader, accessClaims);
+        signature.sign(new RSASSASigner(cypherCred.getKey()));
         final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
-        tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));
-        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
+        cyphered = new JWEObject(header, new Payload(signature));
+        cyphered.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
     }
 
     private void given_the_claims_are_cyphered_with_mismatch_issue_in_header() throws JOSEException {
         SignedJWT tokenSigned = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).
                 customParam(ISSUER.getValue(), randomString())
-                .build(), expectedClaims);
+                .build(), accessClaims);
         tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
         final JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build();
-        tokenEncrypted = new JWEObject(header, new Payload(tokenSigned));
-        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
+        cyphered = new JWEObject(header, new Payload(tokenSigned));
+        cyphered.encrypt(new RSAEncrypter((RSAPublicKey) cypherCred.getValue()));
+    }
+
+    private Pair<PrivateKey, RSAPublicKey> given_wrong_Credential(Pair<PrivateKey, X509Certificate> rsaCred) {
+        return new Pair<>(rsaCred.getKey(), (RSAPublicKey) rsaCred.getValue().getPublicKey());
     }
 
     private static String randomString() {
