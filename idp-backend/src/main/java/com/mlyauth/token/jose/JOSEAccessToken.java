@@ -6,12 +6,10 @@ import com.mlyauth.constants.TokenType;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.token.Claims;
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
-import com.nimbusds.jose.crypto.RSAEncrypter;
-import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -28,12 +26,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
-import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.mlyauth.constants.TokenStatus.DECIPHERED;
 import static com.mlyauth.token.Claims.*;
-import static com.nimbusds.jose.EncryptionMethod.A128GCM;
-import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
-import static com.nimbusds.jose.JWSAlgorithm.RS256;
 import static org.springframework.util.Assert.notNull;
 
 public class JOSEAccessToken extends AbstractJOSEToken {
@@ -233,29 +227,6 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     }
 
     @Override
-    public void cypher() {
-        try {
-            signAndEncrypt();
-            status = CYPHERED;
-            committed = true;
-        } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
-        }
-    }
-
-    private void signAndEncrypt() throws JOSEException {
-        SignedJWT tokenSigned = new SignedJWT(buildJWSHeader(), builder.build());
-        tokenSigned.sign(new RSASSASigner(privateKey));
-        token = new JWEObject(new JWEHeader.Builder(RSA_OAEP_256, A128GCM).keyID(getAudience()).build(), new Payload(tokenSigned));
-        token.encrypt(new RSAEncrypter((RSAPublicKey) publicKey));
-    }
-
-    private JWSHeader buildJWSHeader() {
-        JWSHeader.Builder headerBuilder = new JWSHeader.Builder(RS256).customParam(ISSUER.getValue(), getIssuer());
-        return headerBuilder.build();
-    }
-
-    @Override
     public void decipher() {
         checkCommitted();
         try {
@@ -282,14 +253,6 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     private void checkSignature(SignedJWT signedJWT) throws JOSEException {
         if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))
             throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
-    }
-
-
-    @Override
-    public String serialize() {
-        if (getStatus() != CYPHERED)
-            throw TokenNotCipheredException.newInstance();
-        return token.serialize();
     }
 
 }

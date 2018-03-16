@@ -42,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(DataProviderRunner.class)
 public class JOSEFreshAccessTokenTest {
 
-    private JOSEAccessToken token;
+    private JOSEAccessToken accessToken;
     private Pair<PrivateKey, RSAPublicKey> cypherCred;
     private Pair<PrivateKey, RSAPublicKey> decipherCred;
 
@@ -52,7 +52,7 @@ public class JOSEFreshAccessTokenTest {
         final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
         cypherCred = new Pair<>(localCred.getKey(), (RSAPublicKey) peerCred.getValue().getPublicKey());
         decipherCred = new Pair<>(peerCred.getKey(), (RSAPublicKey) localCred.getValue().getPublicKey());
-        token = new JOSEAccessToken(cypherCred.getKey(), cypherCred.getValue());
+        accessToken = new JOSEAccessToken(cypherCred.getKey(), cypherCred.getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -69,35 +69,35 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_fresh_access_response_then_token_claims_must_be_fresh() {
-        assertThat(token.getStamp(), nullValue());
-        assertThat(token.getSubject(), nullValue());
-        assertThat(token.getScopes(), empty());
-        assertThat(token.getBP(), nullValue());
-        assertThat(token.getState(), nullValue());
-        assertThat(token.getIssuer(), nullValue());
-        assertThat(token.getAudience(), nullValue());
-        assertThat(token.getDelegator(), nullValue());
-        assertThat(token.getDelegate(), nullValue());
-        assertThat(token.getVerdict(), nullValue());
-        assertThat(token.getNorm(), equalTo(TokenNorm.JOSE));
-        assertThat(token.getType(), equalTo(TokenType.ACCESS));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FRESH));
+        assertThat(accessToken.getStamp(), nullValue());
+        assertThat(accessToken.getSubject(), nullValue());
+        assertThat(accessToken.getScopes(), empty());
+        assertThat(accessToken.getBP(), nullValue());
+        assertThat(accessToken.getState(), nullValue());
+        assertThat(accessToken.getIssuer(), nullValue());
+        assertThat(accessToken.getAudience(), nullValue());
+        assertThat(accessToken.getDelegator(), nullValue());
+        assertThat(accessToken.getDelegate(), nullValue());
+        assertThat(accessToken.getVerdict(), nullValue());
+        assertThat(accessToken.getNorm(), equalTo(TokenNorm.JOSE));
+        assertThat(accessToken.getType(), equalTo(TokenType.ACCESS));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FRESH));
     }
 
     @Test
     public void when_create_a_fresh_access_token_and_set_stamp_then_must_be_set() {
         String id = randomString();
-        token.setStamp(id);
-        assertThat(token.getStamp(), equalTo(id));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setStamp(id);
+        assertThat(accessToken.getStamp(), equalTo(id));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
-    public void when_serialize_cyphered_token_then_the_stamp_must_be_committed() throws Exception {
+    public void when_serialize_cyphered_access_token_then_the_stamp_must_be_committed() throws Exception {
         final String id = randomString();
-        token.setStamp(id);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setStamp(id);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getJWTID(), equalTo(id));
@@ -106,17 +106,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_subject_then_must_be_set() {
         String subject = randomString();
-        token.setSubject(subject);
-        assertThat(token.getSubject(), equalTo(subject));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setSubject(subject);
+        assertThat(accessToken.getSubject(), equalTo(subject));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_subject_must_be_committed() throws Exception {
         String subject = randomString();
-        token.setSubject(subject);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setSubject(subject);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getSubject(), equalTo(subject));
@@ -139,18 +139,18 @@ public class JOSEFreshAccessTokenTest {
     @UseDataProvider("scopes")
     public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
         final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
-        token.setScopes(scopes);
-        assertThat(token.getScopes(), equalTo(scopes));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setScopes(scopes);
+        assertThat(accessToken.getScopes(), equalTo(scopes));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     @UseDataProvider("scopes")
     public void when_serialize_cyphered_token_then_the_scopes_must_be_committed(String... scopesArrays) throws Exception {
         final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
-        token.setScopes(scopes);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setScopes(scopes);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(SCOPES.getValue()),
@@ -160,17 +160,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_BP_then_must_be_set() {
         String bp = randomString();
-        token.setBP(bp);
-        assertThat(token.getBP(), equalTo(bp));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setBP(bp);
+        assertThat(accessToken.getBP(), equalTo(bp));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_BP_must_be_committed() throws Exception {
         String bp = randomString();
-        token.setBP(bp);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setBP(bp);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(BP.getValue()), equalTo(bp));
@@ -179,17 +179,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_State_then_must_be_set() {
         String state = randomString();
-        token.setState(state);
-        assertThat(token.getState(), equalTo(state));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setState(state);
+        assertThat(accessToken.getState(), equalTo(state));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_State_must_be_committed() throws Exception {
         String state = randomString();
-        token.setState(state);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setState(state);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(STATE.getValue()), equalTo(state));
@@ -198,17 +198,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_Issuer_then_must_be_set() {
         String issuer = randomString();
-        token.setIssuer(issuer);
-        assertThat(token.getIssuer(), equalTo(issuer));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setIssuer(issuer);
+        assertThat(accessToken.getIssuer(), equalTo(issuer));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_Issuer_must_be_committed() throws Exception {
         String issuer = randomString();
-        token.setIssuer(issuer);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setIssuer(issuer);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getIssuer(), equalTo(issuer));
@@ -218,17 +218,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_Audience_then_must_be_set() {
         String audienceURI = randomString();
-        token.setAudience(audienceURI);
-        assertThat(token.getAudience(), equalTo(audienceURI));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setAudience(audienceURI);
+        assertThat(accessToken.getAudience(), equalTo(audienceURI));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_Audience_must_be_committed() throws Exception {
         String audienceURI = randomString();
-        token.setAudience(audienceURI);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setAudience(audienceURI);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getAudience().get(0), equalTo(audienceURI));
@@ -237,17 +237,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_Target_URL_then_must_be_set() {
         String targetURL = randomString();
-        token.setTargetURL(targetURL);
-        assertThat(token.getTargetURL(), equalTo(targetURL));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setTargetURL(targetURL);
+        assertThat(accessToken.getTargetURL(), equalTo(targetURL));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_Target_URL_must_be_committed() throws Exception {
         String targetURL = randomString();
-        token.setTargetURL(targetURL);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setTargetURL(targetURL);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(TARGET_URL.getValue()), equalTo(targetURL));
@@ -256,17 +256,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_Delegator_then_must_be_set() {
         String delegator = randomString();
-        token.setDelegator(delegator);
-        assertThat(token.getDelegator(), equalTo(delegator));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setDelegator(delegator);
+        assertThat(accessToken.getDelegator(), equalTo(delegator));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_Delegator_must_be_committed() throws Exception {
         String delegator = randomString();
-        token.setDelegator(delegator);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setDelegator(delegator);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(DELEGATOR.getValue()), equalTo(delegator));
@@ -275,17 +275,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_and_set_Delegate_then_must_be_set() {
         String delegate = randomString();
-        token.setDelegate(delegate);
-        assertThat(token.getDelegate(), equalTo(delegate));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setDelegate(delegate);
+        assertThat(accessToken.getDelegate(), equalTo(delegate));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_Delegate_must_be_committed() throws Exception {
         String delegate = randomString();
-        token.setDelegate(delegate);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setDelegate(delegate);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(DELEGATE.getValue()), equalTo(delegate));
@@ -293,9 +293,9 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_Verdict_then_must_be_set() {
-        token.setVerdict(SUCCESS);
-        assertThat(token.getVerdict(), equalTo(SUCCESS));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setVerdict(SUCCESS);
+        assertThat(accessToken.getVerdict(), equalTo(SUCCESS));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @DataProvider
@@ -313,17 +313,17 @@ public class JOSEFreshAccessTokenTest {
     @Test
     @UseDataProvider("claims")
     public void when_set_other_claim_then_it_must_be_set(String... claimPair) {
-        token.setClaim(claimPair[0], claimPair[1]);
-        assertThat(token.getClaim(claimPair[0]), equalTo(claimPair[1]));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        accessToken.setClaim(claimPair[0], claimPair[1]);
+        assertThat(accessToken.getClaim(claimPair[0]), equalTo(claimPair[1]));
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
     @UseDataProvider("claims")
     public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(String... claimPair) throws Exception {
-        token.setClaim(claimPair[0], claimPair[1]);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setClaim(claimPair[0], claimPair[1]);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(claimPair[0]), equalTo(claimPair[1]));
@@ -331,9 +331,9 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_Verdict_must_be_committed() throws Exception {
-        token.setVerdict(FAIL);
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.setVerdict(FAIL);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(VERDICT.getValue()), equalTo(FAIL.name()));
@@ -341,15 +341,15 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_then_it_expires_in_3_minutes() {
-        assertThat(token.getExpiryTime(), notNullValue());
-        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(accessToken.getExpiryTime(), notNullValue());
+        assertThat(accessToken.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_expiry_time_must_be_committed() throws Exception {
-        token.cypher();
+        accessToken.cypher();
         Instant instant = LocalDateTime.now().plusMinutes(3).atZone(ZoneId.systemDefault()).toInstant();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getExpirationTime().before(Date.from(instant)), equalTo(true));
@@ -357,15 +357,15 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_then_it_is_effective_now() {
-        assertThat(token.getEffectiveTime(), notNullValue());
-        assertThat(token.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
+        assertThat(accessToken.getEffectiveTime(), notNullValue());
+        assertThat(accessToken.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_effective_time_must_be_committed() throws Exception {
-        token.cypher();
+        accessToken.cypher();
         Instant instant = LocalDateTime.now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getNotBeforeTime().after(Date.from(instant)), equalTo(true));
@@ -373,15 +373,15 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_then_it_is_issued_now() {
-        assertThat(token.getIssuanceTime(), notNullValue());
-        assertThat(token.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
+        assertThat(accessToken.getIssuanceTime(), notNullValue());
+        assertThat(accessToken.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_token_then_the_issuance_time_must_be_committed() throws Exception {
-        token.cypher();
+        accessToken.cypher();
         Instant instant = LocalDateTime.now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().after(Date.from(instant)), equalTo(true));
@@ -389,80 +389,80 @@ public class JOSEFreshAccessTokenTest {
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_stamp_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setStamp(randomString());
+        accessToken.cypher();
+        accessToken.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_subject_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setSubject(randomString());
+        accessToken.cypher();
+        accessToken.setSubject(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_scopes_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setScopes(Collections.emptySet());
+        accessToken.cypher();
+        accessToken.setScopes(Collections.emptySet());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_BP_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setBP(randomString());
+        accessToken.cypher();
+        accessToken.setBP(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_State_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setState(randomString());
+        accessToken.cypher();
+        accessToken.setState(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Issuer_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setIssuer(randomString());
+        accessToken.cypher();
+        accessToken.setIssuer(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Audience_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setAudience(randomString());
+        accessToken.cypher();
+        accessToken.setAudience(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Target_URL_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setTargetURL(randomString());
+        accessToken.cypher();
+        accessToken.setTargetURL(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Delegator_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setDelegator(randomString());
+        accessToken.cypher();
+        accessToken.setDelegator(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Delegate_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setDelegate(randomString());
+        accessToken.cypher();
+        accessToken.setDelegate(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Verdict_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setVerdict(TokenVerdict.SUCCESS);
+        accessToken.cypher();
+        accessToken.setVerdict(TokenVerdict.SUCCESS);
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_Claim_and_already_ciphered_then_error() {
-        token.cypher();
-        token.setClaim(randomString(), randomString());
+        accessToken.cypher();
+        accessToken.setClaim(randomString(), randomString());
     }
 
     @Test
     public void when_cypher_a_fresh_token_then_it_must_be_signed_and_encrypted() throws Exception {
-        token.cypher();
-        JWEObject loadedToken = JWEObject.parse(token.serialize());
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT, notNullValue());
@@ -471,18 +471,18 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_cypher_a_fresh_token_then_set_it_as_cyphered() {
-        token.cypher();
-        assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+        accessToken.cypher();
+        assertThat(accessToken.getStatus(), equalTo(TokenStatus.CYPHERED));
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_cypher_a_fresh_token_and_decypher_then_error() {
-        token.cypher();
-        token.decipher();
+        accessToken.cypher();
+        accessToken.decipher();
     }
 
     @Test(expected = TokenNotCipheredException.class)
     public void when_serialize_a_non_cyphered_token_then_error() {
-        token.serialize();
+        accessToken.serialize();
     }
 }

@@ -18,7 +18,8 @@ public class JOSERefreshToken extends AbstractJOSEToken {
     public JOSERefreshToken(PrivateKey privateKey, PublicKey publicKey) {
         notNull(privateKey, "The private key is mandatory");
         notNull(publicKey, "The public key is mandatory");
-
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
         builder = new JWTClaimsSet.Builder();
     }
 
@@ -153,17 +154,7 @@ public class JOSERefreshToken extends AbstractJOSEToken {
     }
 
     @Override
-    public void cypher() {
-
-    }
-
-    @Override
     public void decipher() {
 
-    }
-
-    @Override
-    public String serialize() {
-        return null;
     }
 }

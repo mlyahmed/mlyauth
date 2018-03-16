@@ -4,6 +4,9 @@ import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenType;
 import com.mlyauth.tools.KeysForTests;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jwt.SignedJWT;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import javafx.util.Pair;
 import org.junit.Before;
@@ -21,7 +24,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(DataProviderRunner.class)
 public class JOSEFreshRefreshTokenTest {
 
-    private JOSERefreshToken token;
+    private JOSERefreshToken refreshToken;
     private Pair<PrivateKey, RSAPublicKey> cypherCred;
     private Pair<PrivateKey, RSAPublicKey> decipherCred;
 
@@ -31,7 +34,7 @@ public class JOSEFreshRefreshTokenTest {
         final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
         cypherCred = new Pair<>(localCred.getKey(), (RSAPublicKey) peerCred.getValue().getPublicKey());
         decipherCred = new Pair<>(peerCred.getKey(), (RSAPublicKey) localCred.getValue().getPublicKey());
-        token = new JOSERefreshToken(cypherCred.getKey(), cypherCred.getValue());
+        refreshToken = new JOSERefreshToken(cypherCred.getKey(), cypherCred.getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -48,27 +51,38 @@ public class JOSEFreshRefreshTokenTest {
 
     @Test
     public void when_create_fresh_refresh_response_then_token_claims_must_be_fresh() {
-        assertThat(token.getStamp(), nullValue());
-        assertThat(token.getSubject(), nullValue());
-        assertThat(token.getScopes(), empty());
-        assertThat(token.getBP(), nullValue());
-        assertThat(token.getState(), nullValue());
-        assertThat(token.getIssuer(), nullValue());
-        assertThat(token.getAudience(), nullValue());
-        assertThat(token.getDelegator(), nullValue());
-        assertThat(token.getDelegate(), nullValue());
-        assertThat(token.getVerdict(), nullValue());
-        assertThat(token.getNorm(), equalTo(TokenNorm.JOSE));
-        assertThat(token.getType(), equalTo(TokenType.REFRESH));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FRESH));
+        assertThat(refreshToken.getStamp(), nullValue());
+        assertThat(refreshToken.getSubject(), nullValue());
+        assertThat(refreshToken.getScopes(), empty());
+        assertThat(refreshToken.getBP(), nullValue());
+        assertThat(refreshToken.getState(), nullValue());
+        assertThat(refreshToken.getIssuer(), nullValue());
+        assertThat(refreshToken.getAudience(), nullValue());
+        assertThat(refreshToken.getDelegator(), nullValue());
+        assertThat(refreshToken.getDelegate(), nullValue());
+        assertThat(refreshToken.getVerdict(), nullValue());
+        assertThat(refreshToken.getNorm(), equalTo(TokenNorm.JOSE));
+        assertThat(refreshToken.getType(), equalTo(TokenType.REFRESH));
+        assertThat(refreshToken.getStatus(), equalTo(TokenStatus.FRESH));
     }
 
     @Test
     public void when_create_a_fresh_refresh_token_and_set_stamp_then_must_be_set() {
         String id = randomString();
-        token.setStamp(id);
-        assertThat(token.getStamp(), equalTo(id));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        refreshToken.setStamp(id);
+        assertThat(refreshToken.getStamp(), equalTo(id));
+        assertThat(refreshToken.getStatus(), equalTo(TokenStatus.FORGED));
+    }
+
+    @Test
+    public void when_serialize_cyphered_refresh_token_then_the_stamp_must_be_committed() throws Exception {
+        final String id = randomString();
+        refreshToken.setStamp(id);
+        refreshToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(refreshToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getJWTID(), equalTo(id));
     }
 
 }
