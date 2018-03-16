@@ -1,13 +1,13 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.constants.TokenNorm;
-import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenStatus;
-import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.*;
+import com.mlyauth.exception.TokenNotCipheredException;
+import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.token.Claims;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ import static java.util.Date.from;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(DataProviderRunner.class)
 public class JOSEFreshRefreshTokenTest {
@@ -393,4 +395,97 @@ public class JOSEFreshRefreshTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().before(new java.util.Date()), equalTo(true));
     }
 
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_stamp_and_the_refresh_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setStamp(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_subject_and_the_refresh_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setSubject(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_scopes_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setScopes(Collections.emptySet());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_BP_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setBP(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Issuer_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setIssuer(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Audience_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setAudience(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Target_URL_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setTargetURL(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Delegator_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setDelegator(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Delegate_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setDelegate(randomString());
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Verdict_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setVerdict(TokenVerdict.FAIL);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_set_Claim_and_the_refresh_token_is_already_ciphered_then_error() {
+        refreshToken.cypher();
+        refreshToken.setClaim(randomString(), randomString());
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_cypher_a_fresh_refresh_token_then_it_must_be_signed_and_encrypted() throws Exception {
+        refreshToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(refreshToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT, notNullValue());
+        assertTrue(signedJWT.verify(new RSASSAVerifier(decipherCred.getValue())));
+    }
+
+    @Test
+    public void when_cypher_a_fresh_refresh_token_then_set_it_as_cyphered() {
+        refreshToken.cypher();
+        assertThat(refreshToken.getStatus(), equalTo(TokenStatus.CYPHERED));
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void when_cypher_a_fresh_access_token_and_decypher_it_then_error() {
+        refreshToken.cypher();
+        refreshToken.decipher();
+    }
+
+    @Test(expected = TokenNotCipheredException.class)
+    public void when_serialize_a_non_cyphered_refresh_token_then_error() {
+        refreshToken.serialize();
+    }
 }

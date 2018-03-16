@@ -405,25 +405,25 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_stamp_and_already_ciphered_then_error() {
+    public void when_set_stamp_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setStamp(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_subject_and_already_ciphered_then_error() {
+    public void when_set_subject_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setSubject(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_scopes_and_already_ciphered_then_error() {
+    public void when_set_scopes_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setScopes(Collections.emptySet());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_BP_and_already_ciphered_then_error() {
+    public void when_set_BP_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setBP(randomString());
     }
@@ -435,49 +435,50 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Issuer_and_already_ciphered_then_error() {
+    public void when_set_Issuer_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setIssuer(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Audience_and_already_ciphered_then_error() {
+    public void when_set_Audience_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setAudience(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Target_URL_and_already_ciphered_then_error() {
+    public void when_set_Target_URL_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setTargetURL(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Delegator_and_already_ciphered_then_error() {
+    public void when_set_Delegator_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setDelegator(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Delegate_and_already_ciphered_then_error() {
+    public void when_set_Delegate_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setDelegate(randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Verdict_and_already_ciphered_then_error() {
+    public void when_set_Verdict_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setVerdict(TokenVerdict.SUCCESS);
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_set_Claim_and_already_ciphered_then_error() {
+    public void when_set_Claim_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();
         accessToken.setClaim(randomString(), randomString());
     }
 
     @Test
-    public void when_cypher_a_fresh_token_then_it_must_be_signed_and_encrypted() throws Exception {
+    @SuppressWarnings("Duplicates")
+    public void when_cypher_a_fresh_access_token_then_it_must_be_signed_and_encrypted() throws Exception {
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
@@ -487,19 +488,19 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_cypher_a_fresh_token_then_set_it_as_cyphered() {
+    public void when_cypher_a_fresh_access_token_then_set_it_as_cyphered() {
         accessToken.cypher();
         assertThat(accessToken.getStatus(), equalTo(TokenStatus.CYPHERED));
     }
 
     @Test(expected = TokenUnmodifiableException.class)
-    public void when_cypher_a_fresh_token_and_decypher_then_error() {
+    public void when_cypher_a_fresh_access_token_and_decypher_it_then_error() {
         accessToken.cypher();
         accessToken.decipher();
     }
 
     @Test(expected = TokenNotCipheredException.class)
-    public void when_serialize_a_non_cyphered_token_then_error() {
+    public void when_serialize_a_non_cyphered_access_token_then_error() {
         accessToken.serialize();
     }
 }

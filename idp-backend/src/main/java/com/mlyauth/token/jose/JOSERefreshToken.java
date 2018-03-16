@@ -35,8 +35,4 @@ public class JOSERefreshToken extends AbstractJOSEToken {
         return TokenType.REFRESH;
     }
 
-    @Override
-    public void decipher() {
-
-    }
 }
