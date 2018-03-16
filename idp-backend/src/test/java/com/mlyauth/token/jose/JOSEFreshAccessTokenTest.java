@@ -93,6 +93,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
+    @SuppressWarnings("Duplicates")
     public void when_serialize_cyphered_access_token_then_the_stamp_must_be_committed() throws Exception {
         final String id = randomString();
         accessToken.setStamp(id);
@@ -104,7 +105,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_subject_then_must_be_set() {
+    public void when_create_a_fresh_access_token_and_set_subject_then_must_be_set() {
         String subject = randomString();
         accessToken.setSubject(subject);
         assertThat(accessToken.getSubject(), equalTo(subject));
@@ -112,7 +113,8 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_serialize_cyphered_token_then_the_subject_must_be_committed() throws Exception {
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_subject_must_be_committed() throws Exception {
         String subject = randomString();
         accessToken.setSubject(subject);
         accessToken.cypher();
@@ -123,7 +125,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @DataProvider
-    public static Object[][] scopes() {
+    public static Object[][] accessScopes() {
         // @formatter:off
         return new Object[][]{
                 {PROPOSAL.name(), POLICY.name(), CLAIM.name()},
@@ -136,18 +138,19 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    @UseDataProvider("scopes")
-    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
-        final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
+    @UseDataProvider("accessScopes")
+    public void when_create_a_fresh_access_token_and_set_scopes_then_they_must_be_set(String... scopesArray) {
+        final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         accessToken.setScopes(scopes);
         assertThat(accessToken.getScopes(), equalTo(scopes));
         assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
     }
 
     @Test
-    @UseDataProvider("scopes")
-    public void when_serialize_cyphered_token_then_the_scopes_must_be_committed(String... scopesArrays) throws Exception {
-        final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
+    @UseDataProvider("accessScopes")
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_scopes_must_be_committed(String... scopesArray) throws Exception {
+        final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         accessToken.setScopes(scopes);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
@@ -158,7 +161,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_BP_then_must_be_set() {
+    public void when_create_a_fresh_access_token_and_set_BP_then_must_be_set() {
         String bp = randomString();
         accessToken.setBP(bp);
         assertThat(accessToken.getBP(), equalTo(bp));
@@ -166,7 +169,8 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_serialize_cyphered_token_then_the_BP_must_be_committed() throws Exception {
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_BP_must_be_committed() throws Exception {
         String bp = randomString();
         accessToken.setBP(bp);
         accessToken.cypher();
@@ -177,7 +181,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_State_then_must_be_set() {
+    public void when_create_a_fresh_access_token_and_set_State_then_must_be_set() {
         String state = randomString();
         accessToken.setState(state);
         assertThat(accessToken.getState(), equalTo(state));
@@ -185,7 +189,8 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_serialize_cyphered_token_then_the_State_must_be_committed() throws Exception {
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_State_must_be_committed() throws Exception {
         String state = randomString();
         accessToken.setState(state);
         accessToken.cypher();
@@ -196,7 +201,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_Issuer_then_must_be_set() {
+    public void when_create_a_fresh_access_token_and_set_Issuer_then_must_be_set() {
         String issuer = randomString();
         accessToken.setIssuer(issuer);
         assertThat(accessToken.getIssuer(), equalTo(issuer));
@@ -204,7 +209,8 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_serialize_cyphered_token_then_the_Issuer_must_be_committed() throws Exception {
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_Issuer_must_be_committed() throws Exception {
         String issuer = randomString();
         accessToken.setIssuer(issuer);
         accessToken.cypher();
@@ -216,7 +222,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_Audience_then_must_be_set() {
+    public void when_create_a_fresh_access_token_and_set_Audience_then_must_be_set() {
         String audienceURI = randomString();
         accessToken.setAudience(audienceURI);
         assertThat(accessToken.getAudience(), equalTo(audienceURI));
@@ -224,6 +230,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
+    @SuppressWarnings("Duplicates")
     public void when_serialize_cyphered_token_then_the_Audience_must_be_committed() throws Exception {
         String audienceURI = randomString();
         accessToken.setAudience(audienceURI);

@@ -1,6 +1,5 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenType;
 import com.mlyauth.constants.TokenVerdict;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -8,8 +7,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Set;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -21,66 +18,6 @@ public class JOSERefreshToken extends AbstractJOSEToken {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         builder = new JWTClaimsSet.Builder();
-    }
-
-    @Override
-    public String getSubject() {
-        return null;
-    }
-
-    @Override
-    public void setSubject(String subject) {
-
-    }
-
-    @Override
-    public Set<TokenScope> getScopes() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public void setScopes(Set<TokenScope> scopes) {
-
-    }
-
-    @Override
-    public String getBP() {
-        return null;
-    }
-
-    @Override
-    public void setBP(String bp) {
-
-    }
-
-    @Override
-    public String getState() {
-        return null;
-    }
-
-    @Override
-    public void setState(String state) {
-
-    }
-
-    @Override
-    public String getIssuer() {
-        return null;
-    }
-
-    @Override
-    public void setIssuer(String issuerURI) {
-
-    }
-
-    @Override
-    public String getAudience() {
-        return null;
-    }
-
-    @Override
-    public void setAudience(String audienceURI) {
-
     }
 
     @Override
