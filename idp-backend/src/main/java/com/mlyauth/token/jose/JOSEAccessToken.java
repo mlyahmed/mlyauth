@@ -1,10 +1,12 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.constants.*;
+import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenStatus;
+import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
-import com.mlyauth.token.AbstractToken;
 import com.mlyauth.token.Claims;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSADecrypter;
@@ -34,15 +36,9 @@ import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
 import static org.springframework.util.Assert.notNull;
 
-public class JOSEAccessToken extends AbstractToken {
+public class JOSEAccessToken extends AbstractJOSEToken {
 
-    private TokenStatus status = TokenStatus.FRESH;
 
-    private final PrivateKey privateKey;
-    private final PublicKey publicKey;
-
-    private JWEObject token;
-    private JWTClaimsSet.Builder builder;
 
     public JOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         notNull(privateKey, "The private key is mandatory");
@@ -78,18 +74,6 @@ public class JOSEAccessToken extends AbstractToken {
         } catch (ParseException e) {
             throw JOSEErrorException.newInstance(e);
         }
-    }
-
-    @Override
-    public String getStamp() {
-        return builder.build().getJWTID();
-    }
-
-    @Override
-    public void setStamp(String stamp) {
-        checkUnmodifiable();
-        builder = builder.jwtID(stamp);
-        status = TokenStatus.FORGED;
     }
 
     @Override
@@ -232,18 +216,8 @@ public class JOSEAccessToken extends AbstractToken {
     }
 
     @Override
-    public TokenNorm getNorm() {
-        return TokenNorm.JOSE;
-    }
-
-    @Override
     public TokenType getType() {
         return TokenType.ACCESS;
-    }
-
-    @Override
-    public TokenStatus getStatus() {
-        return status;
     }
 
     @Override
@@ -313,7 +287,7 @@ public class JOSEAccessToken extends AbstractToken {
 
     @Override
     public String serialize() {
-        if (status != CYPHERED)
+        if (getStatus() != CYPHERED)
             throw TokenNotCipheredException.newInstance();
         return token.serialize();
     }

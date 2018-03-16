@@ -56,19 +56,19 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_create_a_fresh_token_and_private_key_is_null_then_error() {
+    public void when_create_a_fresh_access_token_and_private_key_is_null_then_error() {
         final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        new JOSEAccessToken(null, (RSAPublicKey) credential.getValue().getPublicKey());
+        new JOSEAccessToken(null, credential.getValue().getPublicKey());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_create_a_fresh_token_and_public_key_is_null_then_error() {
+    public void when_create_a_fresh_access_token_and_public_key_is_null_then_error() {
         final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
         new JOSEAccessToken(credential.getKey(), null);
     }
 
     @Test
-    public void when_create_fresh_response_then_token_claims_must_be_fresh() {
+    public void when_create_fresh_access_response_then_token_claims_must_be_fresh() {
         assertThat(token.getStamp(), nullValue());
         assertThat(token.getSubject(), nullValue());
         assertThat(token.getScopes(), empty());
@@ -85,7 +85,7 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_token_and_set_stamp_then_must_be_set() {
+    public void when_create_a_fresh_access_token_and_set_stamp_then_must_be_set() {
         String id = randomString();
         token.setStamp(id);
         assertThat(token.getStamp(), equalTo(id));
