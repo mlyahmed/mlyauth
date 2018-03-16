@@ -3,6 +3,7 @@ package com.mlyauth.token.jose;
 import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.token.AbstractToken;
@@ -16,6 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Set;
 
@@ -159,5 +162,82 @@ public abstract class AbstractJOSEToken extends AbstractToken {
         checkUnmodifiable();
         builder = builder.audience(audienceURI);
         status = TokenStatus.FORGED;
+    }
+
+    @Override
+    public String getTargetURL() {
+        return (String) builder.build().getClaim(TARGET_URL.getValue());
+    }
+
+    @Override
+    public void setTargetURL(String url) {
+        checkUnmodifiable();
+        builder = builder.claim(TARGET_URL.getValue(), url);
+        status = TokenStatus.FORGED;
+    }
+
+    @Override
+    public String getDelegator() {
+        return (String) builder.build().getClaim(DELEGATOR.getValue());
+    }
+
+    @Override
+    public void setDelegator(String delegatorID) {
+        checkUnmodifiable();
+        builder = builder.claim(DELEGATOR.getValue(), delegatorID);
+        status = TokenStatus.FORGED;
+    }
+
+    @Override
+    public String getDelegate() {
+        return (String) builder.build().getClaim(DELEGATE.getValue());
+    }
+
+    @Override
+    public void setDelegate(String delegateURI) {
+        checkUnmodifiable();
+        builder = builder.claim(DELEGATE.getValue(), delegateURI);
+        status = TokenStatus.FORGED;
+    }
+
+    @Override
+    public TokenVerdict getVerdict() {
+        return builder.build().getClaim(VERDICT.getValue()) != null
+                ? TokenVerdict.valueOf((String) builder.build().getClaim(VERDICT.getValue()))
+                : null;
+    }
+
+    @Override
+    public void setVerdict(TokenVerdict verdict) {
+        checkUnmodifiable();
+        builder = builder.claim(VERDICT.getValue(), verdict != null ? verdict.name() : null);
+        status = TokenStatus.FORGED;
+    }
+
+    @Override
+    public void setClaim(String claimURI, String value) {
+        checkCommitted();
+        builder = builder.claim(claimURI, value);
+        status = TokenStatus.FORGED;
+    }
+
+    @Override
+    public String getClaim(String claimURI) {
+        return (String) builder.build().getClaim(claimURI);
+    }
+
+    @Override
+    public LocalDateTime getExpiryTime() {
+        return LocalDateTime.ofInstant(builder.build().getExpirationTime().toInstant(), ZoneId.systemDefault());
+    }
+
+    @Override
+    public LocalDateTime getEffectiveTime() {
+        return LocalDateTime.ofInstant(builder.build().getNotBeforeTime().toInstant(), ZoneId.systemDefault());
+    }
+
+    @Override
+    public LocalDateTime getIssuanceTime() {
+        return LocalDateTime.ofInstant(builder.build().getIssueTime().toInstant(), ZoneId.systemDefault());
     }
 }

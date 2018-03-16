@@ -1,13 +1,15 @@
 package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.TokenType;
-import com.mlyauth.constants.TokenVerdict;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
+import static java.time.LocalDateTime.now;
+import static java.util.Date.from;
 import static org.springframework.util.Assert.notNull;
 
 public class JOSERefreshToken extends AbstractJOSEToken {
@@ -18,76 +20,19 @@ public class JOSERefreshToken extends AbstractJOSEToken {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         builder = new JWTClaimsSet.Builder();
-    }
-
-    @Override
-    public String getTargetURL() {
-        return null;
-    }
-
-    @Override
-    public void setTargetURL(String url) {
+        initTimes();
 
     }
 
-    @Override
-    public String getDelegator() {
-        return null;
-    }
-
-    @Override
-    public void setDelegator(String delegatorID) {
-
-    }
-
-    @Override
-    public String getDelegate() {
-        return null;
-    }
-
-    @Override
-    public void setDelegate(String delegateURI) {
-
-    }
-
-    @Override
-    public TokenVerdict getVerdict() {
-        return null;
-    }
-
-    @Override
-    public void setVerdict(TokenVerdict verdict) {
-
-    }
-
-    @Override
-    public LocalDateTime getExpiryTime() {
-        return null;
-    }
-
-    @Override
-    public LocalDateTime getEffectiveTime() {
-        return null;
-    }
-
-    @Override
-    public LocalDateTime getIssuanceTime() {
-        return null;
+    private void initTimes() {
+        builder = builder.expirationTime(from(now().plusYears(3).atZone(ZoneId.systemDefault()).toInstant()))
+                .notBeforeTime(new Date())
+                .issueTime(new Date());
     }
 
     @Override
     public TokenType getType() {
         return TokenType.REFRESH;
-    }
-
-    @Override
-    public void setClaim(String claimURI, String value) {
-
-    }
-
-    @Override
-    public String getClaim(String claimURI) {
-        return null;
     }
 
     @Override
