@@ -36,13 +36,12 @@ import static org.junit.Assert.assertThat;
 
 public class TokenMapperTest {
 
-    private SecurityConfig securityConfig;
     private PasswordEncoder encoder;
     private TokenMapper mapper;
 
     @Before
     public void setup() {
-        securityConfig = new SecurityConfig();
+        SecurityConfig securityConfig = new SecurityConfig();
         encoder = securityConfig.passwordEncoder();
         mapper = new TokenMapper();
         ReflectionTestUtils.setField(mapper, "encoder", encoder);
