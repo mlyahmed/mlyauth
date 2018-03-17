@@ -37,13 +37,15 @@ public class SPSAMLConfig {
     @Value("${sp.saml.idps-metadata-dir:#{null}}")
     private File idpsMetadataDir;
 
+    @Value("${sp.saml.entityId}")
+    private String localEntityId;
+
     @Bean("metadata")
     public MetadataManager metadata() throws Exception {
         final MetadataManager metadataManager = new CachingMetadataManager(idpMetadata());
         metadataManager.setDefaultExtendedMetadata(extendedMetadata());
         metadataManager.setKeyManager(keyManager);
         metadataManager.setRefreshRequired(true);
-        metadataManager.refreshMetadata();
         return metadataManager;
     }
 

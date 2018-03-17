@@ -17,7 +17,9 @@ idp:
 
 sp:
   jose:
-    entityId: primainsureIDP
+    entityId: primainsure4sgi
+  saml:
+    entityId: primainsure4sgi
 
 server:
   port: 16666

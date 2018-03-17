@@ -22,8 +22,8 @@
 
     <bean id="samlFilter" class="org.springframework.security.web.FilterChainProxy">
         <sec:filter-chain-map request-matcher="ant">
-            <sec:filter-chain pattern="/sp/saml/metadata" filters="metadataDisplayFilter"/>
-            <sec:filter-chain pattern="/sp/saml/sso" filters="samlWebSSOProcessingFilter"/>
+            <sec:filter-chain pattern="/sp/saml/metadata" filters="metadataGeneratorFilter, metadataDisplayFilter"/>
+            <sec:filter-chain pattern="/sp/saml/sso" filters="metadataGeneratorFilter, samlWebSSOProcessingFilter"/>
         </sec:filter-chain-map>
     </bean>
 
@@ -38,34 +38,34 @@
         <property name="filterProcessesUrl" value="/sp/saml/metadata"/>
     </bean>
 
-    <bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
-        <constructor-arg>
-            <bean class="org.springframework.security.saml.metadata.MetadataGenerator">
-                <property name="wantAssertionSigned" value="false"/>
-                <property name="requestSigned" value="true"/>
-                <property name="entityId" value="primainsure4sgi"/>
-                <property name="nameID">
-                    <list>
-                    </list>
-                </property>
-                <property name="bindingsSSO">
-                    <list>
-                        <value>POST</value>
-                    </list>
-                </property>
-                <property name="bindingsSLO">
-                    <list>
-                        <value>POST</value>
-                    </list>
-                </property>
-                <property name="extendedMetadata">
-                    <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
-                        <property name="signMetadata" value="true"/>
-                        <property name="supportUnsolicitedResponse" value="true"/>
-                    </bean>
-                </property>
+    <bean  id="metadataGenerator" class="org.springframework.security.saml.metadata.MetadataGenerator">
+        <property name="wantAssertionSigned" value="false"/>
+        <property name="requestSigned" value="true"/>
+        <property name="entityId" value="${sp.saml.entityId}"/>
+        <property name="nameID">
+            <list>
+            </list>
+        </property>
+        <property name="bindingsSSO">
+            <list>
+                <value>POST</value>
+            </list>
+        </property>
+        <property name="bindingsSLO">
+            <list>
+                <value>POST</value>
+            </list>
+        </property>
+        <property name="extendedMetadata">
+            <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
+                <property name="signMetadata" value="true"/>
+                <property name="supportUnsolicitedResponse" value="true"/>
             </bean>
-        </constructor-arg>
+        </property>
+    </bean>
+
+    <bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
+        <constructor-arg ref="metadataGenerator" />
     </bean>
 
 

@@ -11,16 +11,10 @@ import com.mlyauth.domain.*;
 import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.tools.KeysForTests;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.RSAEncrypter;
-import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.util.Base64URL;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.security.PrivateKey;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,13 +33,22 @@ import java.util.UUID;
 import static com.mlyauth.constants.AspectAttribute.*;
 import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
+import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
+
+    public static final String CLIENT_SPACE_APP_LOGIN = "cl.clientSpace";
+    public static final String CLIENT_SPACE_APP_PASSWORD = "BrsAssu84;";
+    public static final String CLIENT_APP_ENTITY_ID = "clientSpace";
+    public static final String POLICY_APP_LOGIN = "rs.policy";
+    public static final String POLICY_APP_PASSWORD = "BrsAssu84;";
+    public static final String POLICY_APP_ENTITY_ID = "policy";
 
     @Value("${idp.jose.entityId}")
     private String localEntityId;
@@ -60,7 +63,7 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     private TokenDAO tokenDAO;
 
     @Autowired
-    private CredentialManager credentialManager;
+    private CredentialManager credManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -78,18 +81,56 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     private ResultActions resultActions;
+    private Application clientSpace;
+    private Pair<PrivateKey, X509Certificate> clientCred;
+    private JOSERefreshToken clientRefreshToken;
+    private Application policy;
+    private Pair<PrivateKey, X509Certificate> policyCred;
+    private JOSEAccessToken accessToken;
+    private String serializedAccessToken;
+    private JOSERefreshToken clientQueryToken;
 
     @Test
     public void when_a_registered_client_asks_an_access_then_return_it() throws Exception {
+        given_the_client_space_application();
+        given_the_client_space_with_client_aspect();
+        given_the_client_space_refresh_token_is_ready();
+        given_the_policy_application();
+        given_the_policy_with_resource_server_aspect();
+        given_a_token_to_ask_access_to_the_policy_app();
+        when_then_client_space_ask_an_access_token();
 
-        // Client space
+        resultActions.andExpect(status().isCreated()).andExpect(content().contentType("text/plain;charset=UTF-8"));
+        serializedAccessToken = resultActions.andReturn().getResponse().getContentAsString();
+        accessToken = tokenFactory.createJOSEAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getLocalPublicKey());
+        accessToken.decipher();
+        assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
+        assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));
+    }
+
+    private void given_the_client_space_refresh_token_is_ready() {
+        clientRefreshToken = tokenFactory.createJOSERefreshToken(credManager.getLocalPrivateKey(), clientCred.getValue().getPublicKey());
+        clientRefreshToken.setStamp(UUID.randomUUID().toString());
+        clientRefreshToken.setAudience(CLIENT_APP_ENTITY_ID);
+        clientRefreshToken.setVerdict(TokenVerdict.SUCCESS);
+        clientRefreshToken.cypher();
+        final String serialized = clientRefreshToken.serialize();
+        Token token = tokenMapper.toToken(clientRefreshToken);
+        token.setPurpose(TokenPurpose.DELEGATION);
+        token.setApplication(clientSpace);
+        token.setChecksum(DigestUtils.sha256Hex(serialized));
+        token.setStatus(TokenStatus.READY);
+        tokenDAO.save(token);
+    }
+
+    private void given_the_client_space_application() {
         AuthenticationInfo clientSpaceAuthInfo = AuthenticationInfo.newInstance()
-                .setLogin("cl.clientSpace")
+                .setLogin(CLIENT_SPACE_APP_LOGIN)
                 .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 30 * 60)))
-                .setPassword(passwordEncoder.encode("BrsAssu84;"))
+                .setPassword(passwordEncoder.encode(CLIENT_SPACE_APP_PASSWORD))
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
-        Application clientSpace = Application.newInstance()
+        clientSpace = Application.newInstance()
                 .setAppname("clientSpace")
                 .setAspects(new HashSet<>(Arrays.asList(CL_JOSE)))
                 .setTitle("The Client Space")
@@ -98,15 +139,17 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         clientSpaceAuthInfo.setApplication(clientSpace);
         applicationDAO.save(clientSpace);
         authenticationInfoDAO.save(clientSpaceAuthInfo);
+    }
 
-        final Pair<PrivateKey, X509Certificate> clientSpaceCredentials = KeysForTests.generateRSACredential();
+    private void given_the_client_space_with_client_aspect() throws CertificateEncodingException {
+        clientCred = KeysForTests.generateRSACredential();
 
         final ApplicationAspectAttribute clientSpaceEntityIdAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
                         .setAttributeCode(CL_JOSE_ENTITY_ID.getValue()))
-                .setValue("clientSpace");
+                .setValue(CLIENT_APP_ENTITY_ID);
 
         final ApplicationAspectAttribute clientSpaceContextAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
@@ -121,20 +164,19 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
                         .setAttributeCode(AspectAttribute.CL_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
-                .setValue(Base64URL.encode(clientSpaceCredentials.getValue().getEncoded()).toString());
-
+                .setValue(Base64URL.encode(clientCred.getValue().getEncoded()).toString());
 
         appAspectAttrDAO.save(asList(clientSpaceEntityIdAttribute, clientSpaceContextAttribute, clientSpaceCertificateAttribute));
+    }
 
-
-        // The Prima Policy
+    private void given_the_policy_application() {
         AuthenticationInfo policyAuthInfo = AuthenticationInfo.newInstance()
-                .setLogin("rs.policy")
+                .setLogin(POLICY_APP_LOGIN)
                 .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 30 * 60)))
-                .setPassword(passwordEncoder.encode("BrsAssu84;"))
+                .setPassword(passwordEncoder.encode(POLICY_APP_PASSWORD))
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
-        Application policy = Application.newInstance()
+        policy = Application.newInstance()
                 .setAppname("policy")
                 .setAspects(new HashSet<>(Arrays.asList(RS_JOSE)))
                 .setTitle("The Prima Policy")
@@ -143,15 +185,17 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         policyAuthInfo.setApplication(policy);
         applicationDAO.save(policy);
         authenticationInfoDAO.save(policyAuthInfo);
+    }
 
-        final Pair<PrivateKey, X509Certificate> policyCredentials = KeysForTests.generateRSACredential();
+    private void given_the_policy_with_resource_server_aspect() throws CertificateEncodingException {
+        policyCred = KeysForTests.generateRSACredential();
 
         final ApplicationAspectAttribute policyEntityIdAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(RS_JOSE.name())
                         .setAttributeCode(RS_JOSE_ENTITY_ID.getValue()))
-                .setValue("policy");
+                .setValue(POLICY_APP_ENTITY_ID);
 
         final ApplicationAspectAttribute policyContextAttribute = ApplicationAspectAttribute.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
@@ -166,61 +210,32 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(RS_JOSE.name())
                         .setAttributeCode(AspectAttribute.RS_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
-                .setValue(Base64URL.encode(policyCredentials.getValue().getEncoded()).toString());
+                .setValue(Base64URL.encode(policyCred.getValue().getEncoded()).toString());
 
 
         appAspectAttrDAO.save(asList(policyEntityIdAttribute, policyContextAttribute, policyCertificateAttribute));
+    }
 
-
-        final JOSERefreshToken refreshToken = tokenFactory.createJOSERefreshToken(credentialManager.getLocalPrivateKey(), clientSpaceCredentials.getValue().getPublicKey());
-        refreshToken.setStamp(UUID.randomUUID().toString());
-        refreshToken.setAudience("clientSpace");
-        refreshToken.setVerdict(TokenVerdict.SUCCESS);
-        refreshToken.cypher();
-        final String serialized = refreshToken.serialize();
-        Token token = tokenMapper.toToken(refreshToken);
-        token.setPurpose(TokenPurpose.DELEGATION);
-        token.setApplication(clientSpace);
-        token.setChecksum(DigestUtils.sha256Hex(serialized));
-        token.setStatus(TokenStatus.READY);
-        tokenDAO.save(token);
-
-        JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder()
-                .issuer("clientSpace")
-                .audience("policy")
-                .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
-                .notBeforeTime(new Date())
-                .issueTime(new Date())
-                .jwtID(refreshToken.getStamp());
-
-        SignedJWT tokenSigned = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).customParam("iss", "clientSpace").build(), claims.build());
-        tokenSigned.sign(new RSASSASigner(clientSpaceCredentials.getKey()));
-        JWEObject tokenEncrypted = new JWEObject(new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).build(), new Payload(tokenSigned));
-
-        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) credentialManager.getLocalPublicKey()));
-
-
-        resultActions = mockMvc.perform(post("/token/jose/access")
-                .content(tokenEncrypted.serialize())
-                .with(httpBasic("cl.clientSpace", "BrsAssu84;"))
-                .contentType("text/plain;charset=UTF-8"));
-
-
-        resultActions.andExpect(status().isCreated())
-                .andExpect(content().contentType("text/plain;charset=UTF-8"));
-
-        String content = resultActions.andReturn().getResponse().getContentAsString();
-
-        final JOSEAccessToken accessToken = tokenFactory.createJOSEAccessToken(content, policyCredentials.getKey(), credentialManager.getLocalPublicKey());
-        accessToken.decipher();
-        Assert.assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
-
+    private void given_a_token_to_ask_access_to_the_policy_app() {
+        clientQueryToken = tokenFactory.createJOSERefreshToken(clientCred.getKey(), credManager.getLocalPublicKey());
+        clientQueryToken.setIssuer(CLIENT_APP_ENTITY_ID);
+        clientQueryToken.setAudience(POLICY_APP_ENTITY_ID);
+        clientQueryToken.setStamp(clientRefreshToken.getStamp());
+        clientQueryToken.setDelegator(randomString());
+        clientQueryToken.cypher();
 
     }
 
+    private void when_then_client_space_ask_an_access_token() throws Exception {
+        resultActions = mockMvc.perform(post("/token/jose/access")
+                .content(clientQueryToken.serialize())
+                .with(httpBasic(CLIENT_SPACE_APP_LOGIN, CLIENT_SPACE_APP_PASSWORD))
+                .contentType("text/plain;charset=UTF-8"));
+    }
+
+
+
 
     //TODO when the CLIENT passes bad refresh ID then error
-
     //TODO when the CLIENT passes bad RS ID then error
-
 }
