@@ -1,7 +1,7 @@
 package com.mlyauth.token.saml;
 
+import com.mlyauth.constants.TokenProcessingStatus;
 import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
@@ -78,14 +78,14 @@ public class SAMLCypheredAccessTokenTest {
     @Test
     public void the_token_status_must_be_cyphered() {
         token = new SAMLAccessToken(serialized, decipherCred);
-        assertThat(token.getStatus(), equalTo(TokenStatus.CYPHERED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.CYPHERED));
     }
 
 
     @Test
     public void when_decipher_then_it_must_be_deciphered() {
         when_decipher_the_token();
-        assertThat(token.getStatus(), equalTo(TokenStatus.DECIPHERED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.DECIPHERED));
     }
 
 

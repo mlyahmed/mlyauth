@@ -1,8 +1,8 @@
 package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenProcessingStatus;
 import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
@@ -26,8 +26,8 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.mlyauth.constants.TokenStatus.CYPHERED;
-import static com.mlyauth.constants.TokenStatus.DECIPHERED;
+import static com.mlyauth.constants.TokenProcessingStatus.CYPHERED;
+import static com.mlyauth.constants.TokenProcessingStatus.DECIPHERED;
 import static com.mlyauth.token.Claims.*;
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
@@ -36,7 +36,7 @@ import static org.springframework.util.Assert.notNull;
 
 public abstract class AbstractJOSEToken extends AbstractToken {
 
-    protected TokenStatus status = TokenStatus.FRESH;
+    protected TokenProcessingStatus status = TokenProcessingStatus.FRESH;
 
     protected PrivateKey privateKey;
     protected PublicKey publicKey;
@@ -59,7 +59,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
         parseCipheredToken(serialize);
         this.privateKey = privateKey;
         this.publicKey = publicKey;
-        status = TokenStatus.CYPHERED;
+        status = TokenProcessingStatus.CYPHERED;
         locked = true;
     }
 
@@ -80,11 +80,11 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setStamp(String stamp) {
         checkUnmodifiable();
         builder = builder.jwtID(stamp);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
-    public TokenStatus getStatus() {
+    public TokenProcessingStatus getStatus() {
         return status;
     }
 
@@ -132,7 +132,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setSubject(String subject) {
         checkUnmodifiable();
         builder = builder.subject(subject);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -146,7 +146,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setScopes(Set<TokenScope> scopes) {
         checkUnmodifiable();
         builder = builder.claim(SCOPES.getValue(), compactScopes(scopes));
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -158,7 +158,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setBP(String bp) {
         checkUnmodifiable();
         builder = builder.claim(BP.getValue(), bp);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -170,7 +170,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setState(String state) {
         checkUnmodifiable();
         builder = builder.claim(STATE.getValue(), state);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -182,7 +182,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setIssuer(String issuerURI) {
         checkUnmodifiable();
         builder = builder.issuer(issuerURI);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -194,7 +194,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setAudience(String audienceURI) {
         checkUnmodifiable();
         builder = builder.audience(audienceURI);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -206,7 +206,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setTargetURL(String url) {
         checkUnmodifiable();
         builder = builder.claim(TARGET_URL.getValue(), url);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -218,7 +218,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setDelegator(String delegatorID) {
         checkUnmodifiable();
         builder = builder.claim(DELEGATOR.getValue(), delegatorID);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -230,7 +230,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setDelegate(String delegateURI) {
         checkUnmodifiable();
         builder = builder.claim(DELEGATE.getValue(), delegateURI);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -244,14 +244,14 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     public void setVerdict(TokenVerdict verdict) {
         checkUnmodifiable();
         builder = builder.claim(VERDICT.getValue(), verdict != null ? verdict.name() : null);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
     public void setClaim(String claimURI, String value) {
         checkCommitted();
         builder = builder.claim(claimURI, value);
-        status = TokenStatus.FORGED;
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override

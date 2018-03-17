@@ -9,6 +9,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +20,7 @@ import static com.mlyauth.constants.AspectType.SP_SAML;
 import static com.mlyauth.constants.Direction.OUTBOUND;
 import static com.mlyauth.constants.TokenNorm.SAML;
 import static com.mlyauth.constants.TokenPurpose.NAVIGATION;
+import static com.mlyauth.constants.TokenStatus.CHECKED;
 import static com.mlyauth.constants.TokenType.ACCESS;
 import static com.mlyauth.token.Claims.TARGET_URL;
 import static org.hamcrest.Matchers.equalTo;
@@ -63,11 +65,14 @@ public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
         final NavigationBean navigationBean = navigationService.newNavigation(POLICY_DEV);
         assertThat(navigationBean.getId(), notNullValue());
         final Navigation navigation = navigationDAO.findOne(navigationBean.getId());
+        final NavigationAttribute samlResponse = navigation.getAttribute("SAMLResponse");
         assertThat(navigation, notNullValue());
         assertThat(navigation.getCreatedAt(), notNullValue());
         assertThat(navigation.getDirection(), equalTo(OUTBOUND));
         assertThat(navigation.getTargetURL(), equalTo(navigationBean.getTarget()));
         assertThat(navigation.getToken(), notNullValue());
+        assertThat(navigation.getToken().getStatus(), equalTo(CHECKED));
+        assertThat(navigation.getToken().getChecksum(), equalTo(DigestUtils.sha256Hex(samlResponse.getValue())));
         assertThat(navigation.getSession(), equalTo(context.getAuthenticationSession()));
     }
 

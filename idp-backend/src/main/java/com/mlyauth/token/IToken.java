@@ -61,7 +61,7 @@ public interface IToken {
 
     TokenType getType();
 
-    TokenStatus getStatus();
+    TokenProcessingStatus getStatus();
 
     void setClaim(String claimURI, String value);
 

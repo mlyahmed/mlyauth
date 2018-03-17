@@ -7,6 +7,7 @@ import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.token.saml.SAMLHelper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,6 +97,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     private Audience assertionAudience;
     private ResultActions resultActions;
     private AttributeStatement attributeStatement;
+    private String serialized;
 
     @Before
     public void setup() throws Exception {
@@ -369,9 +371,10 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
 
     private void when_post_response() {
         try {
+            serialized = Base64.encodeBytes(samlHelper.toString(response).getBytes());
             resultActions = mockMvc.perform(post(SP_SSO_ENDPOINT)
                     .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                    .param("SAMLResponse", Base64.encodeBytes(samlHelper.toString(response).getBytes())));
+                    .param("SAMLResponse", serialized));
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }
@@ -418,6 +421,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         assertThat(navigation.getDirection(), equalTo(INBOUND));
         assertThat(navigation.getTargetURL(), equalTo(response.getDestination()));
         assertThat(navigation.getToken(), notNullValue());
+        assertThat(navigation.getToken().getChecksum(), equalTo(DigestUtils.sha256Hex(serialized)));
         assertThat(navigation.getSession(), notNullValue());
     }
 

@@ -2,6 +2,7 @@ package com.mlyauth.sso.sp.saml;
 
 import com.google.common.base.Stopwatch;
 import com.mlyauth.constants.TokenPurpose;
+import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.context.IContext;
 import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.dao.TokenDAO;
@@ -13,6 +14,7 @@ import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLHelper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.security.keyinfo.KeyInfoCredentialResolver;
@@ -84,7 +86,7 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
     private void traceNavigation(HttpServletRequest request, HttpServletResponse response, Stopwatch started) {
         String serialized = request.getParameter("SAMLResponse");
         final SAMLAccessToken access = loadAccess(serialized, request, response);
-        final Token token = saveToken(access);
+        final Token token = saveToken(access, request);
         final Navigation navigation = buildNavigation(access, token);
         navigation.setAttributes(buildAttributes(serialized));
         navigation.setTimeConsumed(started.elapsed(TimeUnit.MILLISECONDS));
@@ -108,9 +110,11 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
         }
     }
 
-    private Token saveToken(SAMLAccessToken access) {
+    private Token saveToken(SAMLAccessToken access, HttpServletRequest request) {
         Token token = tokenMapper.toToken(access);
         token.setPurpose(TokenPurpose.NAVIGATION).setSession(context.getAuthenticationSession());
+        token.setStatus(TokenStatus.CHECKED);
+        token.setChecksum(DigestUtils.sha256Hex(request.getParameter("SAMLResponse")));
         return tokenDAO.save(token);
     }
 

@@ -31,8 +31,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.constants.TokenProcessingStatus.CYPHERED;
 import static com.mlyauth.constants.TokenScope.*;
-import static com.mlyauth.constants.TokenStatus.CYPHERED;
 import static com.mlyauth.token.Claims.*;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
@@ -97,7 +97,7 @@ public class SAMLFreshAccessTokenTest {
         assertThat(token.getVerdict(), nullValue());
         assertThat(token.getNorm(), equalTo(TokenNorm.SAML));
         assertThat(token.getType(), equalTo(TokenType.ACCESS));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FRESH));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FRESH));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SAMLFreshAccessTokenTest {
         String id = randomString();
         token.setStamp(id);
         assertThat(token.getStamp(), equalTo(id));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class SAMLFreshAccessTokenTest {
     public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
         token.setSubject(subject);
         assertThat(token.getSubject(), equalTo(subject));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class SAMLFreshAccessTokenTest {
         final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
         token.setScopes(scopes);
         assertThat(token.getScopes(), equalTo(scopes));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -194,7 +194,7 @@ public class SAMLFreshAccessTokenTest {
         final String bp = randomString();
         token.setBP(bp);
         assertThat(token.getBP(), equalTo(bp));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -212,7 +212,7 @@ public class SAMLFreshAccessTokenTest {
         final String state = randomString();
         token.setState(state);
         assertThat(token.getState(), equalTo(state));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -230,7 +230,7 @@ public class SAMLFreshAccessTokenTest {
         final String issuerURI = randomString();
         token.setIssuer(issuerURI);
         assertThat(token.getIssuer(), equalTo(issuerURI));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -251,7 +251,7 @@ public class SAMLFreshAccessTokenTest {
         final String audience = randomString();
         token.setAudience(audience);
         assertThat(token.getAudience(), equalTo(audience));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -273,7 +273,7 @@ public class SAMLFreshAccessTokenTest {
         final String url = randomString();
         token.setTargetURL(url);
         assertThat(token.getTargetURL(), equalTo(url));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -293,7 +293,7 @@ public class SAMLFreshAccessTokenTest {
         final String delegator = randomString();
         token.setDelegator(delegator);
         assertThat(token.getDelegator(), equalTo(delegator));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -311,7 +311,7 @@ public class SAMLFreshAccessTokenTest {
         final String delegateURI = randomString();
         token.setDelegate(delegateURI);
         assertThat(token.getDelegate(), equalTo(delegateURI));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -328,7 +328,7 @@ public class SAMLFreshAccessTokenTest {
     public void when_create_fresh_token_and_set_success_verdict_then_it_must_be_set() {
         token.setVerdict(TokenVerdict.SUCCESS);
         assertThat(token.getVerdict(), equalTo(TokenVerdict.SUCCESS));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -343,7 +343,7 @@ public class SAMLFreshAccessTokenTest {
     public void when_create_fresh_token_and_set_fail_verdict_then_it_must_be_set() {
         token.setVerdict(TokenVerdict.FAIL);
         assertThat(token.getVerdict(), equalTo(TokenVerdict.FAIL));
-        assertThat(token.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test

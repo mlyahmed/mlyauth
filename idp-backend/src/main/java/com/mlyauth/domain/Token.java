@@ -2,6 +2,7 @@ package com.mlyauth.domain;
 
 import com.mlyauth.constants.TokenNorm;
 import com.mlyauth.constants.TokenPurpose;
+import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenType;
 
 import javax.persistence.*;
@@ -24,6 +25,9 @@ public class Token {
     @Column(name = "STAMP", nullable = false, unique = true)
     private String stamp;
 
+    @Column(name = "CHECKSUM", nullable = false, unique = true)
+    private String checksum;
+
     @Column(name = "TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private TokenType type;
@@ -44,6 +48,10 @@ public class Token {
 
     @Column(name = "EXPIRY_TIME", nullable = false)
     private Date expiryTime;
+
+    @Column(name = "STATUS", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TokenStatus status;
 
     @OneToMany(mappedBy = "token", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TokenClaim> claims;
@@ -75,6 +83,15 @@ public class Token {
 
     public Token setStamp(String stamp) {
         this.stamp = stamp;
+        return this;
+    }
+
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public Token setChecksum(String checksum) {
+        this.checksum = checksum;
         return this;
     }
 
@@ -129,6 +146,15 @@ public class Token {
 
     public Token setExpiryTime(Date expiryTime) {
         this.expiryTime = expiryTime;
+        return this;
+    }
+
+    public TokenStatus getStatus() {
+        return status;
+    }
+
+    public Token setStatus(TokenStatus status) {
+        this.status = status;
         return this;
     }
 

@@ -19,6 +19,7 @@ import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
 import javafx.util.Pair;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private String ssoUrl;
 
     private JOSEAccessToken token;
+    private String serialized;
 
     @Before
     public void setup() {
@@ -117,6 +119,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
         assertThat(navigation.getDirection(), equalTo(INBOUND));
         assertThat(navigation.getTargetURL(), equalTo(token.getTargetURL()));
         assertThat(navigation.getToken(), notNullValue());
+        assertThat(navigation.getToken().getChecksum(), equalTo(DigestUtils.sha256Hex(serialized)));
         assertThat(navigation.getSession(), notNullValue());
     }
 
@@ -233,9 +236,10 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     private void when_post_the_token() {
         try {
+            serialized = token.serialize();
             resultActions = mockMvc.perform(post("/sp/jose/sso")
                     .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-                    .header("Authorization", "Bearer " + token.serialize()));
+                    .header("Authorization", "Bearer " + serialized));
         } catch (Exception e) {
             throw JOSEErrorException.newInstance(e);
         }

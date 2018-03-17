@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.mlyauth.constants.TokenStatus.*;
+import static com.mlyauth.constants.TokenProcessingStatus.*;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.Claims.*;
@@ -31,7 +31,7 @@ public class SAMLAccessToken extends AbstractToken {
     private Assertion assertion;
     private Subject subject;
     private Audience audience;
-    private TokenStatus status;
+    private TokenProcessingStatus status;
 
     @Autowired
     private SAMLHelper samlHelper = new SAMLHelper();
@@ -51,7 +51,7 @@ public class SAMLAccessToken extends AbstractToken {
         notNull(credential.getPublicKey(), "The public key argument is mandatory !");
         this.credential = credential;
         response = (Response) samlHelper.decode(serialized);
-        status = TokenStatus.CYPHERED;
+        status = TokenProcessingStatus.CYPHERED;
         locked = true;
     }
 
@@ -61,7 +61,7 @@ public class SAMLAccessToken extends AbstractToken {
         initSubject();
         initAudience();
         initResponse();
-        status = TokenStatus.FRESH;
+        status = TokenProcessingStatus.FRESH;
     }
 
     private void initAssertion() {
@@ -295,7 +295,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public TokenStatus getStatus() {
+    public TokenProcessingStatus getStatus() {
         return status;
     }
 

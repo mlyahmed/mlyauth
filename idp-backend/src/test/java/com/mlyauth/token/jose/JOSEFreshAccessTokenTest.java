@@ -82,7 +82,7 @@ public class JOSEFreshAccessTokenTest {
         assertThat(accessToken.getVerdict(), nullValue());
         assertThat(accessToken.getNorm(), equalTo(TokenNorm.JOSE));
         assertThat(accessToken.getType(), equalTo(TokenType.ACCESS));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FRESH));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FRESH));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class JOSEFreshAccessTokenTest {
         String id = randomString();
         accessToken.setStamp(id);
         assertThat(accessToken.getStamp(), equalTo(id));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class JOSEFreshAccessTokenTest {
         String subject = randomString();
         accessToken.setSubject(subject);
         assertThat(accessToken.getSubject(), equalTo(subject));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class JOSEFreshAccessTokenTest {
         final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         accessToken.setScopes(scopes);
         assertThat(accessToken.getScopes(), equalTo(scopes));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class JOSEFreshAccessTokenTest {
         String bp = randomString();
         accessToken.setBP(bp);
         assertThat(accessToken.getBP(), equalTo(bp));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class JOSEFreshAccessTokenTest {
         String state = randomString();
         accessToken.setState(state);
         assertThat(accessToken.getState(), equalTo(state));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class JOSEFreshAccessTokenTest {
         String issuer = randomString();
         accessToken.setIssuer(issuer);
         assertThat(accessToken.getIssuer(), equalTo(issuer));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -227,7 +227,7 @@ public class JOSEFreshAccessTokenTest {
         String audienceURI = randomString();
         accessToken.setAudience(audienceURI);
         assertThat(accessToken.getAudience(), equalTo(audienceURI));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -247,7 +247,7 @@ public class JOSEFreshAccessTokenTest {
         String targetURL = randomString();
         accessToken.setTargetURL(targetURL);
         assertThat(accessToken.getTargetURL(), equalTo(targetURL));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -267,7 +267,7 @@ public class JOSEFreshAccessTokenTest {
         String delegator = randomString();
         accessToken.setDelegator(delegator);
         assertThat(accessToken.getDelegator(), equalTo(delegator));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -287,7 +287,7 @@ public class JOSEFreshAccessTokenTest {
         String delegate = randomString();
         accessToken.setDelegate(delegate);
         assertThat(accessToken.getDelegate(), equalTo(delegate));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -306,7 +306,7 @@ public class JOSEFreshAccessTokenTest {
     public void when_create_a_fresh_access_token_and_set_Verdict_then_must_be_set() {
         accessToken.setVerdict(SUCCESS);
         assertThat(accessToken.getVerdict(), equalTo(SUCCESS));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -336,7 +336,7 @@ public class JOSEFreshAccessTokenTest {
     public void when_set_other_access_claim_then_it_must_be_set(String... claimPair) {
         accessToken.setClaim(claimPair[0], claimPair[1]);
         assertThat(accessToken.getClaim(claimPair[0]), equalTo(claimPair[1]));
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.FORGED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
@@ -490,7 +490,7 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_cypher_a_fresh_access_token_then_set_it_as_cyphered() {
         accessToken.cypher();
-        assertThat(accessToken.getStatus(), equalTo(TokenStatus.CYPHERED));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.CYPHERED));
     }
 
     @Test(expected = TokenUnmodifiableException.class)

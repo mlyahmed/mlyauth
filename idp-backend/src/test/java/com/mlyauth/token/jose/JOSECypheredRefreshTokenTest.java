@@ -1,7 +1,7 @@
 package com.mlyauth.token.jose;
 
+import com.mlyauth.constants.TokenProcessingStatus;
 import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
@@ -58,13 +58,13 @@ public class JOSECypheredRefreshTokenTest {
     @Test
     public void the_refresh_token_status_must_be_cyphered() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        assertThat(refreshToken.getStatus(), equalTo(TokenStatus.CYPHERED));
+        assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.CYPHERED));
     }
 
     @Test
     public void when_decipher_the_refresh_token_then_it_must_be_deciphered() {
         when_decipher_the_refresh_token();
-        assertThat(refreshToken.getStatus(), equalTo(TokenStatus.DECIPHERED));
+        assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.DECIPHERED));
     }
 
     @Test

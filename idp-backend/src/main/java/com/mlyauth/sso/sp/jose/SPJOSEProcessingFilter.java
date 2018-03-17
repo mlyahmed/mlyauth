@@ -3,6 +3,7 @@ package com.mlyauth.sso.sp.jose;
 import com.google.common.base.Stopwatch;
 import com.mlyauth.constants.TokenPurpose;
 import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.context.IContext;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.NavigationDAO;
@@ -16,6 +17,7 @@ import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSEHelper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -169,7 +171,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
                 .setCreatedAt(new Date())
                 .setDirection(INBOUND)
                 .setTargetURL(accessToken.getTargetURL())
-                .setToken(saveToken(accessToken))
+                .setToken(saveToken(accessToken, request))
                 .setSession(this.context.getAuthenticationSession());
 
         navigation.setAttributes(buildAttributes(request));
@@ -177,9 +179,11 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         navigationDAO.save(navigation);
     }
 
-    private Token saveToken(JOSEAccessToken accessToken) {
+    private Token saveToken(JOSEAccessToken accessToken, HttpServletRequest request) {
         Token token = tokenMapper.toToken(accessToken);
         token.setPurpose(TokenPurpose.NAVIGATION).setSession(context.getAuthenticationSession());
+        token.setStatus(TokenStatus.CHECKED);
+        token.setChecksum(DigestUtils.sha256Hex(getRawBearer(request)));
         token = tokenDAO.save(token);
         return token;
     }

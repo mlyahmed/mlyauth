@@ -4,6 +4,7 @@ import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.constants.TokenPurpose;
+import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.context.IContext;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.TokenDAO;
@@ -14,6 +15,7 @@ import com.mlyauth.exception.NotSPSAMLApplicationException;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLAccessTokenProducer;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +59,8 @@ public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
         token.setPurpose(TokenPurpose.NAVIGATION);
         token.setApplication(applicationDAO.findByAppname(appname));
         token.setSession(context.getAuthenticationSession());
+        token.setChecksum(DigestUtils.sha256Hex(access.serialize()));
+        token.setStatus(TokenStatus.CHECKED);
         token = tokenDAO.save(token);
         return token;
     }

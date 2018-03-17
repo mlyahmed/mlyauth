@@ -62,6 +62,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.UUID;
 
 @Component
 public class SAMLHelper {
@@ -90,7 +91,7 @@ public class SAMLHelper {
     }
 
     public String generateRandomId() {
-        return randomIdGenerator.generateIdentifier();
+        return UUID.randomUUID().toString();
     }
 
     @SuppressWarnings("unchecked")

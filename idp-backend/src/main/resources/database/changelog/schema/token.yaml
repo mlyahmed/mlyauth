@@ -18,6 +18,11 @@ databaseChangeLog:
                   constraints:
                       nullable: false
               - column:
+                  name: CHECKSUM
+                  type: varchar(100)
+                  constraints:
+                      nullable: false
+              - column:
                   name: TYPE
                   type: varchar(50)
                   constraints:
@@ -45,6 +50,11 @@ databaseChangeLog:
               - column:
                   name: EXPIRY_TIME
                   type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
+                  name: STATUS
+                  type: varchar(50)
                   constraints:
                       nullable: false
               - column:
