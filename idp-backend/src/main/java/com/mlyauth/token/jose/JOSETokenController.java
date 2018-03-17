@@ -95,7 +95,7 @@ public class JOSETokenController {
                 .filter(t -> t.getExpiryTime().after(new Date()))
                 .filter(t -> passwordEncoder.matches(refreshToken.getStamp(), t.getStamp()))
                 .findFirst().orElse(null);
-
+        Assert.notNull(readyRefresh, "No Ready Refresh token found");
 
         final PublicKey resourceServerKey = credentialManager.getPeerKey(refreshToken.getAudience(), RS_JOSE);
         final JOSEAccessToken accessToken = tokenFactory.createJOSEAccessToken(credentialManager.getLocalPrivateKey(), resourceServerKey);
