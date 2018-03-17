@@ -18,12 +18,17 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
 import static com.mlyauth.constants.AttributeType.ENTITYID;
+import static com.mlyauth.constants.TokenNorm.JOSE;
+import static com.mlyauth.constants.TokenPurpose.DELEGATION;
+import static com.mlyauth.constants.TokenStatus.READY;
+import static com.mlyauth.constants.TokenType.REFRESH;
 
 @RestController
 @RequestMapping("/token/jose")
@@ -61,6 +66,7 @@ public class JOSETokenController {
         final String issuer = joseHelper.loadIssuer(refresh, credentialManager.getLocalPrivateKey());
         final Application application = context.getApplication();
 
+
         final List<ApplicationAspectAttribute> attributes = attributeDAO.findByAppAndAspect(application.getId(), CL_JOSE.getValue());
         final ApplicationAspectAttribute entityId = attributes.stream().filter(attr -> attr.getAttributeCode().getType() == ENTITYID).findFirst().get();
         Assert.notNull(entityId, "entity ID not found");
@@ -70,8 +76,12 @@ public class JOSETokenController {
         final JOSERefreshToken refreshToken = tokenFactory.createJOSERefreshToken(refresh, credentialManager.getLocalPrivateKey(), clientKey);
         refreshToken.decipher();
 
-        final List<Token> readyRefreshs = tokenDAO.findReadyJOSERefreshToken(application.getId());
-        final Token readyRefresh = readyRefreshs.stream().filter(token -> passwordEncoder.matches(refreshToken.getStamp(), token.getStamp())).findFirst().orElse(null);
+        final List<Token> tokens = tokenDAO.findByApplicationAndNormAndType(application, JOSE, REFRESH);
+        final Token readyRefresh = tokens.stream().filter(t -> t.getPurpose() == DELEGATION)
+                .filter(t -> t.getStatus() == READY)
+                .filter(t -> t.getExpiryTime().after(new Date()))
+                .filter(t -> passwordEncoder.matches(refreshToken.getStamp(), t.getStamp()))
+                .findFirst().orElse(null);
 
 
         final PublicKey resourceServerKey = credentialManager.getPeerKey(refreshToken.getAudience(), RS_JOSE);
