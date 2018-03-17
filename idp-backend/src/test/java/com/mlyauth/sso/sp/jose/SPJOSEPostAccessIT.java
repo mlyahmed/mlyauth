@@ -33,6 +33,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 
+import static com.mlyauth.constants.AspectAttribute.IDP_JOSE_ENTITY_ID;
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.domain.Application.newInstance;
@@ -153,7 +154,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                     .setId(ApplicationAspectAttributeId.newInstance()
                             .setApplicationId(application.getId())
                             .setAspectCode(IDP_JOSE.name())
-                            .setAttributeCode(AspectAttribute.IDP_JOSE_ENTITY_ID.getValue()))
+                            .setAttributeCode(IDP_JOSE_ENTITY_ID.getValue()))
                     .setValue(entityId);
 
             final ApplicationAspectAttribute ssoUrlAttribute = ApplicationAspectAttribute.newInstance()

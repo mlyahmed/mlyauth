@@ -12,6 +12,8 @@ spring:
 idp:
   saml:
     entityId: primainsureIDP
+  jose:
+    entityId: primainsureIDP
 
 sp:
   jose:

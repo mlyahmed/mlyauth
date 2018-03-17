@@ -4,7 +4,6 @@ import com.mlyauth.context.IContextHolder;
 import com.mlyauth.context.IDPUser;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.domain.AuthenticationInfo;
-import com.mlyauth.domain.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,8 +24,14 @@ public class BasicUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(username);
-        final Person person = authenticationInfo.getPerson();
-        return person == null ? null : new IDPUser(contextHolder.newPersonContext(person));
+
+        if (authenticationInfo.isPerson()) {
+            return new IDPUser(contextHolder.newPersonContext(authenticationInfo.getPerson()));
+        } else if (authenticationInfo.isApplication()) {
+            return new IDPUser(contextHolder.newApplicationContext(authenticationInfo.getApplication()));
+        }
+
+        return null;
     }
 
 }

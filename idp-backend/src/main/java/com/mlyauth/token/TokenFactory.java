@@ -1,6 +1,7 @@
 package com.mlyauth.token;
 
 import com.mlyauth.token.jose.JOSEAccessToken;
+import com.mlyauth.token.jose.JOSERefreshToken;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -42,6 +43,16 @@ public class TokenFactory implements ITokenFactory {
     @Override
     public JOSEAccessToken createJOSEAccessToken(String seialized, PrivateKey privateKey, PublicKey publicKey) {
         return new JOSEAccessToken(seialized, privateKey, publicKey);
+    }
+
+    @Override
+    public JOSERefreshToken createJOSERefreshToken(PrivateKey privateKey, PublicKey publicKey) {
+        return new JOSERefreshToken(privateKey, publicKey);
+    }
+
+    @Override
+    public JOSERefreshToken createJOSERefreshToken(String seialized, PrivateKey privateKey, PublicKey publicKey) {
+        return new JOSERefreshToken(seialized, privateKey, publicKey);
     }
 
 }
