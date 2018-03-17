@@ -35,6 +35,7 @@ import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -99,31 +100,9 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         given_the_policy_with_resource_server_aspect();
         given_a_token_to_ask_access_to_the_policy_app();
         when_then_client_space_ask_an_access_token();
-
-        resultActions.andExpect(status().isCreated()).andExpect(content().contentType("text/plain;charset=UTF-8"));
-        serializedAccessToken = resultActions.andReturn().getResponse().getContentAsString();
-        accessToken = tokenFactory.createJOSEAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getLocalPublicKey());
-        accessToken.decipher();
-        final Token tracedToken = tokenDAO.findByChecksum(DigestUtils.sha256Hex(serializedAccessToken));
-
-        assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
-        assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));
-        assertThat(tracedToken, Matchers.notNullValue());
-    }
-
-    private void given_the_client_space_refresh_token_is_ready() {
-        clientRefreshToken = tokenFactory.createJOSERefreshToken(credManager.getLocalPrivateKey(), clientCred.getValue().getPublicKey());
-        clientRefreshToken.setStamp(UUID.randomUUID().toString());
-        clientRefreshToken.setAudience(CLIENT_APP_ENTITY_ID);
-        clientRefreshToken.setVerdict(TokenVerdict.SUCCESS);
-        clientRefreshToken.cypher();
-        final String serialized = clientRefreshToken.serialize();
-        Token token = tokenMapper.toToken(clientRefreshToken);
-        token.setPurpose(TokenPurpose.DELEGATION);
-        token.setApplication(clientSpace);
-        token.setChecksum(DigestUtils.sha256Hex(serialized));
-        token.setStatus(TokenStatus.READY);
-        tokenDAO.save(token);
+        then_an_access_token_is_returned();
+        and_the_access_token_returned_is_well_built();
+        and_the_access_token_returned_is_traced();
     }
 
     private void given_the_client_space_application() {
@@ -170,6 +149,21 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
                 .setValue(Base64URL.encode(clientCred.getValue().getEncoded()).toString());
 
         appAspectAttrDAO.save(asList(clientSpaceEntityIdAttribute, clientSpaceContextAttribute, clientSpaceCertificateAttribute));
+    }
+
+    private void given_the_client_space_refresh_token_is_ready() {
+        clientRefreshToken = tokenFactory.createJOSERefreshToken(credManager.getLocalPrivateKey(), clientCred.getValue().getPublicKey());
+        clientRefreshToken.setStamp(UUID.randomUUID().toString());
+        clientRefreshToken.setAudience(CLIENT_APP_ENTITY_ID);
+        clientRefreshToken.setVerdict(TokenVerdict.SUCCESS);
+        clientRefreshToken.cypher();
+        final String serialized = clientRefreshToken.serialize();
+        Token token = tokenMapper.toToken(clientRefreshToken);
+        token.setPurpose(TokenPurpose.DELEGATION);
+        token.setApplication(clientSpace);
+        token.setChecksum(DigestUtils.sha256Hex(serialized));
+        token.setStatus(TokenStatus.READY);
+        tokenDAO.save(token);
     }
 
     private void given_the_policy_application() {
@@ -236,9 +230,24 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
                 .contentType("text/plain;charset=UTF-8"));
     }
 
+    private void then_an_access_token_is_returned() throws Exception {
+        resultActions.andExpect(status().isCreated()).andExpect(content().contentType("text/plain;charset=UTF-8"));
+        serializedAccessToken = resultActions.andReturn().getResponse().getContentAsString();
+        assertThat(serializedAccessToken, notNullValue());
+    }
 
+    private void and_the_access_token_returned_is_well_built() {
+        accessToken = tokenFactory.createJOSEAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getLocalPublicKey());
+        accessToken.decipher();
+        assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
+        assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));
+    }
 
+    private void and_the_access_token_returned_is_traced() {
+        final Token tracedToken = tokenDAO.findByChecksum(DigestUtils.sha256Hex(serializedAccessToken));
+        assertThat(tracedToken, notNullValue());
+    }
 
-    //TODO when the CLIENT passes bad refresh ID then error
     //TODO when the CLIENT passes bad RS ID then error
+    //TODO when the CLIENT passes bad refresh ID then error
 }
