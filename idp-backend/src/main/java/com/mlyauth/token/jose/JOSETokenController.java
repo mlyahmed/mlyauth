@@ -4,11 +4,14 @@ import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.context.IContext;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
+import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.Token;
 import com.mlyauth.token.ITokenFactory;
+import com.mlyauth.token.TokenMapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static com.mlyauth.constants.AspectAttribute.RS_JOSE_ENTITY_ID;
 import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
 import static com.mlyauth.constants.AttributeType.ENTITYID;
@@ -58,25 +62,34 @@ public class JOSETokenController {
     @Autowired
     private TokenDAO tokenDAO;
 
+    @Autowired
+    private TokenMapper tokenMapper;
+
+    @Autowired
+    private ApplicationDAO applicationDAO;
+
     @PostMapping(value = "/access", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     String newAccessToken(@RequestBody String refresh) {
 
         final String issuer = joseHelper.loadIssuer(refresh, credentialManager.getLocalPrivateKey());
-        final Application application = context.getApplication();
+        final Application client = context.getApplication();
 
 
-        final List<ApplicationAspectAttribute> attributes = attributeDAO.findByAppAndAspect(application.getId(), CL_JOSE.getValue());
-        final ApplicationAspectAttribute entityId = attributes.stream().filter(attr -> attr.getAttributeCode().getType() == ENTITYID).findFirst().get();
-        Assert.notNull(entityId, "entity ID not found");
-        Assert.isTrue(entityId.getValue().equals(issuer), "Untrusted peer");
+        final List<ApplicationAspectAttribute> attributes = attributeDAO.findByAppAndAspect(client.getId(), CL_JOSE.getValue());
+        final ApplicationAspectAttribute clientEntityId = attributes.stream().filter(attr -> attr.getAttributeCode().getType() == ENTITYID).findFirst().get();
+        Assert.notNull(clientEntityId, "The Client Entity ID not found");
+        Assert.isTrue(clientEntityId.getValue().equals(issuer), "Untrusted peer");
 
         final PublicKey clientKey = credentialManager.getPeerKey(issuer, CL_JOSE);
         final JOSERefreshToken refreshToken = tokenFactory.createJOSERefreshToken(refresh, credentialManager.getLocalPrivateKey(), clientKey);
         refreshToken.decipher();
 
-        final List<Token> tokens = tokenDAO.findByApplicationAndNormAndType(application, JOSE, REFRESH);
+        final ApplicationAspectAttribute rsEntityId = attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refreshToken.getAudience());
+        Assert.notNull(rsEntityId, "The Resource Server Entity ID not found");
+
+        final List<Token> tokens = tokenDAO.findByApplicationAndNormAndType(client, JOSE, REFRESH);
         final Token readyRefresh = tokens.stream().filter(t -> t.getPurpose() == DELEGATION)
                 .filter(t -> t.getStatus() == READY)
                 .filter(t -> t.getExpiryTime().after(new Date()))
@@ -91,7 +104,17 @@ public class JOSETokenController {
         accessToken.setAudience(refreshToken.getAudience());
         accessToken.setVerdict(TokenVerdict.SUCCESS);
         accessToken.cypher();
+        final String serialized = accessToken.serialize();
 
-        return accessToken.serialize();
+        final Token token = tokenMapper.toToken(accessToken);
+        token.setPurpose(DELEGATION);
+        token.setStatus(READY);
+        token.setChecksum(DigestUtils.sha256Hex(serialized));
+        token.setSession(context.getAuthenticationSession());
+        token.setApplication(applicationDAO.findOne(rsEntityId.getId().getApplicationId()));
+        tokenDAO.save(token);
+
+
+        return serialized;
     }
 }

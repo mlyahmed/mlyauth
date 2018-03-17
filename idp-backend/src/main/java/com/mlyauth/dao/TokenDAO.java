@@ -12,4 +12,5 @@ public interface TokenDAO extends CrudRepository<Token, Long> {
 
     List<Token> findByApplicationAndNormAndType(Application application, TokenNorm norm, TokenType type);
 
+    Token findByChecksum(String checksum);
 }

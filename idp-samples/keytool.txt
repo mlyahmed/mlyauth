@@ -1,0 +1,4 @@
+keytool -genkey -keyalg RSA -alias sample-idp -keystore sampleIdpKeystore.jks -storepass 123456  -validity 9360 -keysize 1024
+keytool -importcert -file sgi.prima-solutions.com.crt  -keystore sampleIdpKeystore.jks -alias sgi.prima-solutions.com
+keytool -list -rfc -keystore sampleIdpKeystore.jks -alias sample-idp  -storepass 123456
+keytool -export -keystore sampleIdpKeystore.jks -alias sample-idp  -file sampleIdpKeystore.crt

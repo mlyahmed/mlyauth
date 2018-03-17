@@ -84,11 +84,11 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     private Application clientSpace;
     private Pair<PrivateKey, X509Certificate> clientCred;
     private JOSERefreshToken clientRefreshToken;
+    private JOSERefreshToken clientQueryToken;
     private Application policy;
     private Pair<PrivateKey, X509Certificate> policyCred;
     private JOSEAccessToken accessToken;
     private String serializedAccessToken;
-    private JOSERefreshToken clientQueryToken;
 
     @Test
     public void when_a_registered_client_asks_an_access_then_return_it() throws Exception {
@@ -104,8 +104,11 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         serializedAccessToken = resultActions.andReturn().getResponse().getContentAsString();
         accessToken = tokenFactory.createJOSEAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getLocalPublicKey());
         accessToken.decipher();
+        final Token tracedToken = tokenDAO.findByChecksum(DigestUtils.sha256Hex(serializedAccessToken));
+
         assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
         assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));
+        assertThat(tracedToken, Matchers.notNullValue());
     }
 
     private void given_the_client_space_refresh_token_is_ready() {
