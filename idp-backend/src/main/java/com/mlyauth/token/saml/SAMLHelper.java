@@ -3,7 +3,6 @@ package com.mlyauth.token.saml;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import org.opensaml.Configuration;
 import org.opensaml.common.SignableSAMLObject;
-import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
@@ -58,7 +57,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -78,17 +76,6 @@ public class SAMLHelper {
 
     @Autowired
     private ParserPool parserPool = new BasicParserPool();
-
-    private static SecureRandomIdentifierGenerator randomIdGenerator;
-
-
-    static {
-        try {
-            randomIdGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
 
     public String generateRandomId() {
         return UUID.randomUUID().toString();
