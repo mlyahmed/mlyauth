@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans default-lazy-init="true"
+<beans default-lazy-init="false"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:sec="http://www.springframework.org/schema/security"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -83,7 +83,7 @@
 
     <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
 
-    <bean class="org.springframework.security.saml.SAMLBootstrap"/>
+    <bean class="org.springframework.security.saml.SAMLBootstrap" lazy-init="false" />
 
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
         <constructor-arg value="classpath:keys/keystore.jks"/>
@@ -103,8 +103,6 @@
 
     <bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory"
           factory-method="getEngine"/>
-
-    <bean class="org.springframework.security.saml.SAMLBootstrap"/>
 
     <bean id="parserPool" class="org.opensaml.xml.parse.StaticBasicParserPool" init-method="initialize">
         <property name="expandEntityReferences" value="false"/>

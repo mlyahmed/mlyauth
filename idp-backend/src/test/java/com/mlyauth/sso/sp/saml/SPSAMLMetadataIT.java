@@ -1,4 +1,4 @@
-package com.mlyauth.itests.sso.sp.saml;
+package com.mlyauth.sso.sp.saml;
 
 import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.token.saml.SAMLHelper;
@@ -9,6 +9,7 @@ import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -51,8 +52,12 @@ public class SPSAMLMetadataIT extends AbstractIntegrationTest {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    private SAMLBootstrap samlBootstrap;
+
     @Before
     public void setup() {
+        samlBootstrap.postProcessBeanFactory(null);
         this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
     }
 
