@@ -26,7 +26,7 @@ import static com.mlyauth.beans.AttributeBean.newAttribute;
 import static com.mlyauth.constants.AspectType.SP_SAML;
 
 @Service
-public class IDPSAMLNavigationService extends IDPAbstractNavigationService {
+public class IDPSAMLNavigationService extends AbstractIDPNavigationService {
 
     @Autowired
     private TokenDAO tokenDAO;

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static com.mlyauth.constants.Direction.OUTBOUND;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-public abstract class IDPAbstractNavigationService implements IDPNavigationService {
+public abstract class AbstractIDPNavigationService implements IDPNavigationService {
     protected final static Logger logger = LoggerFactory.getLogger(IDPNavigationService.class);
 
     @Autowired
