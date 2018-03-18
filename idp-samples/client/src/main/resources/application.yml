@@ -13,6 +13,8 @@ spring:
 cl:
   jose:
     entityId: sample-client
+    login: cl.sample-client
+    password: Br5NUEuDdQpyMTs
 
 server:
   port: 17777
