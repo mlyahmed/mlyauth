@@ -60,7 +60,6 @@ import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.UUID;
 
 @Component
 public class SAMLHelper {
@@ -77,9 +76,6 @@ public class SAMLHelper {
     @Autowired
     private ParserPool parserPool = new BasicParserPool();
 
-    public String generateRandomId() {
-        return UUID.randomUUID().toString();
-    }
 
     @SuppressWarnings("unchecked")
     public <T> T buildSAMLObject(final Class<T> clazz) {

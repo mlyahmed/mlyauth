@@ -5,10 +5,10 @@ import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.domain.Token;
-import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLHelper;
+import com.mlyauth.token.saml.SAMLTokenFactory;
 import com.mlyauth.tools.KeysForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -71,7 +71,7 @@ public class SPSAMLProcessingFilterTest {
     private TokenMapper tokenMapper;
 
     @Mock
-    private ITokenFactory tokenFactory;
+    private SAMLTokenFactory tokenFactory;
 
     @Mock
     private TokenDAO tokenDAO;
@@ -185,7 +185,7 @@ public class SPSAMLProcessingFilterTest {
     }
 
     private void set_up_token_dao_and_factory() {
-        when(tokenFactory.createSAMLAccessToken(anyString(), Mockito.any(Credential.class))).thenReturn(accessToken);
+        when(tokenFactory.createAccessToken(anyString(), Mockito.any(Credential.class))).thenReturn(accessToken);
         final Token token = Token.newInstance();
         when(tokenMapper.toToken(accessToken)).thenReturn(token);
         when(tokenDAO.save(token)).thenReturn(token);

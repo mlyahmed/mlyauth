@@ -6,8 +6,7 @@ import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.sso.sp.saml.ISPSAMLAspectValidator;
-import com.mlyauth.token.ITokenFactory;
-import com.mlyauth.token.ITokenProducer;
+import com.mlyauth.token.TokenIdGenerator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +22,13 @@ import static com.mlyauth.constants.AspectType.SP_SAML;
 
 
 @Component
-public class SAMLAccessTokenProducer implements ITokenProducer {
+public class SAMLAccessTokenProducer {
 
     @Autowired
-    private ITokenFactory tokenFactory;
+    private TokenIdGenerator idGenerator;
+
+    @Autowired
+    private SAMLTokenFactory tokenFactory;
 
     @Autowired
     private ISPSAMLAspectValidator validator;
@@ -46,7 +48,6 @@ public class SAMLAccessTokenProducer implements ITokenProducer {
     @Value("${idp.saml.entityId}")
     private String idpEntityId;
 
-    @Override
     public SAMLAccessToken produce(Application app) {
         Assert.notNull(app, "The application parameter is null");
         validator.validate(app);
@@ -54,8 +55,8 @@ public class SAMLAccessTokenProducer implements ITokenProducer {
     }
 
     private SAMLAccessToken buildToken(List<ApplicationAspectAttribute> attributes) {
-        SAMLAccessToken token = tokenFactory.createSAMLAccessToken(buildCredential(attributes));
-        token.setStamp(samlHelper.generateRandomId());
+        SAMLAccessToken token = tokenFactory.createAccessToken(buildCredential(attributes));
+        token.setStamp(idGenerator.generateId());
         token.setIssuer(idpEntityId);
         token.setTargetURL(getTargetURL(attributes).getValue());
         token.setVerdict(TokenVerdict.SUCCESS);

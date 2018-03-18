@@ -8,7 +8,6 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.*;
-import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
@@ -55,7 +54,7 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     private String localEntityId;
 
     @Autowired
-    private ITokenFactory tokenFactory;
+    private JOSETokenFactory tokenFactory;
 
     @Autowired
     private TokenMapper tokenMapper;
@@ -152,7 +151,7 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void given_the_client_space_refresh_token_is_ready() {
-        clientRefreshToken = tokenFactory.createJOSERefreshToken(credManager.getLocalPrivateKey(), clientCred.getValue().getPublicKey());
+        clientRefreshToken = tokenFactory.createRefreshToken(credManager.getPrivateKey(), clientCred.getValue().getPublicKey());
         clientRefreshToken.setStamp(UUID.randomUUID().toString());
         clientRefreshToken.setAudience(CLIENT_APP_ENTITY_ID);
         clientRefreshToken.setVerdict(TokenVerdict.SUCCESS);
@@ -214,7 +213,7 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void given_a_token_to_ask_access_to_the_policy_app() {
-        clientQueryToken = tokenFactory.createJOSERefreshToken(clientCred.getKey(), credManager.getLocalPublicKey());
+        clientQueryToken = tokenFactory.createRefreshToken(clientCred.getKey(), credManager.getPublicKey());
         clientQueryToken.setIssuer(CLIENT_APP_ENTITY_ID);
         clientQueryToken.setAudience(POLICY_APP_ENTITY_ID);
         clientQueryToken.setStamp(clientRefreshToken.getStamp());
@@ -237,7 +236,7 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void and_the_access_token_returned_is_well_built() {
-        accessToken = tokenFactory.createJOSEAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getLocalPublicKey());
+        accessToken = tokenFactory.createAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getPublicKey());
         accessToken.decipher();
         assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
         assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));

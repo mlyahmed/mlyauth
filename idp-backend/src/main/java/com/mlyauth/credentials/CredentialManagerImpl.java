@@ -30,17 +30,17 @@ public class CredentialManagerImpl implements CredentialManager {
     private ApplicationAspectAttributeDAO attributeDAO;
 
     @Override
-    public PrivateKey getLocalPrivateKey() {
+    public PrivateKey getPrivateKey() {
         return keyManager.getDefaultCredential().getPrivateKey();
     }
 
     @Override
-    public PublicKey getLocalPublicKey() {
+    public PublicKey getPublicKey() {
         return keyManager.getDefaultCredential().getPublicKey();
     }
 
     @Override
-    public Certificate getLocalCertificate() {
+    public Certificate getCertificate() {
         return keyManager.getCertificate(keyManager.getDefaultCredentialName());
     }
 

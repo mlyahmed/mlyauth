@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: sample-client
+  jpa:
+    database: H2
+  datasource:
+    generate-unique-name: true
+    url: jdbc:h2:file:./h2/sample-client
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+cl:
+  jose:
+    entityId: sample-client
+
+server:
+  port: 17777
+  error:
+    whitelabel:
+      enabled: true
+
+logging:
+  file: logs/sample-client.log
+  level:
+    ROOT: INFO
+
+
+info:
+  build:
+    artifact: sample-client
+    name: sample-client
+    description: A Sample IDP Client
+    version: 1.0
+
+
+management:
+  security:
+    enabled: false
+security:
+  basic:
+    enabled: false

@@ -12,11 +12,11 @@ import com.mlyauth.domain.Navigation;
 import com.mlyauth.domain.NavigationAttribute;
 import com.mlyauth.domain.Token;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSEHelper;
+import com.mlyauth.token.jose.JOSETokenFactory;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +51,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     private IContext context;
 
     @Autowired
-    private ITokenFactory tokenFactory;
+    private JOSETokenFactory tokenFactory;
 
     @Autowired
     private TokenDAO tokenDAO;
@@ -138,13 +138,13 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
 
     private JOSEAccessToken reconstituteAccessToken(String rawToken) {
-        final JOSEAccessToken token = tokenFactory.createJOSEAccessToken(rawToken, localKey(), peerKey(rawToken));
+        final JOSEAccessToken token = tokenFactory.createAccessToken(rawToken, localKey(), peerKey(rawToken));
         token.decipher();
         return token;
     }
 
     private PrivateKey localKey() {
-        return credentialManager.getLocalPrivateKey();
+        return credentialManager.getPrivateKey();
     }
 
     private PublicKey peerKey(String header) {

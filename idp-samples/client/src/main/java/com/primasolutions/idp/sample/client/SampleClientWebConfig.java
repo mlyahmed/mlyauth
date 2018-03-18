@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sample.idp;
+package com.primasolutions.idp.sample.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,15 +15,15 @@ import java.util.Map;
 
 @Configuration
 @EnableWebMvc
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class SampleClientWebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public KeyManager keyManager() {
         DefaultResourceLoader loader = new DefaultResourceLoader();
-        Resource storeFile = loader.getResource("classpath:/keys/sampleIdpKeystore.jks");
+        Resource storeFile = loader.getResource("classpath:/keys/sampleClientKeystore.jks");
         Map<String, String> passwords = new HashMap<>();
-        passwords.put("sample-idp", "123456");
-        return new JKSKeyManager(storeFile, "123456", passwords, "sample-idp");
+        passwords.put("sample-client", "123456");
+        return new JKSKeyManager(storeFile, "123456", passwords, "sample-client");
     }
 
     @Override

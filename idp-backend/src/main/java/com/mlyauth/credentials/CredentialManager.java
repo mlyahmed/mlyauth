@@ -8,11 +8,11 @@ import java.security.cert.Certificate;
 
 public interface CredentialManager {
 
-    PrivateKey getLocalPrivateKey();
+    PrivateKey getPrivateKey();
 
-    PublicKey getLocalPublicKey();
+    PublicKey getPublicKey();
 
-    Certificate getLocalCertificate();
+    Certificate getCertificate();
 
     Certificate getPeerCertificate(String entityId, AspectType aspectType);
 

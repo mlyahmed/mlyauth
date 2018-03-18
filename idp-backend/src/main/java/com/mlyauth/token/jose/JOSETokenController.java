@@ -9,7 +9,7 @@ import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.Token;
-import com.mlyauth.token.ITokenFactory;
+import com.mlyauth.token.TokenIdGenerator;
 import com.mlyauth.token.TokenMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.PublicKey;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import static com.mlyauth.constants.AspectAttribute.RS_JOSE_ENTITY_ID;
 import static com.mlyauth.constants.AspectType.CL_JOSE;
@@ -42,13 +41,16 @@ public class JOSETokenController {
     private String localEntityId;
 
     @Autowired
+    private TokenIdGenerator idGenerator;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private IContext context;
 
     @Autowired
-    private CredentialManager credentialManager;
+    private CredentialManager credManager;
 
     @Autowired
     private ApplicationAspectAttributeDAO attributeDAO;
@@ -57,7 +59,7 @@ public class JOSETokenController {
     private JOSEHelper joseHelper;
 
     @Autowired
-    private ITokenFactory tokenFactory;
+    private JOSETokenFactory tokenFactory;
 
     @Autowired
     private TokenDAO tokenDAO;
@@ -73,7 +75,7 @@ public class JOSETokenController {
     public @ResponseBody
     String newAccessToken(@RequestBody String refresh) {
 
-        final String issuer = joseHelper.loadIssuer(refresh, credentialManager.getLocalPrivateKey());
+        final String issuer = joseHelper.loadIssuer(refresh, credManager.getPrivateKey());
         final Application client = context.getApplication();
 
 
@@ -82,11 +84,11 @@ public class JOSETokenController {
         Assert.notNull(clientEntityId, "The Client Entity ID not found");
         Assert.isTrue(clientEntityId.getValue().equals(issuer), "Untrusted peer");
 
-        final PublicKey clientKey = credentialManager.getPeerKey(issuer, CL_JOSE);
-        final JOSERefreshToken refreshToken = tokenFactory.createJOSERefreshToken(refresh, credentialManager.getLocalPrivateKey(), clientKey);
+        final PublicKey clientKey = credManager.getPeerKey(issuer, CL_JOSE);
+        JOSERefreshToken refreshToken = tokenFactory.createRefreshToken(refresh, credManager.getPrivateKey(), clientKey);
         refreshToken.decipher();
 
-        final ApplicationAspectAttribute rsEntityId = attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refreshToken.getAudience());
+        ApplicationAspectAttribute rsEntityId = attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refreshToken.getAudience());
         Assert.notNull(rsEntityId, "The Resource Server Entity ID not found");
 
         final List<Token> tokens = tokenDAO.findByApplicationAndNormAndType(client, JOSE, REFRESH);
@@ -97,9 +99,9 @@ public class JOSETokenController {
                 .findFirst().orElse(null);
         Assert.notNull(readyRefresh, "No Ready Refresh token found");
 
-        final PublicKey resourceServerKey = credentialManager.getPeerKey(refreshToken.getAudience(), RS_JOSE);
-        final JOSEAccessToken accessToken = tokenFactory.createJOSEAccessToken(credentialManager.getLocalPrivateKey(), resourceServerKey);
-        accessToken.setStamp(UUID.randomUUID().toString());
+        final PublicKey resourceServerKey = credManager.getPeerKey(refreshToken.getAudience(), RS_JOSE);
+        final JOSEAccessToken accessToken = tokenFactory.createAccessToken(credManager.getPrivateKey(), resourceServerKey);
+        accessToken.setStamp(idGenerator.generateId());
         accessToken.setIssuer(localEntityId);
         accessToken.setAudience(refreshToken.getAudience());
         accessToken.setVerdict(TokenVerdict.SUCCESS);

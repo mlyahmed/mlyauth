@@ -14,8 +14,8 @@ import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.exception.JOSEErrorException;
-import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.jose.JOSEAccessToken;
+import com.mlyauth.token.jose.JOSETokenFactory;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
 import javafx.util.Pair;
@@ -65,7 +65,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
 
     @Autowired
-    private ITokenFactory tokenFactory;
+    private JOSETokenFactory tokenFactory;
 
     @Autowired
     private WebApplicationContext wac;
@@ -179,7 +179,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_success_token() {
-        token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey(), credentialManager.getLocalPublicKey());
+        token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
         token.setSubject("1");
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
@@ -199,7 +199,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_fail_token() {
-        token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey(), credentialManager.getLocalPublicKey());
+        token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
         token.setSubject("1");
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
@@ -215,7 +215,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_success_token_with_application_claim_already_assigned() {
-        token = tokenFactory.createJOSEAccessToken(applicationCredentials.getKey(), credentialManager.getLocalPublicKey());
+        token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
         token.setSubject("9000");
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));

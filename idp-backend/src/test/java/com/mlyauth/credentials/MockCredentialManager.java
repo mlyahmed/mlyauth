@@ -21,17 +21,17 @@ public class MockCredentialManager implements CredentialManager {
     }
 
     @Override
-    public PrivateKey getLocalPrivateKey() {
+    public PrivateKey getPrivateKey() {
         return privateKey;
     }
 
     @Override
-    public PublicKey getLocalPublicKey() {
+    public PublicKey getPublicKey() {
         return publicKey;
     }
 
     @Override
-    public Certificate getLocalCertificate() {
+    public Certificate getCertificate() {
         return null;
     }
 

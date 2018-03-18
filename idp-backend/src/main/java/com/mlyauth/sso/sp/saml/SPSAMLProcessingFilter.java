@@ -10,10 +10,10 @@ import com.mlyauth.domain.Navigation;
 import com.mlyauth.domain.NavigationAttribute;
 import com.mlyauth.domain.Token;
 import com.mlyauth.exception.IDPSAMLErrorException;
-import com.mlyauth.token.ITokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLHelper;
+import com.mlyauth.token.saml.SAMLTokenFactory;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.xml.security.credential.Credential;
@@ -58,7 +58,7 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
     private TokenMapper tokenMapper;
 
     @Autowired
-    private ITokenFactory tokenFactory;
+    private SAMLTokenFactory tokenFactory;
 
     @Autowired
     private SAMLHelper samlHelper;
@@ -95,7 +95,7 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
 
     private SAMLAccessToken loadAccess(String serialized, HttpServletRequest request, HttpServletResponse response) {
         SAMLMessageContext messageContext = retrieveMessageContext(request, response);
-        final SAMLAccessToken access = tokenFactory.createSAMLAccessToken(serialized, buildCredential(messageContext));
+        final SAMLAccessToken access = tokenFactory.createAccessToken(serialized, buildCredential(messageContext));
         access.decipher();
         return access;
     }

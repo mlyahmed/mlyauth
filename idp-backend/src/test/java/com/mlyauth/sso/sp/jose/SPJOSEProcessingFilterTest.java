@@ -8,10 +8,10 @@ import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.domain.Token;
-import com.mlyauth.token.TokenFactory;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEHelper;
+import com.mlyauth.token.jose.JOSETokenFactory;
 import com.mlyauth.token.jose.MockJOSEAccessTokenValidator;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -192,7 +192,7 @@ public class SPJOSEProcessingFilterTest {
     }
 
     private void set_up_token() {
-        token = new JOSEAccessToken(peerCredential.getKey(), credentialManager.getLocalPublicKey());
+        token = new JOSEAccessToken(peerCredential.getKey(), credentialManager.getPublicKey());
     }
 
     private void set_up_request_response() {
@@ -201,6 +201,7 @@ public class SPJOSEProcessingFilterTest {
         response = new MockHttpServletResponse();
         request.setRequestURI("/sp/jose/sso");
     }
+
     private void set_up_filter() {
         filter = new SPJOSEProcessingFilter();
         final TokenMapper tokenMapper = new TokenMapper();
@@ -209,7 +210,7 @@ public class SPJOSEProcessingFilterTest {
         setField(filter, "joseHelper", new JOSEHelper());
         setField(filter, "accessTokenValidator", new MockJOSEAccessTokenValidator(true));
         setField(filter, "authenticationManager", authenticationManager);
-        setField(filter, "tokenFactory", new TokenFactory());
+        setField(filter, "tokenFactory", new JOSETokenFactory());
         setField(filter, "tokenMapper", tokenMapper);
         setField(filter, "context", new MockContext());
         setField(filter, "tokenDAO", tokenDAO);

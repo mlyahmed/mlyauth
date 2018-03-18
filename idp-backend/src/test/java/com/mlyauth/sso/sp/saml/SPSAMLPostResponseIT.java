@@ -2,10 +2,10 @@ package com.mlyauth.sso.sp.saml;
 
 import com.google.common.collect.Iterators;
 import com.mlyauth.AbstractIntegrationTest;
-import com.mlyauth.context.IContext;
 import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.exception.IDPSAMLErrorException;
+import com.mlyauth.token.TokenIdGenerator;
 import com.mlyauth.token.saml.SAMLHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
@@ -60,7 +60,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
     public static final String SP_SSO_ENDPOINT = "/sp/saml/sso";
 
     @Autowired
-    private IContext context;
+    private TokenIdGenerator idGenerator;
 
     @Autowired
     private NavigationDAO navigationDAO;
@@ -242,13 +242,13 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         artifactResponse.setIssuer(issuer);
         artifactResponse.setIssueInstant(new DateTime());
         artifactResponse.setDestination(SP_ASSERTION_CONSUMER_ENDPOINT);
-        artifactResponse.setID(samlHelper.generateRandomId());
+        artifactResponse.setID(idGenerator.generateId());
 
 
         response = samlHelper.buildSAMLObject(Response.class);
         response.setDestination(SP_ASSERTION_CONSUMER_ENDPOINT);
         response.setIssueInstant(new DateTime());
-        response.setID(samlHelper.generateRandomId());
+        response.setID(idGenerator.generateId());
         Issuer issuer2 = samlHelper.buildSAMLObject(Issuer.class);
         issuer2.setValue(TESTING_IDP_ENTITY_ID);
         response.setIssuer(issuer2);
@@ -280,7 +280,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         issuer3.setValue(TESTING_IDP_ENTITY_ID);
         assertion.setIssuer(issuer3);
         assertion.setIssueInstant(new DateTime());
-        assertion.setID(samlHelper.generateRandomId());
+        assertion.setID(idGenerator.generateId());
     }
 
     private void given_assertion_subject() {
