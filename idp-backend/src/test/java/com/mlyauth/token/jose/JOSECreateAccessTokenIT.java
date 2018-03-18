@@ -100,7 +100,19 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         given_a_token_to_ask_access_to_the_policy_app();
         when_then_client_space_ask_an_access_token();
         then_an_access_token_is_returned();
-        and_the_access_token_returned_is_well_built();
+        and_the_access_token_returned_is_built_to_policy();
+        and_the_access_token_returned_is_traced();
+    }
+
+    @Test
+    public void when_a_registered_client_asks_and_access_to_the_IDP_then_return_it() throws Exception {
+        given_the_client_space_application();
+        given_the_client_space_with_client_aspect();
+        given_the_client_space_refresh_token_is_ready();
+        given_a_token_to_ask_access_to_the_IDP_app();
+        when_then_client_space_ask_an_access_token();
+        then_an_access_token_is_returned();
+        and_the_access_token_returned_is_built_to_the_IDP();
         and_the_access_token_returned_is_traced();
     }
 
@@ -222,6 +234,14 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
 
     }
 
+    private void given_a_token_to_ask_access_to_the_IDP_app() {
+        clientQueryToken = tokenFactory.createRefreshToken(clientCred.getKey(), credManager.getPublicKey());
+        clientQueryToken.setIssuer(CLIENT_APP_ENTITY_ID);
+        clientQueryToken.setAudience(localEntityId);
+        clientQueryToken.setStamp(clientRefreshToken.getStamp());
+        clientQueryToken.cypher();
+    }
+
     private void when_then_client_space_ask_an_access_token() throws Exception {
         resultActions = mockMvc.perform(post("/token/jose/access")
                 .content(clientQueryToken.serialize())
@@ -235,11 +255,18 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         assertThat(serializedAccessToken, notNullValue());
     }
 
-    private void and_the_access_token_returned_is_well_built() {
+    private void and_the_access_token_returned_is_built_to_policy() {
         accessToken = tokenFactory.createAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getPublicKey());
         accessToken.decipher();
         assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
         assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));
+    }
+
+    private void and_the_access_token_returned_is_built_to_the_IDP() {
+        accessToken = tokenFactory.createAccessToken(serializedAccessToken, credManager.getPrivateKey(), credManager.getPublicKey());
+        accessToken.decipher();
+        assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
+        assertThat(accessToken.getAudience(), Matchers.equalTo(localEntityId));
     }
 
     private void and_the_access_token_returned_is_traced() {
@@ -247,6 +274,6 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         assertThat(tracedToken, notNullValue());
     }
 
-    //TODO when the CLIENT passes bad RS ID then error
     //TODO when the CLIENT passes bad refresh ID then error
+    //TODO when the CLIENT passes bad RS ID then error
 }
