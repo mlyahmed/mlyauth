@@ -12,7 +12,7 @@ public class TokenEncodeStampTest {
 
     @Test
     public void generate_new_stamps() {
-        final String stamp = "Br5NUEuDdQpyMTs"; //UUID.randomUUID().toString();
+        final String stamp = "n90014d8o621AXc"; //UUID.randomUUID().toString();
         SecurityConfig securityConfig = new SecurityConfig();
         final String encodedStamp = securityConfig.passwordEncoder().encode(stamp);
         final String checksum = DigestUtils.sha256Hex(encodedStamp);

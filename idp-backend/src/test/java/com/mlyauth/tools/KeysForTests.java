@@ -16,13 +16,21 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.Map;
+
+import static java.util.Base64.getDecoder;
+import static java.util.Base64.getEncoder;
 
 public class KeysForTests {
 
@@ -38,7 +46,7 @@ public class KeysForTests {
         return generatePairCredential("RSA", 1024, "SHA1WithRSA");
     }
 
-    private static Pair<PrivateKey, X509Certificate> generatePairCredential(String algorithm, int keysize, String signatureAlgorithm) {
+    public static Pair<PrivateKey, X509Certificate> generatePairCredential(String algorithm, int keysize, String signatureAlgorithm) {
         try {
 
             final BouncyCastleProvider provider = new BouncyCastleProvider();
@@ -61,6 +69,62 @@ public class KeysForTests {
 
         } catch (Exception e) {
             throw EncryptionCredentialException.newInstance(e);
+        }
+    }
+
+    public static String encodeCertificate(Certificate certificate){
+        try {
+            return getEncoder().encodeToString(certificate.getEncoded());
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Certificate decodeCertificate(String encodedCertificate){
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(getDecoder().decode(encodedCertificate));
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            return certFactory.generateCertificate(inputStream);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String encodePublicKey(PublicKey publicKey){
+        try {
+            return getEncoder().encodeToString(publicKey.getEncoded());
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static PublicKey decodeRSAPublicKey(String encodedPublicKey){
+        try {
+            X509EncodedKeySpec encodedKeySpec = new X509EncodedKeySpec(getDecoder().decode(encodedPublicKey));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePublic(encodedKeySpec);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String encodePrivateKey(PrivateKey privateKey){
+        try {
+            return getEncoder().encodeToString(privateKey.getEncoded());
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static PrivateKey decodeRSAPrivateKey(String encodedPrivateKey){
+        try {
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(getDecoder().decode(encodedPrivateKey));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+        }catch(Exception e){
+            throw new RuntimeException(e);
         }
     }
 
