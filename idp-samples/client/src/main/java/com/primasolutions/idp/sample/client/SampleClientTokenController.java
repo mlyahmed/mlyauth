@@ -86,7 +86,7 @@ public class SampleClientTokenController {
         Assert.isTrue( response.getStatusLine().getStatusCode() == 201, "");
         String access = IOUtils.toString(response.getEntity().getContent(), Charset.forName("UTF-8"));
         client.close();
-        return serialized;
+        return access;
     }
 
 }
