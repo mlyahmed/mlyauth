@@ -404,6 +404,23 @@ public class JOSEFreshAccessTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().before(new Date()), equalTo(true));
     }
 
+
+    @Test
+    public void when_serialize_an_access_cyphered_token_many_times_then_return_the_same_value(){
+        accessToken.cypher();
+        assertThat(accessToken.serialize(), equalTo(accessToken.serialize()));
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_an_access_each_time_after_a_cypher_then_return_different_value(){
+        accessToken.cypher();
+        final String first = accessToken.serialize();
+        accessToken.cypher();
+        final String second = accessToken.serialize();
+        assertThat(first, not(equalTo(second)));
+    }
+
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_stamp_and_the_access_token_is_already_ciphered_then_error() {
         accessToken.cypher();

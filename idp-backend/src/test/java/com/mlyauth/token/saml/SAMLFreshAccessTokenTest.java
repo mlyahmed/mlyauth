@@ -485,6 +485,25 @@ public class SAMLFreshAccessTokenTest {
         assertThat(samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred), notNullValue());
     }
 
+    @Test
+    public void when_serialize_a_cyphered_token_many_times_then_return_the_same_value(){
+        given_forged_token();
+        when_cypher_the_token();
+        final String first = when_serialize_the_token();
+        final String second = when_serialize_the_token();
+        assertThat(first, equalTo(second));
+    }
+
+    @Test
+    public void when_serialize_each_time_after_cypher_then_return_different_value(){
+        given_forged_token();
+        when_cypher_the_token();
+        final String first = when_serialize_the_token();
+        when_cypher_the_token();
+        final String second = when_serialize_the_token();
+        assertThat(first, not(equalTo(second)));
+    }
+
     @Test(expected = TokenUnmodifiableException.class)
     public void when_create_a_fresh_token_and_cypher_then_we_cannot_decipher_it() {
         given_forged_token();

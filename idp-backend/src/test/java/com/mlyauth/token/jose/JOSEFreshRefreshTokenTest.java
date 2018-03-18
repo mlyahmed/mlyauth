@@ -395,6 +395,22 @@ public class JOSEFreshRefreshTokenTest {
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().before(new java.util.Date()), equalTo(true));
     }
 
+    @Test
+    public void when_serialize_a_refresh_cyphered_token_many_times_then_return_the_same_value(){
+        refreshToken.cypher();
+        assertThat(refreshToken.serialize(), equalTo(refreshToken.serialize()));
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_a_refresh_each_time_after_a_cypher_then_return_different_value(){
+        refreshToken.cypher();
+        final String first = refreshToken.serialize();
+        refreshToken.cypher();
+        final String second = refreshToken.serialize();
+        assertThat(first, not(equalTo(second)));
+    }
+
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_stamp_and_the_refresh_is_already_ciphered_then_error() {
         refreshToken.cypher();
