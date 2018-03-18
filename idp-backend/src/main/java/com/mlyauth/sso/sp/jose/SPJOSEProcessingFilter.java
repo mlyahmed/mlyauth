@@ -5,7 +5,6 @@ import com.mlyauth.constants.TokenPurpose;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.context.IContext;
-import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.Navigation;
@@ -15,8 +14,7 @@ import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
-import com.mlyauth.token.jose.JOSEHelper;
-import com.mlyauth.token.jose.JOSETokenFactory;
+import com.mlyauth.token.jose.JOSETokenDecoder;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,8 +29,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
@@ -48,10 +44,10 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     protected final static Logger logger = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
 
     @Autowired
-    private IContext context;
+    private JOSETokenDecoder tokenDecoder;
 
     @Autowired
-    private JOSETokenFactory tokenFactory;
+    private IContext context;
 
     @Autowired
     private TokenDAO tokenDAO;
@@ -61,12 +57,6 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
     @Autowired
     private TokenMapper tokenMapper;
-
-    @Autowired
-    private CredentialManager credentialManager;
-
-    @Autowired
-    private JOSEHelper joseHelper;
 
     @Autowired
     private JOSEAccessTokenValidator accessTokenValidator;
@@ -93,7 +83,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             }
 
             final String rawBearer = getRawBearer(request);
-            final JOSEAccessToken accessToken = reconstituteAccessToken(rawBearer);
+
+            final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(rawBearer, IDP_JOSE);
             accessTokenValidator.validate(accessToken);
             checkScope(accessToken);
 
@@ -133,26 +124,6 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             return bearer.getValue();
         else
             throw JOSEErrorException.newInstance();
-    }
-
-
-
-    private JOSEAccessToken reconstituteAccessToken(String rawToken) {
-        final JOSEAccessToken token = tokenFactory.createAccessToken(rawToken, localKey(), peerKey(rawToken));
-        token.decipher();
-        return token;
-    }
-
-    private PrivateKey localKey() {
-        return credentialManager.getPrivateKey();
-    }
-
-    private PublicKey peerKey(String header) {
-        return credentialManager.getPeerKey(issuer(header), IDP_JOSE);
-    }
-
-    private String issuer(String rawToken) {
-        return joseHelper.loadIssuer(rawToken, localKey());
     }
 
     private void checkScope(JOSEAccessToken accessToken) {
