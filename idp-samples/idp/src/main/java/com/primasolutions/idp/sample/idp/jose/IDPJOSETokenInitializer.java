@@ -1,6 +1,6 @@
 package com.primasolutions.idp.sample.idp.jose;
 
-import com.primasolutions.idp.sample.idp.Token;
+import com.primasolutions.idp.sample.idp.SampleIDPToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +18,8 @@ public class IDPJOSETokenInitializer {
     @Value("${sp.jose.endpoint}")
     private String targetURL;
 
-    public Token newToken() {
-        Token token = new Token();
+    public SampleIDPToken newToken() {
+        SampleIDPToken token = new SampleIDPToken();
         token.setId(UUID.randomUUID().toString());
         token.setSubject("1");
         token.setScopes("PERSON");

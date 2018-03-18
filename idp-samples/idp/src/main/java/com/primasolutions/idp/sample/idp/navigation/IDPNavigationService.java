@@ -1,6 +1,6 @@
 package com.primasolutions.idp.sample.idp.navigation;
 
-import com.primasolutions.idp.sample.idp.Token;
+import com.primasolutions.idp.sample.idp.SampleIDPToken;
 import com.primasolutions.idp.sample.idp.jose.IDPJoseService;
 import com.primasolutions.idp.sample.idp.saml.IDPSamlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class IDPNavigationService {
     private String samlTargetURL;
 
 
-    public Navigation buildNavigation(Token token, HttpServletRequest request, HttpServletResponse response) {
+    public Navigation buildNavigation(SampleIDPToken token, HttpServletRequest request, HttpServletResponse response) {
 
         Navigation navigation = new Navigation();
 

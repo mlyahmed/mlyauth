@@ -39,7 +39,7 @@ public class SampleIDPController {
     }
 
     @PostMapping("/idp-navigation")
-    public String greetingSubmit(@ModelAttribute Token token, Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String greetingSubmit(@ModelAttribute SampleIDPToken token, Model model, HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("navigation", navigationService.buildNavigation(token, request, response));
         return "idp-navigation";
     }

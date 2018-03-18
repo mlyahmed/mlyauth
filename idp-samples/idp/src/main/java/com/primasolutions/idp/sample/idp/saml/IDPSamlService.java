@@ -1,6 +1,6 @@
 package com.primasolutions.idp.sample.idp.saml;
 
-import com.primasolutions.idp.sample.idp.Token;
+import com.primasolutions.idp.sample.idp.SampleIDPToken;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
@@ -50,7 +50,7 @@ public class IDPSamlService {
     @Autowired
     private KeyManager keyManager;
 
-    public String generateSAMLAccess(Token token) {
+    public String generateSAMLAccess(SampleIDPToken token) {
         try {
             DefaultBootstrap.bootstrap();
 

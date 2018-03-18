@@ -1,6 +1,6 @@
 package com.primasolutions.idp.sample.idp;
 
-public class Token {
+public class SampleIDPToken {
 
     private String id;
     private String subject;

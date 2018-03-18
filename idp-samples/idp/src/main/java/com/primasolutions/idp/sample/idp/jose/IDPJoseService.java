@@ -5,7 +5,7 @@ import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.primasolutions.idp.sample.idp.Token;
+import com.primasolutions.idp.sample.idp.SampleIDPToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class IDPJoseService {
     @Autowired
     private KeyManager keyManager;
 
-    public String generateJOSEAccess(Token token) {
+    public String generateJOSEAccess(SampleIDPToken token) {
         try {
             JWTClaimsSet.Builder claims = new JWTClaimsSet.Builder()
                     .issuer(token.getIssuer())
