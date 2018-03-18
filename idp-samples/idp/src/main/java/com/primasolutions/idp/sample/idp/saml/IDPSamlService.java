@@ -131,12 +131,12 @@ public class IDPSamlService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <C> C buildSAMLObject(final Class<C> clazz) {
         try {
             XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
             QName defaultElementName = (QName) clazz.getDeclaredField("DEFAULT_ELEMENT_NAME").get(null);
             return (C) builderFactory.getBuilder(defaultElementName).buildObject(defaultElementName);
-
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new IllegalArgumentException("Could not create SAML object");
         }
