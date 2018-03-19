@@ -13,37 +13,44 @@ public class ApplicationBean {
     private AspectType authAspect;
     private Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
 
+    public static ApplicationBean newInstance(){
+        return new ApplicationBean();
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public ApplicationBean setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getAppname() {
         return appname;
     }
 
-    public void setAppname(String appname) {
+    public ApplicationBean setAppname(String appname) {
         this.appname = appname;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public ApplicationBean setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public AspectType getAuthAspect() {
         return authAspect;
     }
 
-    public void setAuthAspect(AspectType authAspect) {
+    public ApplicationBean setAuthAspect(AspectType authAspect) {
         this.authAspect = authAspect;
+        return this;
     }
 
     public Map<String, AttributeBean> getAuthSettings() {

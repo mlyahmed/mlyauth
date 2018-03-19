@@ -87,6 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         http.httpBasic();
         http.authorizeRequests()
+                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/sp/jose/**").permitAll()
                 .antMatchers("/sp/saml/**").permitAll()
                 .antMatchers("/idp/saml/**").permitAll()

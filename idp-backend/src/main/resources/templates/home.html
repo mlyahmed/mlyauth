@@ -1,9 +1,98 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <title>Link ASSU Simulator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script>
+        $(function () {
+            $('#search').on('keyup', function () {
+                var pattern = $(this).val();
+                $('.items-collection .items').hide();
+                $('.items-collection .items').filter(function () {
+                    return $(this).text().match(new RegExp(pattern, 'i'));
+                }).show();
+            });
+        });
+
+        function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+
+    </script>
+
+    <style>
+        #search {
+            width:90%;
+        }
+
+        .searchicon {
+            color:#5CB85C;
+        }
+
+        .items-collection{
+            margin:20px 0 0 0;
+        }
+        .items-collection label.btn-default.active{
+            background-color:#007ba7;
+            color:#FFF;
+        }
+        .items-collection label.btn-default{
+            width:90%;
+            border:1px solid #305891;
+            margin:5px;
+            border-radius: 17px;
+            color: #305891;
+        }
+        .items-collection label .itemcontent{
+            width:100%;
+        }
+        .items-collection .btn-group{
+            width:90%
+        }
+        .vertical-center {
+            min-height: 90%;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome!</h1>
+<div class="vertical-center">
+    <div class="container">
+        <h1>My PrimaInsure Applications</h1>
+        <div class="row">
+            <br />
+            <div class="form-group">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <i class="fa fa-search fa-2x pull-left searchicon"></i><input type="search" class="form-control" id="search" placeholder="Filter application..." />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="items-collection">
+                    <th:block th:each="application : ${applications}">
+                        <div class="items col-xs-6 col-sm-3 col-md-3 col-lg-3">
+                            <div class="info-block block-info clearfix">
+                                <div data-toggle="buttons" class="btn-group itemcontent">
+                                    <label class="btn btn-default">
+                                        <div class="itemcontent"  th:onclick="${'javascript:openInNewTab(''navigate/forward/to/' + application.appname + ''');'}" >
+                                                <h4 th:text="${application.title}" ></h4>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

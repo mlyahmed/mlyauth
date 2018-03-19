@@ -40,7 +40,9 @@ dependencies {
     compile("org.liquibase:liquibase-core:3.5.3")
     compile("commons-validator:commons-validator:1.6")
     compile("com.nimbusds:nimbus-jose-jwt:4.23")
-
+    compile('org.webjars:bootstrap:3.3.7')
+    compile('org.webjars:jquery:2.2.1')
+    compile('org.webjars:font-awesome:5.0.6')
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")
