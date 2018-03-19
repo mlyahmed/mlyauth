@@ -148,7 +148,7 @@ public class SPJOSEUserDetailsServiceImplTest {
         token.setStamp(randomString());
         token.setSubject(randomString());
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
-        token.setBP(randomString());
+        token.setBP("SSO");
         token.setState(randomString());
         token.setAudience(randomString());
         token.setIssuer(randomString());

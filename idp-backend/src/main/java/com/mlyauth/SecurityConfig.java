@@ -1,5 +1,6 @@
 package com.mlyauth;
 
+import com.mlyauth.delegation.JOSEBearerAuthenticationFilter;
 import com.mlyauth.sso.sp.jose.JOSEAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.saml.SAMLAuthenticationProvider;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.RequestContextFilter;
 
 @EnableWebSecurity
@@ -75,6 +77,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public JOSEBearerAuthenticationFilter joseBearerAuthenticationFilter() {
+        return new JOSEBearerAuthenticationFilter();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
@@ -94,6 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/login.html");
 
+        http.addFilterBefore(joseBearerAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(requestContextFilter(), ChannelProcessingFilter.class);
         http.csrf().disable();
     }

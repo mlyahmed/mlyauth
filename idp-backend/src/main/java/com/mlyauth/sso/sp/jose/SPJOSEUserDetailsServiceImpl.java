@@ -40,8 +40,10 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
     private void checkParams(JOSEAccessToken credential) {
         notNull(credential, "The JOSE Token is null");
         isTrue(isNotBlank(credential.getSubject()), "The JOSE Token Subject is blank");
-        isTrue(isNotBlank(credential.getClaim(CLIENT_ID.getValue())), "The JOSE Token Client Id is blank");
-        isTrue(isNotBlank(credential.getClaim(CLIENT_PROFILE.getValue())), "The JOSE Token Client Profile is blank");
+        if("SSO".equals(credential.getBP())) {
+            isTrue(isNotBlank(credential.getClaim(CLIENT_ID.getValue())), "The JOSE Token Client Id is blank");
+            isTrue(isNotBlank(credential.getClaim(CLIENT_PROFILE.getValue())), "The JOSE Token Client Profile is blank");
+        }
     }
 
     private Person getPerson(JOSEAccessToken credential) {

@@ -89,6 +89,7 @@ public class JOSETokenService {
         final PublicKey resourceServerKey = (localEntityId.equals(rsEntityId.getValue())) ? credManager.getPublicKey() : credManager.getPeerKey(refresh.getAudience(), RS_JOSE);
         final JOSEAccessToken accessToken = tokenFactory.createAccessToken(credManager.getPrivateKey(), resourceServerKey);
         accessToken.setStamp(idGenerator.generateId());
+        accessToken.setSubject(refresh.getSubject());
         accessToken.setIssuer(localEntityId);
         accessToken.setAudience(refresh.getAudience());
         accessToken.setVerdict(TokenVerdict.SUCCESS);

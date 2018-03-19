@@ -15,6 +15,7 @@ import org.opensaml.xml.signature.X509Certificate;
 import org.opensaml.xml.signature.X509Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -59,6 +60,9 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext wac;
 
+    @Autowired
+    private SAMLBootstrap samlBootstrap;
+
     private MockMvc mockMvc;
     private MvcResult result;
     private List<KeyDescriptor> keyDescriptors;
@@ -69,6 +73,7 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
+        samlBootstrap.postProcessBeanFactory(null);
         this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
     }
 

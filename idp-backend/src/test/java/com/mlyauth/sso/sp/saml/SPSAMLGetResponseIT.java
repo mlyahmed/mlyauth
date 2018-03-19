@@ -4,6 +4,7 @@ import com.mlyauth.AbstractIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,12 +24,16 @@ public class SPSAMLGetResponseIT extends AbstractIntegrationTest {
     private Filter metadataGeneratorFilter;
 
     @Autowired
+    private SAMLBootstrap samlBootstrap;
+
+    @Autowired
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
 
     @Before
     public void setup() {
+        samlBootstrap.postProcessBeanFactory(null);
         this.mockMvc = webAppContextSetup(this.wac).addFilters(metadataGeneratorFilter, samlFilter).build();
     }
 

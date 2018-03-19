@@ -13,6 +13,11 @@ spring:
         settings:
           trace: true
 
+test:
+  cl-prima-client-dev:
+    private-key: classpath:keys/cl.prima.client.dev.key
+
+
 logging:
   file: logs/mlyauth-test.log
   level:

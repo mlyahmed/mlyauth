@@ -32,8 +32,18 @@ public class JOSETokenDecoder {
         return token;
     }
 
+    public JOSEAccessToken decodeAccess(String serialized){
+        JOSEAccessToken token = tokenFactory.createAccessToken(serialized, localKey(), localPublicKey());
+        token.decipher();
+        return token;
+    }
+
     private PrivateKey localKey() {
         return credentialManager.getPrivateKey();
+    }
+
+    private PublicKey localPublicKey() {
+        return credentialManager.getPublicKey();
     }
 
     private String issuer(String serialized) {
