@@ -25,6 +25,10 @@ public class SampleIDPController {
     @Autowired
     private IDPNavigationService navigationService;
 
+    @GetMapping("/")
+    public String entry(Model model){
+        return samlForm(model);
+    }
 
     @GetMapping("/idp-form-jose")
     public String joseForm(Model model) {

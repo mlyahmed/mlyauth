@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Link ASSU Simulator</title>
+    <title>My PrimaInsure Applications</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
     <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
@@ -29,17 +29,14 @@
             width:90%;
         }
 
-        .searchicon {
+        .search-icon {
             color:#5CB85C;
         }
 
         .items-collection{
             margin:20px 0 0 0;
         }
-        .items-collection label.btn-default.active{
-            background-color:#007ba7;
-            color:#FFF;
-        }
+
         .items-collection label.btn-default{
             width:90%;
             border:1px solid #305891;
@@ -53,23 +50,17 @@
         .items-collection .btn-group{
             width:90%
         }
-        .vertical-center {
-            min-height: 90%;
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-        }
     </style>
 </head>
 <body>
-<div class="vertical-center">
+
     <div class="container">
         <h1>My PrimaInsure Applications</h1>
         <div class="row">
             <br />
             <div class="form-group">
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                    <i class="fa fa-search fa-2x pull-left searchicon"></i><input type="search" class="form-control" id="search" placeholder="Filter application..." />
+                    <i class="fa fa-search fa-2x pull-left search-icon"></i><input type="search" class="form-control" id="search" placeholder="Filter application..." />
                 </div>
             </div>
         </div>
@@ -93,6 +84,5 @@
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>

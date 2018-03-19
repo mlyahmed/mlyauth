@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Link ASSU Simulator</title>
+    <title>Prima IDP - Not Authenticated</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.0.6/web-fonts-with-css/css/fontawesome-all.css}" />
@@ -9,23 +9,12 @@
     <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 </head>
 
-<style>
-    .vertical-center {
-        min-height: 90%;
-        min-height: 90vh;
-        display: flex;
-        align-items: center;
-    }
-</style>
-
 <body>
 
-<div class="vertical-center">
+<div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
-        <!-- Jumbotron -->
-        <div class="jumbotron">
-            <h1><i class="fa fa-ban red"></i> Not Authenticated</h1>
-        </div>
+        <h1><i class="fa fa-ban" style="color:red"></i> Not Authenticated</h1>
+        <p class="lead">The authentication process failed.</p>
     </div>
 </div>
 </body>
