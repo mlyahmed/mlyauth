@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Navigate</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
     <style>
         .loader {
             border: 16px solid #f3f3f3; /* Light grey */
@@ -21,8 +24,14 @@
             }
         }
     </style>
+
+    <script>
+        $(function() {
+            $('#post-navigation-form').submit();
+        });
+    </script>
 </head>
-<body onload="setTimeout(document.forms[0].submit(), 10000)">
+<body>
 
 <noscript>
     <p>
