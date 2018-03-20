@@ -4,33 +4,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.ProfileCode;
-import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
 import com.mlyauth.token.jose.JOSERefreshToken;
 import com.mlyauth.token.jose.JOSETokenFactory;
-import com.mlyauth.tools.KeysForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
-import java.io.File;
 import java.nio.file.Files;
 import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import static com.mlyauth.tools.KeysForTests.decodeRSAPrivateKey;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -40,19 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 public class PersonControllerIT extends AbstractIntegrationTest {
-
-    private final static String CL_LOGIN = "cl.prima.client.dev";
-    private final static String CL_PASSWORD = "n90014d8o621AXc";
-    private final static String CL_REFRESH_TOKEN_ID = "c810d2fe-5f91-4a41-accc-da88c5028fd3";
-    private final static String CL_ENTITY_ID = "prima.client.dev";
-
-
-
-    @Value("${idp.jose.entityId}")
-    private String localIDPEntityId;
-
-    @Value("${test.cl-prima-client-dev.private-key}")
-    private File privateKeyFile;
 
     @Autowired
     private PersonDAO personDAO;
@@ -67,13 +50,6 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private JOSETokenFactory tokenFactory;
 
     @Autowired
-    private CredentialManager credManager;
-
-    private String accessToken;
-
-    private MockMvc mockMvc;
-
-    @Autowired
     private WebApplicationContext context;
 
     @Autowired
@@ -82,7 +58,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).addFilters(springSecurityFilterChain).build();
-        given_an_access_token();
+        given_a_jose_access_token();
     }
 
     @DataProvider
@@ -106,17 +82,15 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         and_he_is_well_created(resultActions, properties);
     }
 
-    private void given_an_access_token()  {
+    private void given_a_jose_access_token()  {
 
         try{
-            String encodedPrivateKey = new String(Files.readAllBytes(privateKeyFile.toPath()));
-            final PrivateKey privateKey = KeysForTests.decodeRSAPrivateKey(encodedPrivateKey);
-
+            final PrivateKey privateKey = decodeRSAPrivateKey(new String(Files.readAllBytes(privateKeyFile.toPath())));
             JOSERefreshToken refreshToken = tokenFactory.createRefreshToken(privateKey, credManager.getPublicKey());
             refreshToken.setStamp(CL_REFRESH_TOKEN_ID);
             refreshToken.setSubject("1");
             refreshToken.setIssuer(CL_ENTITY_ID);
-            refreshToken.setAudience(localIDPEntityId);
+            refreshToken.setAudience(idpJoseEntityId);
             refreshToken.cypher();
 
             final ResultActions result = mockMvc.perform(post("/token/jose/access")
