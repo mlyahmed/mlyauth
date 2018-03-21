@@ -181,7 +181,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private void given_success_token() {
         token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
-        token.setSubject("1");
+        token.setSubject(MASTER_EXTERNAL_ID);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
         token.setBP("SSO");
         token.setState(randomString());

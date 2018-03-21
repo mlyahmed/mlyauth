@@ -92,16 +92,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sp/jose/**").permitAll()
                 .antMatchers("/sp/saml/**").permitAll()
                 .antMatchers("/idp/saml/**").permitAll()
-                .antMatchers("/login*").permitAll()
+                .antMatchers("/401.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login.html")
-                .failureUrl("/login-error.html")
+                .loginPage("/401.html")
+                .failureUrl("/401.html")
                 .successForwardUrl("/home")
                 .and()
                 .logout()
-                .logoutSuccessUrl("/login.html");
+                .logoutSuccessUrl("/401.html");
 
         http.addFilterBefore(joseBearerAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(requestContextFilter(), ChannelProcessingFilter.class);

@@ -21,7 +21,7 @@ public class HooksController {
 
     @RequestMapping("/")
     public String entry(Model model) {
-        return "/home";
+        return home(model);
     }
 
     @RequestMapping("/home")

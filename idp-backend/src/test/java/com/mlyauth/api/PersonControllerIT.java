@@ -7,8 +7,7 @@ import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
-import com.mlyauth.token.jose.JOSERefreshToken;
-import com.mlyauth.token.jose.JOSETokenFactory;
+import com.mlyauth.tools.AccessTokenForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Before;
@@ -16,21 +15,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
-import java.nio.file.Files;
-import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.mlyauth.tools.KeysForTests.decodeRSAPrivateKey;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -47,18 +43,22 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private ObjectMapper mapper;
 
     @Autowired
-    private JOSETokenFactory tokenFactory;
-
-    @Autowired
     private WebApplicationContext context;
+
+    protected MockMvc mockMvc;
 
     @Autowired
     private Filter springSecurityFilterChain;
 
+    @Autowired
+    private AccessTokenForTests accessTokenGenerator;
+
+    private String access;
+
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).addFilters(springSecurityFilterChain).build();
-        given_a_jose_access_token();
+        access = accessTokenGenerator.generateToken();
     }
 
     @DataProvider
@@ -80,29 +80,6 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         final ResultActions resultActions = when_create_new_person(personBean);
         then_is_created(resultActions);
         and_he_is_well_created(resultActions, properties);
-    }
-
-    private void given_a_jose_access_token()  {
-
-        try{
-            final PrivateKey privateKey = decodeRSAPrivateKey(new String(Files.readAllBytes(privateKeyFile.toPath())));
-            JOSERefreshToken refreshToken = tokenFactory.createRefreshToken(privateKey, credManager.getPublicKey());
-            refreshToken.setStamp(CL_REFRESH_TOKEN_ID);
-            refreshToken.setSubject("1");
-            refreshToken.setIssuer(CL_ENTITY_ID);
-            refreshToken.setAudience(idpJoseEntityId);
-            refreshToken.cypher();
-
-            final ResultActions result = mockMvc.perform(post("/token/jose/access")
-                    .content(refreshToken.serialize())
-                    .with(httpBasic(CL_LOGIN, CL_PASSWORD))
-                    .contentType("text/plain;charset=UTF-8"));
-            accessToken = result.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
-
     }
 
     @Test
@@ -170,7 +147,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private ResultActions when_create_new_person(PersonBean personBean) throws Exception {
         return mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(personBean))
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + access)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
     }

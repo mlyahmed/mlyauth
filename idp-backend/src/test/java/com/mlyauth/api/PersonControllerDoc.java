@@ -2,6 +2,7 @@ package com.mlyauth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.AbstractIntegrationTest;
+import com.mlyauth.tools.AccessTokenForTests;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +25,6 @@ import java.util.Map;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,16 +37,22 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     @Autowired
     protected ObjectMapper mapper;
 
-    protected MockMvc mockMvc;
-
     @Autowired
     private WebApplicationContext context;
 
+    protected MockMvc mockMvc;
+
+    @Autowired
+    private AccessTokenForTests accessTokenGenerator;
+
+    private String access;
+
     @Before
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity())
                 .apply(documentationConfiguration(restDocumentation)).build();
+        access = accessTokenGenerator.generateToken();
     }
 
 
@@ -62,7 +68,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
 
         final ResultActions result = mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(person))
-                .with(httpBasic(MASTER_EMAIL, MASTER_PASSWORD))
+                .header("Authorization", "Bearer " + access)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
 
