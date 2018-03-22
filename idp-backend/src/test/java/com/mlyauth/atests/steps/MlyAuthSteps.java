@@ -54,7 +54,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
                 .setLastname(lastname)
                 .setEmail(email)
                 .setPassword("password".toCharArray());
-        final ResultActions resultActions = restTestHelper.performPost("/domain/person", person).andExpect(status().is(CREATED.value()));
+        final ResultActions resultActions = restTestHelper.performBearerPost("/domain/person", person).andExpect(status().is(CREATED.value()));
         person = mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), PersonBean.class);
         person.setPassword("password".toCharArray());
         currentPersonHolder.setCurrentPerson(person);
@@ -65,7 +65,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
         ApplicationBean application = new ApplicationBean();
         application.setAppname(appname);
         application.setTitle(appname);
-        final ResultActions resultActions = restTestHelper.performPost("/domain/application", application).andExpect(status().is(CREATED.value()));
+        final ResultActions resultActions = restTestHelper.performBearerPost("/domain/application", application).andExpect(status().is(CREATED.value()));
         applicationHolder.addApplication(mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), ApplicationBean.class));
     }
 
@@ -79,13 +79,13 @@ public class MlyAuthSteps extends AbstractStepsDef{
         authSettings.put(SP_BASIC_PASSWORD.getValue(), newAttribute(SP_BASIC_PASSWORD.getValue()).setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
         application.setAuthAspect(AspectType.SP_BASIC);
-        restTestHelper.performPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performBearerPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
     }
 
 
     @When("^(.+) navigates to (.+)$")
     public void user_navigate_to_app(String username, String appname) throws Exception {
-        resultActionHolder.setResultActions(restTestHelper.performGet("/navigate/forward/basic/to/" + appname));
+        resultActionHolder.setResultActions(restTestHelper.performBasicGet("/navigate/forward/basic/to/" + appname));
     }
 
     @Then("^(.+) is posted to (.+)")
@@ -98,13 +98,13 @@ public class MlyAuthSteps extends AbstractStepsDef{
     @Given("^(.+) is asigned to (.+)")
     public void app_is_asigned_to_user(String appname, String username) throws Exception {
         currentPersonHolder.getCurrentPerson().getApplications().add(appname);
-        restTestHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performBearerPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Given("^(.+) is not asigned to (.+)")
     public void app_is_not_asigned_to_user(String appname, String username) throws Exception {
         currentPersonHolder.getCurrentPerson().getApplications().remove(appname);
-        restTestHelper.performPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performBearerPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Then("^(.+) error$")

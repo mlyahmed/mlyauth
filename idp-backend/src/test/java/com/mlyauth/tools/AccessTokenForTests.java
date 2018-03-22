@@ -26,6 +26,7 @@ public class AccessTokenForTests {
     private final static String CL_PASSWORD = "n90014d8o621AXc";
     private final static String CL_REFRESH_TOKEN_ID = "c810d2fe-5f91-4a41-accc-da88c5028fd3";
     private final static String CL_ENTITY_ID = "prima.client.dev";
+    private final static String JOSE_ACCESS_URI = "/token/jose/access";
 
 
     @Value("${idp.jose.entityId}")
@@ -44,7 +45,7 @@ public class AccessTokenForTests {
     protected JOSETokenFactory tokenFactory;
 
 
-    public final String generateToken()  {
+    public final String generateMasterToken()  {
 
         try{
             final PrivateKey privateKey = decodeRSAPrivateKey(new String(Files.readAllBytes(privateKeyFile.toPath())));
@@ -55,9 +56,8 @@ public class AccessTokenForTests {
             refreshToken.setAudience(idpJoseEntityId);
             refreshToken.cypher();
 
-            final ResultActions result = mockMvc.perform(post("/token/jose/access")
-                    .content(refreshToken.serialize())
-                    .with(httpBasic(CL_LOGIN, CL_PASSWORD))
+            final ResultActions result = mockMvc.perform(post(JOSE_ACCESS_URI)
+                    .content(refreshToken.serialize()).with(httpBasic(CL_LOGIN, CL_PASSWORD))
                     .contentType("text/plain;charset=UTF-8"));
             return result.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 

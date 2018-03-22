@@ -58,7 +58,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).addFilters(springSecurityFilterChain).build();
-        access = accessTokenGenerator.generateToken();
+        access = accessTokenGenerator.generateMasterToken();
     }
 
     @DataProvider

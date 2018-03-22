@@ -25,7 +25,7 @@ public class JOSEBearerAuthenticationFilter extends GenericFilterBean {
 
     public static final String FILTER_URL = "/domain/**";
 
-    private RequestMatcher requiresAuthenticationRequestMatcher;
+    private RequestMatcher authenticationRequestMatcher;
 
     @Autowired
     private JOSETokenDecoder tokenDecoder;
@@ -34,7 +34,7 @@ public class JOSEBearerAuthenticationFilter extends GenericFilterBean {
     private AuthenticationManager authenticationManager;
 
     public JOSEBearerAuthenticationFilter(){
-        requiresAuthenticationRequestMatcher = new AntPathRequestMatcher(FILTER_URL);
+        authenticationRequestMatcher = new AntPathRequestMatcher(FILTER_URL);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class JOSEBearerAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean requiresAuthentication(HttpServletRequest request) {
-        return requiresAuthenticationRequestMatcher.matches(request);
+        return authenticationRequestMatcher.matches(request);
     }
 
     private String getRawBearer(HttpServletRequest request) {

@@ -2,6 +2,7 @@ package com.mlyauth.atests.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.atests.world.CurrentPersonHolder;
+import com.mlyauth.tools.AccessTokenForTests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
@@ -24,26 +25,37 @@ public class RestTestHelper {
     @Autowired
     private CurrentPersonHolder currentPersonHolder;
 
-    public ResultActions performPost(String endpoint, Object content) throws Exception {
+    @Autowired
+    private AccessTokenForTests accessTokenGenerator;
+
+    public ResultActions performBearerPost(String endpoint, Object content) throws Exception {
         return mockMvc.perform(post(endpoint)
                 .content(mapper.writeValueAsString(content))
-                .with(httpBasic(currentPersonHolder.getUsername(), currentPersonHolder.getPassword()))
+                .header("Authorization", "Bearer " + accessTokenGenerator.generateMasterToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
     }
 
-    public ResultActions performPut(String endpoint, Object content) throws Exception {
+    public ResultActions performBearerPut(String endpoint, Object content) throws Exception {
         return mockMvc.perform(put(endpoint)
                 .content(mapper.writeValueAsString(content))
-                .with(httpBasic(currentPersonHolder.getUsername(), currentPersonHolder.getPassword()))
+                .header("Authorization", "Bearer " + accessTokenGenerator.generateMasterToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
     }
 
-    public ResultActions performGet(String endpoint) throws Exception {
+    public ResultActions performBearerGet(String endpoint) throws Exception {
+        return mockMvc.perform(get(endpoint)
+                .header("Authorization", "Bearer " + accessTokenGenerator.generateMasterToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8"));
+    }
+
+    public ResultActions performBasicGet(String endpoint) throws Exception {
         return mockMvc.perform(get(endpoint)
                 .with(httpBasic(currentPersonHolder.getUsername(), currentPersonHolder.getPassword()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
     }
+
 }

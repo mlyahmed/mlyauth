@@ -52,7 +52,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity())
                 .apply(documentationConfiguration(restDocumentation)).build();
-        access = accessTokenGenerator.generateToken();
+        access = accessTokenGenerator.generateMasterToken();
     }
 
 
