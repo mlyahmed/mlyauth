@@ -70,7 +70,7 @@ public class SPJOSEProcessingFilterTest {
     private Authentication expectedAuthentication;
 
     private JOSEAccessToken token;
-    private Pair<PrivateKey, X509Certificate> localCredential;
+    private Pair<PrivateKey, X509Certificate> localCred;
     private Pair<PrivateKey, X509Certificate> peerCredential;
 
     @Before
@@ -100,16 +100,16 @@ public class SPJOSEProcessingFilterTest {
     }
 
     @Test
-    public void when_post_a_valid_token_then_process() {
+    public void when_post_in_header_a_valid_bearer_token_then_process() {
         given_valid_token();
         given_the_target_url_does_match();
-        final Authentication authentication = when_attempt_authentication();
+        final Authentication authentication = when_attempt_authentication_as_in_header_bearer();
         assertThat(authentication, Matchers.notNullValue());
         assertThat(authentication, Matchers.equalTo(expectedAuthentication));
     }
 
     @Test
-    public void when_post_valid_token_as_cookie_then_process() {
+    public void when_post_as_cookie_a_valid_bearer_token_then_process() {
         given_valid_token();
         given_the_target_url_does_match();
 
@@ -122,10 +122,20 @@ public class SPJOSEProcessingFilterTest {
     }
 
     @Test
-    public void when_post_a_valid_token_then_trace_navigation() {
+    public void when_post_as_form_a_valid_bearer_token_then_process(){
         given_valid_token();
         given_the_target_url_does_match();
-        when_attempt_authentication();
+        request.setParameter("Bearer", token.serialize());
+        final Authentication authentication = filter.attemptAuthentication(request, response);
+        assertThat(authentication, Matchers.notNullValue());
+        assertThat(authentication, Matchers.equalTo(expectedAuthentication));
+    }
+
+    @Test
+    public void when_post_as_valid_bearer_token_then_trace_navigation() {
+        given_valid_token();
+        given_the_target_url_does_match();
+        when_attempt_authentication_as_in_header_bearer();
         verify(tokenDAO).save(Mockito.any(Token.class));
         verify(navigationDAO).save(Mockito.any(Navigation.class));
     }
@@ -133,32 +143,32 @@ public class SPJOSEProcessingFilterTest {
     @Test(expected = AuthenticationException.class)
     public void when_the_scopes_list_is_null_then_error() {
         given_scopes_list_is_null();
-        when_attempt_authentication();
+        when_attempt_authentication_as_in_header_bearer();
     }
 
     @Test(expected = AuthenticationException.class)
     public void when_the_scopes_list_is_more_then_one_then_error() {
         given_scopes_list_is_more_then_one();
-        when_attempt_authentication();
+        when_attempt_authentication_as_in_header_bearer();
     }
 
     @Test(expected = AuthenticationException.class)
     public void when_the_scopes_list_is_not_person_then_error() {
         given_the_scopes_list_is_not_person();
-        when_attempt_authentication();
+        when_attempt_authentication_as_in_header_bearer();
     }
 
     @Test(expected = AuthenticationException.class)
     public void when_the_BP_is_not_SSO_then_error() {
         given_token_with_bp_not_as_sso();
-        when_attempt_authentication();
+        when_attempt_authentication_as_in_header_bearer();
     }
 
     @Test(expected = AuthenticationException.class)
     public void when_the_target_url_does_not_match_the_request_then_error() {
         given_valid_token();
         given_the_target_url_does_not_match();
-        when_attempt_authentication();
+        when_attempt_authentication_as_in_header_bearer();
     }
 
     @Test(expected = AuthenticationException.class)
@@ -177,9 +187,9 @@ public class SPJOSEProcessingFilterTest {
     }
 
     private void set_up_credentials() {
-        localCredential = generateRSACredential();
+        localCred = generateRSACredential();
         peerCredential = generateRSACredential();
-        credentialManager = new MockCredentialManager(localCredential.getKey(), localCredential.getValue().getPublicKey());
+        credentialManager = new MockCredentialManager(localCred.getKey(), localCred.getValue().getPublicKey());
         credentialManager.setPeerCertificate(PEER_IDP_ID, AspectType.IDP_JOSE, peerCredential.getValue());
     }
 
@@ -273,7 +283,7 @@ public class SPJOSEProcessingFilterTest {
         request.setRequestURI(randomString());
     }
 
-    private Authentication when_attempt_authentication() {
+    private Authentication when_attempt_authentication_as_in_header_bearer() {
         request.addHeader("Authorization", "Bearer " + token.serialize());
         return filter.attemptAuthentication(request, response);
     }

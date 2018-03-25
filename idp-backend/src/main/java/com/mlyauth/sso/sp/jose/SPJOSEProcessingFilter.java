@@ -116,12 +116,15 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     }
 
     private String getRawBearer(HttpServletRequest request) {
-        final String header = getAuthorizationHeader(request);
-        final Cookie bearer = getBearerCookie(request);
-        if (header != null && header.startsWith("Bearer "))
-            return header.substring(7);
-        else if(bearer != null && StringUtils.isNotBlank(bearer.getValue()))
-            return bearer.getValue();
+        final String asHeader = getAuthorizationHeader(request);
+        final String asForm = request.getParameter("Bearer");
+        final Cookie asCookie = getBearerCookie(request);
+        if (asHeader != null && asHeader.startsWith("Bearer "))
+            return asHeader.substring(7);
+        else if(asCookie != null && StringUtils.isNotBlank(asCookie.getValue()))
+            return asCookie.getValue();
+        else if(StringUtils.isNotBlank(asForm))
+            return asForm;
         else
             throw JOSEErrorException.newInstance();
     }
