@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
@@ -35,12 +34,8 @@ public class IDPNavigationService {
         Navigation navigation = new Navigation();
 
         if ("JOSE".equalsIgnoreCase(token.getNorm())) {
-
             navigation.setTarget(joseTargetURL);
-            Cookie foo = new Cookie("Bearer", joseService.generateJOSEAccess(token));
-            foo.setMaxAge(30);
-            response.addCookie(foo);
-
+            navigation.setAttributes(new HashSet<>(asList(new NavigationAttribute("Bearer", joseService.generateJOSEAccess(token)))));
         } else {
             navigation.setTarget(samlTargetURL);
             navigation.setAttributes(new HashSet<>(asList(new NavigationAttribute("SAMLResponse", samlService.generateSAMLAccess(token)))));

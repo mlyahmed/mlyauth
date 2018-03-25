@@ -26,7 +26,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -37,7 +36,6 @@ import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.constants.TokenScope.PERSON;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
@@ -110,19 +108,11 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         return request.getHeader("Authorization");
     }
 
-    private Cookie getBearerCookie(HttpServletRequest request) {
-        if(request.getCookies() == null) return null;
-        return stream(request.getCookies()).filter(c -> "Bearer".equals(c.getName())).findFirst().orElse(null);
-    }
-
     private String getRawBearer(HttpServletRequest request) {
         final String asHeader = getAuthorizationHeader(request);
         final String asForm = request.getParameter("Bearer");
-        final Cookie asCookie = getBearerCookie(request);
         if (asHeader != null && asHeader.startsWith("Bearer "))
             return asHeader.substring(7);
-        else if(asCookie != null && StringUtils.isNotBlank(asCookie.getValue()))
-            return asCookie.getValue();
         else if(StringUtils.isNotBlank(asForm))
             return asForm;
         else

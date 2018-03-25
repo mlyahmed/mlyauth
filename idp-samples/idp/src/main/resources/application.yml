@@ -18,7 +18,7 @@ idp:
 
 sp:
   jose:
-    entityId: primainsureIDP
+    entityId: primainsure4sgi
     endpoint: http://localhost:16666/sp/jose/sso
   saml:
     entityId: primainsure4sgi
