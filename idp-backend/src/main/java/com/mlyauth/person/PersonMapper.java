@@ -1,4 +1,4 @@
-package com.mlyauth.mappers;
+package com.mlyauth.person;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
@@ -6,6 +6,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.mappers.IDomainMapper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Named
-public class PersonMapper implements IDomainMapper<Person, PersonBean>{
+public class PersonMapper implements IDomainMapper<Person, PersonBean> {
 
 
     @Inject

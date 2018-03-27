@@ -1,4 +1,4 @@
-package com.mlyauth.api;
+package com.mlyauth.application;
 
 import com.mlyauth.beans.ApplicationBean;
 import com.mlyauth.dao.ApplicationDAO;

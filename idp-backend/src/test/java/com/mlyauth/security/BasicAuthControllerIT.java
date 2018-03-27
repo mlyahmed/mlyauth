@@ -1,4 +1,4 @@
-package com.mlyauth.api;
+package com.mlyauth.security;
 
 import com.mlyauth.AbstractIntegrationTest;
 import org.junit.Ignore;

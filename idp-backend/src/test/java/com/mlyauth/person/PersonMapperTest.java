@@ -1,4 +1,4 @@
-package com.mlyauth.mappers;
+package com.mlyauth.person;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
@@ -6,6 +6,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.person.PersonMapper;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;

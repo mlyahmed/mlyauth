@@ -1,4 +1,4 @@
-package com.mlyauth.api;
+package com.mlyauth.person;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.exception.IDPException;
