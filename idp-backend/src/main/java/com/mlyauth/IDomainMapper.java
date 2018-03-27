@@ -1,4 +1,4 @@
-package com.mlyauth.mappers;
+package com.mlyauth;
 
 public interface IDomainMapper<E, B> {
 

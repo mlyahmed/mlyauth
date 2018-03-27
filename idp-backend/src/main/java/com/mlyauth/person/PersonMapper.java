@@ -6,7 +6,7 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.mappers.IDomainMapper;
+import com.mlyauth.IDomainMapper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
