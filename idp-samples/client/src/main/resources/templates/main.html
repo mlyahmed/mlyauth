@@ -29,7 +29,8 @@
                 cache: false,
                 timeout: 600000,
                 success: function (data) {
-                    $('#feedback').html(data);
+                    $('#access').html(data.access);
+                    $('#elapsed').html(data.elapsed);
                     console.log("SUCCESS : ", data);
                     $("#btn-search").prop("disabled", false);
                 },
@@ -55,8 +56,9 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Spring Boot AJAX Example</h1>
-        <div id="feedback"></div>
+        <h1>Sample Client</h1>
+        <div id="access"></div>
+        <div id="elapsed"></div>
         <form class="form-horizontal" id="refresh-access-form">
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
