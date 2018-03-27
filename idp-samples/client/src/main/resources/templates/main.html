@@ -30,7 +30,7 @@
                 timeout: 600000,
                 success: function (data) {
                     $('#access').html(data.serialized);
-                    $('#expiryTime').html(data.serialized);
+                    $('#expiryTime').html(data.expiryTime);
                     $('#elapsed').html(data.elapsed);
                     console.log("SUCCESS : ", data);
                     $("#btn-search").prop("disabled", false);
@@ -61,6 +61,7 @@
         <div id="access"></div>
         <div id="expiryTime"></div>
         <div id="elapsed"></div>
+
         <form class="form-horizontal" id="refresh-access-form">
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">

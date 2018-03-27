@@ -83,7 +83,7 @@ public class SampleClientTokenService {
             JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
             JSONObject jsonObject = (JSONObject)parser.parse(access);
 
-            return new SampleClientTokenBean(jsonObject.getAsString("serialized"), jsonObject.getAsString("expiryDate"));
+            return new SampleClientTokenBean(jsonObject.getAsString("serialized"), jsonObject.getAsString("expiryTime"));
 
         }catch(Exception e){
             throw new RuntimeException(e);
