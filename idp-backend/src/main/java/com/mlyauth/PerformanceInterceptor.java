@@ -36,10 +36,7 @@ public class PerformanceInterceptor {
     @Pointcut("execution(* com.mlyauth.security..*(..))")
     public void security() { }
 
-    @Pointcut("execution(* com.mlyauth.validators..*(..))")
-    public void validators() { }
-
-    @Around("tokens() || beans()  || context() || credentials() || dao()  || security() || validators()")
+    @Around("tokens() || beans()  || context() || credentials() || dao()  || security()")
     public Object profile(ProceedingJoinPoint pjp) throws Throwable {
         final Stopwatch started = Stopwatch.createStarted();
         Object result = pjp.proceed();
