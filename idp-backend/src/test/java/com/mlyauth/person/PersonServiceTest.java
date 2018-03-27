@@ -1,7 +1,6 @@
 package com.mlyauth.person;
 
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.validators.IPersonValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

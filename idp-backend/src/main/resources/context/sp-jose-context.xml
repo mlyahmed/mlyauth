@@ -19,7 +19,7 @@
     </bean>
 
 
-    <bean id="spJoseProcessingFilter" class="com.mlyauth.sso.sp.jose.SPJOSEProcessingFilter">
+    <bean id="spJoseProcessingFilter" class="com.mlyauth.sp.jose.SPJOSEProcessingFilter">
         <property name="filterProcessesUrl" value="/sp/jose/sso"/>
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationSuccessHandler" ref="SPUrlAuthenticationSuccessHandler"/>

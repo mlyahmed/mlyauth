@@ -6,7 +6,6 @@ import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.validators.IPersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

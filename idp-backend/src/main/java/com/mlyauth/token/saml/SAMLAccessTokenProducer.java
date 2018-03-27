@@ -5,7 +5,7 @@ import com.mlyauth.context.IContext;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
-import com.mlyauth.sso.sp.saml.ISPSAMLAspectValidator;
+import com.mlyauth.sp.saml.ISPSAMLAspectValidator;
 import com.mlyauth.token.TokenIdGenerator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.springframework.beans.factory.annotation.Autowired;
