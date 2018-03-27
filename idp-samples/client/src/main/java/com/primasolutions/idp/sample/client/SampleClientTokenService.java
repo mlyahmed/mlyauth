@@ -5,6 +5,8 @@ import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -27,6 +29,7 @@ import java.util.Date;
 
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
+import static net.minidev.json.parser.JSONParser.MODE_JSON_SIMPLE;
 
 @Service
 public class SampleClientTokenService {
@@ -44,7 +47,7 @@ public class SampleClientTokenService {
     @Autowired
     private KeyManager keyManager;
 
-    public String refreshAccess(SampleClientToken token){
+    public SampleClientTokenBean refreshAccess(SampleClientToken token){
 
         try{
 
@@ -77,7 +80,10 @@ public class SampleClientTokenService {
             Assert.isTrue( response.getStatusLine().getStatusCode() == 201, "");
             String access = IOUtils.toString(response.getEntity().getContent(), Charset.forName("UTF-8"));
             client.close();
-            return access;
+            JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
+            JSONObject jsonObject = (JSONObject)parser.parse(access);
+
+            return new SampleClientTokenBean(jsonObject.getAsString("serialized"), jsonObject.getAsString("expiryDate"));
 
         }catch(Exception e){
             throw new RuntimeException(e);

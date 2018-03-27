@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @RestController
@@ -23,13 +20,11 @@ public class SampleClientTokenController {
     private SampleClientJOSETokenInitializer tokenInitializer;
 
     @PostMapping("/refreshAccess")
-    public Map<String, String> refreshAccess() {
-        Map<String, String> access = new HashMap<>();
+    public SampleClientTokenBean refreshAccess() {
         final Stopwatch started = Stopwatch.createStarted();
-        final SampleClientToken token = tokenInitializer.newToken();
-        access.put("access", clientTokenService.refreshAccess(token));
-        access.put("elapsed", started.elapsed(MILLISECONDS)+"");
-        return access;
+        final SampleClientTokenBean accessToken = clientTokenService.refreshAccess(tokenInitializer.newToken());
+        accessToken.setElapsed(started.elapsed(MILLISECONDS));
+        return accessToken;
     }
 
 }

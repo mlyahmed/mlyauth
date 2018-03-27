@@ -12,11 +12,14 @@ import com.mlyauth.token.TokenMapper;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
 import javafx.util.Pair;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -34,6 +37,7 @@ import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
+import static net.minidev.json.parser.JSONParser.MODE_JSON_SIMPLE;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -250,8 +254,10 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void then_an_access_token_is_returned() throws Exception {
-        resultActions.andExpect(status().isCreated()).andExpect(content().contentType("text/plain;charset=UTF-8"));
-        serializedAccessToken = resultActions.andReturn().getResponse().getContentAsString();
+        resultActions.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+        JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
+        JSONObject jsonObject = (JSONObject)parser.parse(resultActions.andReturn().getResponse().getContentAsString());
+        serializedAccessToken = jsonObject.getAsString("serialized");
         assertThat(serializedAccessToken, notNullValue());
     }
 

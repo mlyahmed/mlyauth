@@ -1,5 +1,6 @@
 package com.mlyauth.token.jose;
 
+import com.mlyauth.beans.TokenBean;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.context.IContext;
 import com.mlyauth.credentials.CredentialManager;
@@ -29,6 +30,7 @@ import static com.mlyauth.constants.TokenNorm.JOSE;
 import static com.mlyauth.constants.TokenPurpose.DELEGATION;
 import static com.mlyauth.constants.TokenStatus.READY;
 import static com.mlyauth.constants.TokenType.REFRESH;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
 
@@ -65,7 +67,7 @@ public class JOSETokenService {
     @Autowired
     private ApplicationDAO applicationDAO;
 
-    public JOSEAccessToken refreshAccess(JOSERefreshToken refresh){
+    public TokenBean refreshAccess(JOSERefreshToken refresh){
         final Application client = context.getApplication();
 
 
@@ -103,7 +105,7 @@ public class JOSETokenService {
         token.setApplication(applicationDAO.findOne(rsEntityId.getId().getApplicationId()));
         tokenDAO.save(token);
 
-        return accessToken;
+        return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
     }
 
 }

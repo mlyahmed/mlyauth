@@ -4,6 +4,8 @@ import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.token.jose.JOSERefreshToken;
 import com.mlyauth.token.jose.JOSETokenFactory;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.security.PrivateKey;
 
 import static com.mlyauth.tools.KeysForTests.decodeRSAPrivateKey;
+import static net.minidev.json.parser.JSONParser.MODE_JSON_SIMPLE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,8 +62,11 @@ public class AccessTokenForTests {
             final ResultActions result = mockMvc.perform(post(JOSE_ACCESS_URI)
                     .content(refreshToken.serialize()).with(httpBasic(CL_LOGIN, CL_PASSWORD))
                     .contentType("text/plain;charset=UTF-8"));
-            return result.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+            result.andExpect(status().isCreated());
 
+            JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
+            JSONObject jsonObject = (JSONObject)parser.parse(result.andReturn().getResponse().getContentAsString());
+            return jsonObject.getAsString("serialized");
         }catch(Exception e){
             throw new RuntimeException(e);
         }
