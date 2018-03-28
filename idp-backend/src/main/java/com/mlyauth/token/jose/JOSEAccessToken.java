@@ -1,6 +1,8 @@
 package com.mlyauth.token.jose;
 
+import com.mlyauth.constants.TokenRefreshMode;
 import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.TokenValidationMode;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -28,6 +30,26 @@ public class JOSEAccessToken extends AbstractJOSEToken {
         super(serialize, privateKey, publicKey);
     }
 
+
+    @Override
+    public TokenRefreshMode getRefreshMode() {
+        return null;
+    }
+
+    @Override
+    public void setRefreshMode(TokenRefreshMode mode) {
+
+    }
+
+    @Override
+    public TokenValidationMode getValidationMode() {
+        return null;
+    }
+
+    @Override
+    public void setValidationMode(TokenValidationMode mode) {
+
+    }
 
     @Override
     public TokenType getType() {

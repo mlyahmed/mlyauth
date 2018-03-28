@@ -129,6 +129,26 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
+    public TokenRefreshMode getRefreshMode() {
+        return null;
+    }
+
+    @Override
+    public void setRefreshMode(TokenRefreshMode mode) {
+
+    }
+
+    @Override
+    public TokenValidationMode getValidationMode() {
+        return null;
+    }
+
+    @Override
+    public void setValidationMode(TokenValidationMode mode) {
+
+    }
+
+    @Override
     public String getStamp() {
         return response.getID();
     }

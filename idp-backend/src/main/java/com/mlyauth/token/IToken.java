@@ -7,6 +7,14 @@ import java.util.Set;
 
 public interface IToken {
 
+    TokenRefreshMode getRefreshMode();
+
+    void setRefreshMode(TokenRefreshMode mode);
+
+    TokenValidationMode getValidationMode();
+
+    void setValidationMode(TokenValidationMode mode);
+
     String getStamp();
 
     void setStamp(String stamp);

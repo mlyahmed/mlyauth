@@ -1,6 +1,8 @@
 package com.mlyauth.token.jose;
 
+import com.mlyauth.constants.TokenRefreshMode;
 import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.TokenValidationMode;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -26,6 +28,26 @@ public class JOSERefreshToken extends AbstractJOSEToken {
         builder = builder.expirationTime(from(now().plusYears(3).atZone(ZoneId.systemDefault()).toInstant()))
                 .notBeforeTime(new Date())
                 .issueTime(new Date());
+    }
+
+    @Override
+    public TokenRefreshMode getRefreshMode() {
+        return null;
+    }
+
+    @Override
+    public void setRefreshMode(TokenRefreshMode mode) {
+
+    }
+
+    @Override
+    public TokenValidationMode getValidationMode() {
+        return null;
+    }
+
+    @Override
+    public void setValidationMode(TokenValidationMode mode) {
+
     }
 
     @Override
