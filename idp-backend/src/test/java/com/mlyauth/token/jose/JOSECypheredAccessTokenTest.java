@@ -2,7 +2,7 @@ package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.TokenProcessingStatus;
 import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenVerdict;
+import com.mlyauth.constants.TokenValidationMode;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenUnmodifiableException;
@@ -25,12 +25,15 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.constants.TokenRefreshMode.EACH_TIME;
+import static com.mlyauth.constants.TokenRefreshMode.WHEN_EXPIRES;
+import static com.mlyauth.constants.TokenValidationMode.STANDARD;
+import static com.mlyauth.constants.TokenValidationMode.STRICT;
+import static com.mlyauth.constants.TokenVerdict.FAIL;
+import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static org.exparity.hamcrest.date.LocalDateTimeMatchers.within;
@@ -65,6 +68,18 @@ public class JOSECypheredAccessTokenTest {
     public void when_decipher_the_access_token_then_it_must_be_deciphered() {
         when_decipher_the_access_token();
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.DECIPHERED));
+    }
+
+    @Test
+    public void when_decipher_the_access_token_then_the_validation_mode_is_loaded() {
+        when_decipher_the_access_token();
+        assertThat(accessToken.getValidationMode(), equalTo(accessClaims.getClaim(VALIDATION_MODE.getValue())));
+    }
+
+    @Test
+    public void when_decipher_the_access_token_then_the_refresh_mode_is_loaded() {
+        when_decipher_the_access_token();
+        assertThat(accessToken.getRefreshMode(), equalTo(accessClaims.getClaim(REFRESH_MODE.getValue())));
     }
 
     @Test
@@ -217,6 +232,18 @@ public class JOSECypheredAccessTokenTest {
     }
 
     @Test(expected = TokenUnmodifiableException.class)
+    public void the_validation_mode_is_not_modifiable_before_deciphering_the_access() {
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setValidationMode(TokenValidationMode.STANDARD);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_validation_mode_is_not_modifiable_after_deciphering_the_access() {
+        when_decipher_the_access_token();
+        accessToken.setValidationMode(TokenValidationMode.STRICT);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
     public void the_stamp_is_not_modifiable_before_deciphering_the_access() {
         accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         accessToken.setStamp(randomString());
@@ -339,16 +366,17 @@ public class JOSECypheredAccessTokenTest {
     @Test(expected = TokenUnmodifiableException.class)
     public void the_verdict_is_not_modifiable_before_deciphering_the_access() {
         accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
-        accessToken.setVerdict(TokenVerdict.SUCCESS);
+        accessToken.setVerdict(SUCCESS);
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void the_verdict_is_not_modifiable_after_deciphering_the_access() {
         when_decipher_the_access_token();
-        accessToken.setVerdict(TokenVerdict.SUCCESS);
+        accessToken.setVerdict(SUCCESS);
     }
 
     private void given_expected_access_claims() {
+        final Random random = new Random();
         accessClaims = new JWTClaimsSet.Builder()
                 .jwtID(UUID.randomUUID().toString())
                 .subject(randomString())
@@ -361,7 +389,9 @@ public class JOSECypheredAccessTokenTest {
                 .claim(Claims.TARGET_URL.getValue(), randomString())
                 .claim(Claims.DELEGATOR.getValue(), randomString())
                 .claim(Claims.DELEGATE.getValue(), randomString())
-                .claim(Claims.VERDICT.getValue(), TokenVerdict.SUCCESS)
+                .claim(Claims.VERDICT.getValue(), random.nextInt(2000) % 2 == 0 ? SUCCESS : FAIL)
+                .claim(Claims.VALIDATION_MODE.getValue(), random.nextInt(542154) % 2 == 0 ? STANDARD : STRICT)
+                .claim(Claims.REFRESH_MODE.getValue(), random.nextInt(54662)%2 == 0 ? WHEN_EXPIRES : EACH_TIME)
                 .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 3))
                 .notBeforeTime(new Date())
                 .issueTime(new Date())

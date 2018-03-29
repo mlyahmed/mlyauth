@@ -29,7 +29,11 @@ import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.constants.TokenRefreshMode.EACH_TIME;
+import static com.mlyauth.constants.TokenRefreshMode.WHEN_EXPIRES;
 import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.constants.TokenValidationMode.STANDARD;
+import static com.mlyauth.constants.TokenValidationMode.STRICT;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.Claims.*;
@@ -70,6 +74,8 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_fresh_access_response_then_token_claims_must_be_fresh() {
+        assertThat(accessToken.getRefreshMode(), equalTo(TokenRefreshMode.EACH_TIME));
+        assertThat(accessToken.getValidationMode(), equalTo(STRICT));
         assertThat(accessToken.getStamp(), nullValue());
         assertThat(accessToken.getSubject(), nullValue());
         assertThat(accessToken.getScopes(), empty());
@@ -83,6 +89,59 @@ public class JOSEFreshAccessTokenTest {
         assertThat(accessToken.getNorm(), equalTo(TokenNorm.JOSE));
         assertThat(accessToken.getType(), equalTo(TokenType.ACCESS));
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FRESH));
+    }
+
+    @Test
+    public void when_create_a_fresh_access_token_and_set_refresh_mode_then_must_be_set(){
+        accessToken.setRefreshMode(WHEN_EXPIRES);
+        assertThat(accessToken.getRefreshMode(), equalTo(WHEN_EXPIRES));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_create_a_fresh_access_token_and_set_null_as_refresh_mode_then_error(){
+        accessToken.setRefreshMode(null);
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_refresh_mode_must_be_committed() throws Exception {
+        accessToken.setRefreshMode(WHEN_EXPIRES);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(REFRESH_MODE.getValue()), equalTo(WHEN_EXPIRES.name()));
+    }
+
+    @Test
+    public void when_create_a_fresh_access_token_and_set_validation_mode_then_must_be_set(){
+        accessToken.setValidationMode(STANDARD);
+        assertThat(accessToken.getValidationMode(), equalTo(STANDARD));
+        assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
+    }
+
+    @Test
+    public void when_create_a_refresh_access_token_and_set_strict_as_validation_mode_then_refresh_mode_must_be_each(){
+        accessToken.setRefreshMode(WHEN_EXPIRES);
+        accessToken.setValidationMode(STRICT);
+        assertThat(accessToken.getRefreshMode(), equalTo(EACH_TIME));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_create_a_fresh_access_token_and_set_null_as_validation_mode_then_error(){
+        accessToken.setValidationMode(null);
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_access_token_then_the_validation_mode_must_be_committed() throws Exception {
+        accessToken.setValidationMode(STANDARD);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(VALIDATION_MODE.getValue()), equalTo(STANDARD.name()));
     }
 
     @Test

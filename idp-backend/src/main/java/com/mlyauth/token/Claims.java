@@ -5,6 +5,8 @@ import com.mlyauth.constants.IStringEnum;
 import static java.util.Arrays.stream;
 
 public enum Claims implements IStringEnum {
+    REFRESH_MODE("refreshMode"),
+    VALIDATION_MODE("validationhMode"),
     SUBJECT("subject"),
     SCOPES("scopes"),
     BP("bp"),
