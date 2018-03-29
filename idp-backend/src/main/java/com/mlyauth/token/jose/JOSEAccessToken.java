@@ -32,11 +32,14 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     }
 
     private void initTimes() {
-        Instant threeMinutesAfter = LocalDateTime.now().plusSeconds(179).atZone(ZoneId.systemDefault()).toInstant();
+        setExpirationTime(180);
         Instant aSecondAgo = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
-        builder = builder.expirationTime(Date.from(threeMinutesAfter))
-                .notBeforeTime(Date.from(aSecondAgo))
-                .issueTime(Date.from(aSecondAgo));
+        builder = builder.notBeforeTime(Date.from(aSecondAgo)).issueTime(Date.from(aSecondAgo));
+    }
+
+    private void setExpirationTime(long seconds){
+        Instant expiration = LocalDateTime.now().plusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant();
+        builder = builder.expirationTime(Date.from(expiration));
     }
 
     public JOSEAccessToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
@@ -53,6 +56,7 @@ public class JOSEAccessToken extends AbstractJOSEToken {
         Assert.notNull(mode, "Refresh Mode is null.");
         checkUnmodifiable();
         builder = builder.claim(REFRESH_MODE.getValue(), mode.name());
+        if(mode == TokenRefreshMode.WHEN_EXPIRES) setExpirationTime(60 * 30);
         status = TokenProcessingStatus.FORGED;
     }
 

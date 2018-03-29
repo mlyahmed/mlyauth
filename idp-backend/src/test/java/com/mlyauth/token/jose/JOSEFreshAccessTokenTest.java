@@ -13,6 +13,8 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import javafx.util.Pair;
+import org.exparity.hamcrest.date.DateMatchers;
+import org.exparity.hamcrest.date.LocalDateTimeMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,8 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -38,6 +40,8 @@ import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
+import static java.lang.System.currentTimeMillis;
+import static java.time.LocalDateTime.now;
 import static java.util.Date.from;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.*;
@@ -413,31 +417,56 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_access_token_then_it_expires_in_3_minutes() {
         assertThat(accessToken.getExpiryTime(), notNullValue());
-        assertThat(accessToken.getExpiryTime().isBefore(LocalDateTime.now().plusSeconds(180)), equalTo(true));
-        assertThat(accessToken.getExpiryTime().isAfter(LocalDateTime.now().plusSeconds(178)), equalTo(true));
+        assertThat(accessToken.getExpiryTime(), LocalDateTimeMatchers.within(180, ChronoUnit.SECONDS, now()));
+        assertThat(accessToken.getExpiryTime(), LocalDateTimeMatchers.after(now().plusSeconds(179)));
     }
 
     @Test
     public void when_serialize_cyphered_access_token_then_the_expiry_time_must_be_committed() throws Exception {
         accessToken.cypher();
-        Instant instant = LocalDateTime.now().plusMinutes(3).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
-        assertThat(signedJWT.getJWTClaimsSet().getExpirationTime().before(from(instant)), equalTo(true));
+        final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        assertThat(expirationTime, DateMatchers.within(3, ChronoUnit.MINUTES, new Date()));
+        assertThat(expirationTime, DateMatchers.after(new Date(currentTimeMillis() + (1000 * 59 * 3))));
+    }
+
+    @Test
+    public void when_create_a_fresh_access_token_and_each_time_refresh_mode_then_it_expires_in_3_minutes() throws Exception {
+        accessToken.setRefreshMode(TokenRefreshMode.EACH_TIME);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        assertThat(expirationTime, DateMatchers.within(3, ChronoUnit.MINUTES, new Date()));
+        assertThat(expirationTime, DateMatchers.after(new Date(currentTimeMillis() + (1000 * 59 * 3))));
+    }
+
+    @Test
+    public void when_create_a_fresh_access_token_and_expiry_refresh_mode_then_it_expires_in_30_minutes() throws Exception {
+        accessToken.setRefreshMode(TokenRefreshMode.WHEN_EXPIRES);
+        accessToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        assertThat(expirationTime, DateMatchers.within(30, ChronoUnit.MINUTES, new Date()));
+        assertThat(expirationTime, DateMatchers.after(new Date(currentTimeMillis() + (1000 * 60 * 29))));
     }
 
     @Test
     public void when_create_a_fresh_access_token_then_it_is_effective_now() {
         assertThat(accessToken.getEffectiveTime(), notNullValue());
-        assertThat(accessToken.getEffectiveTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
-        assertThat(accessToken.getEffectiveTime().isBefore(LocalDateTime.now().plusSeconds(1)), equalTo(true));
+        assertThat(accessToken.getEffectiveTime().isAfter(now().minusSeconds(2)), equalTo(true));
+        assertThat(accessToken.getEffectiveTime().isBefore(now().plusSeconds(1)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_access_token_then_the_effective_time_must_be_committed() throws Exception {
         accessToken.cypher();
-        Instant twoSecondsAgo = LocalDateTime.now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
+        Instant twoSecondsAgo = now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
@@ -448,14 +477,14 @@ public class JOSEFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_access_token_then_it_is_issued_now() {
         assertThat(accessToken.getIssuanceTime(), notNullValue());
-        assertThat(accessToken.getIssuanceTime().isAfter(LocalDateTime.now().minusSeconds(2)), equalTo(true));
-        assertThat(accessToken.getIssuanceTime().isBefore(LocalDateTime.now().plusSeconds(1)), equalTo(true));
+        assertThat(accessToken.getIssuanceTime().isAfter(now().minusSeconds(2)), equalTo(true));
+        assertThat(accessToken.getIssuanceTime().isBefore(now().plusSeconds(1)), equalTo(true));
     }
 
     @Test
     public void when_serialize_cyphered_access_token_then_the_issuance_time_must_be_committed() throws Exception {
         accessToken.cypher();
-        Instant twoSecondsAgo = LocalDateTime.now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
+        Instant twoSecondsAgo = now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();

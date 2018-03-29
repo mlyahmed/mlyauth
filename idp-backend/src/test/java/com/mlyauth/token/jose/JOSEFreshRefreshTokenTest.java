@@ -14,6 +14,7 @@ import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import javafx.util.Pair;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mlyauth.constants.TokenRefreshMode.WHEN_EXPIRES;
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
@@ -83,6 +85,14 @@ public class JOSEFreshRefreshTokenTest {
         assertThat(refreshToken.getNorm(), equalTo(TokenNorm.JOSE));
         assertThat(refreshToken.getType(), equalTo(TokenType.REFRESH));
         assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FRESH));
+    }
+
+    @Test
+    @Ignore
+    public void when_create_a_fresh_refresh_token_and_set_refresh_mode_then_must_be_set(){
+        refreshToken.setRefreshMode(WHEN_EXPIRES);
+        assertThat(refreshToken.getRefreshMode(), equalTo(WHEN_EXPIRES));
+        assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test
