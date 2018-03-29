@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -17,33 +16,40 @@ import static com.mlyauth.constants.TokenRefreshMode.EACH_TIME;
 import static com.mlyauth.constants.TokenValidationMode.STRICT;
 import static com.mlyauth.token.Claims.REFRESH_MODE;
 import static com.mlyauth.token.Claims.VALIDATION_MODE;
+import static java.time.LocalDateTime.now;
 
 public class JOSEAccessToken extends AbstractJOSEToken {
 
+    public JOSEAccessToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
+        super(serialize, privateKey, publicKey);
+    }
+
     public JOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
         super(privateKey, publicKey);
-        initModes();
-        initTimes();
-    }
-
-    private void initModes() {
         builder = builder.claim(REFRESH_MODE.getValue(), EACH_TIME.name());
         builder = builder.claim(VALIDATION_MODE.getValue(), STRICT.name());
+        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? 60 * 30 : 60 * 3);
+        setEffectiveTime(1);
+        setIssuanceTime(1);
     }
 
-    private void initTimes() {
-        setExpirationTime(180);
-        Instant aSecondAgo = LocalDateTime.now().minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant();
-        builder = builder.notBeforeTime(Date.from(aSecondAgo)).issueTime(Date.from(aSecondAgo));
+    private void setTimes() {
+        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? 60 * 30 : 60 * 3);
+        setEffectiveTime(1);
+        setIssuanceTime(1);
     }
 
     private void setExpirationTime(long seconds){
-        Instant expiration = LocalDateTime.now().plusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant();
+        Instant expiration = now().plusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant();
         builder = builder.expirationTime(Date.from(expiration));
     }
 
-    public JOSEAccessToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
-        super(serialize, privateKey, publicKey);
+    private void setEffectiveTime(long seconds){
+        builder = builder.notBeforeTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
+    }
+
+    private void setIssuanceTime(long seconds){
+        builder = builder.issueTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     @Override
@@ -56,7 +62,6 @@ public class JOSEAccessToken extends AbstractJOSEToken {
         Assert.notNull(mode, "Refresh Mode is null.");
         checkUnmodifiable();
         builder = builder.claim(REFRESH_MODE.getValue(), mode.name());
-        if(mode == TokenRefreshMode.WHEN_EXPIRES) setExpirationTime(60 * 30);
         status = TokenProcessingStatus.FORGED;
     }
 
@@ -77,6 +82,12 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     @Override
     public TokenType getType() {
         return TokenType.ACCESS;
+    }
+
+    @Override
+    public void cypher() {
+        setTimes();
+        super.cypher();
     }
 
 }
