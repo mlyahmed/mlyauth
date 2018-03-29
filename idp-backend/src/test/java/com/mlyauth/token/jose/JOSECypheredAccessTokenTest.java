@@ -1,6 +1,7 @@
 package com.mlyauth.token.jose;
 
 import com.mlyauth.constants.TokenProcessingStatus;
+import com.mlyauth.constants.TokenRefreshMode;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenValidationMode;
 import com.mlyauth.exception.InvalidTokenException;
@@ -241,6 +242,18 @@ public class JOSECypheredAccessTokenTest {
     public void the_validation_mode_is_not_modifiable_after_deciphering_the_access() {
         when_decipher_the_access_token();
         accessToken.setValidationMode(TokenValidationMode.STRICT);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_refresh_mode_is_not_modifiable_before_deciphering_the_access() {
+        accessToken = new JOSEAccessToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
+        accessToken.setRefreshMode(TokenRefreshMode.EACH_TIME);
+    }
+
+    @Test(expected = TokenUnmodifiableException.class)
+    public void the_refresh_mode_is_not_modifiable_after_deciphering_the_access() {
+        when_decipher_the_access_token();
+        accessToken.setRefreshMode(TokenRefreshMode.WHEN_EXPIRES);
     }
 
     @Test(expected = TokenUnmodifiableException.class)

@@ -51,6 +51,7 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     @Override
     public void setRefreshMode(TokenRefreshMode mode) {
         Assert.notNull(mode, "Refresh Mode is null.");
+        checkUnmodifiable();
         builder = builder.claim(REFRESH_MODE.getValue(), mode.name());
         status = TokenProcessingStatus.FORGED;
     }
