@@ -40,6 +40,7 @@ public class JOSEAccessTokenValidatorTest {
     @Test
     public void when_the_token_is_valid_then_ok() {
         JOSEAccessToken access = given_access_token();
+        access.cypher();
         boolean valid = validator.validate(access);
         Assert.assertThat(valid, Matchers.equalTo(true));
     }
@@ -138,6 +139,7 @@ public class JOSEAccessTokenValidatorTest {
     @Test(expected = InvalidTokenException.class)
     public void when_the_token_issuance_is_issuance_time_is_later_then_error() {
         MockJOSEAccessToken access = given_access_token();
+        access.cypher();
         access.setIssuanceTime(LocalDateTime.now().plusSeconds(1));
         validator.validate(access);
     }
@@ -145,6 +147,7 @@ public class JOSEAccessTokenValidatorTest {
     @Test(expected = InvalidTokenException.class)
     public void when_the_token_issuance_is_effective_time_is_later_then_error() {
         MockJOSEAccessToken access = given_access_token();
+        access.cypher();
         access.setEffectiveTime(LocalDateTime.now().plusSeconds(1));
         validator.validate(access);
     }

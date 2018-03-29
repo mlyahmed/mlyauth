@@ -28,28 +28,6 @@ public class JOSEAccessToken extends AbstractJOSEToken {
         super(privateKey, publicKey);
         builder = builder.claim(REFRESH_MODE.getValue(), EACH_TIME.name());
         builder = builder.claim(VALIDATION_MODE.getValue(), STRICT.name());
-        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? 60 * 30 : 60 * 3);
-        setEffectiveTime(1);
-        setIssuanceTime(1);
-    }
-
-    private void setTimes() {
-        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? 60 * 30 : 60 * 3);
-        setEffectiveTime(1);
-        setIssuanceTime(1);
-    }
-
-    private void setExpirationTime(long seconds){
-        Instant expiration = now().plusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant();
-        builder = builder.expirationTime(Date.from(expiration));
-    }
-
-    private void setEffectiveTime(long seconds){
-        builder = builder.notBeforeTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
-    }
-
-    private void setIssuanceTime(long seconds){
-        builder = builder.issueTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     @Override
@@ -88,6 +66,25 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     public void cypher() {
         setTimes();
         super.cypher();
+    }
+
+    private void setTimes() {
+        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? 60 * 30 : 60 * 3);
+        setEffectiveTime(1);
+        setIssuanceTime(1);
+    }
+
+    private void setExpirationTime(long seconds){
+        Instant expiration = now().plusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant();
+        builder = builder.expirationTime(Date.from(expiration));
+    }
+
+    private void setEffectiveTime(long seconds){
+        builder = builder.notBeforeTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
+    }
+
+    private void setIssuanceTime(long seconds){
+        builder = builder.issueTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
 }

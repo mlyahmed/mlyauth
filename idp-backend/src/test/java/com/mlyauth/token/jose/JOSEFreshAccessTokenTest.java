@@ -416,6 +416,7 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_access_token_then_it_expires_in_3_minutes() {
+        accessToken.cypher();
         assertThat(accessToken.getExpiryTime(), notNullValue());
         assertThat(accessToken.getExpiryTime(), LocalDateTimeMatchers.within(180, ChronoUnit.SECONDS, now()));
         assertThat(accessToken.getExpiryTime(), LocalDateTimeMatchers.after(now().plusSeconds(179)));
@@ -458,6 +459,7 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_access_token_then_it_is_effective_now() {
+        accessToken.cypher();
         assertThat(accessToken.getEffectiveTime(), notNullValue());
         assertThat(accessToken.getEffectiveTime().isAfter(now().minusSeconds(2)), equalTo(true));
         assertThat(accessToken.getEffectiveTime().isBefore(now().plusSeconds(1)), equalTo(true));
@@ -476,6 +478,7 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_access_token_then_it_is_issued_now() {
+        accessToken.cypher();
         assertThat(accessToken.getIssuanceTime(), notNullValue());
         assertThat(accessToken.getIssuanceTime().isAfter(now().minusSeconds(2)), equalTo(true));
         assertThat(accessToken.getIssuanceTime().isBefore(now().plusSeconds(1)), equalTo(true));
