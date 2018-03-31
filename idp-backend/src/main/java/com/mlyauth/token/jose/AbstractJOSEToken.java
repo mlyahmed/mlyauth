@@ -1,9 +1,6 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.constants.TokenNorm;
-import com.mlyauth.constants.TokenProcessingStatus;
-import com.mlyauth.constants.TokenScope;
-import com.mlyauth.constants.TokenVerdict;
+import com.mlyauth.constants.*;
 import com.mlyauth.exception.InvalidTokenException;
 import com.mlyauth.exception.JOSEErrorException;
 import com.mlyauth.exception.TokenNotCipheredException;
@@ -91,6 +88,32 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     @Override
     public TokenNorm getNorm() {
         return TokenNorm.JOSE;
+    }
+
+    @Override
+    public TokenRefreshMode getRefreshMode() {
+        return TokenRefreshMode.valueOf((String) builder.build().getClaim(REFRESH_MODE.getValue()));
+    }
+
+    @Override
+    public void setRefreshMode(TokenRefreshMode mode) {
+        notNull(mode, "Refresh Mode is null.");
+        checkUnmodifiable();
+        builder = builder.claim(REFRESH_MODE.getValue(), mode.name());
+        status = TokenProcessingStatus.FORGED;
+    }
+
+    @Override
+    public TokenValidationMode getValidationMode() {
+        return TokenValidationMode.valueOf((String) builder.build().getClaim(VALIDATION_MODE.getValue()));
+    }
+
+    @Override
+    public void setValidationMode(TokenValidationMode mode) {
+        notNull(mode, "Refresh Mode is null.");
+        checkUnmodifiable();
+        builder = builder.claim(VALIDATION_MODE.getValue(), mode.name());
+        status = TokenProcessingStatus.FORGED;
     }
 
     @Override
@@ -261,16 +284,19 @@ public abstract class AbstractJOSEToken extends AbstractToken {
 
     @Override
     public LocalDateTime getExpiryTime() {
+        if(builder.build().getExpirationTime() == null) return null;
         return LocalDateTime.ofInstant(builder.build().getExpirationTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public LocalDateTime getEffectiveTime() {
+        if(builder.build().getNotBeforeTime() == null) return null;
         return LocalDateTime.ofInstant(builder.build().getNotBeforeTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public LocalDateTime getIssuanceTime() {
+        if(builder.build().getIssueTime() == null) return null;
         return LocalDateTime.ofInstant(builder.build().getIssueTime().toInstant(), ZoneId.systemDefault());
     }
 

@@ -14,7 +14,6 @@ import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import javafx.util.Pair;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenRefreshMode.WHEN_EXPIRES;
 import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.constants.TokenValidationMode.STANDARD;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
 import static com.mlyauth.token.Claims.*;
@@ -88,11 +88,49 @@ public class JOSEFreshRefreshTokenTest {
     }
 
     @Test
-    @Ignore
     public void when_create_a_fresh_refresh_token_and_set_refresh_mode_then_must_be_set(){
         refreshToken.setRefreshMode(WHEN_EXPIRES);
         assertThat(refreshToken.getRefreshMode(), equalTo(WHEN_EXPIRES));
         assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_create_a_fresh_refresh_token_and_set_null_as_refresh_mode_then_error(){
+        refreshToken.setRefreshMode(null);
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_refresh_token_then_the_refresh_mode_must_be_committed() throws Exception {
+        refreshToken.setRefreshMode(WHEN_EXPIRES);
+        refreshToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(refreshToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(REFRESH_MODE.getValue()), equalTo(WHEN_EXPIRES.name()));
+    }
+
+    @Test
+    public void when_create_a_fresh_refresh_token_and_set_validation_mode_then_must_be_set(){
+        refreshToken.setValidationMode(STANDARD);
+        assertThat(refreshToken.getValidationMode(), equalTo(STANDARD));
+        assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_create_a_fresh_refresh_token_and_set_null_as_validation_mode_then_error(){
+        refreshToken.setValidationMode(null);
+    }
+
+    @Test
+    @SuppressWarnings("Duplicates")
+    public void when_serialize_cyphered_refresh_token_then_the_validation_mode_must_be_committed() throws Exception {
+        refreshToken.setValidationMode(STANDARD);
+        refreshToken.cypher();
+        JWEObject loadedToken = JWEObject.parse(refreshToken.serialize());
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
+        assertThat(signedJWT.getJWTClaimsSet().getClaim(VALIDATION_MODE.getValue()), equalTo(STANDARD.name()));
     }
 
     @Test

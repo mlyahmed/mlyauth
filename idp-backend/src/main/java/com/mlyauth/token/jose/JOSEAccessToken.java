@@ -1,10 +1,7 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.constants.TokenProcessingStatus;
 import com.mlyauth.constants.TokenRefreshMode;
 import com.mlyauth.constants.TokenType;
-import com.mlyauth.constants.TokenValidationMode;
-import org.springframework.util.Assert;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -28,33 +25,6 @@ public class JOSEAccessToken extends AbstractJOSEToken {
         super(privateKey, publicKey);
         builder = builder.claim(REFRESH_MODE.getValue(), EACH_TIME.name());
         builder = builder.claim(VALIDATION_MODE.getValue(), STRICT.name());
-    }
-
-    @Override
-    public TokenRefreshMode getRefreshMode() {
-        return TokenRefreshMode.valueOf((String) builder.build().getClaim(REFRESH_MODE.getValue()));
-    }
-
-    @Override
-    public void setRefreshMode(TokenRefreshMode mode) {
-        Assert.notNull(mode, "Refresh Mode is null.");
-        checkUnmodifiable();
-        builder = builder.claim(REFRESH_MODE.getValue(), mode.name());
-        status = TokenProcessingStatus.FORGED;
-    }
-
-    @Override
-    public TokenValidationMode getValidationMode() {
-        return TokenValidationMode.valueOf((String) builder.build().getClaim(VALIDATION_MODE.getValue()));
-    }
-
-    @Override
-    public void setValidationMode(TokenValidationMode mode) {
-        Assert.notNull(mode, "Refresh Mode is null.");
-        checkUnmodifiable();
-        builder = builder.claim(VALIDATION_MODE.getValue(), mode.name());
-        if(mode == TokenValidationMode.STRICT) setRefreshMode(EACH_TIME);
-        status = TokenProcessingStatus.FORGED;
     }
 
     @Override

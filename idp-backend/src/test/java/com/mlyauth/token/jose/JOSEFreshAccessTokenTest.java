@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.constants.TokenRefreshMode.EACH_TIME;
 import static com.mlyauth.constants.TokenRefreshMode.WHEN_EXPIRES;
 import static com.mlyauth.constants.TokenScope.*;
 import static com.mlyauth.constants.TokenValidationMode.STANDARD;
@@ -93,6 +92,9 @@ public class JOSEFreshAccessTokenTest {
         assertThat(accessToken.getNorm(), equalTo(TokenNorm.JOSE));
         assertThat(accessToken.getType(), equalTo(TokenType.ACCESS));
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FRESH));
+        assertThat(accessToken.getExpiryTime(), nullValue());
+        assertThat(accessToken.getEffectiveTime(), nullValue());
+        assertThat(accessToken.getIssuanceTime(), nullValue());
     }
 
     @Test
@@ -123,13 +125,6 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setValidationMode(STANDARD);
         assertThat(accessToken.getValidationMode(), equalTo(STANDARD));
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
-    }
-
-    @Test
-    public void when_create_a_refresh_access_token_and_set_strict_as_validation_mode_then_refresh_mode_must_be_each(){
-        accessToken.setRefreshMode(WHEN_EXPIRES);
-        accessToken.setValidationMode(STRICT);
-        assertThat(accessToken.getRefreshMode(), equalTo(EACH_TIME));
     }
 
     @Test(expected = IllegalArgumentException.class)
