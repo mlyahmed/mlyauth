@@ -19,10 +19,10 @@ idp:
 sp:
   jose:
     entityId: primainsure4sgi
-    endpoint: http://localhost:16666/sp/jose/sso
+    endpoint: http://idp-backend.prima-idp.5186179a.svc.dockerapp.io:8998/sp/jose/sso
   saml:
     entityId: primainsure4sgi
-    endpoint: http://localhost:16666/sp/saml/sso
+    endpoint: http://idp-backend.prima-idp.5186179a.svc.dockerapp.io:8998/sp/saml/sso
 
 
 server:

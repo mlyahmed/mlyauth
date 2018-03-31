@@ -15,14 +15,17 @@ services:
           memory: 256M
     environment:
       ON_CREATE_DB: mlyauth
+      MYSQL_DATABASE: mlyauth
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: root
+      EXTRA_OPTS: "--lower_case_table_names=1"
+    ports:
+      - 3316:3306
     networks:
       - backend
     volumes:
       - idp-data:/var/lib/mysql:rw
   idp-backend:
-    command: ping idp-database
     image: mlyahmed/primaidp
     container_name: idp-backend
     volumes:
