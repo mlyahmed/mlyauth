@@ -30,7 +30,7 @@ server:
 logging:
   file: logs/mlyauth.log
   level:
-    ROOT: INFO
+    ROOT: ALL
     org.opensaml: INFO
     org.springframework.core: INFO
     org.springframework.security.saml: INFO

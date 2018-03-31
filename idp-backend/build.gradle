@@ -141,7 +141,7 @@ test {
 }
 
 docker {
-    name "${project.group}/${jar.baseName}:${project.version}"
+    name "${project.group}/${jar.baseName}"
     files jar.archivePath
     buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }

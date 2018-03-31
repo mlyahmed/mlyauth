@@ -1,0 +1,50 @@
+version: "3"
+services:
+
+  idp-database:
+    image: mysql
+    container_name: idp-database
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      resources:
+        reservations:
+          memory: 128M
+        limits:
+          memory: 256M
+    environment:
+      ON_CREATE_DB: mlyauth
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - backend
+    volumes:
+      - idp-data:/var/lib/mysql:rw
+  idp-backend:
+    command: ping idp-database
+    image: mlyahmed/primaidp
+    container_name: idp-backend
+    volumes:
+      - "/tmp:/tmp"
+      - "/opt:/opt"
+    ports:
+      - 8998:16666
+    links:
+      - idp-database:idp-database
+    networks:
+      - backend
+    depends_on:
+      - idp-database
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+networks:
+  backend:
+
+volumes:
+  idp-data: {}
