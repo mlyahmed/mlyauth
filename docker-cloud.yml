@@ -1,0 +1,20 @@
+idp-backend:
+  image: 'mlyahmed/primaidp:latest'
+  links:
+    - idp-database
+  ports:
+    - '8998:16666'
+  volumes:
+    - '/tmp:/tmp'
+    - '/opt:/opt'
+idp-database:
+  image: 'mysql:latest'
+  environment:
+    ON_CREATE_DB: mlyauth
+    MYSQL_DATABASE: mlyauth
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: root
+  ports:
+    - '3316:3306'
+  volumes:
+    - '/var/lib/mysql:/var/lib/mysql'
