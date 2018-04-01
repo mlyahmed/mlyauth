@@ -1,5 +1,6 @@
 package com.primasolutions.idp.sample.client;
 
+import com.google.common.base.Stopwatch;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
@@ -15,6 +16,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.saml.key.KeyManager;
@@ -29,10 +32,12 @@ import java.util.Date;
 
 import static com.nimbusds.jose.EncryptionMethod.A128GCM;
 import static com.nimbusds.jose.JWEAlgorithm.RSA_OAEP_256;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.minidev.json.parser.JSONParser.MODE_JSON_SIMPLE;
 
 @Service
 public class SampleClientTokenService {
+    private static Logger logger = LoggerFactory.getLogger(SampleClientTokenService.class);
 
     @Value("${cl.jose.peerRefreshEndpoint}")
     private String peerRefreshEndpoint;
@@ -73,13 +78,17 @@ public class SampleClientTokenService {
             HttpPost httpPost = new HttpPost(peerRefreshEndpoint);
 
             httpPost.setEntity(new StringEntity(serialized));
-            UsernamePasswordCredentials creds
-                    = new UsernamePasswordCredentials(login, password);
+            UsernamePasswordCredentials creds = new UsernamePasswordCredentials(login, password);
             httpPost.addHeader(new BasicScheme().authenticate(creds, httpPost, null));
+
+            final Stopwatch started = Stopwatch.createStarted();
             CloseableHttpResponse response = client.execute(httpPost);
             Assert.isTrue( response.getStatusLine().getStatusCode() == 201, "");
+            logger.info("Refresh Elapsed time : ("+started.elapsed(MILLISECONDS)+" ms)");
+
             String access = IOUtils.toString(response.getEntity().getContent(), Charset.forName("UTF-8"));
             client.close();
+
             JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
             JSONObject jsonObject = (JSONObject)parser.parse(access);
 

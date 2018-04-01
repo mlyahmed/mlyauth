@@ -40,7 +40,11 @@ public class PerformanceInterceptor {
     public Object profile(ProceedingJoinPoint pjp) throws Throwable {
         final Stopwatch started = Stopwatch.createStarted();
         Object result = pjp.proceed();
-        logger.trace("Method "+ pjp.toLongString()+" took "+started.elapsed(MILLISECONDS)+"ms.");
+
+        final long elapsed = started.elapsed(MILLISECONDS);
+        if(elapsed > 0)
+            logger.info("Method "+ pjp.toLongString()+" took "+ elapsed +"ms.");
+
         return result;
     }
 
