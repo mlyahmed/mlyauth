@@ -28,6 +28,8 @@ public class TokenMapper {
 
     private Token mapToken(IToken token) {
         return Token.newInstance()
+                .setValidationMode(token.getValidationMode()) //TODO: To be covered
+                .setRefreshMode(token.getRefreshMode()) //TODO: To be covered
                 .setStamp(DigestUtils.sha256Hex(token.getStamp()))
                 .setIssuanceTime(toDate(token.getIssuanceTime()))
                 .setEffectiveTime(toDate(token.getEffectiveTime()))

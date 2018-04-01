@@ -92,6 +92,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
 
     @Override
     public TokenRefreshMode getRefreshMode() {
+        if(builder.build().getClaim(REFRESH_MODE.getValue()) == null) return null;
         return TokenRefreshMode.valueOf((String) builder.build().getClaim(REFRESH_MODE.getValue()));
     }
 
@@ -105,6 +106,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
 
     @Override
     public TokenValidationMode getValidationMode() {
+        if(builder.build().getClaim(VALIDATION_MODE.getValue()) == null) return null;
         return TokenValidationMode.valueOf((String) builder.build().getClaim(VALIDATION_MODE.getValue()));
     }
 

@@ -1,6 +1,5 @@
 package com.mlyauth.token;
 
-import com.mlyauth.SecurityConfig;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.domain.Token;
@@ -39,7 +38,6 @@ public class TokenMapperTest {
 
     @Before
     public void setup() {
-        SecurityConfig securityConfig = new SecurityConfig();
         mapper = new TokenMapper();
     }
 

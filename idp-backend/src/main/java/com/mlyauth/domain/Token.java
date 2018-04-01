@@ -85,16 +85,18 @@ public class Token {
         return validationMode;
     }
 
-    public void setValidationMode(TokenValidationMode validationMode) {
+    public Token setValidationMode(TokenValidationMode validationMode) {
         this.validationMode = validationMode;
+        return this;
     }
 
     public TokenRefreshMode getRefreshMode() {
         return refreshMode;
     }
 
-    public void setRefreshMode(TokenRefreshMode refreshMode) {
+    public Token setRefreshMode(TokenRefreshMode refreshMode) {
         this.refreshMode = refreshMode;
+        return this;
     }
 
     public String getStamp() {
