@@ -1,8 +1,6 @@
 spring:
   application:
     name: mlyauth
-  profiles:
-    active: mysql
   jpa:
     show-sql: false
     hibernate:

@@ -4,5 +4,5 @@ VOLUME /tmp
 VOLUME /opt
 ARG JAR_FILE
 ADD ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker-mysql", "-jar", "/app.jar"]
 EXPOSE 16666

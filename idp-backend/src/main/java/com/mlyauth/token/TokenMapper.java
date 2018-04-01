@@ -3,10 +3,9 @@ package com.mlyauth.token;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.domain.Token;
 import com.mlyauth.domain.TokenClaim;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -22,9 +21,6 @@ import static com.mlyauth.token.Claims.*;
 @Component
 public class TokenMapper {
 
-    @Autowired
-    private PasswordEncoder encoder;
-
     public Token toToken(IToken token) {
         if (token == null) return null;
         return mapToken(token).setClaims(mapClaims(token));
@@ -32,7 +28,7 @@ public class TokenMapper {
 
     private Token mapToken(IToken token) {
         return Token.newInstance()
-                .setStamp(encoder.encode(token.getStamp()))
+                .setStamp(DigestUtils.sha256Hex(token.getStamp()))
                 .setIssuanceTime(toDate(token.getIssuanceTime()))
                 .setEffectiveTime(toDate(token.getEffectiveTime()))
                 .setExpiryTime(toDate(token.getExpiryTime()))

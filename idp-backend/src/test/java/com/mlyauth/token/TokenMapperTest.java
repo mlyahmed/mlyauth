@@ -8,13 +8,12 @@ import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLHelper;
 import javafx.util.Pair;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.credential.Credential;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -36,15 +35,12 @@ import static org.junit.Assert.assertThat;
 
 public class TokenMapperTest {
 
-    private PasswordEncoder encoder;
     private TokenMapper mapper;
 
     @Before
     public void setup() {
         SecurityConfig securityConfig = new SecurityConfig();
-        encoder = securityConfig.passwordEncoder();
         mapper = new TokenMapper();
-        ReflectionTestUtils.setField(mapper, "encoder", encoder);
     }
 
     @Test
@@ -64,7 +60,7 @@ public class TokenMapperTest {
     public void when_map_a_saml_access_token_then_the_stamp_must_be_encoded() {
         final SAMLAccessToken access = given_an_access_saml_token();
         final Token token = mapper.toToken(access);
-        assertThat(encoder.matches(access.getStamp(), token.getStamp()), equalTo(true));
+        assertThat(DigestUtils.sha256Hex(access.getStamp()), equalTo(token.getStamp()));
     }
 
     @Test

@@ -27,7 +27,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
@@ -197,7 +196,6 @@ public class SPJOSEProcessingFilterTest {
 
     private void set_up_filter() {
         final TokenMapper tokenMapper = new TokenMapper();
-        setField(tokenMapper, "encoder", new BCryptPasswordEncoder(13));
 
         final JOSETokenDecoder tokenDecoder = new JOSETokenDecoder();
         setField(tokenDecoder, "tokenFactory", new JOSETokenFactory());

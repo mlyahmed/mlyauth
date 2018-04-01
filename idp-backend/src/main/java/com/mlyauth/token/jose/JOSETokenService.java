@@ -19,17 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.PublicKey;
-import java.util.Date;
 import java.util.List;
 
 import static com.mlyauth.constants.AspectAttribute.RS_JOSE_ENTITY_ID;
 import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
 import static com.mlyauth.constants.AttributeType.ENTITYID;
-import static com.mlyauth.constants.TokenNorm.JOSE;
 import static com.mlyauth.constants.TokenPurpose.DELEGATION;
 import static com.mlyauth.constants.TokenStatus.READY;
-import static com.mlyauth.constants.TokenType.REFRESH;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
@@ -80,12 +77,7 @@ public class JOSETokenService {
         ApplicationAspectAttribute rsEntityId = attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refresh.getAudience());
         notNull(rsEntityId, "The Resource Server Entity ID not found");
 
-        final List<Token> tokens = tokenDAO.findByApplicationAndNormAndType(client, JOSE, REFRESH);
-        final Token readyRefresh = tokens.stream().filter(t -> t.getPurpose() == DELEGATION)
-                .filter(t -> t.getStatus() == READY)
-                .filter(t -> t.getExpiryTime().after(new Date()))
-                .filter(t -> passwordEncoder.matches(refresh.getStamp(), t.getStamp()))
-                .findFirst().orElse(null);
+        final Token readyRefresh = tokenDAO.findByStamp(DigestUtils.sha256Hex(refresh.getStamp()));
         notNull(readyRefresh, "No Ready Refresh token found");
 
         final PublicKey resourceServerKey = (localEntityId.equals(rsEntityId.getValue())) ? credManager.getPublicKey() : credManager.getPeerKey(refresh.getAudience(), RS_JOSE);

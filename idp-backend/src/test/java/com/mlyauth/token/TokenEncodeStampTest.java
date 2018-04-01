@@ -12,11 +12,14 @@ public class TokenEncodeStampTest {
 
     @Test
     public void generate_new_stamps() {
-        final String stamp = "n90014d8o621AXc"; //UUID.randomUUID().toString();
         SecurityConfig securityConfig = new SecurityConfig();
-        final String encodedStamp = securityConfig.passwordEncoder().encode(stamp);
+        final String stamp = "c810d2fe-5f91-4a41-accc-da88c5028fd3"; //UUID.randomUUID().toString();
+        final String password = "n90014d8o621AXc";
+        final String encodedPassword = securityConfig.passwordEncoder().encode(password);
+        final String encodedStamp = DigestUtils.sha256Hex(stamp);
         final String checksum = DigestUtils.sha256Hex(encodedStamp);
-        assertThat(securityConfig.passwordEncoder().matches(stamp, encodedStamp), equalTo(true));
+        assertThat(securityConfig.passwordEncoder().matches(password, encodedPassword), equalTo(true));
+        assertThat(encodedStamp, notNullValue());
         assertThat(checksum, notNullValue());
     }
 
