@@ -1,9 +1,6 @@
 package com.mlyauth.domain;
 
-import com.mlyauth.constants.TokenNorm;
-import com.mlyauth.constants.TokenPurpose;
-import com.mlyauth.constants.TokenStatus;
-import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,6 +18,13 @@ public class Token {
     @GeneratedValue(generator = "TOKEN_ID", strategy = GenerationType.TABLE)
     private long id;
 
+    @Column(name = "VALIDATION_MODE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TokenValidationMode validationMode;
+
+    @Column(name = "REFRESH_MODE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TokenRefreshMode refreshMode;
 
     @Column(name = "STAMP", nullable = false, unique = true)
     private String stamp;
@@ -75,6 +79,22 @@ public class Token {
     public Token setId(long id) {
         this.id = id;
         return this;
+    }
+
+    public TokenValidationMode getValidationMode() {
+        return validationMode;
+    }
+
+    public void setValidationMode(TokenValidationMode validationMode) {
+        this.validationMode = validationMode;
+    }
+
+    public TokenRefreshMode getRefreshMode() {
+        return refreshMode;
+    }
+
+    public void setRefreshMode(TokenRefreshMode refreshMode) {
+        this.refreshMode = refreshMode;
     }
 
     public String getStamp() {

@@ -13,6 +13,12 @@ databaseChangeLog:
                       primaryKey: true
                       nullable: false
               - column:
+                  name: VALIDATION_MODE
+                  type: varchar(50)
+              - column:
+                  name: REFRESH_MODE
+                  type: varchar(50)
+              - column:
                   name: STAMP
                   type: varchar(1000)
                   constraints:
