@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
+public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
     public static final String CLIENT_SPACE_APP_LOGIN = "cl.clientSpace";
     public static final String CLIENT_SPACE_APP_PASSWORD = "BrsAssu84;";
@@ -118,6 +118,31 @@ public class JOSECreateAccessTokenIT extends AbstractIntegrationTest {
         then_an_access_token_is_returned();
         and_the_access_token_returned_is_built_to_the_IDP();
         and_the_access_token_returned_is_traced();
+    }
+
+    @Test
+    public void when_the_resource_server_check_a_valid_access_token_then_return_OK() throws Exception {
+        given_the_client_space_application();
+        given_the_client_space_with_client_aspect();
+        given_the_client_space_refresh_token_is_ready();
+        given_the_policy_application();
+        given_the_policy_with_resource_server_aspect();
+        given_a_token_to_ask_access_to_the_policy_app();
+        when_then_client_space_ask_an_access_token();
+        then_an_access_token_is_returned();
+        when_policy_checks_the_access();
+        then_the_IDP_returns_OK();
+    }
+
+    private void then_the_IDP_returns_OK() throws Exception {
+        resultActions.andExpect(status().isOk());
+    }
+
+    private void when_policy_checks_the_access() throws Exception {
+        resultActions = mockMvc.perform(post("/token/jose/access/check")
+                .content(serializedAccessToken)
+                .with(httpBasic(POLICY_APP_LOGIN, POLICY_APP_PASSWORD))
+                .contentType("text/plain;charset=UTF-8"));
     }
 
     private void given_the_client_space_application() {

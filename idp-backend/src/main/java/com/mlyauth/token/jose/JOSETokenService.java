@@ -15,8 +15,9 @@ import com.mlyauth.token.TokenMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.security.PublicKey;
 import java.util.List;
@@ -32,6 +33,7 @@ import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
 
 @Service
+@Transactional
 public class JOSETokenService {
 
     @Value("${idp.jose.entityId}")
@@ -39,9 +41,6 @@ public class JOSETokenService {
 
     @Autowired
     private TokenIdGenerator idGenerator;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private IContext context;
@@ -100,4 +99,9 @@ public class JOSETokenService {
         return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
     }
 
+
+    public void checkAccess(String access){
+        final Token token = tokenDAO.findByChecksum(DigestUtils.sha256Hex(access));
+        Assert.notNull(token, "Token not found");
+    }
 }

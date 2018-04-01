@@ -25,4 +25,10 @@ public class JOSETokenController {
         JOSERefreshToken refreshToken = tokenDecoder.decodeRefresh(refresh, CL_JOSE);
         return joseTokenService.refreshAccess(refreshToken);
     }
+
+    @PostMapping(value = "/access/check", consumes = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void checkAccessToken(@RequestBody String access) {
+        joseTokenService.checkAccess(access);
+    }
 }
