@@ -31,10 +31,10 @@ public class AuthenticationInfo {
     @Column(name = "EXPIRES_AT", nullable = false)
     private java.util.Date expireAt;
 
-    @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Person person;
 
-    @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Application application;
 
     public static AuthenticationInfo newInstance() {

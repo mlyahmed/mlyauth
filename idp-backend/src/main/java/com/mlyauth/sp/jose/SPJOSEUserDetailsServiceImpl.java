@@ -9,6 +9,7 @@ import com.mlyauth.token.jose.JOSEAccessToken;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
 
-@Service
+@Component
 @Transactional
 public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
 

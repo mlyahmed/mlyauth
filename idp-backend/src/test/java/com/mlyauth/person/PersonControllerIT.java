@@ -153,7 +153,6 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         return personBean;
     }
 
-
     private ResultActions when_create_new_person(PersonBean personBean) throws Exception {
         return mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(personBean))

@@ -94,7 +94,7 @@ public class JOSETokenService {
         token.setChecksum(DigestUtils.sha256Hex(accessToken.serialize()));
         token.setSession(context.getAuthenticationSession());
         token.setApplication(applicationDAO.findOne(rsEntityId.getId().getApplicationId()));
-        tokenDAO.save(token);
+        tokenDAO.saveAndFlush(token);
 
         return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
     }

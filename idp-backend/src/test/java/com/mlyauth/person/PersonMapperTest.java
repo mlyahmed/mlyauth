@@ -3,6 +3,7 @@ package com.mlyauth.person;
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
@@ -37,6 +38,9 @@ public class PersonMapperTest {
 
     @Mock
     private ApplicationDAO applicationDAO;
+
+    @Mock
+    private PersonDAO personDAO;
 
     @InjectMocks
     private PersonMapper mapper;
@@ -195,14 +199,12 @@ public class PersonMapperTest {
     @SuppressWarnings("Duplicates")
     private void then_bean_properties_are_mapped_to_person(Object... properties) throws ParseException {
         assertThat(person, notNullValue());
-        assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), equalTo((Long) properties[0]));
         assertThat(person.getExternalId(), equalTo(String.valueOf(properties[1])));
         assertThat(person.getFirstname(), equalTo(String.valueOf(properties[2])));
         assertThat(person.getLastname(), equalTo(String.valueOf(properties[3])));
         assertThat(person.getBirthdate(), equalTo(dateFormatter.parse(String.valueOf(properties[4]))));
         assertThat(person.getEmail(), equalTo(String.valueOf(properties[5])));
-        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(String.valueOf(properties[5])));
     }
 
     private void when_map_bean_to_person() {

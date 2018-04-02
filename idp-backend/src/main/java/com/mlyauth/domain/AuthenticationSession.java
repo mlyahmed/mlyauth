@@ -27,7 +27,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
     @Column(name = "CONTEXT_ID", nullable = false)
     private String contextId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "AUTHENTICATION_INFO_ID", nullable = false, updatable = false)
     private AuthenticationInfo authenticationInfo;
 

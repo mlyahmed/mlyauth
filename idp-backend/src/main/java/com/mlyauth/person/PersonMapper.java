@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.mlyauth.IDomainMapper;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
@@ -27,6 +28,9 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
 
     @Autowired
     private ApplicationDAO applicationDAO;
+
+    @Autowired
+    private PersonDAO personDAO;
 
     @Override
     public PersonBean toBean(Person person) {
@@ -54,15 +58,18 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
 
     @Override
     public Person toEntity(PersonBean bean) {
-        return bean == null ? null : Person.newInstance()
-                .setId(bean.getId())
+        return bean == null ? null : createPerson(bean)
                 .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())
                 .setBirthdate(parseBirthdate(bean))
-                .setAuthenticationInfo(AuthenticationInfo.newInstance().setLogin(bean.getEmail()))
                 .setEmail(bean.getEmail())
-                .setApplications(appnamesToApplications(bean.getApplications()));
+                .setApplications(toApplications(bean.getApplications()));
+    }
+
+    private Person createPerson(PersonBean bean){
+        final Person person = personDAO.findByExternalId(bean.getExternalId());
+        return person != null ? person : Person.newInstance().setId(bean.getId());
     }
 
     private Date parseBirthdate(PersonBean bean) {
@@ -74,7 +81,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
     }
 
 
-    private Set<Application> appnamesToApplications(Collection<String> appnames) {
+    private Set<Application> toApplications(Collection<String> appnames) {
         if (appnames == null || appnames.isEmpty())
             return Sets.newHashSet();
         return appnames.stream().map(appname -> applicationDAO.findByAppname(appname)).collect(Collectors.toSet());
