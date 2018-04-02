@@ -5,6 +5,7 @@ import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.dao.ProfileDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
 import com.mlyauth.tools.AccessTokenForTests;
@@ -37,6 +38,9 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     @Autowired
     private PersonDAO personDAO;
+
+    @Autowired
+    private ProfileDAO profileDAO;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -106,7 +110,8 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     private void given_the_root_is_a_master() {
         final Person master = personDAO.findByEmail(MASTER_EMAIL);
-        master.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.MASTER))));
+        final Profile masterProfile = profileDAO.findOne(ProfileCode.MASTER);
+        master.setProfiles(new HashSet<>(Arrays.asList(masterProfile)));
         personDAO.save(master);
     }
 
