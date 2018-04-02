@@ -1,25 +1,31 @@
 package com.mlyauth.person;
 
 import com.google.common.collect.Sets;
+import com.mlyauth.IDomainMapper;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.IDomainMapper;
+import com.mlyauth.exception.IDPException;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Named
+@Component
 public class PersonMapper implements IDomainMapper<Person, PersonBean> {
 
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Inject
+    @Autowired
     private ApplicationDAO applicationDAO;
 
     @Override
@@ -30,8 +36,13 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
                 .setExternalId(person.getExternalId())
                 .setFirstname(person.getFirstname())
                 .setLastname(person.getLastname())
+                .setBirthdate(parseBithdate(person))
                 .setEmail(person.getEmail())
                 .setApplications(applicationsToAppnames(person));
+    }
+
+    private String parseBithdate(Person person) {
+        return person.getBirthdate() != null ? dateFormatter.format(person.getBirthdate()) : null;
     }
 
     private HashSet<String> applicationsToAppnames(Person person) {
@@ -48,9 +59,18 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
                 .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())
+                .setBirthdate(parseBirthdate(bean))
                 .setAuthenticationInfo(AuthenticationInfo.newInstance().setLogin(bean.getEmail()))
                 .setEmail(bean.getEmail())
                 .setApplications(appnamesToApplications(bean.getApplications()));
+    }
+
+    private Date parseBirthdate(PersonBean bean) {
+        try{
+            return StringUtils.isNotBlank(bean.getBirthdate())? dateFormatter.parse(bean.getBirthdate()) : null;
+        }catch(ParseException e){
+            throw IDPException.newInstance(e);
+        }
     }
 
 

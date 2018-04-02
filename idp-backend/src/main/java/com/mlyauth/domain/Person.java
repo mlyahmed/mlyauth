@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -24,6 +25,9 @@ public class Person  implements Serializable {
 
     @Column(name = "LASTNAME", nullable = false)
     private String lastname;
+
+    @Column(name = "BIRTHDATE", nullable = false)
+    private java.util.Date birthdate;
 
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
@@ -79,6 +83,15 @@ public class Person  implements Serializable {
 
     public Person setLastname(String lastname) {
         this.lastname = lastname;
+        return this;
+    }
+
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public Person setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
         return this;
     }
 

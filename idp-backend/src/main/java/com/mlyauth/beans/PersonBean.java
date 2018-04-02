@@ -9,6 +9,7 @@ public class PersonBean {
     private String externalId;
     private String firstname;
     private String lastname;
+    private String birthdate;
     private String email;
     private char[] password;
     private Collection<String> applications = new LinkedHashSet<>();
@@ -50,6 +51,15 @@ public class PersonBean {
 
     public PersonBean setLastname(String lastname) {
         this.lastname = lastname;
+        return this;
+    }
+
+    public String getBirthdate() {
+        return birthdate;
+    }
+
+    public PersonBean setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
         return this;
     }
 

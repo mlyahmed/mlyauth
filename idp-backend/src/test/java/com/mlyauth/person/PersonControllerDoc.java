@@ -63,6 +63,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
         person.put("externalId", RandomStringUtils.random(20, true, true));
         person.put("firstname", "Ahmed");
         person.put("lastname", "Ahmed");
+        person.put("birthdate", "1987-01-15");
         person.put("email", "Ahmed");
         person.put("password", "Ahmed");
 
@@ -77,6 +78,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
         final RequestFieldsSnippet requestDescription = PayloadDocumentation.relaxedRequestFields(
                 fieldWithPath("firstname").type(JsonFieldType.STRING).description("Firstname"),
                 fieldWithPath("lastname").type(JsonFieldType.STRING).description("Lastname"),
+                fieldWithPath("birthdate").type(JsonFieldType.STRING).description("birthdate"),
                 fieldWithPath("email").type(JsonFieldType.STRING).description("email"),
                 fieldWithPath("password").type(JsonFieldType.STRING).description("password")
         );
@@ -85,6 +87,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("id"),
                 fieldWithPath("firstname").type(JsonFieldType.STRING).description("Firstname"),
                 fieldWithPath("lastname").type(JsonFieldType.STRING).description("Lastname"),
+                fieldWithPath("birthdate").type(JsonFieldType.STRING).description("birthdate"),
                 fieldWithPath("email").type(JsonFieldType.STRING).description("email")
         );
 

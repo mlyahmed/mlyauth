@@ -6,7 +6,6 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import com.mlyauth.person.PersonMapper;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -17,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(DataProviderRunner.class)
 public class PersonMapperTest {
 
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     private Person person;
 
@@ -43,9 +45,9 @@ public class PersonMapperTest {
     public static Object[] properties() {
         // @formatter:off
         return new Object[][]{
-                {1l, "1", "Ahmed", "EL IDRISSI", "ahmed.elidrissi.attach@gmail.com"},
-                {2l, "2", "Moulay", "ATTACH", "mlyahmed1@gmail.com"},
-                {3232l, "3232", "Fatima-Ezzahrae", "EL IDRISSI", "fatima.elidrissi@yahoo.fr"},
+                {1l, "1", "Ahmed", "EL IDRISSI", "1990-10-01", "ahmed.elidrissi.attach@gmail.com"},
+                {2l, "2", "Moulay", "ATTACH", "1993-11-01", "mlyahmed1@gmail.com"},
+                {3232l, "3232", "Fatima-Ezzahrae", "EL IDRISSI", "1997-12-01", "fatima.elidrissi@yahoo.fr"},
         };
         // @formatter:on
     }
@@ -79,18 +81,19 @@ public class PersonMapperTest {
 
     @Test
     @UseDataProvider("properties")
-    public void when_map_to_bean_then_map_properties(Object... properties) {
+    public void when_map_to_bean_then_map_properties(Object... properties) throws Exception{
         given_person(properties);
         when_map_person_to_bean();
         then_person_properties_are_mapped_to_bean(properties);
     }
 
-    private void given_person(Object[] properties) {
+    private void given_person(Object[] properties) throws ParseException {
         person.setId((Long) properties[0])
                 .setExternalId(String.valueOf(properties[1]))
                 .setFirstname(String.valueOf(properties[2]))
                 .setLastname(String.valueOf(properties[3]))
-                .setEmail(String.valueOf(properties[4]));
+                .setBirthdate(dateFormatter.parse(String.valueOf(properties[4])))
+                .setEmail(String.valueOf(properties[5]));
     }
 
     private void when_map_person_to_bean() {
@@ -115,7 +118,8 @@ public class PersonMapperTest {
         assertThat(bean.getExternalId(), equalTo(String.valueOf(properties[1])));
         assertThat(bean.getFirstname(), equalTo(String.valueOf(properties[2])));
         assertThat(bean.getLastname(), equalTo(String.valueOf(properties[3])));
-        assertThat(bean.getEmail(), equalTo(String.valueOf(properties[4])));
+        assertThat(bean.getBirthdate(), equalTo(String.valueOf(properties[4])));
+        assertThat(bean.getEmail(), equalTo(String.valueOf(properties[5])));
     }
 
     @Test
@@ -182,22 +186,23 @@ public class PersonMapperTest {
 
     @Test
     @UseDataProvider("properties")
-    public void when_map_bean_to_person_then_map_properties(Object... properties) {
+    public void when_map_bean_to_person_then_map_properties(Object... properties) throws Exception{
         given_bean(properties);
         when_map_bean_to_person();
         then_bean_properties_are_mapped_to_person(properties);
     }
 
     @SuppressWarnings("Duplicates")
-    private void then_bean_properties_are_mapped_to_person(Object... properties) {
+    private void then_bean_properties_are_mapped_to_person(Object... properties) throws ParseException {
         assertThat(person, notNullValue());
         assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), equalTo((Long) properties[0]));
         assertThat(person.getExternalId(), equalTo(String.valueOf(properties[1])));
         assertThat(person.getFirstname(), equalTo(String.valueOf(properties[2])));
         assertThat(person.getLastname(), equalTo(String.valueOf(properties[3])));
-        assertThat(person.getEmail(), equalTo(String.valueOf(properties[4])));
-        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(String.valueOf(properties[4])));
+        assertThat(person.getBirthdate(), equalTo(dateFormatter.parse(String.valueOf(properties[4]))));
+        assertThat(person.getEmail(), equalTo(String.valueOf(properties[5])));
+        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(String.valueOf(properties[5])));
     }
 
     private void when_map_bean_to_person() {
@@ -209,7 +214,8 @@ public class PersonMapperTest {
                 .setExternalId(String.valueOf(properties[1]))
                 .setFirstname(String.valueOf(properties[2]))
                 .setLastname(String.valueOf(properties[3]))
-                .setEmail(String.valueOf(properties[4]));
+                .setBirthdate(String.valueOf(properties[4]))
+                .setEmail(String.valueOf(properties[5]));
     }
 
 

@@ -29,6 +29,11 @@ databaseChangeLog:
                   constraints:
                       nullable: false
               - column:
+                  name: BIRTHDATE
+                  type: DATETIME
+                  constraints:
+                      nullable: false
+              - column:
                   name: EMAIL
                   type: varchar(250)
                   constraints:
