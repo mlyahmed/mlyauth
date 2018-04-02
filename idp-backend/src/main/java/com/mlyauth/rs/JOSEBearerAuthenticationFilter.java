@@ -1,6 +1,5 @@
 package com.mlyauth.rs;
 
-import com.mlyauth.PerformanceInterceptor;
 import com.mlyauth.sp.jose.JOSEAuthenticationToken;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSETokenDecoder;
@@ -14,13 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -52,10 +48,10 @@ public class JOSEBearerAuthenticationFilter extends OncePerRequestFilter {
 
         try {
 
-            final String rawBearer = getRawBearer(request);
-            if(StringUtils.isNotBlank(rawBearer)) {
-                final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(rawBearer);
-                final Authentication authenticate = authenticationManager.authenticate(new JOSEAuthenticationToken(accessToken));
+            if(StringUtils.isNotBlank(getRawBearer(request))) {
+                final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(getRawBearer(request));
+                final JOSEAuthenticationToken authToken = new JOSEAuthenticationToken(accessToken);
+                final Authentication authenticate = authenticationManager.authenticate(authToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticate);
             }
             chain.doFilter(request, response);
