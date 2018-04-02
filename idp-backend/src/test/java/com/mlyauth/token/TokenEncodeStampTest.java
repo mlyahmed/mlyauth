@@ -16,7 +16,7 @@ public class TokenEncodeStampTest {
     public void generate_new_stamps() {
         SecurityConfig securityConfig = new SecurityConfig();
         final String stamp = UUID.randomUUID().toString();
-        final String password = "))E-i9? \"8<\\)/`It~\"4+*,@#9.*\\Y>/.>z75v.b[lkKg{\"\\8]240* 5_5G<c4Ub";
+        final String password = "f468Mq3Cmufc73S";
         final String encodedPassword = securityConfig.passwordEncoder().encode(password);
         final String hashedPassword = DigestUtils.sha256Hex(encodedPassword);
         final String hashedStamp = DigestUtils.sha256Hex(stamp);
