@@ -6,6 +6,7 @@ import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class PersonService implements IPersonService {
         Person person = toEntity(bean);
         person.getAuthenticationInfo().setPerson(person);
         person = personDAO.saveAndFlush(person);
+        authenticationInfoDAO.saveAndFlush(person.getAuthenticationInfo());
         return personMapper.toBean(person);
     }
 
@@ -47,16 +49,20 @@ public class PersonService implements IPersonService {
     private AuthenticationInfo newAuthenticationInfo(PersonBean bean) {
         return AuthenticationInfo.newInstance()
                     .setLogin(bean.getEmail())
-                    .setPassword(passwordEncoder.encode(String.valueOf(bean.getPassword())))
+                    .setPassword(passwordEncoder.encode(getPassword(bean)))
                     .setStatus(AuthenticationInfoStatus.ACTIVE)
                     .setEffectiveAt(new Date())
                     .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365 * 100)));
     }
 
+    private String getPassword(PersonBean bean) {
+        return bean.getPassword() == null ? UUID.randomUUID().toString() : String.valueOf(bean.getPassword());
+    }
+
     @Override
     public PersonBean updatePerson(PersonBean bean) {
-        final Person update = personMapper.toEntity(bean);
-        return personMapper.toBean(personDAO.save(update));
+        final Person person = personDAO.findByExternalId(bean.getExternalId());
+        return person != null ? personMapper.toBean(personDAO.save(personMapper.toEntity(bean))) : createPerson(bean);
     }
 
 }

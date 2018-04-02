@@ -1,5 +1,8 @@
 package com.mlyauth.exception;
 
+import com.mlyauth.token.saml.SAMLHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,9 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {
+    private static Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
     @ExceptionHandler(IDPException.class)
     public ModelAndView exception(HttpServletRequest request, IDPException error) {
+        logger.error("Error : ", error);
         request.setAttribute("errorMessage", error.getMessage());
         request.setAttribute("MLY_AUTH_ERROR_CODE", "APP_NOT_ASSIGNED");
         final ModelAndView view = new ModelAndView("error/" + getStatus(request).value());
