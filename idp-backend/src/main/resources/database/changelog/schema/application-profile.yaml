@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: APPLICATION_PROFILE
+            columns:
+              - column:
+                  name: APPLICATION_ID
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PROFILE_CODE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_PROFILE
+            baseColumnNames: APPLICATION_ID
+            referencedTableName: APPLICATION
+            referencedColumnNames: ID
+            constraintName: application_profile_fk_person_id
+        - addForeignKeyConstraint:
+            baseTableName: APPLICATION_PROFILE
+            baseColumnNames: PROFILE_CODE
+            referencedTableName: PROFILE
+            referencedColumnNames: CODE
+            constraintName: application_profile_fk_profile_code
+        - addUniqueConstraint:
+            tableName: APPLICATION_PROFILE
+            columnNames: APPLICATION_ID, PROFILE_CODE
+            constraintName: application_profile_uniq

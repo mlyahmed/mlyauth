@@ -33,6 +33,10 @@ public class Application  implements Serializable {
     @JoinColumn(name = "AUTHENTICATION_INFO_ID")
     private AuthenticationInfo authenticationInfo;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "APPLICATION_PROFILE", joinColumns = @JoinColumn(name = "APPLICATION_ID"), inverseJoinColumns = @JoinColumn(name = "PROFILE_CODE"))
+    private Set<Profile> profiles;
+
     public static Application newInstance(){
         return new Application();
     }
@@ -79,6 +83,15 @@ public class Application  implements Serializable {
 
     public Application setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
+        return this;
+    }
+
+    public Set<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public Application setProfiles(Set<Profile> profiles) {
+        this.profiles = profiles;
         return this;
     }
 }

@@ -18,6 +18,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/application.yaml
   - include:
+      file: database/changelog/schema/application-profile.yaml
+  - include:
       file: database/changelog/schema/person-application.yaml
   - include:
       file: database/changelog/schema/application-aspect.yaml
