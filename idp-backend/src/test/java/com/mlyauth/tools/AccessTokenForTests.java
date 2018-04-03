@@ -54,7 +54,7 @@ public class AccessTokenForTests {
             final PrivateKey privateKey = decodeRSAPrivateKey(new String(Files.readAllBytes(privateKeyFile.toPath())));
             JOSERefreshToken refreshToken = tokenFactory.createRefreshToken(privateKey, credManager.getPublicKey());
             refreshToken.setStamp(CL_REFRESH_TOKEN_ID);
-            refreshToken.setSubject(AbstractIntegrationTest.MASTER_EXTERNAL_ID);
+            refreshToken.setSubject(AbstractIntegrationTest.MASTER_EMAIL);
             refreshToken.setIssuer(CL_ENTITY_ID);
             refreshToken.setAudience(idpJoseEntityId);
             refreshToken.cypher();

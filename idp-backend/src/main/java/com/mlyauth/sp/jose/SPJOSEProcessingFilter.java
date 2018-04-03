@@ -99,7 +99,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             return authenticate;
 
         } catch (Exception e) {
-            logger.warn("Incoming JOSE token is invalid", e);
+            logger.error("Incoming JOSE token is invalid", e);
             throw new AuthenticationServiceException("Incoming JOSE token is invalid", e);
         }
     }

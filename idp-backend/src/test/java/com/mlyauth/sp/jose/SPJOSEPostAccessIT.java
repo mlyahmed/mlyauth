@@ -181,7 +181,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private void given_success_token() {
         token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
-        token.setSubject(MASTER_EXTERNAL_ID);
+        token.setSubject(MASTER_EMAIL);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
         token.setBP("SSO");
         token.setState(randomString());
@@ -201,7 +201,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private void given_fail_token() {
         token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
-        token.setSubject("1");
+        token.setSubject(MASTER_EMAIL);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
         token.setBP("SSO");
         token.setState(randomString());
@@ -217,7 +217,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private void given_success_token_with_application_claim_already_assigned() {
         token = tokenFactory.createAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
         token.setStamp(randomString());
-        token.setSubject("9000");
+        token.setSubject(MASTER_EMAIL);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
         token.setBP("SSO");
         token.setState(randomString());

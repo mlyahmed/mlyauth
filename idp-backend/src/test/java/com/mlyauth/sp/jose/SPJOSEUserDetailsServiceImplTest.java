@@ -5,10 +5,12 @@ import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.context.IContextHolder;
 import com.mlyauth.context.IDPUser;
 import com.mlyauth.context.MockContextHolder;
+import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.token.jose.MockJOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
@@ -22,15 +24,14 @@ import org.mockito.Spy;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static com.mlyauth.token.Claims.*;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -42,11 +43,15 @@ public class SPJOSEUserDetailsServiceImplTest {
     @Mock
     private PersonDAO personDAO;
 
+    @Mock
+    private AuthenticationInfoDAO authenticationInfoDAO;
+
     @InjectMocks
     private SPJOSEUserDetailsServiceImpl service;
 
     private MockJOSEAccessToken token;
     private Person person;
+    private Application application;
     private AuthenticationInfo authenticationInfo;
     private IDPUser user;
 
@@ -54,12 +59,6 @@ public class SPJOSEUserDetailsServiceImplTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         given_the_token();
-        given_the_person_exists();
-        given_the_application_is_assigned_to_the_person();
-    }
-
-    private void given_the_application_is_assigned_to_the_person() {
-        person.setApplications(newHashSet(Application.newInstance().setAppname(token.getClaim(APPLICATION.getValue()))));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -69,13 +68,66 @@ public class SPJOSEUserDetailsServiceImplTest {
     }
 
     @Test
-    public void when_the_token_is_valid_then_return_the_user() {
+    public void when_the_person_authentication_info_exists_then_OK(){
+        given_the_person_exists();
         when_load_the_user();
-        then_user_is_loaded();
+        then_the_attributes_are_loaded_in_the_context();
     }
 
     @Test
+    public void when_the_token_is_valid_then_return_the_user_as_person() {
+        given_the_person_exists();
+        when_load_the_user();
+        then_user_is_loaded_as_person();
+    }
+
+    @Test
+    public void when_the_application_authentication_info_exists_then_OK(){
+        given_the_person_exists();
+        when_load_the_user();
+        then_the_attributes_are_loaded_in_the_context();
+    }
+
+    @Test
+    public void when_the_token_is_valid_then_return_the_user_as_application() {
+        given_the_application_authentication_info_exists();
+        when_load_the_user();
+        then_user_is_loaded_as_application();
+    }
+
+    private void given_the_application_authentication_info_exists() {
+        authenticationInfo = AuthenticationInfo.newInstance().setLogin(randomString()).setPassword(randomString())
+                .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 60)));
+        application = Application.newInstance();
+        application.setAuthenticationInfo(authenticationInfo);
+        authenticationInfo.setApplication(application);
+        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(authenticationInfo);
+    }
+
+    private void then_user_is_loaded_as_application() {
+        assertThat(user, Matchers.notNullValue());
+        assertThat(user, Matchers.instanceOf(IDPUser.class));
+        assertThat(user.getPerson(), nullValue());
+        assertThat(user.getApplication(), equalTo(application));
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void when_no_authentication_infor_is_found_then_error(){
+        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(null);
+        when_load_the_user();
+    }
+
+    @Test(expected = IDPException.class)
+    public void when_the_authentication_info_is_not_a_person_neighther_an_application_then_error(){
+        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(AuthenticationInfo.newInstance());
+        when_load_the_user();
+    }
+
+
+    @Test
     public void the_attributes_must_be_loaded_in_the_context() {
+        given_the_person_exists();
         when_load_the_user();
         then_the_attributes_are_loaded_in_the_context();
     }
@@ -118,27 +170,23 @@ public class SPJOSEUserDetailsServiceImplTest {
 
     @Test
     public void when_the_application_claim_is_null_then_OK() {
+        given_the_person_exists();
         token.setClaim(APPLICATION.getValue(), null);
         when_load_the_user();
-        then_user_is_loaded();
+        then_user_is_loaded_as_person();
     }
 
     @Test
     public void when_the_application_claim_is_empty_then_OK() {
+        given_the_person_exists();
         token.setClaim(APPLICATION.getValue(), "");
         when_load_the_user();
-        then_user_is_loaded();
+        then_user_is_loaded_as_person();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_the_person_is_not_found_then_error() {
         when(personDAO.findByExternalId(token.getSubject())).thenReturn(null);
-        when_load_the_user();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void when_the_application_is_not_assigned_to_the_person_then_error() {
-        person.setApplications(Collections.emptySet());
         when_load_the_user();
     }
 
@@ -168,18 +216,20 @@ public class SPJOSEUserDetailsServiceImplTest {
                 .setLogin(randomString())
                 .setPassword(randomString())
                 .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 60)));
-        person = new Person();
+        person = Person.newInstance();
         person.setAuthenticationInfo(authenticationInfo);
-        when(personDAO.findByExternalId(token.getSubject())).thenReturn(person);
+        authenticationInfo.setPerson(person);
+        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(authenticationInfo);
     }
 
     private void when_load_the_user() {
         user = service.loadUserByJOSE(token);
     }
 
-    private void then_user_is_loaded() {
+    private void then_user_is_loaded_as_person() {
         assertThat(user, Matchers.notNullValue());
         assertThat(user, Matchers.instanceOf(IDPUser.class));
+        assertThat(user.getApplication(), nullValue());
         assertThat(user.getPerson(), equalTo(person));
     }
 

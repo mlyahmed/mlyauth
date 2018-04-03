@@ -3,15 +3,15 @@ package com.mlyauth.sp.jose;
 import com.mlyauth.context.IContext;
 import com.mlyauth.context.IContextHolder;
 import com.mlyauth.context.IDPUser;
-import com.mlyauth.dao.PersonDAO;
-import com.mlyauth.domain.Person;
+import com.mlyauth.dao.AuthenticationInfoDAO;
+import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.exception.IDPException;
 import com.mlyauth.token.jose.JOSEAccessToken;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import static com.mlyauth.token.Claims.*;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -23,7 +23,7 @@ import static org.springframework.util.Assert.notNull;
 public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
 
     @Autowired
-    private PersonDAO personDAO;
+    private AuthenticationInfoDAO authenticationInfoDAO;
 
     @Autowired
     private IContextHolder contextHolder;
@@ -31,11 +31,20 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
     @Override
     public IDPUser loadUserByJOSE(JOSEAccessToken credential) throws UsernameNotFoundException {
         checkParams(credential);
-        final Person person = getPerson(credential);
-        checkTheApplicationAssignement(credential, person);
-        final IContext context = contextHolder.newPersonContext(person);
-        setAttributesIntoTheContext(credential, context);
-        return new IDPUser(context);
+        return new IDPUser(setAttributesIntoTheContext(credential, loadContext(credential)));
+    }
+
+    private IContext loadContext(JOSEAccessToken credential) {
+        final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(credential.getSubject());
+        Assert.notNull(authenticationInfo, "No AuthenticationInfo found for "+credential.getSubject());
+
+        if (authenticationInfo.isPerson()) {
+            return contextHolder.newPersonContext(authenticationInfo.getPerson());
+        } else if (authenticationInfo.isApplication()) {
+            return contextHolder.newApplicationContext(authenticationInfo.getApplication());
+        }
+
+        throw IDPException.newInstance("AuthenticationInfo found ("+credential.getSubject()+") is not valid.");
     }
 
     private void checkParams(JOSEAccessToken credential) {
@@ -47,25 +56,13 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
         }
     }
 
-    private Person getPerson(JOSEAccessToken credential) {
-        final Person person = personDAO.findByExternalId(credential.getSubject());
-        notNull(person, "The Person is not found");
-        return person;
-    }
-
-    private void checkTheApplicationAssignement(JOSEAccessToken credential, Person person) {
-        if (StringUtils.isNotBlank(credential.getClaim(APPLICATION.getValue()))) {
-            final boolean assigned = person.getApplications().stream().anyMatch(app -> app.getAppname().equals(credential.getClaim(APPLICATION.getValue())));
-            isTrue(assigned, "The application is not assigned to the person");
-        }
-    }
-
-    private void setAttributesIntoTheContext(JOSEAccessToken credential, IContext context) {
+    private IContext setAttributesIntoTheContext(JOSEAccessToken credential, IContext context) {
         context.putAttribute(CLIENT_ID.getValue(), credential.getClaim(CLIENT_ID.getValue()));
         context.putAttribute(CLIENT_PROFILE.getValue(), credential.getClaim(CLIENT_PROFILE.getValue()));
         context.putAttribute(ENTITY_ID.getValue(), credential.getClaim(ENTITY_ID.getValue()));
         context.putAttribute(ACTION.getValue(), credential.getClaim(ACTION.getValue()));
         context.putAttribute(APPLICATION.getValue(), credential.getClaim(APPLICATION.getValue()));
+        return context;
     }
 
 
