@@ -318,7 +318,7 @@ public class ContextHolderTest {
     }
 
     @Test
-    public void when_create_new_appplication_context_and_different_session_then_new_context_id() {
+    public void when_create_new_application_context_and_different_session_then_new_context_id() {
         request.setSession(new MockHttpSession());
         final IContext firstContext = holder.newApplicationContext(application);
         request.setSession(new MockHttpSession());
@@ -352,9 +352,20 @@ public class ContextHolderTest {
 
     @Test
     @UseDataProvider("profiles")
-    public void the_context_must_return_the_profiles(String profile) {
+    public void the_person_context_must_return_the_profiles(String profile) {
         person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
         final IContext context = holder.newPersonContext(person);
+        assertThat(context.getProfiles(), hasSize(1));
+        assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
+        assertThat(holder.getProfiles(), hasSize(1));
+        assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
+    }
+
+    @Test
+    @UseDataProvider("profiles")
+    public void the_application_context_must_return_the_profiles(String profile) {
+        application.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
+        final IContext context = holder.newApplicationContext(application);
         assertThat(context.getProfiles(), hasSize(1));
         assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
         assertThat(holder.getProfiles(), hasSize(1));

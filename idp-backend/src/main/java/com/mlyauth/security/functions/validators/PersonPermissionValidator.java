@@ -4,6 +4,7 @@ import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.ProfileCode;
 import com.mlyauth.security.functions.IDPPermission;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,10 +17,18 @@ public class PersonPermissionValidator implements IDPPermissionValidator<PersonB
 
         if (permission instanceof IDPPermission && permission == IDPPermission.CREATE) {
             return authentication.getAuthorities()
-                    .stream().filter(aut -> ProfileCode.MASTER.name().equals(aut.getAuthority())).count() > 0;
+                    .stream().filter(aut -> (isMaster(aut) || isFeeder(aut))).count() > 0;
         }
 
         return true;
+    }
+
+    private boolean isMaster(GrantedAuthority aut) {
+        return ProfileCode.MASTER.name().equals(aut.getAuthority());
+    }
+
+    private boolean isFeeder(GrantedAuthority aut) {
+        return ProfileCode.MASTER.name().equals(aut.getAuthority());
     }
 
     @Override

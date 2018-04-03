@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThat;
 public class PersonPermissionValidatorTest {
 
     private PersonPermissionValidator validator;
+
     private Authentication authentication;
 
     @Before

@@ -4,7 +4,6 @@ import com.mlyauth.dao.AuthenticationSessionDAO;
 import com.mlyauth.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpSession;
@@ -12,6 +11,7 @@ import java.util.*;
 
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
 import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;
+import static org.springframework.web.context.request.RequestAttributes.REFERENCE_SESSION;
 
 @Configuration
 public class ContextHolder implements IContextHolder {
@@ -62,7 +62,7 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public HttpSession getSession() {
-        return (HttpSession) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_SESSION);
+        return (HttpSession) RequestContextHolder.getRequestAttributes().resolveReference(REFERENCE_SESSION);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class ContextHolder implements IContextHolder {
 
         @Override
         public HttpSession getSession() {
-            return (HttpSession) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_SESSION);
+            return (HttpSession) RequestContextHolder.getRequestAttributes().resolveReference(REFERENCE_SESSION);
         }
 
         @Override
@@ -227,7 +227,8 @@ public class ContextHolder implements IContextHolder {
 
         @Override
         public Set<Profile> getProfiles() {
-            return isAPerson() && person.getProfiles() != null ? person.getProfiles() : Collections.emptySet();
+            final Set<Profile> profiles = isAPerson() ? person.getProfiles() : application.getProfiles();
+            return profiles != null ? profiles : Collections.emptySet();
         }
 
         @Override
