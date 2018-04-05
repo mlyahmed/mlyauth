@@ -5,5 +5,4 @@ import com.mlyauth.beans.ApplicationBean;
 public interface IApplicationService {
     ApplicationBean newApplication(final ApplicationBean application);
     ApplicationBean updateApplication(final ApplicationBean application);
-    void assignApplication(String appname, String personExternalId);
 }

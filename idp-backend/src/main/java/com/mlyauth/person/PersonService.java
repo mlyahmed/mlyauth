@@ -2,11 +2,12 @@ package com.mlyauth.person;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.AuthenticationInfoStatus;
+import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import java.util.UUID;
 
 @Service
 public class PersonService implements IPersonService {
+
+    @Autowired
+    private ApplicationDAO applicationDAO;
 
     @Autowired
     private AuthenticationInfoDAO authenticationInfoDAO;
@@ -63,6 +67,14 @@ public class PersonService implements IPersonService {
     public PersonBean updatePerson(PersonBean bean) {
         final Person person = personDAO.findByExternalId(bean.getExternalId());
         return person != null ? personMapper.toBean(personDAO.save(personMapper.toEntity(bean))) : createPerson(bean);
+    }
+
+    @Override
+    public void assignApplication(String appname, String personExternalId) {
+        final Person person = personDAO.findByExternalId(personExternalId);
+        final Application application = applicationDAO.findByAppname(appname);
+        person.getApplications().add(application);
+        personDAO.saveAndFlush(person);
     }
 
 }

@@ -4,7 +4,6 @@ import com.mlyauth.beans.ApplicationBean;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.Person;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,14 +34,6 @@ public class ApplicationService implements IApplicationService {
         BeanUtils.copyProperties(application, app);
         applicationDAO.save(app);
         return application;
-    }
-
-    @Override
-    public void assignApplication(String appname, String personExternalId) {
-        final Person person = personDAO.findByExternalId(personExternalId);
-        final Application application = applicationDAO.findByAppname(appname);
-        person.getApplications().add(application);
-        personDAO.saveAndFlush(person);
     }
 
 }

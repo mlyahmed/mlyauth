@@ -24,11 +24,4 @@ public class ApplicationController {
         return applicationService.updateApplication(application);
     }
 
-
-    @PutMapping("/_assign/{appname}/to/{personExternalId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void assignApplication(@PathVariable String appname, @PathVariable String personExternalId) {
-        applicationService.assignApplication(appname, personExternalId);
-    }
-
 }

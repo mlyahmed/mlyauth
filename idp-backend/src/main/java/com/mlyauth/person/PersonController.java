@@ -33,4 +33,10 @@ public class PersonController {
         return personService.updatePerson(person);
     }
 
+    @PutMapping("/_assign/{appname}/to/{personExternalId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void assignApplication(@PathVariable String appname, @PathVariable String personExternalId) {
+        personService.assignApplication(appname, personExternalId);
+    }
+
 }
