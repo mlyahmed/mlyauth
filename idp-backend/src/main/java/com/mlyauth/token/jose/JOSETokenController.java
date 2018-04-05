@@ -26,7 +26,7 @@ public class JOSETokenController {
         return joseTokenService.refreshAccess(refreshToken);
     }
 
-    @PostMapping(value = "/access/check", consumes = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/access/_check", consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void checkAccessToken(@RequestBody String access) {
         joseTokenService.checkAccess(access);

@@ -139,7 +139,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void when_policy_checks_the_access() throws Exception {
-        resultActions = mockMvc.perform(post("/token/jose/access/check")
+        resultActions = mockMvc.perform(post("/token/jose/access/_check")
                 .content(serializedAccessToken)
                 .with(httpBasic(POLICY_APP_LOGIN, POLICY_APP_PASSWORD))
                 .contentType("text/plain;charset=UTF-8"));
