@@ -142,7 +142,7 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
         java.security.cert.X509Certificate cert = (java.security.cert.X509Certificate) certFactory.generateCertificate(inputStream);
         final Date notAfter = cert.getNotAfter();
         final LocalDateTime expiryDate = Instant.ofEpochMilli(notAfter.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        final LocalDate limiteDate = LocalDate.now().plus(50l, ChronoUnit.DAYS);
+        final LocalDate limiteDate = LocalDate.now().plus(40l, ChronoUnit.DAYS);
         Assert.assertThat(limiteDate, LocalDateMatchers.before(expiryDate.toLocalDate()));
     }
 

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.List;
 
 import static com.mlyauth.constants.AspectAttribute.RS_JOSE_ENTITY_ID;
@@ -103,5 +104,7 @@ public class JOSETokenService {
     public void checkAccess(String access){
         final Token token = tokenDAO.findByChecksum(DigestUtils.sha256Hex(access));
         Assert.notNull(token, "Token not found");
+        Assert.isTrue(token.getExpiryTime().after(new Date()), "The token is expired");
+        Assert.isTrue(token.getStatus() == READY, "The token was already used");
     }
 }
