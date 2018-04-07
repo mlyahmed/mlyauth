@@ -36,7 +36,7 @@ databaseChangeLog:
                   name: TOKEN_ID
                   type: bigint
                   constraints:
-                      nullable: false
+                      nullable: true
               - column:
                   name: AUTHENTICATION_SESSION_ID
                   type: bigint

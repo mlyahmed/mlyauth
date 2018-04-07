@@ -98,8 +98,8 @@ public class MlyAuthSteps extends AbstractStepsDef{
 
     @Given("^(.+) is asigned to (.+)")
     public void app_is_asigned_to_user(String appname, String username) throws Exception {
-        currentPersonHolder.getCurrentPerson().getApplications().add(appname);
-        restTestHelper.performBearerPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+        final String endpoint = String.format("/domain/person/_assign/%s/to/%s", appname, currentPersonHolder.getCurrentPerson().getExternalId());
+        restTestHelper.performBearerPut(endpoint, null).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Given("^(.+) is not asigned to (.+)")

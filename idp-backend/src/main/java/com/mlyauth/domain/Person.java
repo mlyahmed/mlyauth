@@ -114,7 +114,8 @@ public class Person  implements Serializable {
     }
 
     public Set<Application> getApplications() {
-        return applications == null ? Sets.newHashSet() : applications;
+        if(applications == null) applications = Sets.newHashSet();
+        return applications;
     }
 
     public Person setApplications(Set<Application> applications) {

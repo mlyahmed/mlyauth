@@ -3,10 +3,8 @@ package com.mlyauth.person;
 import com.google.common.collect.Sets;
 import com.mlyauth.IDomainMapper;
 import com.mlyauth.beans.PersonBean;
-import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.exception.IDPException;
 import org.apache.commons.lang.StringUtils;
@@ -15,19 +13,14 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class PersonMapper implements IDomainMapper<Person, PersonBean> {
 
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-
-    @Autowired
-    private ApplicationDAO applicationDAO;
 
     @Autowired
     private PersonDAO personDAO;
@@ -63,8 +56,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())
                 .setBirthdate(parseBirthdate(bean))
-                .setEmail(bean.getEmail())
-                .setApplications(toApplications(bean.getApplications()));
+                .setEmail(bean.getEmail());
     }
 
     private Person createPerson(PersonBean bean){
@@ -80,10 +72,4 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
         }
     }
 
-
-    private Set<Application> toApplications(Collection<String> appnames) {
-        if (appnames == null || appnames.isEmpty())
-            return Sets.newHashSet();
-        return appnames.stream().map(appname -> applicationDAO.findByAppname(appname)).collect(Collectors.toSet());
-    }
 }

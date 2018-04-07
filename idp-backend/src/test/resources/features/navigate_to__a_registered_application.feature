@@ -1,3 +1,4 @@
+@txn
 Feature: Navigate to a registered application
 
 Background: context

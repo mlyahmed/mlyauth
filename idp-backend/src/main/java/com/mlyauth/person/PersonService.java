@@ -11,11 +11,13 @@ import com.mlyauth.domain.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class PersonService implements IPersonService {
 
     @Autowired
@@ -39,15 +41,16 @@ public class PersonService implements IPersonService {
     @Override
     public PersonBean createPerson(PersonBean bean) {
         personValidator.validateNewPerson(bean);
-        Person person = toEntity(bean);
-        person.getAuthenticationInfo().setPerson(person);
+        Person person = buildPerson(bean);
         person = personDAO.saveAndFlush(person);
         authenticationInfoDAO.saveAndFlush(person.getAuthenticationInfo());
         return personMapper.toBean(person);
     }
 
-    private Person toEntity(PersonBean bean) {
-        return personMapper.toEntity(bean).setAuthenticationInfo(newAuthenticationInfo(bean));
+    private Person buildPerson(PersonBean bean) {
+        final Person person = personMapper.toEntity(bean).setAuthenticationInfo(newAuthenticationInfo(bean));
+        person.getAuthenticationInfo().setPerson(person);
+        return person;
     }
 
     private AuthenticationInfo newAuthenticationInfo(PersonBean bean) {

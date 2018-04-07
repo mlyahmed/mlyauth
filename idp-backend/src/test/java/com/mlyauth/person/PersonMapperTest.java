@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(DataProviderRunner.class)
@@ -218,19 +217,6 @@ public class PersonMapperTest {
                 .setLastname(String.valueOf(properties[3]))
                 .setBirthdate(String.valueOf(properties[4]))
                 .setEmail(String.valueOf(properties[5]));
-    }
-
-
-    @Test
-    @UseDataProvider("applications")
-    public void when_map_bean_to_person_and_assigned_to_policy_then_map_policy_to_application(Application... apps) {
-        bean.setApplications(Arrays.stream(apps).map(Application::getAppname).collect(Collectors.toSet()));
-        Arrays.stream(apps).forEach(app -> when(applicationDAO.findByAppname(app.getAppname())).thenReturn(app));
-        when_map_bean_to_person();
-        assertThat(person, notNullValue());
-        assertThat(person.getApplications(), notNullValue());
-        assertThat(person.getApplications().size(), Matchers.equalTo(apps.length));
-        assertThat(person.getApplications(), equalTo(Sets.newHashSet(apps)));
     }
 
 }
