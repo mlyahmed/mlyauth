@@ -1,0 +1,1790 @@
+#pageLayers {
+  background-color: transparent;
+
+  .stepBarPanel {
+    font-size: 14px;
+    font-weight: normal;
+  }
+}
+
+
+.dijitTabContainerNoLayout {
+  width: auto !important;
+}
+
+.userClientZone {
+	min-height: 400px;
+}
+
+
+.tundra .dijitMenuItemHover,
+.tundra .dijitMenuItemHover:hover,
+.tundra .dijitMenuItemActive,
+.tundra .dijitMenuItemSelected {
+  background-color: @menu-clair;
+  box-shadow: none;
+
+  td,
+  .dijitMenuItemLabel {
+    background-color: @menu-clair;
+    color: white;
+  }
+}
+
+.tundra .dijitTextBox, 
+.tundra .dijitComboBox {
+	border-radius: 4px;
+	padding-top: 2px;
+ 	padding-left: 4px;
+ 	box-sizing: border-box;
+  	height: 30px;
+  	background-image: none;
+}
+.tundra .dijitComboBoxDisabled {
+	background-color: white;
+}
+
+.tundra .dijitTextArea {
+	padding: 4px;
+}
+
+.tundra .dijitError {
+	background-color: @field-background-color;
+}
+
+.inputZone {
+    padding-right: 25px;
+    float: left;
+}
+
+
+
+
+/* --------------------------------*/
+/* ----------- Fields -------------*/
+/* --------------------------------*/
+.inputField {
+	width: 145px;
+	}
+.smallInputField {
+	width: 90px;
+}
+.mediumInputField {
+	width: 200px;
+}
+.bigInputField {
+	width: 255px;
+}
+.hugeInputField {
+	width: 310px;
+}
+
+
+.checkBoxPosition {
+    padding-top: 20px;
+}
+
+
+
+.tundra .fieldStateUntouched {
+	border: 1px solid #a0a0a0;
+}
+.tundra .fieldStateNormal {
+	border: 1px solid #9AA29C;
+}
+.tundra .fieldStateError {
+	border: 1px solid #f44;
+}
+.tundra .dijitFocused.fieldStateError {
+	border: 1px solid #f44;
+	background-color: #fff;
+}
+.tundra .dijitFocused.fieldStateOptional,
+.tundra .fieldStateOptional {
+	border-style: dotted;
+}
+
+.tundra .dijitTextAreaReadOnly {
+	background: #f0f0f0 !important;
+	border:1px solid #BBBBBB !important;
+	cursor: text !important;
+}
+
+// SELECTOR // TODO -> move to universal-lookup panel
+
+.subpanelSelector {
+  .itemList {
+    background-image: url(../images/backgroundCursor2.png) !important;
+
+    .item {
+      background-image: url(../images/hoverCursorOff.png) !important;
+    }
+
+    .selected,
+    .mouseHover {
+      background-image: url(../images/hoverCursor.png) !important;
+      color: @texte !important;
+    }
+  }
+
+}
+
+// MENU (COMBO BOX OPENED)
+
+.dijitMenu {
+  border: 1px solid @combo-box-border !important;
+  box-shadow: 0px 0px 10px #ccc !important;  
+  list-style: none !important;
+  min-width: 100px !important;
+  height: auto !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+
+  .dijitMenuItem {
+    font-family: 'Roboto' !important;
+    font-size: 13px !important;
+    color: @texte !important;
+    padding: 5px 5px!important;
+    text-align: left 3px;
+
+    &:hover {
+      background-color: @prima-main-color !important;
+      color: white !important;
+    }
+  }
+}
+
+
+// TAB CONTAINER
+
+.tundra .richTab.dijitTabContainer {
+  background-color: white !important;
+  box-shadow: 0px 0px 10px #ccc;
+  padding: 20px !important;
+
+  .dijitTabContainer {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+
+    .dijitTab {
+      padding: 0 !important;
+      background-color: transparent !important;
+      height: auto !important;
+
+      .tabLabel {
+        color: @tab-label-color;
+      }
+    }
+
+    .dijitTabChecked {
+      box-shadow: none !important;
+    }
+  }
+
+  .dijitTabContainerNested {
+    box-shadow: none !important;
+  }
+
+  .dijitTab {
+    background-color: transparent;
+    width: auto;
+    min-width: 128px !important;
+    height: 40px;
+    border-radius: 0;
+    padding: 0px 20px 0 !important;
+    margin-right: 20px !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+	border: 0;
+    background-image: none;
+    
+	.tabLabel {
+		color: @tab-label-color;
+		font-size: @tab-label-font-size;
+		text-decoration: none;
+
+		&:hover {
+			font-weight: bold;
+		}
+	}
+  }
+
+  
+  .dijitTabContainerTop-tabs {
+    border-color: transparent;
+    border-bottom: 2px solid lightgrey;
+    margin-bottom: 19px;
+   
+  }	
+  
+  .dijitTabContainerTop-tabs > div:last-of-type {
+    margin-right: 0 !important;
+
+  }
+
+  .dijitTabInnerDiv {
+    padding: 0 !important;
+  }
+  
+  .dijitTabButtonIcon {
+    display: none !important;
+  }
+
+  .dijitTabChecked {
+	border-bottom: 2px solid @selected-tab-label-color;
+	
+
+    .tabLabel {
+      color: @selected-tab-label-color;
+      font-size: @tab-label-font-size;
+	  font-weight: bold;
+    }
+  }
+
+  .dijitTabPaneWrapper {
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .dijitContentPane {
+    background-color: transparent !important;
+    overflow: hidden;
+  }
+  
+  .dijitTabContainerTabListNested {
+	.dijitTab {
+		background-color: transparent;
+		
+		.tabLabel {
+    		font-size: @tab-label-font-size;
+			color: @tab-label-color;
+		}
+	}
+
+	.dijitTabChecked {
+    	border-bottom: 2px solid @selected-nested-tab-label-color;
+    	.tabLabel {
+    		color: @selected-nested-tab-label-color;
+    		font-size: @tab-label-font-size;
+    	}
+	}
+  }
+  
+  .dijitTabContent {
+	margin-bottom: 10px;
+    margin-top: 5px;
+    text-align: center;
+  }
+}
+
+
+// STEP�BAR
+
+
+.page-container { /// <-- this code 
+	background-color: white !important;
+  	box-shadow: 0px 0px 10px #ccc;
+  	padding: 20px !important;
+}
+
+.stepBar {
+	&.dijitTabContainer { /// <-- goes there
+		background-color: white !important;
+	  	box-shadow: 0px 0px 10px #ccc;
+	  	padding: 20px !important;
+	}
+
+  .dijitTabContainerTop-tabs {
+  
+  	border-bottom: none;
+
+    .dijitTab {
+      margin-right: 0 !important;
+      background-color: transparent !important;
+      height: 40px !important;
+      border: none;
+      padding: 0 !important;
+      padding-bottom: 26px !important;
+      margin-bottom: 14px !important;
+      text-align: center;
+      background-image: url('../images/stepBack-on.png') !important;
+      background-position: center 32px;
+      background-repeat: repeat-x;
+
+      .tabLabel {
+        color: @step-inactive !important;
+        font-size: @tab-label-font-size;
+      }
+
+
+      .dijitTabButtonIcon {
+        position: absolute !important;
+        height: 14px !important;
+        width: 100% !important;
+        top: 26px !important;
+        left: 0 !important;
+        display: block !important;
+        background-image: url('../images/stepBullet-on.png');
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+
+    .dijitTabChecked {
+      box-shadow: none !important;
+      background-image: url('../images/stepBack-cur.png') !important;
+      background-size: 100% 8px !important;
+
+      .dijitTabButtonIcon {
+        background-image: url('../images/stepBullet-on.png');
+      }
+
+      .tabLabel {
+        color: @menu-fonce !important;
+        top: auto !important;
+      }
+
+      & ~ .dijitTab {
+        box-shadow: none !important;
+        background-image: url('../images/stepBack-off.png') !important;
+        background-position-y: 32px;
+
+        .tabLabel {
+          color: @menu-fonce !important;
+          top: auto !important;
+        }
+
+        .dijitTabButtonIcon {
+          background-image: url('../images/stepBullet-off.png');
+        }
+      }
+    }
+  }
+}
+
+
+.buttonBar .btn-success:hover,
+.buttonBar .btn-danger:hover,
+.buttonBar .btn-success,
+.buttonBar .btn-danger {
+    background-color: transparent;
+}
+
+// BUTTONS
+.dijitDialog,
+#pageContainer {
+  .dijitButton {
+    margin: 0 !important;
+
+    .dijitButtonNode {
+      border: solid 1px transparent;
+      border-radius: 4px;
+      font-weight: bold;
+      color: @button-color;
+      font-size: @button-font-size;
+      padding: @button-padding;
+      background-color: @button-background-color;
+      line-height: 1em;
+	  min-height: 32px;
+	  background-image: none;
+
+      i {
+		color: @button-color;
+      }
+      .dijitButtonText {
+		color: @button-color;
+	    padding: 0;
+	    font-weight: bold;
+    }
+  }
+    .dijitButtonNode:hover {
+      background-color: @button-background-color-hover;
+  }
+  }
+
+
+  .buttonBar {
+    .dijitToggleButtonIconChar { // ?????
+      display: inline-block !important;
+      font: normal normal normal 16px/1 FontAwesome;
+    }
+  }
+
+
+  .btn-success .dijitButton .dijitButtonNode { 
+      border-color: @button-success-background-color;
+      background-color: @button-success-background-color;
+      i, .dijitButtonText {
+      	color: @button-color;
+      }
+  }
+  .btn-success .dijitButton .dijitButtonNode:hover {
+      background-color: @button-success-background-color-hover;
+  }
+  .btn-success .dijitButton.dijitButtonDisabled .dijitButtonNode {
+      border-color: @button-success-background-color;
+      i, .dijitButtonText {
+		color: @button-success-background-color;
+  }
+  }
+  .btn-success .dijitButton .dijitButtonNode.neutralized {
+      border-color: @button-success-background-color;
+      i, .dijitButtonText {
+		color: @button-success-background-color;
+	  }
+  }
+
+  .btn-danger .dijitButton .dijitButtonNode {
+      border-color: @button-danger-background-color;
+      background-color: @button-danger-background-color;
+	  }
+  .btn-danger .dijitButton .dijitButtonNode:hover {
+      background-color: @button-danger-background-color-hover;
+  }
+  .btn-danger .dijitButton.dijitButtonDisabled .dijitButtonNode {
+      border-color: @button-danger-background-color;
+      i, .dijitButtonText {
+		color: @button-danger-background-color;
+      }
+  }
+
+
+
+  .dijitButton .dijitButtonNode.neutralized,
+  .dijitButton .dijitButtonNode.neutralized:hover,
+  .dijitButton.dijitButtonDisabled .dijitButtonNode,
+  .dijitButton.dijitButtonDisabled .dijitButtonNode:hover {
+      border-color: rgba(0,0,0,0.26);
+      background-color: transparent;
+      i {
+		color: #ccc;
+	  }
+      .dijitButtonText {
+		color: #7F7F7F;
+	  }
+  }
+
+  .buttonLeft .dijitButton {
+    margin-top: 14px !important;
+    margin-right: 14px !important;
+  }
+
+
+  .buttonRight .dijitButton {
+    margin-top: 14px !important;
+    margin-left: 14px !important;
+  }
+
+  .buttonBar {
+    padding: 0;
+    width: 100%;
+  }
+}
+
+
+.buttonBar {
+	i {
+	    font: normal normal normal @button-icon-size/1 FontAwesome;
+
+		&.nextButton:before {
+			content: '\f054'; // TODO : parametrize all btn icon values
+		}
+		
+		&.prevButton:before {
+			content: '\f053'; // TODO : parametrize all btn icon values
+		}
+		
+		&.policyEventsButton:before { // TODO : move to portfolio page
+			content: '\f06e'; // TODO : parametrize all btn icon values
+		}
+		
+		&.saveButton:before {
+			content: '\f0c7'; // TODO : parametrize all btn icon values
+		}
+		
+		&.searchButton:before {
+			content: '\f002'; // TODO : parametrize all btn icon values
+		}
+		
+		&.restartButton:before {
+			content: '\f0e2'; // TODO : parametrize all btn icon values
+		}
+		
+		&.closeButton:before {
+			content: '\f00D'; // TODO : parametrize all btn icon values
+		}
+
+		&.listOlButton:before {
+			content: '\f0cb'; // TODO : parametrize all btn icon values
+		}
+
+		&.addButton:before {
+			content: '\f067'; // TODO : parametrize all btn icon values
+	}
+		
+		&.removeButton:before {
+			content: '\f068'; // TODO : parametrize all btn icon values
+}
+		
+		&.consultationButton:before {
+			content: @consultation-button-icon;
+	}
+		
+		&.applyButton:before {
+			content: @apply-button-icon;
+}
+		
+		&.printButton:before{
+			content: @print-button-icon;
+	}
+		&.relationsButton:before {
+			content: @consultation-button-icon;
+}
+		&.leftButton:before {
+			content: @left-button-icon;
+}
+		&.rightButton:before {
+			content: @right-button-icon;
+}
+		&.upButton:before {
+			content: @up-button-icon;
+		}
+		&.downButton:before {
+			content: @down-button-icon;
+		}
+		&.exportXmlButton:before {
+			content: @export-xml-button-icon;
+	}
+		&.importXmlButton:before {
+			content: @import-xml-button-icon;
+}
+	}
+}
+
+
+
+// COMBO BOX
+
+.dijitComboBoxHover,
+.dijitComboBoxFocusedHover {
+  .dijitArrowButton {
+    background-image: none !important;
+  }
+}
+
+// CHECK BOX HOVER
+.tundra {
+	.dijitCheckBoxHover {
+		background-position: -16px;
+	}
+	.dijitCheckBoxCheckedHover {
+		background-position: 0px;
+	}
+}
+
+// DIALOG
+
+.dijitDialog {
+  max-width: 73%;
+
+  .dijitDialogTitleBar {
+    background-color: @menu-clair !important;
+    height: 64px !important;
+    padding-left: 28px !important;
+    padding-top: 23px !important;
+    background-image: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .dijitDialogTitle {
+    color: white !important;
+    font-weight: normal !important;
+    font-size: 20px !important;
+    padding: 0 !important;
+    padding-right: 50px !important;
+    line-height: 1em !important;
+  }
+  
+  .dijitDialogCloseIcon {
+    background: none !important;
+    position: absolute !important;
+    top: 24px !important;
+    right: 22px !important;
+    display: block !important;
+
+    &:before {
+      color: white !important;
+      content: '\f00d';
+      font: normal normal normal @button-icon-size/1 FontAwesome;
+    }
+
+    .closeText {
+      display: none !important;
+    }
+  }
+
+  .dijitDialogPaneContent {
+    padding: 18px !important;
+  }
+
+  .removeButton {
+    background-image: none !important;
+    margin: 18px !important;
+    margin-right: 0 !important;
+
+    .dijitButtonNode {
+      margin: 0 !important;
+      width: auto !important;
+      height: auto !important;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #EEEEEE !important;
+      font-size: 14px !important;
+      padding: 12px 14px !important;
+      background-color: #9A9A9A !important;
+      line-height: 1em !important;
+      border-radius: 4px !important;
+    }
+
+    .dijitButtonText:after {
+      content: 'Fermer';
+      position: relative !important;
+      top: -1px !important;
+    }
+  }
+
+    }
+
+
+.listPicker button {
+    font: normal normal normal 14px/1 FontAwesome;
+	font-size: 15px;
+	border: 1px solid;
+	
+	&.prevButton:before {
+		content: '\f053';
+	}
+	&.nextButton:before {
+		content: '\f054';
+	}
+}
+
+
+
+// GRID
+
+table {
+	border-collapse: collapse;
+}
+.dojo-grid{
+	.headerZone .tableHeader{
+		background-color: @prima-main-color;
+		border: 1px solid @column-separator-color;
+		padding: 6px;
+		font-size: 13px;
+		font-weight: bold;
+		text-align: center;
+		color: @table-header-text-color;
+		overflow: hidden;
+	}
+	
+	.dataZone {
+	 	overflow: auto;
+	    max-height: 500px;
+		.tableData {
+			border: 1px solid @column-separator-color;
+			padding: 6px;
+			font-size: 13px;
+			color: @table-data-text-color;
+			overflow: hidden;
+		}	
+		.evenLine {
+			background-color: @table-even-line-color;
+			&:hover { 
+				background-color: @table-even-line-hover-color;				 
+			}	
+		}
+		.oddLine {
+			background-color: @table-odd-line-color;
+			&:hover { 
+				background-color: @table-odd-line-hover-color;				 
+			}	
+		}
+		.selected {
+			background-color: @table-selected-line-color;
+			&:hover { 
+				background-color: @table-selected-line-hover-color;
+			}				
+		}		
+	}	
+
+	.headerZone,
+	.dataZone,
+	.gridZone,
+	.titleZone {
+		 width: 100%;
+		 table-layout: fixed;
+	}
+	.headerZone,
+	.gridZone,
+	.titleZone {
+		overflow-y: scroll;
+	}
+	
+	.dataZone {
+		overflow-y: scroll;
+	}
+	
+	.titleZone {
+		text-align: center;
+		font-weight: bold;
+		font-size: 13px;
+  	}
+  	
+  	.separator {
+		width:	100%;
+		height:	1px;
+		background-color: @prima-main-color;
+	}
+  	
+  	
+	.filterInputZone {
+	    margin-top: 14px;
+		.dijitButtonNode {
+			margin-top: 14px;
+			padding: 5px !important;
+			&.filterButtonZone{
+				width: 30px;
+    			height: 30px;	
+}
+		}
+		.dijitButtonText {
+			padding: 0;
+		}
+	}
+
+  	.filterInputZone button {
+  		&.filterButton:before {
+  			font: normal normal normal @button-icon-size/1 FontAwesome;
+			content: @filter-button-icon;
+			
+		}
+		&.searchButton:before {
+			font: normal normal normal @button-icon-size/1 FontAwesome;
+		content: '\f002'; // TODO : parametrize all btn icon values
+	}
+  	}
+
+	//hide header scrollbar
+	.headerZone,
+	.titleZone {
+		//chrome
+		&::-webkit-scrollbar { 
+			background-color: transparent;
+}
+    	//ie
+    	-ms-scrollbar-highlight-color: @scrollbar-header-color-ie;	
+		-ms-scrollbar-base-color: @scrollbar-header-color-ie;
+		-ms-scrollbar-arrow-color: @scrollbar-header-color-ie;
+	}
+}
+
+
+
+
+// CALENDAR
+
+.dijitCalendarContainer {
+  background-color: white !important;
+  box-shadow: 0px 0px 10px #ccc !important;
+
+  .dijitMenuItemHover {
+    background-color: @header-clair !important;
+    color: @menu-fonce !important;
+  }
+
+  .dijitPopup,
+  .dijitPopup.dijitMenuItemHover {
+    background-color: white !important;
+  }
+
+  .dijitCalendarSelectedYear {
+    background-color: @menu-clair !important;
+    color: white !important;
+  }
+
+  .dijitCalendarMonthContainer {
+    background-color: @header-clair !important;
+
+    th {
+      background-image: none !important;
+    }
+  }
+
+  .dijitCalendarDateTemplate {
+    padding: 0px 11px !important;
+    height: 38px !important;
+    width: 42px !important;
+    text-decoration: none !important;
+    border-radius: 21px !important;
+    background-color: transparent !important;
+
+    .dijitCalendarDateLabel {
+      font-weight: normal !important;
+    }
+  }
+
+  .dijitCalendarHoveredDate {
+    background-color: @header-clair !important;
+  }
+
+  .dijitCalendarCurrentDate {
+    border: solid 1px @menu-clair !important;
+  }
+
+  .dijitCalendarSelectedDate {
+    background-color: @menu-clair !important;
+
+    .dijitCalendarDateLabel {
+      color: white !important;
+    }
+  }
+}
+
+
+// LOOKUP CONTAINER // TODO : move to universal-lookup
+
+.portfolio #personLookup.universalLookup .resultPanel,
+.dijitDialog .resultPanel,
+.lookupContainerZone .resultPanel {
+
+  .navPanelZone {
+    width: 100% !important;
+    min-width: auto !important;
+    position: relative;
+  }
+
+  .buttonBar {
+    position: relative;
+    margin-top: 10px;
+    bottom: 0;
+  }
+
+  .pageCounterZone {
+    position: absolute;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center !important;
+  }
+
+  .middlePanel {
+    display: none !important;
+  }
+}
+
+:focus {
+  outline: none;
+}
+::-moz-focus-inner {
+  border: 0;
+}
+* {
+  font-family: 'Roboto';
+  font-size: 14px;
+}
+body {
+  background-color: #EFEFEF;
+}
+.messageBox {
+  padding: 20px;
+  background-color: #F4F8FA;
+  border-left: 3px solid #00529B;
+}
+.messageBox ul {
+  list-style-type: none;
+}
+.button { // ????
+  padding: 13px 42px;
+  border-radius: 4px;
+  border: 0;
+  line-height: 1em;
+  color: #9A9A9A;
+  background-color: transparent;
+  font-weight: bold;
+  font-size: 14px;
+}
+.button:hover {
+  cursor: pointer;
+}
+.input-item input {
+  width: 100%;
+  border: 0;
+  border-bottom: solid 1px #9A9A9A;
+  color: #9A9A9A;
+  padding-bottom: 12px;
+  font-weight: bold;
+  font-size: 14px;
+}
+.input-item input:focus {
+  border-bottom: solid 2px #00529B;
+  color: #262B33;
+}
+.input-hasIcon {
+  padding-left: 26px;
+  position: relative;
+}
+.input-hasIcon .fa {
+  position: absolute;
+  left: 0px;
+  top: 4px;
+}
+
+
+
+// -- Default Layout
+
+body,
+#pageLayers {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  min-width: initial;
+  min-height: initial;
+  height: auto;
+  top: 0;
+}
+
+
+#pageContainer {
+  padding: 20px;
+  margin: 0;
+  margin-left: @burger-menu-expanded-width;
+  transition: margin 0.2s;
+  margin-top: 64px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: auto;
+  
+  .productDesc {
+    font-size: 40px;
+    margin-bottom: 25px;
+
+    @media (max-width: 1280px) {
+      font-size: 25px;
+      margin: 0;
+      margin-top: -10px;
+      margin-bottom: 14px;
+      display:inline-block !important;
+    }
+
+  }
+
+  .businessProcessAndProductLabels {
+    font-size: 25px;
+    margin-bottom: 10px;
+    margin-top: -20px;
+
+    @media (max-width: 1280px) {
+      font-size: 17px;
+      margin: 0;
+      margin-top: -20px;
+      margin-bottom: 14px;
+      margin-left: 20px;
+      display:inline-block !important;
+      position: relative;
+      top: 1px;
+    }
+  }
+}
+
+
+#menuContainer {
+  position: fixed;
+  width: @burger-menu-expanded-width;
+  min-width: @burger-menu-collapsed-width;
+  transition: width 0.2s;
+  left: 0;
+  top: 64px;
+  bottom: 0;
+  margin:0;
+  padding:0;
+  z-index: 901;
+  padding-top: 36px;
+}
+
+
+#headerContainer {
+  position: fixed;
+  left:0;
+  right:0;
+  top:0;
+  height:64px;
+  z-index: 900;
+
+  #headerLogo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: @burger-menu-expanded-width;
+    transition: width 0.2s;
+    height: 100%;
+    z-index: 903;
+  }
+
+  #buttonMenu {
+    position: absolute;
+    left: @burger-menu-expanded-width;
+    transition: left 0.2s;
+    right: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    z-index: 902;
+  }
+}
+
+
+body.reducedNav {
+  #pageContainer {
+    margin-left: @burger-menu-collapsed-width;
+  }
+
+  #menuContainer {
+    width: @burger-menu-collapsed-width;
+    min-width: @burger-menu-collapsed-width;
+  }
+
+  #headerContainer {
+    #headerLogo {
+      width: @burger-menu-collapsed-width;
+    }
+
+    #buttonMenu {
+      left: @burger-menu-collapsed-width;
+    }
+  }
+}
+
+
+
+// ------ colorContainer // TODO : check with functional team to know where to use this style.... or not
+
+.colorContainer {
+  background-color: @container-color;
+  padding: 1.5%;
+  box-sizing: border-box;
+  overflow: auto;
+  height: auto;
+}
+
+
+
+
+#headerContainer {
+
+  #headerLogo {
+    background-color: @menu-clair;
+    text-align: center;
+
+    #logoPicto,
+    #logoLogo {
+      position: relative;
+      top: 17px;
+      display: inline-block;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 200ms 200ms
+    }
+
+
+    #logoClient {
+      display: none;
+    }
+
+  }
+
+
+  #buttonMenu {
+    background-color: white;
+    box-shadow: 0px 0px 10px #aaa;
+    padding-left: 20px;
+
+    .fa {
+      font-size: 16px;
+      color: @menu-clair;
+      cursor: pointer;
+    }
+
+
+    // Reset styles
+    * {
+      height: auto;
+      margin: auto;
+      padding: auto;
+      width: auto;
+    }
+  }
+
+
+  #accountInfo {
+    position: relative;
+    float: right;
+    display: inline-block;
+    top: 25px;
+    margin-right: 20px;
+
+    .account-icon {
+      position: absolute;
+      left: 0;
+      top: -6px;
+      background-color: #262B33;
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 15px;
+
+      .fa {
+        color: white;
+        position: relative;
+        left: 9px;
+        top: 6px;
+      }
+    }
+
+    .account-username {
+      text-transform: uppercase;
+      font-size: 12px;
+      padding-left: 40px;
+    }
+  }
+
+
+  #toggle-nav,
+  #homeButtonZone,
+  #helpButtonZone,
+  #returnPointButtonZone {
+    display: inline-block;
+    float: left;
+    position: relative;
+    top: 24px;
+  }
+
+  .returnPointButton {
+    font-size: 12px;
+    cursor: pointer;
+
+    &:before {
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: 14px;
+      color: @menu-clair;
+      margin-right: 3px;
+      content: "\f115";
+    }
+  }
+
+  #homeButtonZone,
+  #toggle-nav {
+    margin-right: 84px;
+  }
+
+
+
+  #logoutButtonZone {
+    position: relative;
+    top: 23px;
+    margin-right: 20px;
+
+    .fa {
+      font-size: 20px;
+      color: #FF4444;
+    }
+  }
+
+}
+
+
+.reducedNav #headerContainer {
+  #headerLogo #logoLogo {
+    opacity: 0;
+    transition: opacity 0s 0s;
+  }
+}
+
+
+
+#menuContainer {
+  background-color: @menu-fonce;
+  color: @menu-texte;
+  overflow: hidden;
+  font-size: 14px;
+
+  #primaInsureVersion {
+    color: @texte-version;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12px;
+  }
+  #appDate {
+    color: @texte-version;
+    position: absolute;
+    bottom: 1px;
+    right: 10px;
+    font-size: 12px;
+  }
+
+
+  .depth_0 {
+      width: 100%;
+      background-color: @menu-fonce;
+      color: @menu-texte;
+
+      &:hover,
+      .dijitButtonHover .dijitButtonNode,
+      .dijitButton:hover,
+      .dijitButtonText:hover,
+      .digitButtonNode:hover {
+          background-color: @menu-actif;
+          color: @menu-texte;
+      }
+  }
+
+  .depth_1 {
+    width: 100%;
+    background-color: @menu-actif;
+  }
+
+  .dijitMenuItemLabel {
+  	font-size: 14px;
+  	font-family: 'Roboto';
+  	white-space: normal;
+  	text-align: left;
+  }
+
+  .dijitButton,
+  .dijitButtonNode {
+    margin: 0;
+    width: 100%;
+	background-image: none;
+    background-color: transparent;
+    border: 0;
+    background-repeat: no-repeat;
+    text-align: left;
+    padding-left: 0;
+  }
+
+
+  .accordionMenu {
+  	border: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    padding-right: 20px;
+
+
+    & > div {
+      width: @burger-menu-expanded-width;
+    }
+
+
+    .paddingDepth {
+      padding-left: 0;
+    }
+
+    .opened,
+    .dijitButtonHover,
+    .selected {
+      background-color: @menu-actif !important;
+
+      .node {
+      	color: @menu-texte;
+      }
+      
+    }
+
+    .dijitButtonText {
+      padding: 0;
+      padding-right: 15px;
+    }
+
+    .leaf .dijitButtonNode {
+      background-position: 155px 10px;
+      background-image: url('../images/menu.png');
+    }
+
+    .depth_0 .depth_1:last-of-type {
+      padding-bottom: 10px;
+    }
+
+    .depth_1 .leaf .dijitButtonNode {
+      background-image: url('../images/menu-1.png');
+    }
+
+    .opened .dijitButtonNode,
+    .dijitButtonActive .leaf {
+      background-image: url('../images/menu-open.png') !important;
+
+      .dijitButtonText {
+        color: white;
+      }
+    }
+
+    .depth_0,
+    .depth_1,
+    .depth_2,
+    .depth_3 {
+      position: relative;
+    }
+
+    .depth_0 .dijitButton {
+      padding-top: 14px;
+      padding-bottom: 14px;
+        @media (max-width: 1300px) {
+	      padding-top: 4px;
+    	  padding-bottom: 4px;
+    }
+    }
+
+    .depth_1 .dijitButton,
+    .depth_2 .dijitButton {
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .dijitButton {
+      padding-left: 36px;
+      padding-right: 13px;
+      box-sizing: border-box;
+    }
+
+    .depth_2 .dijitButton {
+      padding-left: 46px;
+    }
+    .depth_3 .dijitButton {
+      padding-left: 52px;
+    }
+
+    .depth_0 > .dijit .dijitMenuItemLabel {
+      opacity: 1;
+      transition: opacity 200ms 200ms;
+    }
+
+    .dijitToggleButtonIconChar {
+      width: 15px;
+      height: 15px;
+      display: inline-block !important;
+      position: absolute;
+      left: 10px;
+      top: 18px;
+      color: @couleur2;
+      text-align: center;
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: 14px;
+      transition: font-size 200ms, left 200ms, top 200ms;
+        @media (max-width: 1300px) {
+	      top: 9px;
+    }
+    }
+
+    .depth_1 .dijitToggleButtonIconChar {
+      top: 4px;
+      display: none !important;
+    }
+
+    .depth_2 .dijitToggleButtonIconChar {
+      //background-color: red;
+      top: 4px;
+      display: none !important;
+    }
+  }
+
+}
+
+
+.reducedNav #menuContainer {
+
+  overflow: inherit;
+
+  #appDate,
+  #primaInsureVersion {
+    display: none;
+  }
+
+  .accordionMenu {
+
+    overflow: visible;
+
+
+    & > div {
+      width: @burger-menu-collapsed-width;
+    }
+
+
+    .depth_0 > div:not(.dijit) {
+      position: absolute;
+      z-index: 2;
+      left: @burger-menu-collapsed-width;
+      top: 0;
+      width: @burger-menu-expanded-width;
+
+      .depth_1:first-of-type {
+        padding-top: 10px;
+      }
+    }
+
+    .depth_0 {
+      max-height: 49px;
+      min-height: 49px;
+      height: 49px;
+
+      .dijitToggleButtonIconChar {
+        font-size: 22px;
+        left: 24px;
+        top: 14px;
+        transition: font-size 200ms, left 200ms, top 200ms;
+      }
+    }
+
+    .depth_0 > .dijitButton {
+      padding: 4px 0;
+      height: 49px;
+
+      .dijitButtonNode {
+        height: 100%;
+      }
+    }
+
+    .depth_0 > .dijit {
+
+      .dijitMenuItemLabel {
+        opacity: 0;
+        transition: opacity 0s;
+      }
+
+    }
+
+  }
+}
+
+ /*------------------------------------------------------*/
+/*------------------ Subscription title -----------------*/
+/*-------------------------------------------------------*/
+		
+.titleZone {
+	&.subscriptionTitle {
+		height: 30px;
+	    color: @label-color;
+	    font-size: 24px;
+	    font-weight: bold;
+	    font-style: italic;
+	    text-align: right;
+	    padding-right: 12px;
+	}
+}
+
+
+/* --------------------------------*/
+/* ------- Schedule panel ---------*/
+/* --------------------------------*/
+.schedulePanel {
+	min-width: 250px;
+	.paymentZone {
+		width: 50%;
+		padding-right: 2%;
+		.paymentPanel {
+			.paymentMethodZone {
+				.paymentMethodGrid {
+					.check {
+						width: 8%;
+					}
+					.typeText {
+						width: 32%;
+					}
+					._desc {
+						width: 60%;
+					}
+				}
+			}
+			.detailZone {
+				float: left;
+			    height: auto;
+			    width: 500px;
+			}
+			.countryZone {
+				.bigInputField{
+					width: 145px;;
+				}
+			}
+	    
+			.cityZone {
+				.bigInputField{
+					width: 309px;;
+				}
+			}
+			
+			.accountNumberZone	{
+				.bigInputField {
+					width: 428px;
+				}
+			}
+				
+			.agencyAddressZone{		
+				.bigInputField {
+						width: 428px;
+					}
+			}
+		}	
+	
+		.grid {
+			.check {
+			width: 10%;
+			}
+			.typeText {
+				width: 33%;
+			}
+			._desc {
+				width: 57%;
+			}
+		}	
+		
+	}
+	.detailsZone {
+		width: 48%;
+		
+		.grid {
+			.date {
+				width: 50%;
+				&.tableData {
+					text-align: center;
+				}
+				
+			}
+			.amount {
+				width: 50%;
+				&.tableData {
+					text-align: right;
+				}
+				
+			}
+		}
+		
+		.bpFee .dijitReset {
+			text-align: right;
+			padding-right: 3px;
+		}
+		
+		.cashPaymentDetailsAmount .dijitReset {
+			text-align: right;
+			padding-right: 4px;
+		}
+	}
+}
+
+
+
+
+
+
+/* --------------------------------*/
+/* ------- Relation panel ---------*/
+/* --------------------------------*/
+.relationDialog {
+	width: 	auto;
+}
+.relationPanel {
+	overflow: hidden;
+	.leftPane {
+		float: left;
+		width: 30%;
+		min-width: 202px;
+		padding-right: 2%;
+		height: 100%;
+		max-height: 500px;
+		box-sizing: border-box;
+		overflow: auto;
+		.relationGrid {
+			min-width: 190px;
+			.typeText {
+				width: 100%;
+				padding-left: 30px;
+			}
+		}
+	}
+	.rightPane {
+		float: left;
+		width: 67%;
+		box-sizing: border-box;
+	}
+}
+
+/* --------------------------------*/
+/* ----- Cash Payment panel -------*/
+/* --------------------------------*/
+.cashPaymentPanel {
+	.detailZone {
+	    padding: 1.5%;
+	    .paymentFrame {
+    	    width: 100%;
+		    height: 350px;
+		    padding-top: 20px;
+	    }
+	}
+}
+
+
+/* --------------------------------*/
+/* --- Formula details dialog -----*/
+/* --------------------------------*/
+	
+#formulaDetailsDialog {
+	.resultSetTable {
+		overflow: auto;
+		width: auto;
+		min-width: 900px;
+		border: 1px solid @column-separator-color;
+		.titleWidth {
+			width: 25%;
+	}
+		.columnHeader {
+			width: 8.3%;
+			padding: 4px;
+			text-align: center;
+			font-weight: bold;
+			border: 1px solid @column-separator-color;
+		}
+		.tableHeader {
+			width: 25%;
+			padding: 4px;
+		    text-align: left;
+		    font-weight: bold;
+		    border: 1px solid @column-separator-color;
+		}
+		.tableData {
+			padding: 4px;
+			padding-right: 10px;
+			text-align: right;
+			border: 1px solid @column-separator-color;
+		}
+	}
+	
+	.color1 {
+		background: none;
+		background-color: @formula-details-dialog-color-1;
+	}
+
+	.color2 {
+		background: none;
+		background-color: @formula-details-dialog-color-2;
+	}
+
+	.color3 {
+		background: none;
+		background-color:@formula-details-dialog-color-3;
+	}
+
+	.tableHeader,
+	.subcolor1,
+	.subcolor2,
+	.subcolor3 {
+		color: @formula-details-dialog-text-color;
+		background: none;
+		background-color: @formula-details-dialog-subcolor;
+	}
+}	    
+
+
+/* --------------------------------*/
+/* --- Filtering Lookup dialog ----*/
+/* --------------------------------*/
+.filteringLookupDialog {
+	width: 570px;
+	height: 515px;
+	.hugeInputField {
+		width: 550px;
+	}
+	.bigInputField {
+		width: 455px;
+	}
+	.filteringLookupDialogGrid {
+		width: 100%;
+		max-height: 400px;
+		overflow: auto;
+		.value {
+			width: 20%;
+			&.tableData {
+				text-align: center;
+			}
+		}
+		.text {
+			width: 80%;
+		}
+	}
+}	    
+
+
+/* --------------------------------*/
+/* ----------- Labels -------------*/
+/* --------------------------------*/
+
+.labelColored {
+	color: @label-color;
+	
+}
+
+.labelFine {
+	color: @label-color;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 15px;
+}
+
+.labelHuge {
+	color: @label-color;
+	font-size: 14px;
+}
+
+.labelBold {
+	font-weight: bold;
+}
+
+.labelMoreFine {
+	color:#383d42;
+	font-size: 11px;
+}
+
+// removing borders from calendar popup
+.dijitPopup td {
+	border : none;
+}
+
+fieldset {
+	border: 1px darkgray solid;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+
+.missing-translation-label,
+.missing-translation-label * {
+   font-size: larger;
+   font-weight: bolder;
+
+   animation-duration: 333ms;
+   animation-name: blink;
+   animation-iteration-count: infinite;
+   animation-direction: alternate;
+}
+@keyframes blink {
+   from {
+      color: #faf;
+   }
+   to {
+      color: #afa;
+   }
+}
+

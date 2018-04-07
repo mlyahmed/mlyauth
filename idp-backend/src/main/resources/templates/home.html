@@ -1,9 +1,14 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My PrimaInsure Applications</title>
+    <title>Mes applications Prima</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/home.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/prima-common-layout.css}" />
+
     <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
     <script>
@@ -23,49 +28,30 @@
         }
 
     </script>
-
-    <style>
-        #search {
-            width:90%;
-        }
-
-        .search-icon {
-            color:#5CB85C;
-        }
-
-        .items-collection{
-            margin:20px 0 0 0;
-        }
-
-        .items-collection label.btn-default{
-            width:90%;
-            border:1px solid #305891;
-            margin:5px;
-            border-radius: 17px;
-            color: #305891;
-        }
-        .items-collection label .itemcontent{
-            width:100%;
-        }
-        .items-collection .btn-group{
-            width:90%
-        }
-    </style>
 </head>
-<body>
+<body class="tundra loginBackgroundColor layout-login">
 
-    <div class="container">
-        <h1>My PrimaInsure Applications</h1>
-        <div class="row">
-            <br />
-            <div class="form-group">
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <i class="fa fa-search fa-2x pull-left search-icon"></i><input type="search" class="form-control" id="search" placeholder="Filter application..." />
+    <div class="container loginContainer">
+        <div id="headerLogo" class="header">
+            <div class="logo">
+                <div class="logoLayer">
+                    <img id="logoPicto" th:src="@{/assets/images/PictoPrimaInsure.png}" />
+                    <img id="logoLogo" th:src="@{/assets/images/LogoPrimaInsure.png}" />
                 </div>
             </div>
+            <div class="align-none"></div>
         </div>
-        <div class="row">
-            <div class="form-group">
+        <div class="content">
+            <h1>Mes applications Prima</h1>
+            <div class="row">
+                <br />
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <i class="fa fa-search fa-2x pull-left search-icon"></i><input type="search" class="form-control" id="search" placeholder="Filter application..." />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="items-collection">
                     <th:block th:each="application : ${applications}">
                         <div class="items col-xs-6 col-sm-3 col-md-3 col-lg-3">
@@ -73,7 +59,7 @@
                                 <div data-toggle="buttons" class="btn-group itemcontent">
                                     <label class="btn btn-default">
                                         <div class="itemcontent"  th:onclick="${'javascript:openInNewTab(''navigate/forward/to/' + application.appname + ''');'}" >
-                                                <h4 th:text="${application.title}" ></h4>
+                                            <h4 th:text="${application.title}" ></h4>
                                         </div>
                                     </label>
                                 </div>
@@ -84,5 +70,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>

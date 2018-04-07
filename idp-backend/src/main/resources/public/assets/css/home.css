@@ -1,0 +1,94 @@
+#search {
+    width:90%;
+}
+
+.search-icon {
+    color:#5CB85C;
+}
+
+.items-collection{
+    margin:20px 0 0 0;
+}
+
+.items-collection label.btn-default{
+    width:100%;
+    border:1px solid #305891;
+    margin:5px;
+    border-radius: 17px;
+    color: #305891;
+}
+.items-collection label .itemcontent{
+    width:100%;
+}
+.items-collection .btn-group{
+    width:100%
+}
+
+.loginContainer .header {
+  background-color: #00529B;
+  padding-left: 25px;
+  padding-top: 19px;
+  padding-bottom: 12px;
+  box-sizing: border-box;
+}
+.loginContainer .headerLogo {
+  width: auto;
+}
+.loginContainer .content {
+  background-color: white;
+}
+.loginContainer .messageBox {
+  margin-top: 20px;
+}
+.loginContainer .lostPassword {
+  font-size: 12px;
+  color: #00529B;
+  text-decoration: none;
+  float: right;
+}
+.loginContainer .welcomeText {
+  font-size: 40px;
+}
+.loginContainer .loginActions {
+  margin-top: 40px;
+}
+.loginContainer .input-item {
+  margin-top: 60px;
+}
+.loginContainer .input-item-feeble-marging {
+  margin-top: 20px;
+}
+.loginContainer .ident_erreur {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #dd2c00;
+}
+
+.layout-login {
+  margin: 0;
+}
+.layout-login .container {
+  width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 119px;
+  padding-left: 0px;
+  padding-right: 0px;
+  box-shadow: 0px 0px 10px #aaa;
+}
+.layout-login .header {
+  width: 100%;
+}
+.layout-login .content {
+  padding: 20px 100px 90px;
+}
+
+.logo {
+	float: left;
+	width: 50%
+}
+
+
+.align-none {
+	clear: both;
+}
