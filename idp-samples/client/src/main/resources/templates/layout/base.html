@@ -3,24 +3,7 @@
 
 <head>
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
-    <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-    <script th:src="@{/assets/js/layout.js}"></script>
 
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/assets/css/layout.css}" />
-
-    <script>
-        $(document).ready(function () {
-
-            $("#refresh-access-form").submit(function (event) {
-                event.preventDefault();
-                refreshAccess();
-            });
-
-        });
-    </script>
 </head>
 
 <body>
@@ -61,6 +44,7 @@
                     <form class="navbar-form navbar-right" id="refresh-access-form" role="search">
                         <div class="form-group">
                             <span id="expirationCounter" class="form-control"></span>
+                            <span id="tokenCost" class="form-control"></span>
                             <input type="text" class="form-control" placeholder="identifiant externe" />
                         </div>
                         <button type="submit" class="btn btn-default">Refresh Token</button>
@@ -84,4 +68,21 @@
         </div>
     </div>
 </body>
+
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+<script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/js/layout.js}"></script>
+<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/layout.css}" />
+
+<script>
+    $(document).ready(function () {
+        $("#refresh-access-form").submit(function (event) {
+            event.preventDefault();
+            refreshAccess();
+        });
+    });
+</script>
 </html>

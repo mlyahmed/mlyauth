@@ -1,15 +1,5 @@
 var tokenCounter;
 
-$(function(){
-
-    $(".dropdown-menu li a").click(function(){
-
-        $(".btn:first-child").text($(this).text());
-        $(".btn:first-child").val($(this).text());
-
-    });
-
-});
 function resetCountDown(){
     if(tokenCounter) clearInterval(tokenCounter);
     document.getElementById("expirationCounter").innerHTML = "Refresh token...";
@@ -56,6 +46,7 @@ function refreshAccess() {
         timeout: 600000,
         success: function (data) {
             countdown(toDate(data.expiryTime));
+            document.getElementById("tokenCost").innerHTML = "Took "+ data.elapsed + "ms"
             console.log("SUCCESS : ", data);
         },
         error: function (e) {
