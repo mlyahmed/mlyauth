@@ -53,7 +53,7 @@ public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         final AutoNavigation autoNavigation = autoNavigationDAO.findByRole(role);
         if(autoNavigation == null) return null;
         return context.getPerson().getApplications().stream()
-                .filter(app -> app.getType() == autoNavigation.getApplicationType())
+                .filter(app -> app.getType().getCode() == autoNavigation.getApplicationType().getCode())
                 .findFirst().orElse(null);
     }
 
