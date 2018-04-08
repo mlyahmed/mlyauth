@@ -6,68 +6,23 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
     <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/layout.js}"></script>
+
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/layout.css}" />
 
     <script>
-        $(function(){
+        $(document).ready(function () {
 
-            $('#slide-submenu').on('click',function() {
-                $(this).closest('.list-group').fadeOut('slide',function(){
-                    $('.mini-submenu').fadeIn();
-                });
-
+            $("#refresh-access-form").submit(function (event) {
+                event.preventDefault();
+                refreshAccess();
             });
 
-            $('.mini-submenu').on('click',function(){
-                $(this).next('.list-group').toggle('slide');
-                $('.mini-submenu').hide();
-            })
-        })
+        });
     </script>
 
     <style>
-        .mini-submenu{
-            display:none;
-            background-color: rgba(0, 0, 0, 0);
-            border: 1px solid rgba(0, 0, 0, 0.9);
-            border-radius: 4px;
-            padding: 9px;
-            /*position: relative;*/
-            width: 42px;
-
-        }
-
-        .mini-submenu:hover{
-            cursor: pointer;
-        }
-
-        .mini-submenu .icon-bar {
-            border-radius: 1px;
-            display: block;
-            height: 2px;
-            width: 22px;
-            margin-top: 3px;
-        }
-
-        .mini-submenu .icon-bar {
-            background-color: #000;
-        }
-
-        #slide-submenu{
-            background: rgba(0, 0, 0, 0.45);
-            display: inline-block;
-            padding: 0 8px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .widePage {
-            width: 95%;
-        }
-
-        .content {
-            background-color: aliceblue;
-        }
     </style>
 </head>
 
@@ -90,43 +45,29 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Link</a></li>
-                        <li><a href="#">Link</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Choisissez un produit<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Carapass</a></li>
+                            </ul>
+                        </li>
 
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Choisissez une instance <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
+                                <li><a href="#">Sandbox</a></li>
+                                <li><a href="#">QA1</a></li>
                             </ul>
                         </li>
                     </ul>
 
-                    <form class="navbar-form navbar-left" role="search">
+                    <form class="navbar-form navbar-right" id="refresh-access-form" role="search">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search" />
+                            <span id="expirationCounter" class="form-control"></span>
+                            <input type="text" class="form-control" placeholder="identifiant externe" />
                         </div>
                         <button type="submit" class="btn btn-default">Refresh Token</button>
                     </form>
-
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Link</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                            </ul>
-                        </li>
-                    </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>

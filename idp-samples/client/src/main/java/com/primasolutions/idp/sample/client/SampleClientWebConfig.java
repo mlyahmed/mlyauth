@@ -29,5 +29,6 @@ public class SampleClientWebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+        registry.addResourceHandler("/assets/**").addResourceLocations("classpath:/static/assets/");
     }
 }

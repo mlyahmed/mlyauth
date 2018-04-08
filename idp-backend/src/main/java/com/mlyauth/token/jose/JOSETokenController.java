@@ -22,8 +22,7 @@ public class JOSETokenController {
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     TokenBean newAccessToken(@RequestBody String refresh) {
-        JOSERefreshToken refreshToken = tokenDecoder.decodeRefresh(refresh, CL_JOSE);
-        return joseTokenService.refreshAccess(refreshToken);
+        return joseTokenService.refreshAccess(tokenDecoder.decodeRefresh(refresh, CL_JOSE));
     }
 
     @PostMapping(value = "/access/_check", consumes = MediaType.TEXT_PLAIN_VALUE)

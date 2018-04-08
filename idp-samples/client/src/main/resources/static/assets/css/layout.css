@@ -32,3 +32,15 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+.widePage {
+    width: 95%;
+}
+
+.content {
+    background-color: aliceblue;
+}
+
+#expirationCounter {
+    background-color: #e7e7e7;
+}
