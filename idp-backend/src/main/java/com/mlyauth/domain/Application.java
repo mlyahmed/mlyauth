@@ -1,5 +1,6 @@
 package com.mlyauth.domain;
 
+import com.mlyauth.constants.ApplicationType;
 import com.mlyauth.constants.AspectType;
 
 import javax.persistence.*;
@@ -22,6 +23,10 @@ public class Application  implements Serializable {
 
     @Column(name = "TITLE", nullable = false)
     private String title;
+
+    @Column(name = "TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ApplicationType type;
 
     @ElementCollection(targetClass = AspectType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
@@ -65,6 +70,15 @@ public class Application  implements Serializable {
 
     public Application setTitle(String title) {
         this.title = title;
+        return this;
+    }
+
+    public ApplicationType getType() {
+        return type;
+    }
+
+    public Application setType(ApplicationType type) {
+        this.type = type;
         return this;
     }
 

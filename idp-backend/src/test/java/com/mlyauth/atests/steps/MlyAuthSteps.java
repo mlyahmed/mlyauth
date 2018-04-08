@@ -8,6 +8,7 @@ import com.mlyauth.atests.world.ResultActionHolder;
 import com.mlyauth.beans.ApplicationBean;
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.PersonBean;
+import com.mlyauth.constants.ApplicationType;
 import com.mlyauth.constants.AspectType;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -64,6 +65,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
     @Given("^(.+) is a registered Application$")
     public void is_a_registered_application(String appname) throws Exception {
         ApplicationBean application = new ApplicationBean();
+        application.setType(ApplicationType.STORE);
         application.setAppname(appname);
         application.setTitle(appname);
         final ResultActions resultActions = restTestHelper.performBearerPost("/domain/application", application).andExpect(status().is(CREATED.value()));

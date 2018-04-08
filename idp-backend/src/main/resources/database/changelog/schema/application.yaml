@@ -13,6 +13,11 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
+                  name: TYPE
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
                   name: APP_NAME
                   type: varchar(100)
                   constraints:

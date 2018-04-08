@@ -1,5 +1,6 @@
 package com.mlyauth.beans;
 
+import com.mlyauth.constants.ApplicationType;
 import com.mlyauth.constants.AspectType;
 
 import java.util.LinkedHashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 public class ApplicationBean {
 
     private long id;
+    private ApplicationType type;
     private String appname;
     private String title;
     private AspectType authAspect;
@@ -23,6 +25,15 @@ public class ApplicationBean {
 
     public ApplicationBean setId(long id) {
         this.id = id;
+        return this;
+    }
+
+    public ApplicationType getType() {
+        return type;
+    }
+
+    public ApplicationBean setType(ApplicationType type) {
+        this.type = type;
         return this;
     }
 

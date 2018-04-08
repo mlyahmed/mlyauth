@@ -2,6 +2,7 @@ package com.mlyauth.sp.jose;
 
 import com.google.common.collect.Iterators;
 import com.mlyauth.AbstractIntegrationTest;
+import com.mlyauth.constants.ApplicationType;
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
@@ -144,7 +145,11 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_a_peer_jose_idp_app() {
-        application = newInstance().setAppname(appname).setTitle(appname).setAspects(new HashSet<>(asList(IDP_JOSE)));
+        application = newInstance()
+                .setType(ApplicationType.STORE)
+                .setAppname(appname)
+                .setTitle(appname)
+                .setAspects(new HashSet<>(asList(IDP_JOSE)));
         application = applicationDAO.save(application);
     }
 

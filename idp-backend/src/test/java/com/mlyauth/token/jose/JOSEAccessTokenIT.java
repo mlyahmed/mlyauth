@@ -153,6 +153,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         clientSpace = Application.newInstance()
+                .setType(ApplicationType.CLIENT_SPACE)
                 .setAppname("clientSpace")
                 .setAspects(new HashSet<>(Arrays.asList(CL_JOSE)))
                 .setTitle("The Client Space")
@@ -214,6 +215,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         policy = Application.newInstance()
+                .setType(ApplicationType.POLICY)
                 .setAppname("policy")
                 .setAspects(new HashSet<>(Arrays.asList(RS_JOSE)))
                 .setTitle("The Prima Policy")
