@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
 
@@ -21,9 +21,6 @@
 
         });
     </script>
-
-    <style>
-    </style>
 </head>
 
 <body>
@@ -48,7 +45,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Choisissez un produit<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Carapass</a></li>
+                                <li><a th:href="@{/auto}" >Automobile/Carapass</a></li>
                             </ul>
                         </li>
 
@@ -74,38 +71,15 @@
 
         <div class="row">
             <div class="col-sm-3 sidebar">
-                <div class="mini-submenu">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </div>
                 <div class="list-group">
-                    <span href="#" class="list-group-item active">
-                        Liste des services
-                        <span class="pull-right" id="slide-submenu"><i class="fa fa-times"></i></span>
-                    </span>
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-comment-o"></i> Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-search"></i> Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-user"></i> Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-folder-open-o"></i> Lorem ipsum <span class="badge">14</span>
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-bar-chart-o"></i> Lorem ipsumr <span class="badge">14</span>
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-envelope"></i> Lorem ipsum
+                    <span href="#" class="list-group-item active">Liste des services</span>
+                    <a th:href="@{/auto/eligibility}" class="list-group-item">
+                        <i class="fa fa-comment-o"></i> WS Eligibilite
                     </a>
                 </div>
             </div>
             <div class="col-sm-9 content">
-                sdsdsds
+                <div layout:fragment="wsForm"></div>
             </div>
         </div>
     </div>

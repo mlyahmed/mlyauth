@@ -12,9 +12,4 @@ public class SampleClientController {
         return "main";
     }
 
-    @GetMapping("/layout")
-    public String layout(Model model) {
-        return "layout";
-    }
-
 }

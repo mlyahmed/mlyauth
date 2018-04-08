@@ -11,7 +11,11 @@ spring:
     driver-class-name: org.h2.Driver
   thymeleaf:
     cache: false
-
+    check-template: true
+    check-template-location: true
+    content-type: text/html
+    enabled: true
+    encoding: UTF-8
 
 cl:
   jose:

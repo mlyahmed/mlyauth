@@ -2,19 +2,14 @@ var tokenCounter;
 
 $(function(){
 
-    $('#slide-submenu').on('click',function() {
-        $(this).closest('.list-group').fadeOut('slide',function(){
-            $('.mini-submenu').fadeIn();
-        });
+    $(".dropdown-menu li a").click(function(){
+
+        $(".btn:first-child").text($(this).text());
+        $(".btn:first-child").val($(this).text());
 
     });
 
-    $('.mini-submenu').on('click',function(){
-        $(this).next('.list-group').toggle('slide');
-        $('.mini-submenu').hide();
-    })
 });
-
 function resetCountDown(){
     if(tokenCounter) clearInterval(tokenCounter);
     document.getElementById("expirationCounter").innerHTML = "Refresh token...";
@@ -35,7 +30,7 @@ function countdown(expirationDate){
         } else {
             document.getElementById("expirationCounter").innerHTML = "Token expired";
         }
-    }, 1000);
+    }, 0);
     return tokenCounter;
 }
 
