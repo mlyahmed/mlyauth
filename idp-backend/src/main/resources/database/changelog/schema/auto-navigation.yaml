@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: AUTO_NAVIGATION
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
+                  name: ROLE
+                  type: varchar(50)
+                  constraints:
+                      unique: true
+                      nullable: false
+              - column:
+                  name: APPLICATION_TYPE
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+
+  - changeSet:
+      id: 2
+      author: mlyahmed
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: AUTO_NAVIGATION
+            baseColumnNames: ROLE
+            referencedTableName: ROLE
+            referencedColumnNames: CODE
+            constraintName: navigation_fk_role_code
+        - addForeignKeyConstraint:
+            baseTableName: AUTO_NAVIGATION
+            baseColumnNames: APPLICATION_TYPE
+            referencedTableName: APPLICATION_TYPE
+            referencedColumnNames: CODE
+            constraintName: navigation_fk_application_type_code

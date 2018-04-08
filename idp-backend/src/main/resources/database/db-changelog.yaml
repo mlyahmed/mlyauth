@@ -34,6 +34,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/token-claim.yaml
   - include:
+      file: database/changelog/schema/auto-navigation.yaml
+  - include:
       file: database/changelog/schema/navigation.yaml
   - include:
       file: database/changelog/schema/navigation-attribute.yaml
@@ -57,3 +59,5 @@ databaseChangeLog:
       file: database/changelog/data/init/application.sql
   - include:
       file: database/changelog/data/init/application-person.sql
+  - include:
+      file: database/changelog/data/init/auto-navigation.sql

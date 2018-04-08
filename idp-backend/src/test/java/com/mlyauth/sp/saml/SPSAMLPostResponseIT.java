@@ -327,7 +327,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
         attributeStatement = samlHelper.buildSAMLObject(AttributeStatement.class);
         final List<Attribute> attributes = attributeStatement.getAttributes();
         attributes.add(samlHelper.buildStringAttribute(CLIENT_ID.getValue(), "9000")); //See person-examples.sql
-        attributes.add(samlHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), "CL"));
+        attributes.add(samlHelper.buildStringAttribute(CLIENT_PROFILE.getValue(), "GP"));
         attributes.add(samlHelper.buildStringAttribute(ENTITY_ID.getValue(), "BA0000000000001"));
         attributes.add(samlHelper.buildStringAttribute(ACTION.getValue(), "S"));
         assertion.getAttributeStatements().add(attributeStatement);
