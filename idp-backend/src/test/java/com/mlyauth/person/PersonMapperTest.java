@@ -2,11 +2,13 @@ package com.mlyauth.person;
 
 import com.google.common.collect.Sets;
 import com.mlyauth.beans.PersonBean;
-import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.constants.RoleCode;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.dao.RoleDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Role;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -16,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(DataProviderRunner.class)
@@ -31,18 +35,30 @@ public class PersonMapperTest {
 
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
+    private Role role;
+
     private Person person;
 
     private PersonBean bean;
 
     @Mock
-    private ApplicationDAO applicationDAO;
+    private PersonDAO personDAO;
 
     @Mock
-    private PersonDAO personDAO;
+    private RoleDAO roleDAO;
 
     @InjectMocks
     private PersonMapper mapper;
+
+    @Before
+    public void setup() {
+        initMocks(this);
+        role = Role.newInstance().setCode(RoleCode.CLIENT);
+        person = Person.newInstance().setRole(role);
+        bean = PersonBean.newInstance();
+        when(roleDAO.findOne(Mockito.any(RoleCode.class))).thenReturn(role);
+    }
+
 
     @DataProvider
     public static Object[] properties() {
@@ -73,13 +89,6 @@ public class PersonMapperTest {
                 {Application.newInstance().setAppname("Yahoo"), Application.newInstance().setAppname("Amazon"), Application.newInstance().setAppname("Instagram")},
         };
         // @formatter:on
-    }
-
-    @Before
-    public void setup() {
-        initMocks(this);
-        person = Person.newInstance();
-        bean = PersonBean.newInstance();
     }
 
     @Test

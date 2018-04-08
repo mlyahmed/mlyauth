@@ -13,6 +13,11 @@ databaseChangeLog:
                       primaryKey: true
                       nullable: false
               - column:
+                  name: ROLE_CODE
+                  type: varchar(50)
+                  constraints:
+                      nullable: false
+              - column:
                   name: EXTERNAL_ID
                   type: varchar(100)
                   constraints:
@@ -55,3 +60,9 @@ databaseChangeLog:
             referencedTableName: AUTHENTICATION_INFO
             referencedColumnNames: ID
             constraintName: person_auth_fk_auth_id
+        - addForeignKeyConstraint:
+            baseTableName: PERSON
+            baseColumnNames: ROLE_CODE
+            referencedTableName: ROLE
+            referencedColumnNames: CODE
+            constraintName: person_role_fk_role_code

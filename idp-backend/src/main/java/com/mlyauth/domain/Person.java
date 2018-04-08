@@ -58,6 +58,9 @@ public class Person  implements Serializable {
         return this;
     }
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "ROLE_CODE")
+    private Role role;
 
     public String getExternalId() {
         return externalId;
@@ -65,6 +68,15 @@ public class Person  implements Serializable {
 
     public Person setExternalId(String externalId) {
         this.externalId = externalId;
+        return this;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Person setRole(Role role) {
+        this.role = role;
         return this;
     }
 

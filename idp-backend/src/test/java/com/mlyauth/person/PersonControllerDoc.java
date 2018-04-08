@@ -60,6 +60,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     public void when_person_creation_is_ok_then_document_it() throws Exception {
 
         Map<String, Object> person = new HashMap<>();
+        person.put("role", "CLIENT");
         person.put("externalId", RandomStringUtils.random(20, true, true));
         person.put("firstname", "Ahmed");
         person.put("lastname", "Ahmed");

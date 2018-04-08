@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.mlyauth.IDomainMapper;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.dao.PersonDAO;
+import com.mlyauth.dao.RoleDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.exception.IDPException;
@@ -25,11 +26,15 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
     @Autowired
     private PersonDAO personDAO;
 
+    @Autowired
+    private RoleDAO roleDAO;
+
     @Override
     public PersonBean toBean(Person person) {
         if(person == null) return null;
         return PersonBean.newInstance()
                 .setId(person.getId())
+                .setRole(person.getRole().getCode())
                 .setExternalId(person.getExternalId())
                 .setFirstname(person.getFirstname())
                 .setLastname(person.getLastname())
@@ -52,6 +57,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
     @Override
     public Person toEntity(PersonBean bean) {
         return bean == null ? null : createPerson(bean)
+                .setRole(roleDAO.getOne(bean.getRole()))
                 .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())

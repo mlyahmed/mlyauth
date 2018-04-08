@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.ProfileCode;
+import com.mlyauth.constants.RoleCode;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.dao.ProfileDAO;
@@ -194,6 +195,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     private PersonBean given_person(String... properties) {
         PersonBean personBean = new PersonBean();
+        personBean.setRole(RoleCode.CLIENT);
         personBean.setExternalId(properties[0]);
         personBean.setFirstname(properties[1]);
         personBean.setLastname(properties[2]);

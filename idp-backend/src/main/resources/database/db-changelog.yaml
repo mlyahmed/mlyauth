@@ -12,6 +12,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/profile.yaml
   - include:
+      file: database/changelog/schema/role.yaml
+  - include:
       file: database/changelog/schema/person.yaml
   - include:
       file: database/changelog/schema/person-profile.yaml
@@ -43,6 +45,8 @@ databaseChangeLog:
       file: database/changelog/data/init/auth-aspect.sql
   - include:
       file: database/changelog/data/init/profile.sql
+  - include:
+      file: database/changelog/data/init/role.sql
   - include:
       file: database/changelog/data/init/person.sql
   - include:

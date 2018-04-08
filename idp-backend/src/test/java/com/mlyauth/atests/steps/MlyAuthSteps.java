@@ -10,6 +10,7 @@ import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.ApplicationType;
 import com.mlyauth.constants.AspectType;
+import com.mlyauth.constants.RoleCode;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -50,6 +51,7 @@ public class MlyAuthSteps extends AbstractStepsDef{
     @Given("^(.+), (.+) is a new person with (.+) as username and (.+) as email$")
     public void an_existed_person_withe_username_and_email(String firstname, String lastname, String username, String email) throws Exception {
         PersonBean person = PersonBean.newInstance()
+                .setRole(RoleCode.CLIENT)
                 .setFirstname(firstname)
                 .setExternalId(RandomStringUtils.random(20, true, true))
                 .setLastname(lastname)

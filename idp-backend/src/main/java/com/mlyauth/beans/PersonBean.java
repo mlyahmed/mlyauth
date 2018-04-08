@@ -1,11 +1,14 @@
 package com.mlyauth.beans;
 
+import com.mlyauth.constants.RoleCode;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
 public class PersonBean {
 
     private long id;
+    private RoleCode role;
     private String externalId;
     private String firstname;
     private String lastname;
@@ -24,6 +27,16 @@ public class PersonBean {
 
     public PersonBean setId(long id) {
         this.id = id;
+        return this;
+    }
+
+
+    public RoleCode getRole() {
+        return role;
+    }
+
+    public PersonBean setRole(RoleCode role) {
+        this.role = role;
         return this;
     }
 
