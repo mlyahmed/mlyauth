@@ -18,6 +18,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/person-profile.yaml
   - include:
+      file: database/changelog/schema/application-type.yaml
+  - include:
       file: database/changelog/schema/application.yaml
   - include:
       file: database/changelog/schema/application-profile.yaml
@@ -49,6 +51,8 @@ databaseChangeLog:
       file: database/changelog/data/init/role.sql
   - include:
       file: database/changelog/data/init/person.sql
+  - include:
+      file: database/changelog/data/init/application-type.sql
   - include:
       file: database/changelog/data/init/application.sql
   - include:

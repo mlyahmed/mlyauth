@@ -2,13 +2,14 @@ package com.mlyauth.sp.jose;
 
 import com.google.common.collect.Iterators;
 import com.mlyauth.AbstractIntegrationTest;
-import com.mlyauth.constants.ApplicationType;
+import com.mlyauth.constants.ApplicationTypeCode;
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.ApplicationTypeDAO;
 import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttribute;
@@ -55,6 +56,9 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     @Autowired
     private CredentialManager credentialManager;
+
+    @Autowired
+    private ApplicationTypeDAO applicationTypeDAO;
 
     @Autowired
     private NavigationDAO navigationDAO;
@@ -146,7 +150,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     private void given_a_peer_jose_idp_app() {
         application = newInstance()
-                .setType(ApplicationType.STORE)
+                .setType(applicationTypeDAO.findOne(ApplicationTypeCode.STORE))
                 .setAppname(appname)
                 .setTitle(appname)
                 .setAspects(new HashSet<>(asList(IDP_JOSE)));

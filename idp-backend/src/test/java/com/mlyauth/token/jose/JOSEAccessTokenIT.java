@@ -3,10 +3,7 @@ package com.mlyauth.token.jose;
 import com.mlyauth.AbstractIntegrationTest;
 import com.mlyauth.constants.*;
 import com.mlyauth.credentials.CredentialManager;
-import com.mlyauth.dao.ApplicationAspectAttributeDAO;
-import com.mlyauth.dao.ApplicationDAO;
-import com.mlyauth.dao.AuthenticationInfoDAO;
-import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.dao.*;
 import com.mlyauth.domain.*;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.tools.KeysForTests;
@@ -71,6 +68,9 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ApplicationTypeDAO applicationTypeDAO;
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -153,7 +153,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         clientSpace = Application.newInstance()
-                .setType(ApplicationType.CLIENT_SPACE)
+                .setType(applicationTypeDAO.findOne(ApplicationTypeCode.CLIENT_SPACE))
                 .setAppname("clientSpace")
                 .setAspects(new HashSet<>(Arrays.asList(CL_JOSE)))
                 .setTitle("The Client Space")
@@ -215,7 +215,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         policy = Application.newInstance()
-                .setType(ApplicationType.POLICY)
+                .setType(applicationTypeDAO.findOne(ApplicationTypeCode.POLICY))
                 .setAppname("policy")
                 .setAspects(new HashSet<>(Arrays.asList(RS_JOSE)))
                 .setTitle("The Prima Policy")

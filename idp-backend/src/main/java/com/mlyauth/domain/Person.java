@@ -59,7 +59,7 @@ public class Person  implements Serializable {
     }
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "ROLE_CODE")
+    @JoinColumn(name = "ROLE")
     private Role role;
 
     public String getExternalId() {

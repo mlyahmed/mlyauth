@@ -13,7 +13,7 @@ databaseChangeLog:
                       primaryKey: true
                       nullable: false
               - column:
-                  name: ROLE_CODE
+                  name: ROLE
                   type: varchar(50)
                   constraints:
                       nullable: false
@@ -62,7 +62,7 @@ databaseChangeLog:
             constraintName: person_auth_fk_auth_id
         - addForeignKeyConstraint:
             baseTableName: PERSON
-            baseColumnNames: ROLE_CODE
+            baseColumnNames: ROLE
             referencedTableName: ROLE
             referencedColumnNames: CODE
             constraintName: person_role_fk_role_code

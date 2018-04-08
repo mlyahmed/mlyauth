@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: APPLICATION_TYPE
+            columns:
+              - column:
+                  name: CODE
+                  type: varchar(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: DESCRIPTION
+                  type: varchar(500)
+                  constraints:
+                    nullable: true

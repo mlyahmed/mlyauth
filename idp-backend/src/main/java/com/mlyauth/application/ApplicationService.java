@@ -2,6 +2,7 @@ package com.mlyauth.application;
 
 import com.mlyauth.beans.ApplicationBean;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.ApplicationTypeDAO;
 import com.mlyauth.domain.Application;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,14 @@ public class ApplicationService implements IApplicationService {
     @Autowired
     private ApplicationDAO applicationDAO;
 
+    @Autowired
+    private ApplicationTypeDAO applicationTypeDAO;
 
     @Override
     public ApplicationBean newApplication(final ApplicationBean application){
         Application app = new Application();
         BeanUtils.copyProperties(application, app);
+        app.setType(applicationTypeDAO.findOne(application.getType()));
         app = applicationDAO.save(app);
         application.setId(app.getId());
         return application;
