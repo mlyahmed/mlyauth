@@ -24,6 +24,7 @@ public class BasicUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(username);
+        if(authenticationInfo == null) return null;
 
         if (authenticationInfo.isPerson()) {
             return new IDPUser(contextHolder.newPersonContext(authenticationInfo.getPerson()));

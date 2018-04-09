@@ -25,21 +25,32 @@ public class SampleIDPController {
     @Autowired
     private IDPNavigationService navigationService;
 
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
     @GetMapping("/")
     public String entry(Model model){
         return samlForm(model);
     }
 
+    @GetMapping("/idp-simulator")
+    public String simulator(Model model) {
+        model.addAttribute("token", joseInitializer.newToken());
+        return "idp-simulator";
+    }
+
     @GetMapping("/idp-form-jose")
     public String joseForm(Model model) {
         model.addAttribute("token", joseInitializer.newToken());
-        return "idp-form";
+        return "idp-simulator";
     }
 
     @GetMapping("/idp-form-saml")
     public String samlForm(Model model) {
         model.addAttribute("token", samlInitializer.newToken());
-        return "idp-form";
+        return "idp-simulator";
     }
 
     @PostMapping("/idp-navigation")

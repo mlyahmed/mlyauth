@@ -2,7 +2,6 @@ package com.mlyauth.sp.jose;
 
 import com.google.common.base.Stopwatch;
 import com.mlyauth.constants.TokenPurpose;
-import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenStatus;
 import com.mlyauth.context.IContext;
 import com.mlyauth.dao.NavigationDAO;
@@ -16,7 +15,6 @@ import com.mlyauth.token.jose.JOSEAccessToken;
 import com.mlyauth.token.jose.JOSEAccessTokenValidator;
 import com.mlyauth.token.jose.JOSETokenDecoder;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.constants.Direction.INBOUND;
-import static com.mlyauth.constants.TokenScope.PERSON;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
     protected final static Logger logger = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
@@ -84,7 +80,6 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
 
             final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(rawBearer, IDP_JOSE);
             accessTokenValidator.validate(accessToken);
-            checkScope(accessToken);
 
             if (!"SSO".equals(accessToken.getBP()))
                 throw JOSEErrorException.newInstance("The Token BP must be SSO");
@@ -117,11 +112,6 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             return asForm;
         else
             throw JOSEErrorException.newInstance();
-    }
-
-    private void checkScope(JOSEAccessToken accessToken) {
-        if (!CollectionUtils.isEqualCollection(accessToken.getScopes(), new HashSet<TokenScope>(singletonList(PERSON))))
-            throw JOSEErrorException.newInstance("The Token scopes list must be [PERSON]");
     }
 
     public String getFullURL(HttpServletRequest request) {

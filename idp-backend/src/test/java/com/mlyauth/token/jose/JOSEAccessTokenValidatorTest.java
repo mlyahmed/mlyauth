@@ -60,23 +60,9 @@ public class JOSEAccessTokenValidatorTest {
     }
 
     @Test(expected = InvalidTokenException.class)
-    public void when_the_scopes_list_is_null_then_error() {
-        JOSEAccessToken access = given_access_token();
-        access.setScopes(null);
-        validator.validate(access);
-    }
-
-    @Test(expected = InvalidTokenException.class)
     public void when_the_bp_is_null_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setBP(null);
-        validator.validate(access);
-    }
-
-    @Test(expected = InvalidTokenException.class)
-    public void when_the_state_is_null_then_error() {
-        JOSEAccessToken access = given_access_token();
-        access.setState(null);
         validator.validate(access);
     }
 
@@ -98,20 +84,6 @@ public class JOSEAccessTokenValidatorTest {
     public void when_the_target_url_is_not_valid_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setTargetURL(null);
-        validator.validate(access);
-    }
-
-    @Test(expected = InvalidTokenException.class)
-    public void when_the_delegator_is_not_valid_then_error() {
-        JOSEAccessToken access = given_access_token();
-        access.setDelegator(null);
-        validator.validate(access);
-    }
-
-    @Test(expected = InvalidTokenException.class)
-    public void when_the_delegate_is_not_valid_then_error() {
-        JOSEAccessToken access = given_access_token();
-        access.setDelegate(null);
         validator.validate(access);
     }
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="base/base">
+
+<head>
+    <title>Simulateur IDP</title>
+</head>
+
+<body>
+<div layout:fragment="tokenForm">
+    <form class="form-horizontal" action="#" th:action="@{/idp-navigation}" th:object="${token}" method="post">
+        <p class="col-md-12 h1 text-center">LinkASSU Simulator (<span th:text="${token.norm}"></span>)</p>
+
+        <div><hr /></div>
+
+        <input type="hidden" id="norm" name="norm" th:value="${token.norm}"/>
+        <div class="row col-md-12">
+            <div class='row'>
+                <div class='col-md-6'>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="id">Token ID:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="id" th:field="*{id}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="subject">Subject:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="subject"
+                                                     th:field="*{subject}"/></div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="bp">Business Process:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="bp" th:field="*{bp}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="issuer">Issuer:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="issuer" th:field="*{issuer}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="audience">Audience:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="audience"
+                                                     th:field="*{audience}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="targetURL">Target URL:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="targetURL"
+                                                     th:field="*{targetURL}"/></div>
+                    </div>
+                </div>
+                <div class='col-md-6'>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="verdict">Verdict:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="verdict"
+                                                     th:field="*{verdict}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="clientId">Client ID:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="clientId"
+                                                     th:field="*{clientId}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="clientProfile">Client Profile:</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="clientProfile"
+                                                     th:field="*{clientProfile}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="entityId">Entity ID (idPrestation):</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="entityId"
+                                                     th:field="*{entityId}"/></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="action">Action (S, FS, E, PR) :</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="action" th:field="*{action}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-4" for="application">Application:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="application" th:field="*{application}">
+                                <option value=""></option>
+                                <option value="LocalPolicy">Policy - Localhost</option>
+                                <option value="PolicySB">Policy - Sandbox</option>
+                                <option value="PolicyQA1">Policy - QA1</option>
+                                <option value="PolicyQA2">Policy - QA2</option>
+                                <option value="PolicyQA3">Policy - QA3</option>
+                                <option value="PolicyQA4">Policy - QA4</option>
+                                <option value="PolicyQA5">Policy - QA5</option>
+                                <option value="PolicySB10">Policy - Sandbox 10</option>
+                                <option value="PolicyQA11">Policy - QA11</option>
+                                <option value="PolicyQA12">Policy - QA12</option>
+                                <option value="PolicyQA13">Policy - QA13</option>
+                                <option value="PolicyQA14">Policy - QA14</option>
+                                <option value="PolicyQA15">Policy - QA15</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <hr />
+
+            <div class='row'>
+                <div class='col-md-12'>
+                    <div class="form-group row">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary">Navigate to</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
