@@ -1,0 +1,85 @@
+.jsonform-required > label:after {
+    content: ' *';
+    color: red;
+}
+
+.jsonform-hasrequired:after {
+    content: '* Required field';
+    display: block;
+    color: red;
+    padding-top: 1em;
+	margin-left: 25px;
+}
+
+.columns
+{
+    display: inline-block;
+    overflow: auto;    /* Overflow odredjuje sto ce biti sa contentom koji eventualno predje granice */
+    vertical-align: top;            
+}
+
+.floatLeft 
+{
+    float:left;            
+    margin:5px;
+}
+.stopLeft
+{
+    clear:both;
+}
+
+.expandable > legend:before {
+    content: '\25B8';
+    padding-right: 5px;
+}
+.expanded > legend:before {
+    content: '\25BE';
+}
+
+.control-label
+{
+    width: 200px;
+	display: inline-block;
+    text-align: left;
+	padding-left: 25px;    
+}
+.controls
+{            
+    display: inline-block;            
+}
+
+input[type=submit]
+{
+	margin-left: 90%;
+	padding: 15px 32px;
+	font-size: 16px;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.successfullResultStatus
+{
+	color: green;
+}
+.invalidResultStatus
+{
+	color: red;
+}
+
+.waitingSpinner {
+    margin: auto;
+    width: 50%;
+}
+
+.driversColumn{
+	padding-left: 40px;
+}

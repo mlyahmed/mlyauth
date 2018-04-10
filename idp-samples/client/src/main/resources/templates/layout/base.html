@@ -63,7 +63,28 @@
                 </div>
             </div>
             <div class="col-sm-9 content">
-                <div layout:fragment="wsForm"></div>
+                <form id="ws-form"></form>
+                <div id="responseModal" style="display:none" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="padding:0px">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 id="modalTitle" class="modal-title"></h4>
+                            </div>
+                            <div class="modal-body" id="responseBody">
+                                <div id="errorBlock" style="display: none">
+                                    <table id="errors_table"></table>
+                                    <p id="errorText" ></p>
+                                </div>
+                                <div id="success" style="display: none" class="waitingSpinner"><i class="fa fa-check" aria-hidden="true" style="font-size:150px;color:green"></i></div>
+                                <div id="waitingSpinner" class="waitingSpinner"><i class="fa fa-spinner fa-spin" style="font-size:150px;color:green"></i></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -71,11 +92,19 @@
 
 
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/layout.css}" />
+
 <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <script th:src="@{/assets/js/layout.js}"></script>
-<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
-<link rel="stylesheet" th:href="@{/assets/css/layout.css}" />
+<script type="application/javascript"   th:src="@{/assets/js/underscore.js}"></script>
+<script type="application/javascript"   th:src="@{/assets/js/jsv.js}"></script>
+<script type="application/javascript"   th:src="@{/assets/js/jsonform.js}"></script>
+<script type="application/javascript"   th:src="@{/assets/js/json-form-base.js}"></script>
+
+<div layout:fragment="wsFormInclude"></div>
+
 
 <script>
     $(document).ready(function () {
