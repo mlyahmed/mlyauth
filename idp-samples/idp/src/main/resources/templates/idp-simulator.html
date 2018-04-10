@@ -11,11 +11,13 @@
 <body>
 <div layout:fragment="tokenForm">
     <form class="form-horizontal" action="#" th:action="@{/idp-navigation}" th:object="${token}" method="post">
-        <p class="col-md-12 h1 text-center">LinkASSU Simulator (<span th:text="${token.norm}"></span>)</p>
+        <div class="row">
+            <p class="col-md-12 h1 text-center">LinkASSU Simulator (<span th:text="${token.norm}"></span>)</p>
+            <input type="hidden" id="norm" name="norm" th:value="${token.norm}"/>
+        </div>
 
-        <div><hr /></div>
+        <hr />
 
-        <input type="hidden" id="norm" name="norm" th:value="${token.norm}"/>
         <div class="row col-md-12">
             <div class='row'>
                 <div class='col-md-6'>
