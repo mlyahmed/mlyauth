@@ -232,21 +232,11 @@ loadSGIWSForm = function () {
 		{ 
             clearResponseModal();
             $('#responseModal').modal();
-            $.postJSON(getSGIWSUri(), JSON.stringify(values), onSGIWSResponse, onSGIWSError);            
+            callWS(errors, values);
 		}
 	});
 	
-	$.postJSON = function(url, data, callback, errorInfo) {
-		return jQuery.ajax({
-			'type': 'POST',
-			'url': url,
-			'contentType': 'application/json',
-			'data': data,
-			'dataType': 'json',
-			'success': callback,
-			'error' : errorInfo
-		});	
-	};
+
 	
 	$(".icon-plus-sign").html("<strong>+</strong>"); 
 	$(".icon-minus-sign").html("<strong>-</strong>");

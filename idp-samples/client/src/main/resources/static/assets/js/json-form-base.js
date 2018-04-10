@@ -1,3 +1,44 @@
+$.postJson2Text = function(url, data, callback, errorInfo) {
+    return jQuery.ajax({
+        'type': 'POST',
+        'url': url,
+        'contentType': 'application/json',
+        'data': data,
+        'dataType': 'json',
+        'async': false,
+        'headers': {
+            "Authorization": "Basic " + btoa("gestF:gestF")
+        },
+        'success': callback,
+        'error' : errorInfo
+    });
+};
+
+$.postJson2Json = function(url, data, callback, errorInfo) {
+    return jQuery.ajax({
+        'type': 'POST',
+        'url': url,
+        crossDomain: false,
+        crossOrigin: false,
+        'contentType': 'application/json',
+        'data': data,
+        'dataType': 'json',
+        'async': true,
+        'beforeSend': function (xhr){
+            xhr.setRequestHeader('Authorization', 'Basic ' + btoa('gestF:gestF'));
+        },
+        'success': callback,
+        'error' : errorInfo
+    });
+};
+
+
+
+
+callWS = function(errors, values){
+    $.postJson2Json(getSGIWSUri(), JSON.stringify(values), onSGIWSResponse, onSGIWSError);
+}
+
 onSGIWSError = function(error){
     $("#success").css("display", "none");
 	$("#errors_table").html("");

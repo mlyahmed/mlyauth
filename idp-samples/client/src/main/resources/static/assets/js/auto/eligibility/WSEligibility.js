@@ -1,7 +1,7 @@
 $("#modalTitle").text("Eligibility");
 
 getSGIWSUri = function(){
-    return "http://localhost:8889/primainsure/A/P/I/auto/eligibility";
+    return "https://uat-sgi-policy01.prima-solutions.com/primainsure/A/P/I/auto/eligibility";
 };
 
 onSGIWSResponse = function(returnVal){
