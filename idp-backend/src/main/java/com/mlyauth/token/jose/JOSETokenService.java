@@ -85,6 +85,7 @@ public class JOSETokenService {
         accessToken.setStamp(idGenerator.generateId());
         accessToken.setSubject(refresh.getSubject());
         accessToken.setIssuer(localEntityId);
+        accessToken.setDelegator(refresh.getDelegator());
         accessToken.setAudience(refresh.getAudience());
         accessToken.setVerdict(TokenVerdict.SUCCESS);
         accessToken.cypher();

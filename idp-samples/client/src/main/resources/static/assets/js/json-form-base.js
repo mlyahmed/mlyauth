@@ -1,34 +1,20 @@
-$.postJson2Text = function(url, data, callback, errorInfo) {
-    return jQuery.ajax({
-        'type': 'POST',
-        'url': url,
-        'contentType': 'application/json',
-        'data': data,
-        'dataType': 'json',
-        'async': false,
-        'headers': {
-            "Authorization": "Basic " + btoa("gestF:gestF")
-        },
-        'success': callback,
-        'error' : errorInfo
-    });
-};
+function getBasicAuthorization() {
+    return 'Basic ' + btoa('gestF:gestF');
+}
 
-$.postJson2Json = function(url, data, callback, errorInfo) {
+$.postJson2Json = function(url, data, callback, errorInfo, authorization) {
     return jQuery.ajax({
-        'type': 'POST',
-        'url': url,
-        crossDomain: false,
-        crossOrigin: false,
-        'contentType': 'application/json',
-        'data': data,
-        'dataType': 'json',
-        'async': true,
-        'beforeSend': function (xhr){
-            xhr.setRequestHeader('Authorization', 'Basic ' + btoa('gestF:gestF'));
+        type: 'POST',
+        url: url,
+        data: data,
+        dataType : 'json',   //you may use jsonp for cross origin request
+        crossDomain:true,
+        headers: {
+            'Content-Type':'application/json',
+            'Authorization' : authorization
         },
-        'success': callback,
-        'error' : errorInfo
+        success: callback,
+        error : errorInfo
     });
 };
 
@@ -36,13 +22,18 @@ $.postJson2Json = function(url, data, callback, errorInfo) {
 
 
 callWS = function(errors, values){
-    $.postJson2Json(getSGIWSUri(), JSON.stringify(values), onSGIWSResponse, onSGIWSError);
+    refreshAccess(function(token){
+        var auth = 'Bearer '+token.serialized;
+        $.postJson2Json(getSGIWSUri(), JSON.stringify(values), onSGIWSResponse, onSGIWSError, auth);
+    }, function(error){
+        onSGIWSError(error);
+    });
 }
 
 onSGIWSError = function(error){
     $("#success").css("display", "none");
 	$("#errors_table").html("");
-
+	console.info(error);
 	if(error.status == 403){
         $("#errorText").html("Vous n'avez pas le droit d'accès à cette resource.");
         errorBlock.style.display = "block";

@@ -17,8 +17,9 @@ public class SampleClientJOSETokenInitializer {
         SampleClientToken token = new SampleClientToken();
         token.setId(refreshId);
         token.setIssuer(localEntityId);
-        token.setAudience("primainsureIDP");
+        token.setAudience("local-policy");
         token.setDelegate(localEntityId);
+        token.setDelegator("gestF");
         token.setNorm("JOSE");
         return token;
     }

@@ -63,6 +63,7 @@ public class SampleClientTokenService {
                     .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
                     .notBeforeTime(new Date())
                     .issueTime(new Date())
+                    .claim("delegator", token.getDelegator())
                     .jwtID(token.getId());
 
             final PublicKey publicKey = keyManager.getCertificate("sgi.prima-solutions.com").getPublicKey();

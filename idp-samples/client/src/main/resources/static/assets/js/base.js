@@ -34,7 +34,7 @@ function toDate(str){
     return new Date(year, month-1, day, hour, minute, second);
 }
 
-function refreshAccess() {
+function refreshAccess(onseccuss, onerror) {
     resetCountDown();
     $.ajax({
         type: "POST",
@@ -46,12 +46,14 @@ function refreshAccess() {
         timeout: 600000,
         success: function (data) {
             countdown(toDate(data.expiryTime));
-            document.getElementById("tokenCost").innerHTML = "Took "+ data.elapsed + "ms"
+            document.getElementById("tokenCost").innerHTML = "Took "+ data.elapsed + "ms";
             console.log("SUCCESS : ", data);
+            if(onseccuss) onseccuss(data);
         },
         error: function (e) {
             $('#feedback').html(e.responseText);
             console.log("ERROR : ", e);
+            if(onerror) onerror(e);
         }
     });
 }
