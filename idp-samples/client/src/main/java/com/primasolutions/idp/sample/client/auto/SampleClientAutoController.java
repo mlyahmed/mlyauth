@@ -26,4 +26,11 @@ public class SampleClientAutoController {
         return "auto/auto-ws-eligibility";
     }
 
+
+    @GetMapping("/price")
+    public String pricing(Model model) {
+        model.addAttribute("token", initializer.newToken());
+        return "auto/auto-ws-price";
+    }
+
 }

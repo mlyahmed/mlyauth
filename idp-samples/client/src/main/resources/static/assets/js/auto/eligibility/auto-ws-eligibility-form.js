@@ -243,7 +243,7 @@ loadSGIWSForm = function () {
 		{ 
             clearResponseModal();
             $('#responseModal').modal();
-            callWS(errors, values);
+            submitForm(errors, values);
 		}
 	});
 	

@@ -1,0 +1,128 @@
+.jsonform-required > label:after {
+    content: ' *';
+    color: red;
+}
+
+.jsonform-hasrequired:after {
+    content: '* Required field';
+    display: block;
+    color: red;
+    padding-top: 1em;
+    margin-left: 25px;
+}
+
+.columns {
+    display: inline-block;
+    overflow: auto;    /* Overflow odredjuje sto ce biti sa contentom koji eventualno predje granice */
+    vertical-align: top;
+}
+
+.columnsWithMargin {
+    display: inline-block;
+    overflow: auto;    /* Overflow odredjuje sto ce biti sa contentom koji eventualno predje granice */
+    vertical-align: top;
+    margin-right:25%;
+}
+
+.floatLeft {
+    float:left;
+    margin:5px;
+}
+
+.stopLeft {
+    clear:both;
+}
+
+.expandable > legend:before {
+    content: '\25B8';
+    padding-right: 5px;
+
+
+.expanded > legend:before {
+    content: '\25BE';
+}
+
+.expandable > legend_secondary:before {
+    content: '\25B8';
+    padding-right: 5px;
+}
+
+.formContainer .control-label {
+    width: 250px;
+    display: inline-block;
+    text-align: left;
+    padding-left: 25px;
+    font-weight: normal;
+}
+
+.controls {
+    display: inline-block;
+}
+
+input[type=submit], button {
+    margin-left: 90%;
+    padding: 15px 32px;
+    font-size: 16px;
+}
+
+.successfullResultStatus {
+    color: green;
+}
+.invalidResultStatus {
+    color: red;
+}
+
+.waitingSpinner {
+    margin: auto;
+    width: 50%;
+}
+
+#responseModal {
+    min-height: 70%;
+    max-height: 100%;
+    max-width: 100%;
+    margin-top: -25% !important;
+    margin-left: -45% !important;
+}
+
+#responseModal .modal-body {
+    max-width: 100%;
+    min-height: 530px;
+    overflow:auto;
+}
+
+tr:nth-of-type(even) {
+    background-color:#ccc;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+}
+
+.cotisationsDiv {
+    font-size:18px;
+    display:none;
+    margin: 15px 30px 0px 10px;
+}
+
+legend_secondary {
+    display: block;
+    width: 50%";
+    padding: 0;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 40px;
+    color: #333333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+p {
+    font-size : 25px;
+}
+
+.pushRight{
+    padding-left: 40px;
+}

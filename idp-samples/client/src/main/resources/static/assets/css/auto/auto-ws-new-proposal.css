@@ -1,0 +1,86 @@
+#ws-form .jsonform-required > label:after {
+    content: ' *';
+    color: red;
+}
+
+#ws-form .jsonform-hasrequired:after {
+    content: '* Required field';
+    display: block;
+    color: red;
+    padding-top: 1em;
+    margin-left: 25px;
+}
+
+#ws-form .columns
+{
+    display: inline-block;
+    overflow: auto;    /* Overflow odredjuje sto ce biti sa contentom koji eventualno predje granice */
+    vertical-align: top;
+}
+
+#ws-form .floatLeft
+{
+    float:left;
+    margin:5px;
+}
+
+#ws-form .stopLeft
+{
+    clear:both;
+}
+
+#ws-form .expandable > legend:before {
+    content: '\25B8';
+    padding-right: 5px;
+}
+
+#ws-form .expanded > legend:before {
+    content: '\25BE';
+}
+
+#ws-form .control-label
+{
+    width: 200px;
+    display: inline-block;
+    text-align: left;
+    padding-left: 25px;
+    font-weight: normal;
+}
+
+#ws-form .controls
+{
+    display: inline-block;
+}
+
+#ws-form input[type=submit]
+{
+    margin-left: 90%;
+    padding: 15px 32px;
+    font-size: 16px;
+}
+
+#ws-form .button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+#ws-form .successfullResultStatus
+{
+    color: green;
+}
+
+#ws-form .invalidResultStatus
+{
+    color: red;
+}
+
+#ws-form .waitingSpinner {
+    margin: auto;
+    width: 50%;
+}

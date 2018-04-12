@@ -14,7 +14,7 @@ $.postJson2Json = function(url, data, callback, errorInfo, authorization) {
     });
 };
 
-callWS = function(errors, values){
+submitForm = function(errors, values){
     refreshAccess(function(token){
         var auth = 'Bearer ' + token.serialized;
         $.postJson2Json(getSGIWSUri(), JSON.stringify(values), onSGIWSResponse, onSGIWSError, auth);
@@ -29,6 +29,9 @@ onSGIWSError = function(error){
 	console.info(error);
 	if(error.status == 403){
         $("#errorText").html("Vous n'avez pas le droit d'accès à cette resource.");
+        errorBlock.style.display = "block";
+    } else if(error.status == 401){
+        $("#errorText").html("Erreur d'authentification. Merci de revérifier les accès.");
         errorBlock.style.display = "block";
     } else if(error.responseJSON){
     	//TODO make a distinction between error messages that are displayed in web services, and the ones displayed in endorsement tunnel
