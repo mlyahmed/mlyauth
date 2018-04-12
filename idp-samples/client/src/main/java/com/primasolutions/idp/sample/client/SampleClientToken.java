@@ -90,8 +90,9 @@ public class SampleClientToken {
         return delegator;
     }
 
-    public void setDelegator(String delegator) {
+    public SampleClientToken setDelegator(String delegator) {
         this.delegator = delegator;
+        return this;
     }
 
     public String getDelegate() {

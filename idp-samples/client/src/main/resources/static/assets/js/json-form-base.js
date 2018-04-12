@@ -1,7 +1,3 @@
-function getBasicAuthorization() {
-    return 'Basic ' + btoa('gestF:gestF');
-}
-
 $.postJson2Json = function(url, data, callback, errorInfo, authorization) {
     return jQuery.ajax({
         type: 'POST',
@@ -18,12 +14,9 @@ $.postJson2Json = function(url, data, callback, errorInfo, authorization) {
     });
 };
 
-
-
-
 callWS = function(errors, values){
     refreshAccess(function(token){
-        var auth = 'Bearer '+token.serialized;
+        var auth = 'Bearer ' + token.serialized;
         $.postJson2Json(getSGIWSUri(), JSON.stringify(values), onSGIWSResponse, onSGIWSError, auth);
     }, function(error){
         onSGIWSError(error);
@@ -40,9 +33,14 @@ onSGIWSError = function(error){
     } else if(error.responseJSON){
     	//TODO make a distinction between error messages that are displayed in web services, and the ones displayed in endorsement tunnel
         $.each(error.responseJSON, function(i, err) {
-            var $tr = $('<tr>').append(
-                $('<td>').html("<b> " + err.code+ "</b></br> " + err.message + "<hr>")   
-            ).appendTo('#errors_table');
+
+            if(err.code){
+                var $tr = $('<tr>').append($('<td>').html("<b> " + err.code+ "</b></br> " + err.message + "<hr>")).appendTo('#errors_table');
+            } else {
+                var $tr = $('<tr>').append($('<td>').html(err + "</br>")).appendTo('#errors_table');
+            }
+
+
             console.log($tr.wrap('<p>').html());
         });
         errorBlock.style.display = "block";

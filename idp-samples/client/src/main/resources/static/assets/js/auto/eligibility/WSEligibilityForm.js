@@ -178,45 +178,56 @@ loadSGIWSForm = function () {
 						"htmlClass": "columns",
 						"items": [
 							{
-							  "type": "fieldset",              
-							  "htmlClass": "columns",
-							  "title": "Informations Souscripteur",
-							  "items": [ "contractor" ,{
-								  "type": "fieldset",
-								  "title": "Informations Contrat",
-								  "items": [ "insuredObjects[0].isCurrentlyInsured",
-											"insuredObjects[0].isInsuredMoreThanAYear",
-											"inForcePolicy.subscriptionDate","effectiveDate", "productId"
-											]
-								}]
-							},							
-							{
-								
-								"type": "fieldset",                
+								"type": "fieldset",
 								"htmlClass": "columns",
-								"title": "Informations Véhicule",
-									  "items": [ "insuredObjects[0].firstCirculationDate",
-												"insuredObjects[0].car",
-												"insuredObjects[0].overRisk",
-												"insuredObjects[0].use",
-												"insuredObjects[0].parkingInseeCode",
-												"insuredObjects[0].parkingType"
-												]
-							}
+								"title": "Informations Souscripteur",
+								"items": ["contractor"]
+							},
+                            {
+								"type": "fieldset",
+								"htmlClass": "columns pushRight",
+								"title": "Informations Contrat",
+								"items": [
+									"insuredObjects[0].isCurrentlyInsured",
+									"insuredObjects[0].isInsuredMoreThanAYear",
+									"inForcePolicy.subscriptionDate",
+									"effectiveDate",
+									"productId"
+								]
+                            }
 						]
 					},					
 					{
-						"type": "array",
-                        "htmlClass": "columns driversColumn",
-                        "items": 
-                        {	
-                        	"type" : "array",
-                        	"items" : [{
-                        		"title" : "Conducteur",
-                        		"type" : "fieldset",
-                        		"key" : "insuredObjects[0].drivers[]"
-                        	}]
-                        }
+                        "type": "fieldset",
+                        "notitle": "true",
+                        "htmlClass": "columns",
+                        "items": [
+                            {
+                                "type": "fieldset",
+                                "htmlClass": "columns",
+                                "title": "Informations Véhicule",
+                                "items": [ "insuredObjects[0].firstCirculationDate",
+                                    "insuredObjects[0].car",
+                                    "insuredObjects[0].overRisk",
+                                    "insuredObjects[0].use",
+                                    "insuredObjects[0].parkingInseeCode",
+                                    "insuredObjects[0].parkingType"
+                                ]
+                            },
+                            {
+								"type": "array",
+								"htmlClass": "columns pushRight",
+								"items":
+								{
+									"type" : "array",
+									"items" : [{
+										"title" : "Conducteur",
+										"type" : "fieldset",
+										"key" : "insuredObjects[0].drivers[]"
+									}]
+								}
+                            }
+                        ]
 					}
 				]
 			},

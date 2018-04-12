@@ -36,11 +36,18 @@ function toDate(str){
 
 function refreshAccess(onseccuss, onerror) {
     resetCountDown();
+
+    // PREPARE FORM DATA
+    var token = {
+        "delegator" : $("#delegator").val()
+    }
+
+
     $.ajax({
         type: "POST",
         contentType: "application/json",
         url: "/token/refreshAccess",
-        data: JSON.stringify("{}"),
+        data: JSON.stringify(token),
         dataType: 'json',
         cache: false,
         timeout: 600000,
