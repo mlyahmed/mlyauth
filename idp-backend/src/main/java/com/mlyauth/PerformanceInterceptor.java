@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -16,6 +17,9 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 @Aspect
 public class PerformanceInterceptor {
     private static Logger logger = LoggerFactory.getLogger(PerformanceInterceptor.class);
+
+    @Value("${performance.trace}")
+    private Boolean trace;
 
     @Pointcut("execution(* com.mlyauth.token..*(..))")
     public void tokens() { }
@@ -44,7 +48,7 @@ public class PerformanceInterceptor {
             return pjp.proceed();
         } finally {
             final long elapsed = started.elapsed(MILLISECONDS);
-            if (elapsed > 0)
+            if (trace && elapsed > 0)
                 logger.info("Method " + pjp.toLongString() + " took " + elapsed + "ms.");
         }
 

@@ -4,7 +4,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validateNewPerson
+      ddl-auto: none
       use-new-id-generator-mappings: true
 
 idp:
@@ -24,6 +24,10 @@ server:
   error:
     whitelabel:
       enabled: true
+
+
+performance:
+  trace: false
 
 logging:
   file: logs/mlyauth.log

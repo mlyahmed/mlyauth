@@ -12,6 +12,7 @@ public class ApplicationAspectAttribute {
     private ApplicationAspectAttributeId id;
 
     @Column(name = "ATTRIBUTE_VALUE", nullable = false, unique = true)
+    @Lob
     private String value;
 
     public static ApplicationAspectAttribute newInstance() {

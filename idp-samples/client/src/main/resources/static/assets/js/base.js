@@ -58,7 +58,7 @@ function refreshAccess(onseccuss, onerror) {
             if(onseccuss) onseccuss(data);
         },
         error: function (e) {
-            $('#feedback').html(e.responseText);
+            document.getElementById("expirationCounter").innerHTML = "Erreur !";
             console.log("ERROR : ", e);
             if(onerror) onerror(e);
         }
