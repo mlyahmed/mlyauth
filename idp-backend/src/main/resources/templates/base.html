@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Mes applications Prima</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/home.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/prima-common-layout.css}" />
+
+    <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script>
+        $(function () {
+            $('#search').on('keyup', function () {
+                var pattern = $(this).val();
+                $('.items-collection .items').hide();
+                $('.items-collection .items').filter(function () {
+                    return $(this).text().match(new RegExp(pattern, 'i'));
+                }).show();
+            });
+        });
+
+        function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+
+    </script>
+</head>
+<body class="tundra loginBackgroundColor layout-login">
+
+<div class="container loginContainer">
+    <div id="headerLogo" class="header">
+        <div class="logo">
+            <div class="logoLayer">
+                <img id="logoPicto" th:src="@{/assets/images/PictoPrimaInsure.png}" />
+                <img id="logoLogo" th:src="@{/assets/images/LogoPrimaInsure.png}" />
+            </div>
+        </div>
+        <div class="align-none"></div>
+    </div>
+    <div class="content">
+
+        <div layout:fragment="content"></div>
+
+    </div>
+</div>
+
+</body>
+</html>
