@@ -33,4 +33,10 @@ public class SampleClientAutoController {
         return "auto/auto-ws-price";
     }
 
+    @GetMapping("/proposal/_new")
+    public String newProposal(Model model) {
+        model.addAttribute("token", initializer.newToken());
+        return "auto/auto-ws-new-proposal";
+    }
+
 }
