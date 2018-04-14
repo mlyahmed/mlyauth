@@ -185,7 +185,7 @@ loadSGIWSForm = function () {
 							},
                             {
 								"type": "fieldset",
-								"htmlClass": "columns pushRight",
+								"htmlClass": "columns pushRight pushLeft",
 								"title": "Informations Contrat",
 								"items": [
 									"insuredObjects[0].isCurrentlyInsured",
@@ -216,7 +216,7 @@ loadSGIWSForm = function () {
                             },
                             {
 								"type": "array",
-								"htmlClass": "columns pushRight",
+								"htmlClass": "columns",
 								"items":
 								{
 									"type" : "array",
