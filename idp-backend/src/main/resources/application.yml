@@ -50,4 +50,4 @@ management:
 
 liquibase:
   change-log: classpath:database/db-changelog.yaml
-  drop-first: true
+  drop-first: false

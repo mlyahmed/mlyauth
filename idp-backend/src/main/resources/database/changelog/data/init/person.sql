@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset mlyahmed:1 runOnChange:false
+--changeset mlyahmed:1 runOnChange:true
 DELETE FROM PERSON WHERE ID IN (0);
 DELETE FROM AUTHENTICATION_INFO WHERE ID IN (0);
 DELETE FROM PERSON_PROFILE WHERE PERSON_ID IN (0);
