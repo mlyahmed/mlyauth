@@ -468,7 +468,7 @@ loadSGIWSNewPropoalForm = function () {
                     {
                         "type": "fieldset",
                         "notitle": "true",
-                        "htmlClass": "columns",
+                        "htmlClass": "columns pushRight",
                         "items": [
                             {
                                 "type": "fieldset",
@@ -489,7 +489,7 @@ loadSGIWSNewPropoalForm = function () {
                     {
                         "type": "fieldset",
                         "notitle": "true",
-                        "htmlClass": "columns",
+                        "htmlClass": "columns pushRight",
                         "items": [
                             {
                                 "type": "fieldset",
