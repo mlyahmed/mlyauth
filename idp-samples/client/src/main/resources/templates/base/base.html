@@ -3,6 +3,18 @@
 
 <head>
 
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/base-json-form.css}" />
+
+    <script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script type="application/javascript"   th:src="@{/assets/js/base.js}"></script>
+    <script type="application/javascript"   th:src="@{/assets/js/underscore.js}"></script>
+    <script type="application/javascript"   th:src="@{/assets/js/jsv.js}"></script>
+    <script type="application/javascript"   th:src="@{/assets/js/jsonform.js}"></script>
+    <script type="application/javascript"   th:src="@{/assets/js/json-form-base.js}"></script>
 
 </head>
 
@@ -23,22 +35,7 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
                     <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Choisissez un produit<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/auto}" >Automobile/Carapass</a></li>
-                            </ul>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Choisissez une instance <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Sandbox</a></li>
-                                <li><a href="#">QA1</a></li>
-                            </ul>
-                        </li>
                     </ul>
 
                     <form class="navbar-form navbar-right" id="refresh-access-form" role="search" th:action="@{/refreshAccess}" th:object="${token}">
@@ -49,8 +46,8 @@
                         </div>
                         <button type="submit" class="btn btn-default">Refresh Token</button>
                     </form>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+                </div>
+            </div>
         </nav>
 
         <div class="row">
@@ -63,6 +60,7 @@
             </div>
             <div class="col-sm-9 content">
                 <form id="ws-form"></form>
+
                 <div id="responseModal" style="display:none" class="modal fade" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content" style="padding:0px">
@@ -90,17 +88,6 @@
 </body>
 
 
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
-<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
-<link rel="stylesheet" th:href="@{/assets/css/layout.css}" />
-
-<script th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-<script th:src="@{/assets/js/base.js}"></script>
-<script type="application/javascript"   th:src="@{/assets/js/underscore.js}"></script>
-<script type="application/javascript"   th:src="@{/assets/js/jsv.js}"></script>
-<script type="application/javascript"   th:src="@{/assets/js/jsonform.js}"></script>
-<script type="application/javascript"   th:src="@{/assets/js/json-form-base.js}"></script>
 
 <div layout:fragment="wsFormInclude"></div>
 

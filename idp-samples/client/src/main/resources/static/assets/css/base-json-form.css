@@ -94,3 +94,7 @@ input[type=submit]
 .pushRight{
 	padding-left: 40px;
 }
+
+.pushLeft{
+    padding-right: 40px;
+}

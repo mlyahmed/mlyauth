@@ -2,7 +2,7 @@
 /**
  * @fileoverview Core of the JSON Form client-side library.
  *
- * Generates an HTML form from a structured data model and a layout description.
+ * Generates an HTML form from a structured data model and a base description.
  *
  * The library may also validate inputs entered by the user against the data model
  * upon form submission and create the structured data object initialized with the
@@ -1606,7 +1606,7 @@ var applyArrayPath = function (key, arrayPath) {
  *
  * The "initial" value is defined as:
  * 1. the previously submitted value if already submitted
- * 2. the default value defined in the layout of the form
+ * 2. the default value defined in the base of the form
  * 3. the default value defined in the schema
  *
  * The "value" returned is intended for rendering purpose,
@@ -1755,7 +1755,7 @@ var formNode = function () {
   this.el = null;
 
   /**
-   * Link to the form element that describes the node's layout
+   * Link to the form element that describes the node's base
    * (note the form element is shared among nodes in arrays)
    */
   this.formElement = null;
@@ -2965,7 +2965,7 @@ formTree.prototype.initialize = function (formDesc) {
     };
   }
 
-  // Ensure layout is set
+  // Ensure base is set
   this.formDesc.form = this.formDesc.form || [
     '*',
     {
@@ -3007,7 +3007,7 @@ formTree.prototype.initialize = function (formDesc) {
  */
 formTree.prototype.buildTree = function () {
   // Parse and generate the form structure based on the elements encountered:
-  // - '*' means "generate all possible fields using default layout"
+  // - '*' means "generate all possible fields using default base"
   // - a key reference to target a specific data element
   // - a more complex object to generate specific form sections
   _.each(this.formDesc.form, function (formElement) {
@@ -3031,7 +3031,7 @@ formTree.prototype.buildTree = function () {
 
 
 /**
- * Builds the internal form tree representation from the requested layout.
+ * Builds the internal form tree representation from the requested base.
  *
  * The function is recursive, generating the node children as necessary.
  * The function extracts the values from the previously submitted values
@@ -3530,7 +3530,7 @@ $.fn.jsonFormErrors = function(errors, options) {
  * The function handles the following properties for the JSON Form object it
  * receives as parameter:
  * - schema (required): The JSON Schema that describes the form to render
- * - form: The options form layout description, overrides default layout
+ * - form: The options form base description, overrides default base
  * - prefix: String to use to prefix computed IDs. Default is an empty string.
  *  Use this option if JSON Form is used multiple times in an application with
  *  schemas that have overlapping parameter names to avoid running into multiple

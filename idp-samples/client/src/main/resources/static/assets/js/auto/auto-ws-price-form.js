@@ -189,11 +189,13 @@ loadSGIWSPriceForm = function () {
                         "items": [
                             {
                                 "type": "fieldset",
+                                "htmlClass": "columns",
                                 "title": "Informations Souscripteur",
                                 "items": [ "contractor" ]
                             },
                             {
                                 "type" : "fieldset",
+                                "htmlClass": "columns pushRight pushLeft",
                                 "title" : "Informations Contrat",
                                 "items" : [
                                     "effectiveDate"
@@ -204,31 +206,32 @@ loadSGIWSPriceForm = function () {
                     {
                         "type": "fieldset",
                         "notitle": "true",
-                        "htmlClass": "columns, pushRight",
+                        "htmlClass": "columns",
                         "items": [
                             {
                                 "type": "fieldset",
+                                "htmlClass": "columns",
                                 "title": "Informations Véhicule",
                                 "items": [
                                     "insuredObjects[0].firstCirculationDate",
                                     "insuredObjects[0].car",
                                     "insuredObjects[0].overRisk",
                                     "insuredObjects[0].use", "insuredObjects[0].parkingInseeCode", "insuredObjects[0].parkingType" ]
+                            },
+                            {
+                                "type": "array",
+                                "htmlClass": "columns",
+                                "items":
+                                    {
+                                        "type" : "array",
+                                        "items" : [{
+                                            "title" : "Informations Conducteur",
+                                            "type" : "fieldset",
+                                            "key" : "insuredObjects[0].drivers[]"
+                                        }]
+                                    }
                             }
                         ]
-                    },
-                    {
-                        "type": "array",
-                        "htmlClass": "columns",
-                        "items":
-                            {
-                                "type" : "array",
-                                "items" : [{
-                                    "title" : "Informations Conducteur",
-                                    "type" : "fieldset",
-                                    "key" : "insuredObjects[0].drivers[]"
-                                }]
-                            }
                     }
                 ]
             },
