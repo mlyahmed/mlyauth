@@ -2,7 +2,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/mlyauth?useSSL=false
         username: root
-        password: ENC(xUvl6VVZrLXtIe7ir7qamg==)
+        password: ENC(ROkvfzpDU4et56FCHVCz5MQtC7VDV38KRpnUbQDzljU=)
         driver-class-name: com.mysql.jdbc.Driver
         testWhileIdle: true
         validationQuery: SELECT 1

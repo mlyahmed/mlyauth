@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class AbstractIntegrationTest {
 
+    static {
+        System.setProperty("startup.passphrase", "cM7g+:S*DY7m>c.D3{8jHtr6tH%^L~3t");
+    }
+
     public final static String MASTER_EMAIL = "ahmed.elidrissi.attach@gmail.com";
     public final static String MASTER_PASSWORD = "root";
     public final static String MASTER_EXTERNAL_ID = "gestF";
