@@ -21,7 +21,7 @@ cl:
   jose:
     entityId: sample-client
     refreshId: a9b54c74-ef02-4a9b-bff7-0445972e73e6
-    peerRefreshEndpoint: http://localhost:16666/token/jose/access
+    peerRefreshEndpoint: http://idp-backend.prima-idp.5186179a.svc.dockerapp.io:8998/token/jose/access
     login: cl.sample-client
     password: Br5NUEuDdQpyMTs
 

@@ -1,11 +1,12 @@
 spring:
     jpa:
       database: H2
+      database-platform: org.hibernate.dialect.H2Dialect
     datasource:
       generate-unique-name: true
-      url: jdbc:h2:file:./h2/primaIDP
+      url: jdbc:h2:file:./h2/primaIDP;CIPHER=AES
       username: sa
-      password:
+      password: encrypted sa
       driver-class-name: org.h2.Driver
     h2:
       console:
