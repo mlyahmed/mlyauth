@@ -1,15 +1,15 @@
 package com.mlyauth.domain;
 
 import com.google.common.collect.Sets;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
 @Table(name="PERSON")
-public class Person  implements Serializable {
+public class Person  implements EncryptedDomain {
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -21,6 +21,7 @@ public class Person  implements Serializable {
     private String externalId;
 
     @Column(name = "FIRSTNAME", nullable = false)
+    @Type(type = ENCRYPTED_STRING)
     private String firstname;
 
     @Column(name = "LASTNAME", nullable = false)

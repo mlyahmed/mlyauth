@@ -35,8 +35,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.ulisesbocchio:jasypt-spring-boot-starter:2.0.0'
     compile("javax.inject:javax.inject:1")
+    compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.0.0")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-jdbc")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -56,6 +56,7 @@ dependencies {
     compile('org.webjars:bootstrap:3.3.7')
     compile('org.webjars:jquery:2.2.1')
     compile('org.webjars:font-awesome:5.0.6')
+    compile("org.jasypt:jasypt-hibernate4:1.9.2")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")

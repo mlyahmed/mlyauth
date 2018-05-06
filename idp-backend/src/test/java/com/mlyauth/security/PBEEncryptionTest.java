@@ -14,7 +14,7 @@ public class PBEEncryptionTest extends AbstractIntegrationTest {
 
     @Test
     public void values_are_encrypted(){
-        final String encrypt = jasyptStringEncryptor.encrypt("root");
+        final String encrypt = jasyptStringEncryptor.encrypt("Fatima");
         Assert.assertThat(encrypt, Matchers.notNullValue());
     }
 

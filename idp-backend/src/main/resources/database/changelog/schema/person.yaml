@@ -25,12 +25,12 @@ databaseChangeLog:
                       nullable: false
               - column:
                   name: FIRSTNAME
-                  type: varchar(255)
+                  type: varchar(300)
                   constraints:
                       nullable: false
               - column:
                   name: LASTNAME
-                  type: varchar(255)
+                  type: varchar(300)
                   constraints:
                       nullable: false
               - column:
@@ -40,7 +40,7 @@ databaseChangeLog:
                       nullable: false
               - column:
                   name: EMAIL
-                  type: varchar(250)
+                  type: varchar(300)
                   constraints:
                       nullable: false
                       unique: true

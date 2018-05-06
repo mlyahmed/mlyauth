@@ -1,8 +1,8 @@
 package com.mlyauth;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class AppConfig implements TransactionManagementConfigurer {
     }
 
     @Bean(name="jasyptStringEncryptor")
-    static public StringEncryptor jasyptStringEncryptor() {
+    public StandardPBEStringEncryptor jasyptStringEncryptor() {
         Security.addProvider(new BouncyCastleProvider());
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword(System.getProperty("startup.passphrase"));
@@ -42,12 +42,19 @@ public class AppConfig implements TransactionManagementConfigurer {
         return encryptor;
     }
 
-
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
+    }
+
+    @Bean
+    public HibernatePBEStringEncryptor hibernateStringEncryptor(){
+        HibernatePBEStringEncryptor encryptor = new HibernatePBEStringEncryptor();
+        encryptor.setEncryptor(jasyptStringEncryptor());
+        encryptor.setRegisteredName("hibernateStringEncryptor");
+        return encryptor;
     }
 
 }
