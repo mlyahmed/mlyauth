@@ -25,6 +25,7 @@ public class Person  implements EncryptedDomain {
     private String firstname;
 
     @Column(name = "LASTNAME", nullable = false)
+    @Type(type = ENCRYPTED_STRING)
     private String lastname;
 
     @Column(name = "BIRTHDATE", nullable = false)

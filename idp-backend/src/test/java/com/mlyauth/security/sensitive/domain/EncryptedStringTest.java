@@ -8,10 +8,8 @@ import org.jasypt.hibernate4.encryptor.HibernatePBEEncryptorRegistry;
 import org.jasypt.hibernate4.type.ParameterNaming;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.security.Security;
-import java.sql.ResultSet;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -19,16 +17,23 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class EncryptedStringTest {
-
+    private static final String[] COLUMN_NAME = new String[]{RandomForTests.randomString()};
     public static final String REGISTERED_NAME = "registerName";
+
     private StandardPBEStringEncryptor encryptor;
-    private EncryptedString encryptedString;
     private Properties typeParams;
+    private EncryptedString encryptedString;
+    private MockResultSet result;
+    private MockPreparedStatement preparedStatement;
+    private String plainValue;
 
     @Before
     public void setup(){
         set_up_the_encryptor();
         set_up_the_encrypted_type();
+        result = new MockResultSet();
+        preparedStatement = new MockPreparedStatement();
+        plainValue = RandomForTests.randomString();
     }
 
     private void set_up_the_encryptor() {
@@ -49,35 +54,26 @@ public class EncryptedStringTest {
 
     @Test
     public void when_get_a_message_and_not_wrapped_then_return_it() throws Exception{
-        ResultSet result = Mockito.mock(ResultSet.class);
-        String[] names = {RandomForTests.randomString()};
-        final String message = RandomForTests.randomString();
-        Mockito.when(result.getString(names[0])).thenReturn(message);
-        final Object expected = encryptedString.nullSafeGet(result, names, null, null);
-        assertThat(expected, Matchers.equalTo(message));
+        result.setString(COLUMN_NAME[0], RandomForTests.randomString());
+        final Object expected = encryptedString.nullSafeGet(result, COLUMN_NAME, null, null);
+        assertThat(expected, Matchers.equalTo(result.getString(COLUMN_NAME[0])));
     }
 
     @Test
     public void when_get_a_message_and_wrapped_then_return_it_decrypted()  throws Exception {
-        ResultSet result = Mockito.mock(ResultSet.class);
-        String[] names = {RandomForTests.randomString()};
-        final String message = RandomForTests.randomString();
-        final String encrypted = "ENC(" + encryptor.encrypt(message) + ")";
-        Mockito.when(result.getString(names[0])).thenReturn(encrypted);
-        final Object expected = encryptedString.nullSafeGet(result, names, null, null);
-        assertThat(expected, Matchers.equalTo(message));
+        final String encrypted = "ENC(" + encryptor.encrypt(plainValue) + ")";
+        result.setString(COLUMN_NAME[0], encrypted);
+        final Object expected = encryptedString.nullSafeGet(result, COLUMN_NAME, null, null);
+        assertThat(expected, Matchers.equalTo(plainValue));
     }
 
     @Test
     public void when_set_message_then_encrypt_it_wrapped()  throws Exception {
-        MockPreparedStatement statement = new MockPreparedStatement();
-        String value = RandomForTests.randomString();
-        encryptedString.nullSafeSet(statement, value, 0, null);
-
-        assertThat(statement.getParam(0), notNullValue());
-        assertThat(statement.getParam(0).toString(), Matchers.startsWith("ENC("));
-        assertThat(statement.getParam(0).toString(), Matchers.endsWith(")"));
-        assertThat(encryptor.decrypt(unwrap(statement.getParam(0).toString())), equalTo(value));
+        encryptedString.nullSafeSet(preparedStatement, plainValue, 0, null);
+        assertThat(preparedStatement.getParam(0), notNullValue());
+        assertThat(preparedStatement.getParam(0).toString(), Matchers.startsWith("ENC("));
+        assertThat(preparedStatement.getParam(0).toString(), Matchers.endsWith(")"));
+        assertThat(encryptor.decrypt(unwrap(preparedStatement.getParam(0).toString())), equalTo(plainValue));
     }
 
 
