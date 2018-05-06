@@ -39,7 +39,7 @@ public class DataConfig implements TransactionManagementConfigurer {
     }
 
     @Bean(name="jasyptStringEncryptor")
-    @Profile("run")
+    @Profile("runtime")
     public StandardPBEStringEncryptor jasyptStringEncryptor() {
         final String passphrase = System.getProperty("startup.passphrase");
         notNull(passphrase, "Startup passphrase is absent.");
