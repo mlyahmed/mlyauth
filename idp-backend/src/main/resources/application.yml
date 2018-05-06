@@ -32,7 +32,7 @@ performance:
 logging:
   file: logs/mlyauth.log
   level:
-    ROOT: ALL
+    ROOT: INFO
     org.opensaml: INFO
     org.springframework.core: INFO
     org.springframework.security.saml: INFO
@@ -50,4 +50,4 @@ management:
 
 liquibase:
   change-log: classpath:database/db-changelog.yaml
-  drop-first: false
+  drop-first: true
