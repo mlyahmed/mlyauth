@@ -1,8 +1,8 @@
 spring:
     datasource:
-        url: jdbc:mysql://localhost:3306/mlyauth?useSSL=false
+        url: jdbc:mysql://localhost:3306/idp?useSSL=false
         username: root
-        password: ENC(ROkvfzpDU4et56FCHVCz5MQtC7VDV38KRpnUbQDzljU=)
+        password: ENC(DB97T53w8jGGpvzYqCZ9Y8us7MViAE9FxHBkaHRGRxvd7DTjxOrMV58khGWwm+GcbABgrSQQSBW6TY1gyXwXaQ==)
         driver-class-name: com.mysql.jdbc.Driver
         testWhileIdle: true
         validationQuery: SELECT 1

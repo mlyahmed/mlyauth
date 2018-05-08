@@ -1,4 +1,4 @@
-package com.mlyauth.security;
+package com.mlyauth.security.sensitive.domain;
 
 import com.mlyauth.AbstractIntegrationTest;
 import org.hamcrest.Matchers;
@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PBEEncryptionTest extends AbstractIntegrationTest {
+public class PBEEncryptionIT extends AbstractIntegrationTest {
 
     @Autowired
     private StringEncryptor jasyptStringEncryptor;
