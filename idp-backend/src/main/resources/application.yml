@@ -7,17 +7,20 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: true
 
+
 idp:
   saml:
     entityId: primainsureIDP
   jose:
     entityId: primainsureIDP
 
+
 sp:
   jose:
     entityId: primainsure4sgi
   saml:
     entityId: primainsure4sgi
+
 
 server:
   port: 16666
@@ -29,6 +32,7 @@ server:
 performance:
   trace: false
 
+
 logging:
   file: logs/mlyauth.log
   level:
@@ -36,6 +40,7 @@ logging:
     org.opensaml: INFO
     org.springframework.core: INFO
     org.springframework.security.saml: INFO
+
 
 info:
   build:

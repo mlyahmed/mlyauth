@@ -2,7 +2,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/idp?useSSL=false
         username: root
-        password: ENC(DB97T53w8jGGpvzYqCZ9Y8us7MViAE9FxHBkaHRGRxvd7DTjxOrMV58khGWwm+GcbABgrSQQSBW6TY1gyXwXaQ==)
+        password: ENC(55CR5aqCuks97rbxLwMApajDu87DHTQOWQQbywlkiAHRZqXNYhhjo+8NhmKeeaTbxCla7pmmpT46pOPXA7hlOg==)
         driver-class-name: com.mysql.jdbc.Driver
         testWhileIdle: true
         validationQuery: SELECT 1
@@ -14,3 +14,9 @@ spring:
         hibernate:
           naming:
             physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+
+keystore:
+  path: classpath:keys/keystore.jks
+  alias: sgi.prima-solutions.com
+  password: ENC(DGOhG+fPHDnPCYZEz/6Q+9rfLIO3dCR8d1Fx7Fgaxtw=)

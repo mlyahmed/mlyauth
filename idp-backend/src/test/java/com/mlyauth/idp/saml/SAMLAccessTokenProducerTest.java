@@ -291,7 +291,7 @@ public class SAMLAccessTokenProducerTest {
 
     private KeyStore loadKeyStore() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(getClass().getResourceAsStream("/keys/keystore.jks"), "Bourso$17".toCharArray());
+        ks.load(getClass().getResourceAsStream("/keys/keystore-test.jks"), "Bourso$17".toCharArray());
         return ks;
     }
 }

@@ -86,14 +86,14 @@
     <bean class="org.springframework.security.saml.SAMLBootstrap" lazy-init="false" />
 
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-        <constructor-arg value="classpath:keys/keystore.jks"/>
-        <constructor-arg type="java.lang.String" value="Bourso$17"/>
+        <constructor-arg value="#{environment['keystore.path']}"/>
+        <constructor-arg type="java.lang.String" value="#{environment['keystore.password']}"/>
         <constructor-arg>
             <map>
-                <entry key="sgi.prima-solutions.com" value="Bourso$17"/>
+                <entry key="#{environment['keystore.alias']}" value="#{environment['keystore.password']}"/>
             </map>
         </constructor-arg>
-        <constructor-arg type="java.lang.String" value="sgi.prima-solutions.com"/>
+        <constructor-arg type="java.lang.String" value="#{environment['keystore.alias']}"/>
     </bean>
 
     <bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger">
