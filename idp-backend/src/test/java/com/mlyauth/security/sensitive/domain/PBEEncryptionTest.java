@@ -36,7 +36,6 @@ public class PBEEncryptionTest {
         encryptor.setPassword(randomString());
         encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
-
         final String encrypted = encryptor.encrypt(sensitive);
         assertThat(encrypted, Matchers.notNullValue());
         assertThat(encryptor.decrypt(encrypted), Matchers.equalTo(sensitive));
