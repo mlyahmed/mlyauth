@@ -11,6 +11,7 @@ import com.mlyauth.dao.ProfileDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
+import com.mlyauth.search.SearchPerson;
 import com.mlyauth.tools.AccessTokenForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -47,6 +48,9 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     @Autowired
     private PersonDAO personDAO;
+
+    @Autowired
+    private SearchPerson searchPerson;
 
     @Autowired
     private ProfileDAO profileDAO;
@@ -167,7 +171,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void given_the_root_is_not_a_master() {
-        final Person master = personDAO.findByEmail(MASTER_EMAIL);
+        final Person master = searchPerson.byEmail(MASTER_EMAIL);
         master.getProfiles().clear();
         personDAO.save(master);
     }

@@ -16,6 +16,8 @@ databaseChangeLog:
   - include:
       file: database/changelog/schema/person.yaml
   - include:
+      file: database/changelog/schema/person-by-email.yaml
+  - include:
       file: database/changelog/schema/person-profile.yaml
   - include:
       file: database/changelog/schema/application-type.yaml

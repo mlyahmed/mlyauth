@@ -2,7 +2,11 @@
 --changeset me:test1 runOnChange:true
 UPDATE person
 SET firstname='ENC(MJHeuzNiuOxQ3GasAeleA323P36NGBLzccIkLra4MRI=)'
-WHERE id=0
+WHERE id=0;
+
+UPDATE PERSON_BY_EMAIL
+SET PERSON_ID = 'ENC(awvGbWnM2sQDG3Luorx6haOC/iKKwwEFDHOoF0SF1FU=)'
+WHERE EMAIL = 'ahmed.elidr***********@gmail.com';
 
 --liquibase formatted sql
 --changeset me:test2 runOnChange:true

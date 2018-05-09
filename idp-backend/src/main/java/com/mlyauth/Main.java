@@ -30,7 +30,7 @@ public class Main extends SpringBootServletInitializer {
     public static void main(String[] args) {
         final String passphrase = System.getProperty(startUpPassphraseProperty);
         notNull(passphrase, "Startup passphrase is absent.");
-        isTrue(passwordEncoder.matches(passphrase, encodedPassphrase), "Passphrase does not much !");
+        isTrue(passwordEncoder.matches(passphrase, encodedPassphrase), "Passphrase does not match !");
 
         SpringApplication.run(Main.class, args);
     }
