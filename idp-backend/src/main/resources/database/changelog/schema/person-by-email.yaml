@@ -7,13 +7,18 @@ databaseChangeLog:
             tableName: PERSON_BY_EMAIL
             columns:
               - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
                   name: PERSON_ID
                   type: varchar(300)
                   constraints:
-                    primaryKey: true
                     nullable: false
               - column:
                   name: EMAIL
-                  type: varchar(300)
+                  type: varchar(1000)
                   constraints:
                     nullable: false

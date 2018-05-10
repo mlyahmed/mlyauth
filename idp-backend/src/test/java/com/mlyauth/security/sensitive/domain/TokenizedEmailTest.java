@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import java.sql.Types;
 
 import static com.mlyauth.tools.RandomForTests.randomFrenchEmail;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)
@@ -19,10 +19,14 @@ public class TokenizedEmailTest {
     private static final String[] COLUMN_NAME = new String[]{RandomForTests.randomString()};
 
     private TokenizedEmail tokenizedEmail;
+    private MockPreparedStatement preparedStatement;
+    private MockResultSet result;
 
     @Before
     public void setup(){
         tokenizedEmail = new TokenizedEmail();
+        preparedStatement = new MockPreparedStatement();
+        result = new MockResultSet();
     }
 
     @Test
@@ -82,6 +86,9 @@ public class TokenizedEmailTest {
                 randomFrenchEmail(),
                 randomFrenchEmail(),
                 randomFrenchEmail(),
+                randomFrenchEmail(),
+                randomFrenchEmail(),
+                randomFrenchEmail(),
         };
         // @formatter:on
     }
@@ -100,9 +107,73 @@ public class TokenizedEmailTest {
     @Test
     @UseDataProvider("emails")
     public void when_get_value_then_get_it_as_it_is(String email) throws Exception {
-        MockResultSet result = new MockResultSet();
         result.setString(COLUMN_NAME[0], email);
         final Object expected = tokenizedEmail.nullSafeGet(result, COLUMN_NAME, null, null);
         assertThat(expected, equalTo(email));
     }
+
+    @DataProvider
+    public static Object[][] emailAndTokenized() {
+        // @formatter:off
+        return new Object[][]{
+                {"ahmed@elidrissi.ma", "ah***@elidrissi.ma"},
+                {"aei@prima-solutions.com", "a**@prima-solutions.com"},
+                {"ahmed.elidrissi@prima-solutions.com", "ahmed.e********@prima-solutions.com"},
+                {"mly.ahmed@gmail.com", "mly.*****@gmail.com"},
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("emailAndTokenized")
+    public void when_set_value_then_tokenize_it(String email, String tokenized) throws Exception {
+        tokenizedEmail.nullSafeSet(preparedStatement, email, 0, null);
+        assertThat(preparedStatement.getParam(0).toString(), equalTo(tokenized));
+    }
+
+    @Test
+    public void when_set_null_value_then_set_varchar_type_as_null() throws Exception {
+        tokenizedEmail.nullSafeSet(preparedStatement, null, 0, null);
+        assertThat(preparedStatement.getNull(0), equalTo(Types.VARCHAR));
+    }
+
+    @Test
+    @UseDataProvider("emails")
+    public void when_deep_copy_and_email_then_return_the_same_object(String email){
+        assertThat(tokenizedEmail.deepCopy(email), sameInstance(email));
+    }
+
+    @Test
+    public void the_tokenized_email_type_is_immutable(){
+        assertThat(tokenizedEmail.isMutable(), equalTo(false));
+    }
+
+    @Test
+    @UseDataProvider("emails")
+    public void when_disassemble_an_email_return_the_same_value(String email){
+        assertThat(tokenizedEmail.disassemble(email), equalTo(email));
+    }
+
+    @Test
+    public void when_disassemble_a_null_value_then_return_null(){
+        assertThat(tokenizedEmail.disassemble(null), nullValue());
+    }
+
+    @Test
+    @UseDataProvider("emails")
+    public void when_assemble_from_a_cached_email_then_return_the_cached_value(String email){
+        assertThat(tokenizedEmail.assemble(email, null), equalTo(email));
+    }
+
+    @Test
+    public void when_assemble_from_a_null_value_then_return_null(){
+        assertThat(tokenizedEmail.assemble(null, null), nullValue());
+    }
+
+    @Test
+    @UseDataProvider("emails")
+    public void when_replace_then_return_the_origin_value(String email){
+        assertThat(tokenizedEmail.replace(email, null, null), equalTo(email));
+    }
+
 }

@@ -36,4 +36,5 @@ logging:
 
 liquibase:
   change-log: classpath:database/db-changelog-test.yaml
+  contexts: test
   drop-first: true

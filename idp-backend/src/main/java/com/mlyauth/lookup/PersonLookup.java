@@ -18,7 +18,7 @@ public class PersonLookup {
 
     public Person byEmail(String email){
         final PersonByEmail byEmail = personByEmailDAO.findByEmail(email);
-        return personDAO.findByExternalId(byEmail.getId());
+        return personDAO.findByExternalId(byEmail.getPersonId());
     }
 
 }

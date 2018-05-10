@@ -11,10 +11,17 @@ import java.util.HashMap;
 public class MockPreparedStatement implements PreparedStatement {
 
     private HashMap<Integer, Object> params = new HashMap<>();
+    private HashMap<Integer, Integer> nulls = new HashMap<>();
 
     public Object getParam(int index){
         return this.params.get(index);
     }
+
+    public int getNull(int index){
+        return this.nulls.get(index);
+    }
+
+
 
     @Override
     public ResultSet executeQuery() throws SQLException {
@@ -28,7 +35,7 @@ public class MockPreparedStatement implements PreparedStatement {
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
-
+        nulls.put(parameterIndex, sqlType);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.mlyauth.security.sensitive.domain;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
@@ -10,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import static org.apache.commons.lang3.StringUtils.rightPad;
 
 public class TokenizedEmail implements UserType {
 
@@ -45,11 +46,7 @@ public class TokenizedEmail implements UserType {
         if (value == null) {
             st.setNull(index, sqlType);
         } else {
-            final String[] parts = value.toString().split("@");
-            final int length = parts[0].length();
-            final String plain = parts[0].substring(0, parts[0].length() / 2);
-            String token = plain + StringUtils.repeat("*", length - plain.length()) + "@" + parts[1];
-            st.setString(index, token);
+            st.setString(index, tokenizeEmailAddress(value));
         }
     }
 
@@ -76,5 +73,22 @@ public class TokenizedEmail implements UserType {
     @Override
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return original;
+    }
+
+    private String tokenizeEmailAddress(Object value) {
+        final String plain = getUsername(value).substring(0, getUsername(value).length() / 2);
+        return rightPad(plain, getUsername(value).length(), '*')  + "@" + getDomain(value);
+    }
+
+    private String getUsername(Object emailAddress){
+        return splitEmail(emailAddress)[0];
+    }
+
+    private String getDomain(Object emailAddress){
+        return splitEmail(emailAddress)[1];
+    }
+
+    private String[] splitEmail(Object emailAddress) {
+        return emailAddress.toString().split("@");
     }
 }
