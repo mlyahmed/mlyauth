@@ -22,28 +22,34 @@ public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
     @Type(type = TOKENIZED_EMAIL)
     private String email;
 
+    public static PersonByEmail newInstance() {
+        return new PersonByEmail();
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public PersonByEmail setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getPersonId() {
         return personId;
     }
 
-    public void setPersonId(String personId) {
+    public PersonByEmail setPersonId(String personId) {
         this.personId = personId;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public PersonByEmail setEmail(String email) {
         this.email = email;
+        return this;
     }
 }

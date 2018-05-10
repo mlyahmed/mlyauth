@@ -10,8 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import static org.apache.commons.lang3.StringUtils.rightPad;
-
 public class TokenizedEmail implements UserType {
 
     static final int sqlType = Types.VARCHAR;
@@ -46,7 +44,7 @@ public class TokenizedEmail implements UserType {
         if (value == null) {
             st.setNull(index, sqlType);
         } else {
-            st.setString(index, tokenizeEmailAddress(value));
+            st.setString(index, EmailTokenizer.newInstance().tokenizeEmailAddress(value.toString()));
         }
     }
 
@@ -75,20 +73,4 @@ public class TokenizedEmail implements UserType {
         return original;
     }
 
-    private String tokenizeEmailAddress(Object value) {
-        final String plain = getUsername(value).substring(0, getUsername(value).length() / 2);
-        return rightPad(plain, getUsername(value).length(), '*')  + "@" + getDomain(value);
-    }
-
-    private String getUsername(Object emailAddress){
-        return splitEmail(emailAddress)[0];
-    }
-
-    private String getDomain(Object emailAddress){
-        return splitEmail(emailAddress)[1];
-    }
-
-    private String[] splitEmail(Object emailAddress) {
-        return emailAddress.toString().split("@");
-    }
 }
