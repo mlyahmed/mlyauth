@@ -11,4 +11,9 @@ public class RandomForTests {
         return RandomStringUtils.random(length > 0 ? length : 50, true, true);
     }
 
+
+    public static String randomFrenchEmail() {
+        return randomString() + "@" + randomString() + ".fr";
+    }
+
 }
