@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 @Component
 public class PersonLookup {
 
@@ -20,7 +22,7 @@ public class PersonLookup {
 
     public Person byEmail(String email){
         final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(email);
-        return personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
+        return isEmpty(byEmail) ? null : personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
     }
 
 }

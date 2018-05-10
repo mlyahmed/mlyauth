@@ -61,10 +61,28 @@ public class PersonLookupTest {
     public void when_find_person_by_email_and_exists_then_return_the_person(String email){
         person = Person.newInstance().setExternalId(RandomForTests.randomString()).setEmail(email);
         personByEmail = PersonByEmail.newInstance().setPersonId(person.getExternalId()).setEmail(email);
-        when(personByEmailDAO.findByEmail(personByEmail.getEmail())).thenReturn(new HashSet<>(asList(personByEmail)));
+        when(personByEmailDAO.findByEmail(email)).thenReturn(new HashSet<>(asList(personByEmail)));
         when(personDAO.findByExternalId(personByEmail.getPersonId())).thenReturn(person);
         final Person expected = personLookup.byEmail(email);
         assertThat(expected, Matchers.notNullValue());
         assertThat(expected, Matchers.sameInstance(person));
+    }
+
+    @Test
+    @UseDataProvider("emails")
+    public void when_the_person_by_email_index_returns_empty_result_then_return_null(String email){
+        person = Person.newInstance().setExternalId(RandomForTests.randomString()).setEmail(email);
+        when(personByEmailDAO.findByEmail(email)).thenReturn(new HashSet<>());
+        final Person expected = personLookup.byEmail(email);
+        assertThat(expected, Matchers.nullValue());
+    }
+
+    @Test
+    @UseDataProvider("emails")
+    public void when_the_person_by_email_index_returns_null_then_return_null(String email){
+        person = Person.newInstance().setExternalId(RandomForTests.randomString()).setEmail(email);
+        when(personByEmailDAO.findByEmail(email)).thenReturn(null);
+        final Person expected = personLookup.byEmail(email);
+        assertThat(expected, Matchers.nullValue());
     }
 }
