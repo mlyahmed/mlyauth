@@ -7,6 +7,8 @@ import com.mlyauth.domain.PersonByEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class PersonLookup {
 
@@ -17,8 +19,8 @@ public class PersonLookup {
     private PersonByEmailDAO personByEmailDAO;
 
     public Person byEmail(String email){
-        final PersonByEmail byEmail = personByEmailDAO.findByEmail(email);
-        return personDAO.findByExternalId(byEmail.getPersonId());
+        final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(email);
+        return personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
     }
 
 }
