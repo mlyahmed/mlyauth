@@ -3,10 +3,10 @@ package com.mlyauth.navigation;
 import com.mlyauth.beans.AttributeBean;
 import com.mlyauth.beans.NavigationBean;
 import com.mlyauth.constants.AspectType;
-import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.exception.IDPException;
+import com.mlyauth.lookup.PersonLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +25,7 @@ import static com.mlyauth.constants.AspectAttribute.*;
 public class IDPBasicNavigationService extends AbstractIDPNavigationService {
 
     @Autowired
-    private PersonDAO personDAO;
+    private PersonLookuper personLookuper;
 
 
     @Override
@@ -35,7 +35,7 @@ public class IDPBasicNavigationService extends AbstractIDPNavigationService {
         NavigationBean navigation = new NavigationBean();
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserDetails userdetails = (UserDetails) authentication.getPrincipal();
-        final Person person = personDAO.findByEmail(userdetails.getUsername());
+        final Person person = personLookuper.byEmail(userdetails.getUsername());
         Collection<Application> applications = person.getApplications();
         if (applications.stream().noneMatch(app -> app.getAppname().equals(appname)))
             throw IDPException.newInstance("");

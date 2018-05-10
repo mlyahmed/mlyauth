@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Component
-public class PersonLookup {
+public class PersonLookuper {
 
     @Autowired
     private PersonDAO personDAO;
@@ -22,7 +22,14 @@ public class PersonLookup {
 
     public Person byEmail(String email){
         final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(email);
-        return isEmpty(byEmail) ? null : personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
+        return isEmpty(byEmail) ? null : filterByEmail(byEmail, email);
+    }
+
+    private Person filterByEmail(Set<PersonByEmail> index, String email){
+        return index.stream().map(entry -> personDAO.findByExternalId(entry.getPersonId()))
+                .filter(person -> person != null)
+                .filter(person -> person.getEmail().equals(email))
+                .findFirst().orElse(null);
     }
 
 }

@@ -11,7 +11,7 @@ import com.mlyauth.dao.ProfileDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
-import com.mlyauth.lookup.PersonLookup;
+import com.mlyauth.lookup.PersonLookuper;
 import com.mlyauth.tools.AccessTokenForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -50,7 +50,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private PersonDAO personDAO;
 
     @Autowired
-    private PersonLookup personLookup;
+    private PersonLookuper personLookuper;
 
     @Autowired
     private ProfileDAO profileDAO;
@@ -164,21 +164,21 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void given_the_root_is_a_master() {
-        final Person master = personLookup.byEmail(MASTER_EMAIL);
+        final Person master = personLookuper.byEmail(MASTER_EMAIL);
         final Profile masterProfile = profileDAO.findOne(ProfileCode.MASTER);
         master.setProfiles(new HashSet<>(Arrays.asList(masterProfile)));
         personDAO.save(master);
     }
 
     private void given_the_root_is_not_a_master() {
-        final Person master = personLookup.byEmail(MASTER_EMAIL);
+        final Person master = personLookuper.byEmail(MASTER_EMAIL);
         master.getProfiles().clear();
         personDAO.save(master);
     }
 
     private void and_he_is_well_created(String... properties) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        final Person person = personDAO.findByEmail(properties[4]);
+        final Person person = personLookuper.byEmail(properties[4]);
         assertThat(person, notNullValue());
         assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), notNullValue());

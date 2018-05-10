@@ -4,10 +4,12 @@ import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.AuthenticationInfoStatus;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.AuthenticationInfoDAO;
+import com.mlyauth.dao.PersonByEmailDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
+import com.mlyauth.domain.PersonByEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class PersonService implements IPersonService {
     private PersonDAO personDAO;
 
     @Autowired
+    private PersonByEmailDAO personByEmailDAO;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -43,6 +48,7 @@ public class PersonService implements IPersonService {
         personValidator.validateNewPerson(bean);
         Person person = buildPerson(bean);
         person = personDAO.saveAndFlush(person);
+        personByEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(person.getExternalId()).setEmail(person.getEmail()));
         authenticationInfoDAO.saveAndFlush(person.getAuthenticationInfo());
         return personMapper.toBean(person);
     }

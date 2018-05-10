@@ -65,7 +65,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
         person.put("firstname", "Ahmed");
         person.put("lastname", "Ahmed");
         person.put("birthdate", "1987-01-15");
-        person.put("email", "Ahmed");
+        person.put("email", "ahmed@elidrissi.ma");
         person.put("password", "Ahmed");
 
         final ResultActions result = mockMvc.perform(post("/domain/person")

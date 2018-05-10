@@ -2,6 +2,7 @@ package com.mlyauth.domain;
 
 import com.google.common.collect.Sets;
 import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -32,6 +33,7 @@ public class Person  implements EncryptedDomain {
     private java.util.Date birthdate;
 
     @Column(name = "EMAIL", nullable = false, unique = true)
+    @Type(type = ENCRYPTED_STRING)
     private String email;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

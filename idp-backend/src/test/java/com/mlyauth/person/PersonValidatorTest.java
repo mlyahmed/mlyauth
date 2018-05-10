@@ -1,15 +1,13 @@
 package com.mlyauth.person;
 
 import com.mlyauth.beans.PersonBean;
-import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.person.PersonValidator;
+import com.mlyauth.lookup.PersonLookuper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -18,15 +16,15 @@ import static org.junit.Assert.assertThat;
 public class PersonValidatorTest {
 
 
-    @Mock
-    private PersonDAO personDAO;
+    private PersonLookuper personLookuper;
 
-    @InjectMocks
     private PersonValidator validator;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        validator = new PersonValidator();
+        personLookuper = Mockito.mock(PersonLookuper.class);
+        ReflectionTestUtils.setField(validator, "personLookuper", personLookuper);
     }
 
     @Test
