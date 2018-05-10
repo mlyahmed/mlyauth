@@ -1,7 +1,9 @@
 --liquibase formatted sql
 --changeset me:test1 runOnChange:true
 UPDATE person
-SET firstname='ENC(MJHeuzNiuOxQ3GasAeleA323P36NGBLzccIkLra4MRI=)'
+SET firstname = 'ENC(MJHeuzNiuOxQ3GasAeleA323P36NGBLzccIkLra4MRI=)',
+    lastname = 'ENC(ceSqPgyQOWrFI4UNAP+BszW5mnh1bWj6CggXF85iecg=)',
+    email = 'ENC(AoYBfbRjSQkHLYkxDI7LR2hkCJ8DmThH8Bwg29AA6D6bOucCI60qCrpuYM1vlZUmKp4wge3UKMh38LFjx3VNcQ==)'
 WHERE id=0;
 
 UPDATE PERSON_BY_EMAIL

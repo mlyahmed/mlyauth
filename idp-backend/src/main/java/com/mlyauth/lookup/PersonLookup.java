@@ -1,4 +1,4 @@
-package com.mlyauth.search;
+package com.mlyauth.lookup;
 
 import com.mlyauth.dao.PersonByEmailDAO;
 import com.mlyauth.dao.PersonDAO;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SearchPerson {
+public class PersonLookup {
 
     @Autowired
     private PersonDAO personDAO;

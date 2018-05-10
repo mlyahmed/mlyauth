@@ -14,11 +14,10 @@ import java.sql.Types;
 public class TokenizedEmail implements UserType {
 
     static final int sqlType = Types.VARCHAR;
-    static final int[] sqlTypes = new int[]{ sqlType };
 
     @Override
     public int[] sqlTypes() {
-        return sqlTypes.clone();
+        return (new int[]{ sqlType }).clone();
     }
 
     @Override
@@ -44,7 +43,7 @@ public class TokenizedEmail implements UserType {
     @Override
     public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
         if (value == null) {
-            st.setNull(index, Types.VARCHAR);
+            st.setNull(index, sqlType);
         } else {
             final String[] parts = value.toString().split("@");
             final int length = parts[0].length();

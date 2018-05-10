@@ -33,7 +33,7 @@ public class PBEEncryptionTest {
     public void when_encrypt_a_value_then_encrypted_value_must_be_returned(String sensitive){
         Security.addProvider(new BouncyCastleProvider());
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword("UD`jS47)Gf976wT+>75TA'cQ,65Bjh(L");
+        encryptor.setPassword(RandomForTests.randomString());
         encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
         final String encrypted = encryptor.encrypt(sensitive);
