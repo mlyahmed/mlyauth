@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.security.saml.metadata.CachingMetadataManager;
@@ -24,6 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 
+import static java.lang.String.format;
+
 @Configuration
 @ImportResource({"classpath*:context/sp-saml-context.xml"})
 public class SPSAMLConfig {
@@ -35,7 +38,7 @@ public class SPSAMLConfig {
     private KeyManager keyManager;
 
     @Value("${sp.saml.idps-metadata-dir:#{null}}")
-    private File idpsMetadataDir;
+    private File metadataDir;
 
     @Value("${sp.saml.entityId}")
     private String localEntityId;
@@ -57,29 +60,30 @@ public class SPSAMLConfig {
     }
 
     public List<MetadataProvider> idpMetadata() throws Exception {
-        return (idpsMetadataDir == null) ? loadSamlIdpMetadataFromClasspath() : loadSamlIdpMetadataFromFileSystem(idpsMetadataDir);
+        return (metadataDir == null) ? getIdpMetadataFromClasspath() : getIdpMetadataFromFileSystem(metadataDir);
     }
 
 
-    private List<MetadataProvider> loadSamlIdpMetadataFromClasspath() throws Exception {
+    private List<MetadataProvider> getIdpMetadataFromClasspath() throws Exception {
         List<MetadataProvider> providers = new LinkedList<>();
         final String classpathPattern = "classpath*:/sso/saml/idps/*-idp.xml";
-        org.springframework.core.io.Resource[] resources = new PathMatchingResourcePatternResolver().getResources(classpathPattern);
-        for (org.springframework.core.io.Resource resource : resources)
-            providers.add(createSamlMetadataProvider(new ClasspathResource(String.format("/sso/saml/idps/%s", resource.getFilename()))));
+        Resource[] resources = new PathMatchingResourcePatternResolver().getResources(classpathPattern);
+        for (Resource rs : resources)
+            providers.add(createMetadataProvider(new ClasspathResource(format("/sso/saml/idps/%s", rs.getFilename()))));
         return providers;
     }
 
-    private List<MetadataProvider> loadSamlIdpMetadataFromFileSystem(File confDir) throws Exception {
+    private List<MetadataProvider> getIdpMetadataFromFileSystem(final File confDir) throws Exception {
+        final String metadataPathPattern = "file://" + new File(confDir, "/sso/saml/idps/*-idp.xml").getAbsolutePath();
+        final String fileSystemPattern = FilenameUtils.separatorsToUnix(metadataPathPattern);
         List<MetadataProvider> providers = new LinkedList<>();
-        final String fileSystemPattern = FilenameUtils.separatorsToUnix("file://" + new File(confDir, "/sso/saml/idps/*-idp.xml").getAbsolutePath());
-        org.springframework.core.io.Resource[] resources = new PathMatchingResourcePatternResolver().getResources(fileSystemPattern);
-        for (org.springframework.core.io.Resource resource : resources)
-            providers.add(createSamlMetadataProvider(new FilesystemResource(resource.getFile().getAbsolutePath())));
+        for (Resource resource : new PathMatchingResourcePatternResolver().getResources(fileSystemPattern))
+            providers.add(createMetadataProvider(new FilesystemResource(resource.getFile().getAbsolutePath())));
         return providers;
     }
 
-    private ExtendedMetadataDelegate createSamlMetadataProvider(org.opensaml.util.resource.Resource metadata) throws MetadataProviderException {
+    private ExtendedMetadataDelegate createMetadataProvider(final org.opensaml.util.resource.Resource metadata)
+            throws MetadataProviderException {
         ResourceBackedMetadataProvider metadataProvider = new ResourceBackedMetadataProvider(new Timer(), metadata);
         metadataProvider.setParserPool(parserPool);
         ExtendedMetadataDelegate provider = new ExtendedMetadataDelegate(metadataProvider, new ExtendedMetadata());

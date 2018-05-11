@@ -33,14 +33,14 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
     private IContextHolder contextHolder;
 
     @Override
-    public IDPUser loadUserByJOSE(JOSEAccessToken credential) throws UsernameNotFoundException {
+    public IDPUser loadUserByJOSE(final JOSEAccessToken credential) throws UsernameNotFoundException {
         checkParams(credential);
         return new IDPUser(setAttributesIntoTheContext(credential, loadContext(credential)));
     }
 
-    private IContext loadContext(JOSEAccessToken credential) {
+    private IContext loadContext(final JOSEAccessToken credential) {
         final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(credential.getSubject());
-        Assert.notNull(authenticationInfo, "No AuthenticationInfo found for "+credential.getSubject());
+        Assert.notNull(authenticationInfo, "No AuthenticationInfo found for " + credential.getSubject());
 
         if (authenticationInfo.isPerson()) {
             return contextHolder.newPersonContext(authenticationInfo.getPerson());
@@ -48,19 +48,19 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
             return contextHolder.newApplicationContext(authenticationInfo.getApplication());
         }
 
-        throw IDPException.newInstance("AuthenticationInfo found ("+credential.getSubject()+") is not valid.");
+        throw IDPException.newInstance("AuthenticationInfo found (" + credential.getSubject() + ") is not valid.");
     }
 
-    private void checkParams(JOSEAccessToken credential) {
+    private void checkParams(final JOSEAccessToken credential) {
         notNull(credential, "The JOSE Token is null");
         isTrue(isNotBlank(credential.getSubject()), "The JOSE Token Subject is blank");
-        if("SSO".equals(credential.getBP())) {
-            isTrue(isNotBlank(credential.getClaim(CLIENT_ID.getValue())), "The JOSE Token Client Id is blank");
-            isTrue(isNotBlank(credential.getClaim(CLIENT_PROFILE.getValue())), "The JOSE Token Client Profile is blank");
+        if ("SSO".equals(credential.getBP())) {
+            isTrue(isNotBlank(credential.getClaim(CLIENT_ID.getValue())), "The ClientId claim is blank");
+            isTrue(isNotBlank(credential.getClaim(CLIENT_PROFILE.getValue())), "The profile claim is blank");
         }
     }
 
-    private IContext setAttributesIntoTheContext(JOSEAccessToken credential, IContext context) {
+    private IContext setAttributesIntoTheContext(final JOSEAccessToken credential, final IContext context) {
         context.putAttribute(CLIENT_ID.getValue(), credential.getClaim(CLIENT_ID.getValue()));
         context.putAttribute(CLIENT_PROFILE.getValue(), credential.getClaim(CLIENT_PROFILE.getValue()));
         context.putAttribute(ENTITY_ID.getValue(), credential.getClaim(ENTITY_ID.getValue()));

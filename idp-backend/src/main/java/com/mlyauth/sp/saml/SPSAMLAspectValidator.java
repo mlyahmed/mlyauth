@@ -31,22 +31,23 @@ public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
     private SAMLHelper samlHelper;
 
     @Override
-    public void validate(Application application) {
-        Assert.notNull(application, "The application argument is null");
-        validateIsAnSPSAML(application);
-        List<ApplicationAspectAttribute> attributes = appAspectAttrDAO.findByAppAndAspect(application.getId(), SP_SAML.name());
+    public void validate(final Application app) {
+        Assert.notNull(app, "The application argument is null");
+        validateIsAnSPSAML(app);
+        List<ApplicationAspectAttribute> attributes = appAspectAttrDAO.findByAppAndAspect(app.getId(), SP_SAML.name());
         validateAttributeExists(attributes, SP_SAML_ENTITY_ID);
         validateURL(validateAttributeExists(attributes, SP_SAML_SSO_URL));
         validateCertificate(validateAttributeExists(attributes, SP_SAML_ENCRYPTION_CERTIFICATE));
 
     }
 
-    private void validateIsAnSPSAML(Application application) {
+    private void validateIsAnSPSAML(final Application application) {
         if (application.getAspects() == null || !application.getAspects().contains(SP_SAML))
             throw NotSPSAMLApplicationException.newInstance();
     }
 
-    private ApplicationAspectAttribute validateAttributeExists(List<ApplicationAspectAttribute> attributes, AspectAttribute attribute) {
+    private ApplicationAspectAttribute validateAttributeExists(final List<ApplicationAspectAttribute> attributes,
+                                                               final AspectAttribute attribute) {
         final ApplicationAspectAttribute found = attributes.stream()
                 .filter(attr -> attribute == attr.getAttributeCode())
                 .findFirst().orElse(null);
@@ -60,13 +61,13 @@ public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
         return found;
     }
 
-    private void validateURL(ApplicationAspectAttribute ssoUrl) {
+    private void validateURL(final ApplicationAspectAttribute ssoUrl) {
         UrlValidator urlValidator = new UrlValidator(new String[]{"http", "https"}, UrlValidator.ALLOW_LOCAL_URLS);
         if (!urlValidator.isValid(ssoUrl.getValue()))
             throw BadSPSAMLAspectAttributeValueException.newInstance();
     }
 
-    private void validateCertificate(ApplicationAspectAttribute certificateAtt) {
+    private void validateCertificate(final ApplicationAspectAttribute certificateAtt) {
         try {
             samlHelper.toX509Certificate(certificateAtt.getValue());
         } catch (Exception e) {
