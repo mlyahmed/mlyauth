@@ -1,20 +1,21 @@
 package com.mlyauth.beans;
 
-public class AttributeBean implements Cloneable{
+public class AttributeBean implements Cloneable {
 
     private String code;
     private String alias;
     private String value;
 
-    public AttributeBean(){
+    public AttributeBean() {
 
     }
 
-    private AttributeBean(String code) {
-        this.code = this.alias = code;
+    private AttributeBean(final String code) {
+        this.code = code;
+        this.alias = code;
     }
 
-    public static AttributeBean newAttribute(String uri) {
+    public static AttributeBean newAttribute(final String uri) {
         return new AttributeBean(uri);
     }
 
@@ -22,7 +23,7 @@ public class AttributeBean implements Cloneable{
         return code;
     }
 
-    public AttributeBean setCode(String code) {
+    public AttributeBean setCode(final String code) {
         this.code = code;
         return this;
     }
@@ -31,7 +32,7 @@ public class AttributeBean implements Cloneable{
         return alias;
     }
 
-    public AttributeBean setAlias(String alias) {
+    public AttributeBean setAlias(final String alias) {
         this.alias = alias;
         return this;
     }
@@ -41,7 +42,7 @@ public class AttributeBean implements Cloneable{
         return value;
     }
 
-    public AttributeBean setValue(String value) {
+    public AttributeBean setValue(final String value) {
         this.value = value;
         return this;
     }

@@ -20,7 +20,7 @@ public class ApplicationService implements IApplicationService {
     private ApplicationTypeDAO applicationTypeDAO;
 
     @Override
-    public ApplicationBean newApplication(final ApplicationBean application){
+    public ApplicationBean newApplication(final ApplicationBean application) {
         Application app = new Application();
         BeanUtils.copyProperties(application, app);
         app.setType(applicationTypeDAO.findOne(application.getType()));
@@ -30,7 +30,7 @@ public class ApplicationService implements IApplicationService {
     }
 
     @Override
-    public ApplicationBean updateApplication(ApplicationBean application) {
+    public ApplicationBean updateApplication(final ApplicationBean application) {
         Application app = applicationDAO.findByAppname(application.getAppname());
         BeanUtils.copyProperties(application, app);
         applicationDAO.save(app);

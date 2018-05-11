@@ -23,35 +23,35 @@ import static org.springframework.util.Assert.notNull;
 @EnableEncryptableProperties
 public class Main extends SpringBootServletInitializer {
 
-    public  static final String startUpPassphraseProperty = "startup.passphrase";
-    private static final String encodedPassphrase = "$2a$13$n.UA0h5.4Shz4awT4EMAT.KDxri//akqZV/NyixLRgsUtbjGmM7he";
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(13);
+    public  static final String START_UP_PASSPHRASE_PROPERTY = "startup.passphrase";
+    private static final String ENCODED_PASSPHRASE = "$2a$13$n.UA0h5.4Shz4awT4EMAT.KDxri//akqZV/NyixLRgsUtbjGmM7he";
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(13);
 
-    public static void main(String[] args) {
-        final String passphrase = System.getProperty(startUpPassphraseProperty);
+    public static void main(final String[] args) {
+        final String passphrase = System.getProperty(START_UP_PASSPHRASE_PROPERTY);
         notNull(passphrase, "Startup passphrase is absent.");
-        isTrue(passwordEncoder.matches(passphrase, encodedPassphrase), "Passphrase does not match !");
+        isTrue(PASSWORD_ENCODER.matches(passphrase, ENCODED_PASSPHRASE), "Passphrase does not match !");
 
         SpringApplication.run(Main.class, args);
     }
 
     @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+    protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
         return application.sources(Main.class);
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> {};
+    public CommandLineRunner commandLineRunner(final ApplicationContext ctx) {
+        return args -> { };
     }
 
 
     @Profile("runtime")
-    @Bean(name="jasyptStringEncryptor")
+    @Bean(name = "jasyptStringEncryptor")
     public StandardPBEStringEncryptor jasyptStringEncryptor() {
         Security.addProvider(new BouncyCastleProvider());
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(System.getProperty(startUpPassphraseProperty));
+        encryptor.setPassword(System.getProperty(START_UP_PASSPHRASE_PROPERTY));
         encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
         return encryptor;

@@ -20,8 +20,10 @@ public interface IStringEnum extends Serializable {
     default <T extends IStringEnum> T create(Class<T> clazz, String value, T defaultItem) {
         T[] enumItems = clazz.getEnumConstants();
         T item = null;
-        if (enumItems != null)
-            item = Arrays.stream(enumItems).filter(enumItem -> ObjectUtils.equals(value, enumItem.getValue())).findFirst().get();
+        if (enumItems != null) {
+            item = Arrays.stream(enumItems).filter(enumItem -> ObjectUtils.equals(value, enumItem.getValue()))
+                    .findFirst().get();
+        }
         return item != null ? item : defaultItem;
     }
 }

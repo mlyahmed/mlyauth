@@ -25,6 +25,9 @@ import org.springframework.web.filter.RequestContextFilter;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final int ENCODING_STRENGTH = 4;
+
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -33,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(4);
+        return new BCryptPasswordEncoder(ENCODING_STRENGTH);
     }
 
     @Bean
@@ -59,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public void configAuthenticationProvider(AuthenticationManagerBuilder auth) {
+    public void configAuthenticationProvider(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(daoAuthProvider());
         auth.authenticationProvider(samlAuthenticationProvider());
         auth.authenticationProvider(joseAuthenticationProvider());
@@ -83,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         http.httpBasic();
         http.authorizeRequests()

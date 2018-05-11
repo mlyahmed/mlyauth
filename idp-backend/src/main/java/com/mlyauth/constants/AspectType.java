@@ -20,13 +20,13 @@ public enum AspectType implements IStringEnum {
     RS_JOSE("CL_JOSE", RS, JOSE);
 
 
-    public enum MetaType {IDP, SP, CL, RS}
+    public enum MetaType { IDP, SP, CL, RS }
 
     private final String value;
     private final MetaType metaType;
     private final TokenNorm norm;
 
-    AspectType(String value, MetaType metaType, TokenNorm norm) {
+    AspectType(final String value, final MetaType metaType, final TokenNorm norm) {
         this.value = value;
         this.metaType = metaType;
         this.norm = norm;
@@ -51,11 +51,11 @@ public enum AspectType implements IStringEnum {
     }
 
     @Override
-    public boolean equals(String value) {
+    public boolean equals(final String value) {
         return this.value.equals(value);
     }
 
-    public static AspectType create(String value) {
+    public static AspectType create(final String value) {
         return stream(AspectType.values()).filter(v -> v.value.equals(value)).findFirst().orElse(null);
     }
 

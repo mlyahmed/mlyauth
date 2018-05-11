@@ -20,13 +20,13 @@ public class ApplicationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody ApplicationBean newApplication(@RequestBody ApplicationBean application) {
+    public @ResponseBody ApplicationBean newApplication(@RequestBody final ApplicationBean application) {
         return applicationService.newApplication(application);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public @ResponseBody ApplicationBean updateApplication(@RequestBody ApplicationBean application) {
+    public @ResponseBody ApplicationBean updateApplication(@RequestBody final ApplicationBean application) {
         return applicationService.updateApplication(application);
     }
 

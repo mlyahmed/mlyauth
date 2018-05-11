@@ -7,7 +7,7 @@ public enum ApplicationTypeCode implements IStringEnum {
 
     private final String value;
 
-    ApplicationTypeCode(String value){
+    ApplicationTypeCode(final String value) {
         this.value = value;
     }
 
@@ -22,16 +22,15 @@ public enum ApplicationTypeCode implements IStringEnum {
     }
 
     @Override
-    public boolean equals(String value) {
+    public boolean equals(final String value) {
         return this.value.equals(value);
     }
 
-
-    public boolean isPolicy(){
+    public boolean isPolicy() {
         return this == POLICY;
     }
 
-    public static ApplicationTypeCode create(String value) {
+    public static ApplicationTypeCode create(final String value) {
         return stream(ApplicationTypeCode.values()).filter(v -> v.value.equals(value)).findFirst().orElse(null);
     }
 }

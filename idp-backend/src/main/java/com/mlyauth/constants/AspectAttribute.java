@@ -40,7 +40,7 @@ public enum AspectAttribute implements IStringEnum {
     private final String value;
     private final boolean secret;
 
-    AspectAttribute(AspectType aspect, AttributeType type, String value, boolean secret) {
+    AspectAttribute(final AspectType aspect, final AttributeType type, final String value, final boolean secret) {
         this.aspect = aspect;
         this.type = type;
         this.value = value;
@@ -70,15 +70,15 @@ public enum AspectAttribute implements IStringEnum {
     }
 
     @Override
-    public boolean equals(String value) {
+    public boolean equals(final String value) {
         return this.value.equals(value);
     }
 
-    public static AspectAttribute create(String value) {
+    public static AspectAttribute create(final String value) {
         return stream(AspectAttribute.values()).filter(v -> v.value.equals(value)).findFirst().orElse(null);
     }
 
-    public static AspectAttribute get(AspectType aspect, AttributeType type) {
+    public static AspectAttribute get(final AspectType aspect, final AttributeType type) {
         return stream(AspectAttribute.values())
                 .filter(v -> v.getAspect() == aspect && v.getType() == type)
                 .findFirst().orElse(null);

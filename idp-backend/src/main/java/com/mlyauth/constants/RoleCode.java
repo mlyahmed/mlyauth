@@ -7,7 +7,7 @@ public enum RoleCode implements IStringEnum {
 
     final String value;
 
-    RoleCode(String value){
+    RoleCode(final String value){
         this.value = value;
     }
 
@@ -22,7 +22,7 @@ public enum RoleCode implements IStringEnum {
     }
 
     @Override
-    public boolean equals(String value) {
+    public boolean equals(final String value) {
         return this.value.equals(value);
     }
 
@@ -30,7 +30,7 @@ public enum RoleCode implements IStringEnum {
         return this == CLIENT;
     }
 
-    public static RoleCode create(String value) {
+    public static RoleCode create(final String value) {
         return stream(RoleCode.values()).filter(v -> v.value.equals(value)).findFirst().orElse(null);
     }
 }

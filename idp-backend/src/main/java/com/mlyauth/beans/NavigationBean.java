@@ -13,7 +13,7 @@ public class NavigationBean {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -21,7 +21,7 @@ public class NavigationBean {
         return tokenId;
     }
 
-    public void setTokenId(long tokenId) {
+    public void setTokenId(final long tokenId) {
         this.tokenId = tokenId;
     }
 
@@ -29,7 +29,7 @@ public class NavigationBean {
         return target;
     }
 
-    public void setTarget(String target) {
+    public void setTarget(final String target) {
         this.target = target;
     }
 
@@ -37,11 +37,11 @@ public class NavigationBean {
         return attributes;
     }
 
-    public void setAttributes(Collection<AttributeBean> attributes) {
+    public void setAttributes(final Collection<AttributeBean> attributes) {
         this.attributes = attributes;
     }
 
-    public AttributeBean getAttribute(String code){
+    public AttributeBean getAttribute(final String code) {
         return attributes.stream().filter(attr -> attr.getCode().equals(code)).findFirst().orElse(null);
     }
 }

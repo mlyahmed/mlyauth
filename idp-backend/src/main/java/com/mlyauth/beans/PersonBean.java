@@ -17,7 +17,7 @@ public class PersonBean {
     private char[] password;
     private Collection<String> applications = new LinkedHashSet<>();
 
-    public static PersonBean newInstance(){
+    public static PersonBean newInstance() {
         return new PersonBean();
     }
 
@@ -25,7 +25,7 @@ public class PersonBean {
         return id;
     }
 
-    public PersonBean setId(long id) {
+    public PersonBean setId(final long id) {
         this.id = id;
         return this;
     }
@@ -35,7 +35,7 @@ public class PersonBean {
         return role;
     }
 
-    public PersonBean setRole(RoleCode role) {
+    public PersonBean setRole(final RoleCode role) {
         this.role = role;
         return this;
     }
@@ -44,7 +44,7 @@ public class PersonBean {
         return externalId;
     }
 
-    public PersonBean setExternalId(String externalId) {
+    public PersonBean setExternalId(final String externalId) {
         this.externalId = externalId;
         return this;
     }
@@ -53,7 +53,7 @@ public class PersonBean {
         return firstname;
     }
 
-    public PersonBean setFirstname(String firstname) {
+    public PersonBean setFirstname(final String firstname) {
         this.firstname = firstname;
         return this;
     }
@@ -62,7 +62,7 @@ public class PersonBean {
         return lastname;
     }
 
-    public PersonBean setLastname(String lastname) {
+    public PersonBean setLastname(final String lastname) {
         this.lastname = lastname;
         return this;
     }
@@ -71,7 +71,7 @@ public class PersonBean {
         return birthdate;
     }
 
-    public PersonBean setBirthdate(String birthdate) {
+    public PersonBean setBirthdate(final String birthdate) {
         this.birthdate = birthdate;
         return this;
     }
@@ -80,7 +80,7 @@ public class PersonBean {
         return email;
     }
 
-    public PersonBean setEmail(String email) {
+    public PersonBean setEmail(final String email) {
         this.email = email;
         return this;
     }
@@ -89,7 +89,7 @@ public class PersonBean {
         return password;
     }
 
-    public PersonBean setPassword(char[] password) {
+    public PersonBean setPassword(final char[] password) {
         this.password = password;
         return this;
     }
@@ -98,7 +98,7 @@ public class PersonBean {
         return applications;
     }
 
-    public PersonBean setApplications(Collection<String> applications) {
+    public PersonBean setApplications(final Collection<String> applications) {
         this.applications = applications;
         return this;
     }

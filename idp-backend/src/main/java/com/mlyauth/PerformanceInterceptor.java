@@ -41,15 +41,14 @@ public class PerformanceInterceptor {
     public void security() { }
 
     @Around("tokens() || beans()  || context() || credentials() || dao()  || security()")
-    public Object profile(ProceedingJoinPoint pjp) throws Throwable {
+    public Object profile(final ProceedingJoinPoint pjp) throws Throwable {
         final Stopwatch started = Stopwatch.createStarted();
 
         try {
             return pjp.proceed();
         } finally {
             final long elapsed = started.elapsed(MILLISECONDS);
-            if (trace && elapsed > 0)
-                logger.info("Method " + pjp.toLongString() + " took " + elapsed + "ms.");
+            if (trace && elapsed > 0) logger.info("Method " + pjp.toLongString() + " took " + elapsed + "ms.");
         }
 
     }

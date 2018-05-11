@@ -5,7 +5,7 @@ public class TokenBean {
     private final String serialized;
     private final String expiryTime;
 
-    public TokenBean(String serialized, String expiryTime) {
+    public TokenBean(final String serialized, final String expiryTime) {
         this.serialized = serialized;
         this.expiryTime = expiryTime;
     }
