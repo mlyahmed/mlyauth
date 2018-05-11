@@ -12,11 +12,11 @@ import java.sql.Types;
 
 public class TokenizedEmail implements UserType {
 
-    static final int sqlType = Types.VARCHAR;
+    private static final int SQL_TYPE = Types.VARCHAR;
 
     @Override
     public int[] sqlTypes() {
-        return (new int[]{ sqlType }).clone();
+        return (new int[]{SQL_TYPE}).clone();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class TokenizedEmail implements UserType {
 
     @Override
     public final boolean equals(final Object x, final Object y) throws HibernateException {
-        return x == y || ( x != null && y != null && x.equals( y ) );
+        return x == y || (x != null && y != null && x.equals(y));
     }
 
     @Override
@@ -35,21 +35,23 @@ public class TokenizedEmail implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session,
+                              final Object owner) throws HibernateException, SQLException {
         return rs.getString(names[0]);
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+    public void nullSafeSet(final PreparedStatement st, final Object value, final int index,
+                            final SessionImplementor session) throws HibernateException, SQLException {
         if (value == null) {
-            st.setNull(index, sqlType);
+            st.setNull(index, SQL_TYPE);
         } else {
             st.setString(index, EmailTokenizer.newInstance().tokenizeEmailAddress(value.toString()));
         }
     }
 
     @Override
-    public Object deepCopy(Object value) throws HibernateException {
+    public Object deepCopy(final Object value) throws HibernateException {
         return value;
     }
 
@@ -69,7 +71,7 @@ public class TokenizedEmail implements UserType {
     }
 
     @Override
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
+    public Object replace(final Object original, final Object target, final Object owner) throws HibernateException {
         return original;
     }
 

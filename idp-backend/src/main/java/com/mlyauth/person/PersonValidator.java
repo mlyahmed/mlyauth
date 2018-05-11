@@ -7,7 +7,7 @@ import com.mlyauth.lookup.PersonLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
 
 @Component
 public class PersonValidator implements IPersonValidator {
@@ -16,14 +16,14 @@ public class PersonValidator implements IPersonValidator {
     private PersonLookuper personLookuper;
 
     @Override
-    public void validateNewPerson(PersonBean bean) {
+    public void validateNewPerson(final PersonBean bean) {
         if (bean == null)
-            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_IS_NULL")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_IS_NULL")));
 
         if (personLookuper.byEmail(bean.getEmail()) != null)
-            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
 
         if (bean.getEmail() == null)
-            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("EMAIL_INVALID")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_INVALID")));
     }
 }

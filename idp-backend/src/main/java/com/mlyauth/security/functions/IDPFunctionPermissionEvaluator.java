@@ -18,20 +18,21 @@ public class IDPFunctionPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        final IDPPermissionValidator validator = validators.get(targetDomainObject.getClass());
+    public boolean hasPermission(final Authentication authentication, final Object target, final Object permission) {
+        final IDPPermissionValidator validator = validators.get(target.getClass());
         if (validator != null)
-            return validator.hasPermission(authentication, targetDomainObject, permission);
+            return validator.hasPermission(authentication, target, permission);
         return false;
     }
 
     @Override
-    public boolean hasPermission(Authentication auth, Serializable targetId, String target, Object permission) {
+    public boolean hasPermission(final Authentication auth, final Serializable targetId, final String target,
+                                 final Object permission) {
         return false;
     }
 
     @Autowired(required = false)
-    public void setBusinessEntityPermissionValidators(List<IDPPermissionValidator> validators) {
+    public void setBusinessEntityPermissionValidators(final List<IDPPermissionValidator> validators) {
         for (IDPPermissionValidator validator : validators) {
             this.validators.put(validator.support(), validator);
         }

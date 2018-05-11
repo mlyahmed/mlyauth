@@ -16,9 +16,9 @@ import java.util.List;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class IDPMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
-    final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
 
-    private IDPMethodSecurityExpressionHandler methodSecurityExpressionHandler = new IDPMethodSecurityExpressionHandler();
+    private IDPMethodSecurityExpressionHandler securityExpressionHandler = new IDPMethodSecurityExpressionHandler();
 
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
@@ -32,19 +32,19 @@ public class IDPMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
-        return methodSecurityExpressionHandler;
+        return securityExpressionHandler;
     }
 
     @Autowired(required = false)
-    public void setAuthenticationTrustResolver(AuthenticationTrustResolver trustResolver) {
-        methodSecurityExpressionHandler.setTrustResolver(trustResolver);
+    public void setAuthenticationTrustResolver(final AuthenticationTrustResolver trustResolver) {
+        securityExpressionHandler.setTrustResolver(trustResolver);
     }
 
     @Autowired(required = false)
-    public void setPermissionEvaluator(List<PermissionEvaluator> permissionEvaluators) {
+    public void setPermissionEvaluator(final List<PermissionEvaluator> permissionEvaluators) {
         if (permissionEvaluators.size() != 1) {
             logger.debug("Not autwiring PermissionEvaluator since size != 1. Got " + permissionEvaluators);
         }
-        methodSecurityExpressionHandler.setPermissionEvaluator(permissionEvaluators.get(0));
+        securityExpressionHandler.setPermissionEvaluator(permissionEvaluators.get(0));
     }
 }

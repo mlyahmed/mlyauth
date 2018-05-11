@@ -131,8 +131,7 @@ jacocoTestReport {
 checkstyle {
     ignoreFailures = true
     configFile = file("${project.rootDir}/checkstyle.xml")
-    configProperties = [ "suppressionFile" : file("${project.rootDir}/suppressions.xml")]
-
+    configProperties = [ "checkstyle_conf_dir" : file("${project.rootDir}")]
     checkstyleTest.enabled = false
     checkstyleMain.source = sourceSets.main.allJava
     configurations {

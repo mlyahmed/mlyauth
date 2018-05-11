@@ -22,9 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JOSEBearerAuthenticationFilter extends OncePerRequestFilter {
-    private static Logger logger = LoggerFactory.getLogger(JOSEBearerAuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JOSEBearerAuthenticationFilter.class);
 
     public static final String FILTER_URL = "/domain/**";
+    public static final String BEARER_PREFIX = "Bearer ";
 
     private RequestMatcher authenticationRequestMatcher;
 
@@ -34,49 +35,50 @@ public class JOSEBearerAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public JOSEBearerAuthenticationFilter(){
+    public JOSEBearerAuthenticationFilter() {
         authenticationRequestMatcher = new AntPathRequestMatcher(FILTER_URL);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(final HttpServletRequest req, final HttpServletResponse res, final FilterChain ch)
+            throws IOException, ServletException {
 
-        if (!requiresAuthentication(request)) {
-            chain.doFilter(request, response);
+        if (!requiresAuthentication(req)) {
+            ch.doFilter(req, res);
             return;
         }
 
         try {
 
-            if(StringUtils.isNotBlank(getRawBearer(request))) {
-                final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(getRawBearer(request));
+            if (StringUtils.isNotBlank(getRawBearer(req))) {
+                final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(getRawBearer(req));
                 final JOSEAuthenticationToken authToken = new JOSEAuthenticationToken(accessToken);
                 final Authentication authenticate = authenticationManager.authenticate(authToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticate);
             }
-            chain.doFilter(request, response);
+            ch.doFilter(req, res);
 
-        }catch(Exception e){
-            logger.error("Error JOSE Bearer authentication : ", e);
+        } catch (Exception e) {
+            LOGGER.error("Error JOSE Bearer authentication : ", e);
             SecurityContextHolder.clearContext();
-            response.sendError(HttpStatus.UNAUTHORIZED.value());
+            res.sendError(HttpStatus.UNAUTHORIZED.value());
         }
 
     }
 
-    private boolean requiresAuthentication(HttpServletRequest request) {
-        return authenticationRequestMatcher.matches(request);
+    private boolean requiresAuthentication(final HttpServletRequest req) {
+        return authenticationRequestMatcher.matches(req);
     }
 
-    private String getRawBearer(HttpServletRequest request) {
-        final String header = getAuthorizationHeader(request);
-        if (header != null && header.startsWith("Bearer "))
-            return header.substring(7);
+    private String getRawBearer(final HttpServletRequest req) {
+        final String header = getAuthorizationHeader(req);
+        if (header != null && header.startsWith(BEARER_PREFIX))
+            return header.substring(BEARER_PREFIX.length());
         else
             return null;
     }
 
-    private String getAuthorizationHeader(HttpServletRequest request) {
+    private String getAuthorizationHeader(final HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 }

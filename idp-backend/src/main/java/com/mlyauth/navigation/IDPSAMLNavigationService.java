@@ -44,17 +44,17 @@ public class IDPSAMLNavigationService extends AbstractIDPNavigationService {
     private IContext context;
 
     @Override
-    public NavigationBean process(String appname) {
+    public NavigationBean process(final String appname) {
         checkApplication(applicationDAO.findByAppname(appname));
         final SAMLAccessToken access = generateAccess(appname);
         return buildNavigation(access, saveToken(appname, access));
     }
 
-    private SAMLAccessToken generateAccess(String appname) {
+    private SAMLAccessToken generateAccess(final String appname) {
         return responseGenerator.produce(applicationDAO.findByAppname(appname));
     }
 
-    private Token saveToken(String appname, SAMLAccessToken access) {
+    private Token saveToken(final String appname, final SAMLAccessToken access) {
         Token token = tokenMapper.toToken(access);
         token.setPurpose(TokenPurpose.NAVIGATION);
         token.setApplication(applicationDAO.findByAppname(appname));
@@ -65,7 +65,7 @@ public class IDPSAMLNavigationService extends AbstractIDPNavigationService {
         return token;
     }
 
-    private NavigationBean buildNavigation(SAMLAccessToken access, Token token) {
+    private NavigationBean buildNavigation(final SAMLAccessToken access, final Token token) {
         NavigationBean navigation = new NavigationBean();
         navigation.setTarget(access.getTargetURL());
         navigation.setTokenId(token.getId());
@@ -73,7 +73,7 @@ public class IDPSAMLNavigationService extends AbstractIDPNavigationService {
         return navigation;
     }
 
-    private Collection<AttributeBean> buildAttributes(SAMLAccessToken access) {
+    private Collection<AttributeBean> buildAttributes(final SAMLAccessToken access) {
         Collection<AttributeBean> attributes = new LinkedList<>();
         attributes.add(newAttribute("SAMLResponse").setValue(access.serialize()));
         return attributes;
@@ -84,11 +84,8 @@ public class IDPSAMLNavigationService extends AbstractIDPNavigationService {
         return SP_SAML;
     }
 
-    private void checkApplication(Application application) {
-        if (application == null)
-            throw ApplicationNotFoundException.newInstance();
-
-        if (!application.getAspects().contains(SP_SAML))
-            throw NotSPSAMLApplicationException.newInstance();
+    private void checkApplication(final Application application) {
+        if (application == null) throw ApplicationNotFoundException.newInstance();
+        if (!application.getAspects().contains(SP_SAML)) throw NotSPSAMLApplicationException.newInstance();
     }
 }

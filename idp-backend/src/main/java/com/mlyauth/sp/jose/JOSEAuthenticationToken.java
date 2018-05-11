@@ -9,7 +9,7 @@ public class JOSEAuthenticationToken extends AbstractAuthenticationToken {
 
     private JOSEAccessToken credentials;
 
-    public JOSEAuthenticationToken(JOSEAccessToken credentials) {
+    public JOSEAuthenticationToken(final JOSEAccessToken credentials) {
         super(null);
         notNull(credentials, "JOSEAuthenticationToken requires the credentials parameter to be set");
         this.credentials = credentials;

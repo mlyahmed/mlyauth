@@ -33,7 +33,7 @@ public class IDPNavigationController {
     }
 
     @GetMapping("/saml/to/{appname}")
-    public String samlNavigateTo(@PathVariable final String appname, Model model) {
+    public String samlNavigateTo(@PathVariable final String appname, final Model model) {
         final NavigationBean navigation = services.get(SP_SAML).newNavigation(appname);
         model.addAttribute("navigation", navigation);
         return "post-navigation";

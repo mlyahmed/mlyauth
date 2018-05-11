@@ -22,9 +22,9 @@ public class BasicUserDetailsService implements UserDetailsService {
     private AuthenticationInfoDAO authenticationInfoDAO;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(username);
-        if(authenticationInfo == null) return null;
+        if (authenticationInfo == null) return null;
 
         if (authenticationInfo.isPerson()) {
             return new IDPUser(contextHolder.newPersonContext(authenticationInfo.getPerson()));

@@ -11,23 +11,23 @@ import org.springframework.stereotype.Component;
 public class PersonPermissionValidator implements IDPPermissionValidator<PersonBean> {
 
     @Override
-    public boolean hasPermission(Authentication authentication, PersonBean person, Object permission) {
-        if (authentication == null) return false;
+    public boolean hasPermission(final Authentication auth, final PersonBean person, final Object permission) {
+        if (auth == null) return false;
         if (person == null) return true;
 
         if (permission instanceof IDPPermission && permission == IDPPermission.CREATE) {
-            return authentication.getAuthorities()
+            return auth.getAuthorities()
                     .stream().filter(aut -> (isMaster(aut) || isFeeder(aut))).count() > 0;
         }
 
         return true;
     }
 
-    private boolean isMaster(GrantedAuthority aut) {
+    private boolean isMaster(final GrantedAuthority aut) {
         return ProfileCode.MASTER.name().equals(aut.getAuthority());
     }
 
-    private boolean isFeeder(GrantedAuthority aut) {
+    private boolean isFeeder(final GrantedAuthority aut) {
         return ProfileCode.MASTER.name().equals(aut.getAuthority());
     }
 

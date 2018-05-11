@@ -35,7 +35,10 @@ import static com.mlyauth.constants.Direction.INBOUND;
 import static java.util.Arrays.asList;
 
 public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilter {
-    protected final static Logger logger = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SPJOSEProcessingFilter.class);
+
+    private static final String BEARER_PREFIX = "Bearer";
 
     @Autowired
     private JOSETokenDecoder tokenDecoder;
@@ -61,13 +64,15 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         this(FILTER_URL);
     }
 
-    protected SPJOSEProcessingFilter(String defaultFilterProcessesUrl) {
+    protected SPJOSEProcessingFilter(final String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
         setFilterProcessesUrl(defaultFilterProcessesUrl);
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(final HttpServletRequest request, final HttpServletResponse response)
+            throws AuthenticationException {
+
         final Stopwatch started = Stopwatch.createStarted();
         try {
 
@@ -76,64 +81,60 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
                 return null;
             }
 
-            final String rawBearer = getRawBearer(request);
+            final JOSEAccessToken token = tokenDecoder.decodeAccess(getRawBearer(request), IDP_JOSE);
+            accessTokenValidator.validate(token);
 
-            final JOSEAccessToken accessToken = tokenDecoder.decodeAccess(rawBearer, IDP_JOSE);
-            accessTokenValidator.validate(accessToken);
-
-            if (!"SSO".equals(accessToken.getBP()))
+            if (!"SSO".equals(token.getBP()))
                 throw JOSEErrorException.newInstance("The Token BP must be SSO");
 
-            if (!getFullURL(request).equals(accessToken.getTargetURL()))
+            if (!getFullURL(request).equals(token.getTargetURL()))
                 throw JOSEErrorException.newInstance("The Token Target URL does not match");
 
-            final Authentication authenticate = getAuthenticationManager().authenticate(new JOSEAuthenticationToken(accessToken));
-
-            traceNavigation(request, started, accessToken);
-
-            return authenticate;
+            final Authentication auth = getAuthenticationManager().authenticate(new JOSEAuthenticationToken(token));
+            traceNavigation(request, started, token);
+            return auth;
 
         } catch (Exception e) {
-            logger.error("Incoming JOSE token is invalid", e);
+            LOGGER.error("Incoming JOSE token is invalid", e);
             throw new AuthenticationServiceException("Incoming JOSE token is invalid", e);
         }
     }
 
-    private String getAuthorizationHeader(HttpServletRequest request) {
+    private String getAuthorizationHeader(final HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
-    private String getRawBearer(HttpServletRequest request) {
+    private String getRawBearer(final HttpServletRequest request) {
         final String asHeader = getAuthorizationHeader(request);
-        final String asForm = request.getParameter("Bearer");
-        if (asHeader != null && asHeader.startsWith("Bearer "))
-            return asHeader.substring(7);
-        else if(StringUtils.isNotBlank(asForm))
+        final String asForm = request.getParameter(BEARER_PREFIX);
+        if (asHeader != null && asHeader.startsWith(BEARER_PREFIX + " "))
+            return asHeader.substring((BEARER_PREFIX + " ").length());
+        else if (StringUtils.isNotBlank(asForm))
             return asForm;
         else
             throw JOSEErrorException.newInstance();
     }
 
-    public String getFullURL(HttpServletRequest request) {
+    public String getFullURL(final HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         return request.getQueryString() == null
                 ? requestURL.toString() : requestURL.append('?').append(request.getQueryString()).toString();
     }
 
-    private void traceNavigation(HttpServletRequest request, Stopwatch started, JOSEAccessToken accessToken) {
+    private void traceNavigation(final HttpServletRequest req, final Stopwatch started, final JOSEAccessToken token) {
         final Navigation navigation = Navigation.newInstance()
                 .setCreatedAt(new Date())
                 .setDirection(INBOUND)
-                .setTargetURL(accessToken.getTargetURL())
-                .setToken(saveToken(accessToken, request))
+                .setTargetURL(token.getTargetURL())
+                .setToken(saveToken(token, req))
                 .setSession(this.context.getAuthenticationSession());
 
-        navigation.setAttributes(buildAttributes(request));
+        navigation.setAttributes(buildAttributes(req));
         navigation.setTimeConsumed(started.elapsed(TimeUnit.MILLISECONDS));
         navigationDAO.save(navigation);
     }
 
-    private Token saveToken(JOSEAccessToken accessToken, HttpServletRequest request) {
+    private Token saveToken(final JOSEAccessToken accessToken, final HttpServletRequest request) {
         Token token = tokenMapper.toToken(accessToken);
         token.setPurpose(TokenPurpose.NAVIGATION).setSession(context.getAuthenticationSession());
         token.setStatus(TokenStatus.CHECKED);
@@ -142,10 +143,10 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         return token;
     }
 
-    private HashSet<NavigationAttribute> buildAttributes(HttpServletRequest request) {
+    private HashSet<NavigationAttribute> buildAttributes(final HttpServletRequest request) {
         return new HashSet<>(asList(NavigationAttribute.newInstance()
-                .setCode("Bearer")
-                .setAlias("Bearer")
+                .setCode(BEARER_PREFIX)
+                .setAlias(BEARER_PREFIX)
                 .setValue(getRawBearer(request))));
     }
 }

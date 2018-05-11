@@ -21,8 +21,8 @@ public class EncryptedString extends AbstractEncryptedAsStringType {
             throws HibernateException, SQLException {
 
         checkInitialization();
-        final String message = rs.getString(names[0]);
-        return rs.wasNull() ? null : convertToObject(!isWrapped(message) ? message : encryptor.decrypt(unwrap(message)));
+        final String value = rs.getString(names[0]);
+        return rs.wasNull() ? null : convertToObject(!isWrapped(value) ? value : encryptor.decrypt(unwrap(value)));
     }
 
     @Override
@@ -48,15 +48,15 @@ public class EncryptedString extends AbstractEncryptedAsStringType {
     }
 
 
-    private boolean isWrapped(String message){
+    private boolean isWrapped(final String message) {
         return StringUtils.isNotBlank(message) && message.startsWith(WRAP_PREFIX) && message.endsWith(WRAP_SUFFIX);
     }
 
-    private String unwrap(String message){
-        return message.substring(0, message.length() -1).replace(WRAP_PREFIX, "");
+    private String unwrap(final String message) {
+        return message.substring(0, message.length() - 1).replace(WRAP_PREFIX, "");
     }
 
-    private String wrap(String message) {
+    private String wrap(final String message) {
         return WRAP_PREFIX + message + WRAP_SUFFIX;
     }
 }

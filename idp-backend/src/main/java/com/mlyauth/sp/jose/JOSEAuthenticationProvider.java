@@ -20,28 +20,29 @@ public class JOSEAuthenticationProvider implements AuthenticationProvider {
     private SPJOSEUserDetailsService userDetailsService;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(final Authentication auth) throws AuthenticationException {
 
-        if (!supports(authentication.getClass())) {
-            throw new IllegalArgumentException("Only JOSEAuthenticationToken is supported, " + authentication.getClass() + " was attempted");
+        if (!supports(auth.getClass())) {
+            final String errorMsg = "Only JOSEAuthenticationToken is supported, " + auth.getClass() + " was attempted";
+            throw new IllegalArgumentException(errorMsg);
         }
 
-        final JOSEAccessToken credentials = ((JOSEAuthenticationToken) authentication).getCredentials();
+        final JOSEAccessToken cred = ((JOSEAuthenticationToken) auth).getCredentials();
 
-        if (credentials == null)
+        if (cred == null)
             throw new AuthenticationServiceException("The JOSE Token is not available in the authentication token");
 
-        IDPUser user = userDetailsService.loadUserByJOSE(credentials);
-        Object principal = user.getUsername();
-        Collection<? extends GrantedAuthority> entitlements = user.getAuthorities();
-        final Date expiration = Date.from(credentials.getExpiryTime().atZone(ZoneId.systemDefault()).toInstant());
-        ExpiringUsernameAuthenticationToken result = new ExpiringUsernameAuthenticationToken(expiration, principal, credentials, entitlements);
-        result.setDetails(user);
+        IDPUser user = userDetailsService.loadUserByJOSE(cred);
+        Object prs = user.getUsername();
+        Collection<? extends GrantedAuthority> grants = user.getAuthorities();
+        final Date exp = Date.from(cred.getExpiryTime().atZone(ZoneId.systemDefault()).toInstant());
+        ExpiringUsernameAuthenticationToken rs = new ExpiringUsernameAuthenticationToken(exp, prs, cred, grants);
+        rs.setDetails(user);
 
-        return result;
+        return rs;
     }
 
-    public boolean supports(Class aClass) {
+    public boolean supports(final Class aClass) {
         return JOSEAuthenticationToken.class.isAssignableFrom(aClass);
     }
 

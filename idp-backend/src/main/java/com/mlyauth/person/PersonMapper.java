@@ -30,8 +30,8 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
     private RoleDAO roleDAO;
 
     @Override
-    public PersonBean toBean(Person person) {
-        if(person == null) return null;
+    public PersonBean toBean(final Person person) {
+        if (person == null) return null;
         return PersonBean.newInstance()
                 .setId(person.getId())
                 .setRole(person.getRole().getCode())
@@ -43,11 +43,11 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
                 .setApplications(applicationsToAppnames(person));
     }
 
-    private String parseBithdate(Person person) {
+    private String parseBithdate(final Person person) {
         return person.getBirthdate() != null ? dateFormatter.format(person.getBirthdate()) : null;
     }
 
-    private HashSet<String> applicationsToAppnames(Person person) {
+    private HashSet<String> applicationsToAppnames(final Person person) {
         return Sets.newHashSet(person.getApplications().stream()
                 .filter(app -> app.getAppname() != null)
                 .map(Application::getAppname)
@@ -55,7 +55,7 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
     }
 
     @Override
-    public Person toEntity(PersonBean bean) {
+    public Person toEntity(final PersonBean bean) {
         return bean == null ? null : createPerson(bean)
                 .setRole(roleDAO.getOne(bean.getRole()))
                 .setExternalId(bean.getExternalId())
@@ -65,15 +65,15 @@ public class PersonMapper implements IDomainMapper<Person, PersonBean> {
                 .setEmail(bean.getEmail());
     }
 
-    private Person createPerson(PersonBean bean){
+    private Person createPerson(final PersonBean bean) {
         final Person person = personDAO.findByExternalId(bean.getExternalId());
         return person != null ? person : Person.newInstance().setId(bean.getId());
     }
 
-    private Date parseBirthdate(PersonBean bean) {
-        try{
-            return StringUtils.isNotBlank(bean.getBirthdate())? dateFormatter.parse(bean.getBirthdate()) : null;
-        }catch(ParseException e){
+    private Date parseBirthdate(final PersonBean bean) {
+        try {
+            return StringUtils.isNotBlank(bean.getBirthdate()) ? dateFormatter.parse(bean.getBirthdate()) : null;
+        } catch (final ParseException e) {
             throw IDPException.newInstance(e);
         }
     }

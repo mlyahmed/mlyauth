@@ -24,7 +24,7 @@ public class PersonController {
 
     @PostMapping
     @PreAuthorize("hasPermission(#person, T(com.mlyauth.security.functions.IDPPermission).CREATE)")
-    public ResponseEntity newPerson(@RequestBody PersonBean person) {
+    public ResponseEntity newPerson(@RequestBody final PersonBean person) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(person));
         } catch (IDPException e) {
@@ -34,13 +34,13 @@ public class PersonController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public @ResponseBody PersonBean updatePerson(@RequestBody PersonBean person) {
+    public @ResponseBody PersonBean updatePerson(@RequestBody final PersonBean person) {
         return personService.updatePerson(person);
     }
 
     @PutMapping("/_assign/{appname}/to/{personExternalId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void assignApplication(@PathVariable String appname, @PathVariable String personExternalId) {
+    public void assignApplication(@PathVariable final String appname, @PathVariable final String personExternalId) {
         personService.assignApplication(appname, personExternalId);
     }
 
