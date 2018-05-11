@@ -1,6 +1,10 @@
 package com.mlyauth.context;
 
-import com.mlyauth.domain.*;
+import com.mlyauth.domain.Application;
+import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationSession;
+import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;

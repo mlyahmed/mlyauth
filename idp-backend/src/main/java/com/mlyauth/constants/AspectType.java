@@ -3,8 +3,13 @@ package com.mlyauth.constants;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static com.mlyauth.constants.AspectType.MetaType.*;
-import static com.mlyauth.constants.TokenNorm.*;
+import static com.mlyauth.constants.AspectType.MetaType.CL;
+import static com.mlyauth.constants.AspectType.MetaType.IDP;
+import static com.mlyauth.constants.AspectType.MetaType.RS;
+import static com.mlyauth.constants.AspectType.MetaType.SP;
+import static com.mlyauth.constants.TokenNorm.BASIC;
+import static com.mlyauth.constants.TokenNorm.JOSE;
+import static com.mlyauth.constants.TokenNorm.SAML;
 import static java.util.Arrays.stream;
 
 public enum AspectType implements IStringEnum {

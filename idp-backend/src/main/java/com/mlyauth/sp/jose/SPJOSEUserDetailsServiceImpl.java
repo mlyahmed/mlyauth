@@ -13,7 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.ACTION;
+import static com.mlyauth.token.Claims.APPLICATION;
+import static com.mlyauth.token.Claims.CLIENT_ID;
+import static com.mlyauth.token.Claims.CLIENT_PROFILE;
+import static com.mlyauth.token.Claims.ENTITY_ID;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;

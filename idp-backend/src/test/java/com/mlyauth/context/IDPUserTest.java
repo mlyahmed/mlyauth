@@ -21,7 +21,10 @@ import java.util.HashSet;
 
 import static com.mlyauth.constants.ProfileCode.MASTER;
 import static com.mlyauth.constants.ProfileCode.NAVIGATOR;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)

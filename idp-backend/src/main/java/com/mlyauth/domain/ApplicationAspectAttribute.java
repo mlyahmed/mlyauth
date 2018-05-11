@@ -2,7 +2,12 @@ package com.mlyauth.domain;
 
 import com.mlyauth.constants.AspectAttribute;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "APPLICATION_ASPECT_ATTR")

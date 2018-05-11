@@ -19,7 +19,9 @@ import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
 
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.APPLICATION;
+import static com.mlyauth.token.Claims.CLIENT_ID;
+import static com.mlyauth.token.Claims.CLIENT_PROFILE;
 import static org.springframework.util.Assert.notEmpty;
 import static org.springframework.util.Assert.notNull;
 

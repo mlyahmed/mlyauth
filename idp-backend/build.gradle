@@ -131,10 +131,8 @@ jacocoTestReport {
 checkstyle {
     ignoreFailures = true
     configFile = file("${project.rootDir}/checkstyle.xml")
-    checkstyleMain {
-        source = sourceSets.main.allSource
-    }
-
+    checkstyleTest.enabled = false
+    checkstyleMain.source = sourceSets.main.allJava
     configurations {
         checkstyle
     }

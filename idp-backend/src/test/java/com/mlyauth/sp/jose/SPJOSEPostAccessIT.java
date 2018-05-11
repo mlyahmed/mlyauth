@@ -39,14 +39,22 @@ import static com.mlyauth.constants.AspectAttribute.IDP_JOSE_ENTITY_ID;
 import static com.mlyauth.constants.AspectType.IDP_JOSE;
 import static com.mlyauth.constants.Direction.INBOUND;
 import static com.mlyauth.domain.Application.newInstance;
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.ACTION;
+import static com.mlyauth.token.Claims.APPLICATION;
+import static com.mlyauth.token.Claims.CLIENT_ID;
+import static com.mlyauth.token.Claims.CLIENT_PROFILE;
+import static com.mlyauth.token.Claims.ENTITY_ID;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 public class SPJOSEPostAccessIT extends AbstractIntegrationTest {

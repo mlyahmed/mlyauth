@@ -16,7 +16,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.domain.TokenClaim.newInstance;
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.ACTION;
+import static com.mlyauth.token.Claims.APPLICATION;
+import static com.mlyauth.token.Claims.AUDIENCE;
+import static com.mlyauth.token.Claims.BP;
+import static com.mlyauth.token.Claims.CLIENT_ID;
+import static com.mlyauth.token.Claims.CLIENT_PROFILE;
+import static com.mlyauth.token.Claims.DELEGATE;
+import static com.mlyauth.token.Claims.DELEGATOR;
+import static com.mlyauth.token.Claims.ENTITY_ID;
+import static com.mlyauth.token.Claims.ISSUER;
+import static com.mlyauth.token.Claims.SCOPES;
+import static com.mlyauth.token.Claims.STATE;
+import static com.mlyauth.token.Claims.SUBJECT;
+import static com.mlyauth.token.Claims.TARGET_URL;
+import static com.mlyauth.token.Claims.VERDICT;
 
 @Component
 public class TokenMapper {

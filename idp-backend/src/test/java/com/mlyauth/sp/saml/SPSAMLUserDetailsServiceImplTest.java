@@ -29,7 +29,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.ACTION;
+import static com.mlyauth.token.Claims.APPLICATION;
+import static com.mlyauth.token.Claims.CLIENT_ID;
+import static com.mlyauth.token.Claims.CLIENT_PROFILE;
+import static com.mlyauth.token.Claims.ENTITY_ID;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;

@@ -11,7 +11,9 @@ import org.junit.runner.RunWith;
 import java.sql.Types;
 
 import static com.mlyauth.tools.RandomForTests.randomFrenchEmail;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)

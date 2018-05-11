@@ -18,7 +18,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import static com.mlyauth.beans.AttributeBean.newAttribute;
-import static com.mlyauth.constants.AspectAttribute.*;
+import static com.mlyauth.constants.AspectAttribute.SP_BASIC_PASSWORD;
+import static com.mlyauth.constants.AspectAttribute.SP_BASIC_SSO_URL;
+import static com.mlyauth.constants.AspectAttribute.SP_BASIC_USERNAME;
 
 @Service
 @Transactional

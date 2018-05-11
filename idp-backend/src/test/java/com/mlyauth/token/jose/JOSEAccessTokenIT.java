@@ -1,10 +1,23 @@
 package com.mlyauth.token.jose;
 
 import com.mlyauth.AbstractIntegrationTest;
-import com.mlyauth.constants.*;
+import com.mlyauth.constants.ApplicationTypeCode;
+import com.mlyauth.constants.AspectAttribute;
+import com.mlyauth.constants.AuthenticationInfoStatus;
+import com.mlyauth.constants.TokenPurpose;
+import com.mlyauth.constants.TokenStatus;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.credentials.CredentialManager;
-import com.mlyauth.dao.*;
-import com.mlyauth.domain.*;
+import com.mlyauth.dao.ApplicationAspectAttributeDAO;
+import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.ApplicationTypeDAO;
+import com.mlyauth.dao.AuthenticationInfoDAO;
+import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.domain.Application;
+import com.mlyauth.domain.ApplicationAspectAttribute;
+import com.mlyauth.domain.ApplicationAspectAttributeId;
+import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.Token;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.tools.KeysForTests;
 import com.nimbusds.jose.util.Base64URL;
@@ -29,7 +42,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.UUID;
 
-import static com.mlyauth.constants.AspectAttribute.*;
+import static com.mlyauth.constants.AspectAttribute.CL_JOSE_CONTEXT;
+import static com.mlyauth.constants.AspectAttribute.CL_JOSE_ENTITY_ID;
+import static com.mlyauth.constants.AspectAttribute.RS_JOSE_CONTEXT;
+import static com.mlyauth.constants.AspectAttribute.RS_JOSE_ENTITY_ID;
 import static com.mlyauth.constants.AspectType.CL_JOSE;
 import static com.mlyauth.constants.AspectType.RS_JOSE;
 import static com.mlyauth.tools.RandomForTests.randomString;

@@ -2,11 +2,16 @@ package com.mlyauth.domain;
 
 import com.mlyauth.constants.AspectType;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name="AUTH_ASPECT")
+@Table(name = "AUTH_ASPECT")
 public class AuthAspect implements Serializable {
 
     @Id

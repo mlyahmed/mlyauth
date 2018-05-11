@@ -1,13 +1,22 @@
 package com.mlyauth.context;
 
 import com.mlyauth.dao.AuthenticationSessionDAO;
-import com.mlyauth.domain.*;
+import com.mlyauth.domain.Application;
+import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationSession;
+import com.mlyauth.domain.Person;
+import com.mlyauth.domain.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
 import static com.mlyauth.constants.AuthenticationSessionStatus.CLOSED;

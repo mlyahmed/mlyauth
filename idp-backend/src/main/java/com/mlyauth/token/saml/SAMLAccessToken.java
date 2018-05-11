@@ -1,24 +1,58 @@
 package com.mlyauth.token.saml;
 
-import com.mlyauth.constants.*;
+import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenProcessingStatus;
+import com.mlyauth.constants.TokenRefreshMode;
+import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.TokenValidationMode;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.token.AbstractToken;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.opensaml.saml2.core.*;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.AttributeStatement;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.AuthnContext;
+import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnStatement;
+import org.opensaml.saml2.core.Conditions;
+import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.NameIDType;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.Status;
+import org.opensaml.saml2.core.StatusCode;
+import org.opensaml.saml2.core.Subject;
+import org.opensaml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml2.core.SubjectConfirmationData;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-import static com.mlyauth.constants.TokenProcessingStatus.*;
+import static com.mlyauth.constants.TokenProcessingStatus.CYPHERED;
+import static com.mlyauth.constants.TokenProcessingStatus.DECIPHERED;
+import static com.mlyauth.constants.TokenProcessingStatus.FORGED;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.BP;
+import static com.mlyauth.token.Claims.DELEGATE;
+import static com.mlyauth.token.Claims.DELEGATOR;
+import static com.mlyauth.token.Claims.SCOPES;
+import static com.mlyauth.token.Claims.STATE;
 import static org.opensaml.saml2.core.StatusCode.AUTHN_FAILED_URI;
 import static org.opensaml.saml2.core.StatusCode.SUCCESS_URI;
 import static org.opensaml.xml.util.Base64.encodeBytes;
@@ -44,7 +78,7 @@ public class SAMLAccessToken extends AbstractToken {
         init();
     }
 
-    public SAMLAccessToken(String serialized, Credential credential) {
+    public SAMLAccessToken(final String serialized, final Credential credential) {
         notNull(serialized, "The serialized token argument is mandatory !");
         notNull(credential, "The credential argument is mandatory !");
         notNull(credential.getPrivateKey(), "The private key argument is mandatory !");
@@ -104,10 +138,10 @@ public class SAMLAccessToken extends AbstractToken {
         subject = samlHelper.buildSAMLObject(Subject.class);
         subject.setNameID(newSubjectNameID());
         final SubjectConfirmation subjectConfirmation = samlHelper.buildSAMLObject(SubjectConfirmation.class);
-        final SubjectConfirmationData subjectConfirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
-        subjectConfirmationData.setNotOnOrAfter(DateTime.now().plusMinutes(2));
+        final SubjectConfirmationData confirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
+        confirmationData.setNotOnOrAfter(DateTime.now().plusMinutes(2));
         subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
-        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+        subjectConfirmation.setSubjectConfirmationData(confirmationData);
         subject.getSubjectConfirmations().add(subjectConfirmation);
         assertion.setSubject(subject);
     }
@@ -134,7 +168,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setRefreshMode(TokenRefreshMode mode) {
+    public void setRefreshMode(final TokenRefreshMode mode) {
 
     }
 
@@ -144,7 +178,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setValidationMode(TokenValidationMode mode) {
+    public void setValidationMode(final TokenValidationMode mode) {
 
     }
 
@@ -154,7 +188,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setStamp(String stamp) {
+    public void setStamp(final String stamp) {
         checkUnmodifiable();
         response.setID(stamp);
         assertion.setID(stamp);
@@ -167,7 +201,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setSubject(String value) {
+    public void setSubject(final String value) {
         checkUnmodifiable();
         subject.getNameID().setValue(value);
         status = FORGED;
@@ -180,7 +214,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setScopes(Set<TokenScope> scopes) {
+    public void setScopes(final  Set<TokenScope> scopes) {
         checkUnmodifiable();
         setAttributeValue(SCOPES.getValue(), compactScopes(scopes));
         status = FORGED;
@@ -192,7 +226,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setBP(String bp) {
+    public void setBP(final String bp) {
         checkUnmodifiable();
         setAttributeValue(BP.getValue(), bp);
         status = FORGED;
@@ -204,7 +238,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setState(String state) {
+    public void setState(final String state) {
         checkUnmodifiable();
         setAttributeValue(STATE.getValue(), state);
         status = FORGED;
@@ -216,7 +250,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setIssuer(String issuerURI) {
+    public void setIssuer(final String issuerURI) {
         checkUnmodifiable();
         response.getIssuer().setValue(issuerURI);
         assertion.getIssuer().setValue(issuerURI);
@@ -229,7 +263,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setAudience(String audienceURI) {
+    public void setAudience(final String audienceURI) {
         checkUnmodifiable();
         audience.setAudienceURI(audienceURI);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setInResponseTo(audienceURI);
@@ -242,7 +276,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setTargetURL(String url) {
+    public void setTargetURL(final String url) {
         checkUnmodifiable();
         response.setDestination(url);
         subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().setRecipient(url);
@@ -255,7 +289,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setDelegator(String delegatorID) {
+    public void setDelegator(final String delegatorID) {
         checkUnmodifiable();
         setAttributeValue(DELEGATOR.getValue(), delegatorID);
         status = FORGED;
@@ -267,7 +301,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setDelegate(String delegateURI) {
+    public void setDelegate(final String delegateURI) {
         checkUnmodifiable();
         setAttributeValue(DELEGATE.getValue(), delegateURI);
         status = FORGED;
@@ -280,7 +314,7 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setVerdict(TokenVerdict verdict) {
+    public void setVerdict(final TokenVerdict verdict) {
         checkUnmodifiable();
         response.getStatus().getStatusCode().setValue((SUCCESS == verdict) ? SUCCESS_URI : AUTHN_FAILED_URI);
         status = FORGED;
@@ -320,20 +354,20 @@ public class SAMLAccessToken extends AbstractToken {
     }
 
     @Override
-    public void setClaim(String claimURI, String value) {
+    public void setClaim(final String claimURI, final String value) {
         checkCommitted();
         if (StringUtils.isBlank(getAttributeValue(claimURI))) newAttribute(claimURI);
         setAttributeValue(claimURI, value);
     }
 
-    private void newAttribute(String claimURI) {
+    private void newAttribute(final String claimURI) {
         final Attribute claim = samlHelper.buildStringAttribute(claimURI, null);
         claim.setName(claimURI);
         assertion.getAttributeStatements().get(0).getAttributes().add(claim);
     }
 
     @Override
-    public String getClaim(String claimURI) {
+    public String getClaim(final String claimURI) {
         return getAttributeValue(claimURI);
     }
 

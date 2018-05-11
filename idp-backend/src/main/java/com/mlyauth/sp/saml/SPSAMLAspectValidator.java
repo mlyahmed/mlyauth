@@ -16,7 +16,9 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-import static com.mlyauth.constants.AspectAttribute.*;
+import static com.mlyauth.constants.AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE;
+import static com.mlyauth.constants.AspectAttribute.SP_SAML_ENTITY_ID;
+import static com.mlyauth.constants.AspectAttribute.SP_SAML_SSO_URL;
 import static com.mlyauth.constants.AspectType.SP_SAML;
 
 @Component

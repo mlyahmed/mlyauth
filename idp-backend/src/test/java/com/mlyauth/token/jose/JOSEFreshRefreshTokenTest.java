@@ -1,6 +1,10 @@
 package com.mlyauth.token.jose;
 
-import com.mlyauth.constants.*;
+import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenProcessingStatus;
+import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.token.Claims;
@@ -30,15 +34,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.mlyauth.constants.TokenRefreshMode.WHEN_EXPIRES;
-import static com.mlyauth.constants.TokenScope.*;
+import static com.mlyauth.constants.TokenScope.CLAIM;
+import static com.mlyauth.constants.TokenScope.PERSON;
+import static com.mlyauth.constants.TokenScope.POLICY;
+import static com.mlyauth.constants.TokenScope.PROPOSAL;
 import static com.mlyauth.constants.TokenValidationMode.STANDARD;
 import static com.mlyauth.constants.TokenVerdict.FAIL;
 import static com.mlyauth.constants.TokenVerdict.SUCCESS;
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.BP;
+import static com.mlyauth.token.Claims.DELEGATE;
+import static com.mlyauth.token.Claims.DELEGATOR;
+import static com.mlyauth.token.Claims.REFRESH_MODE;
+import static com.mlyauth.token.Claims.SCOPES;
+import static com.mlyauth.token.Claims.STATE;
+import static com.mlyauth.token.Claims.TARGET_URL;
+import static com.mlyauth.token.Claims.VALIDATION_MODE;
+import static com.mlyauth.token.Claims.VERDICT;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Date.from;
 import static java.util.stream.Collectors.toSet;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 

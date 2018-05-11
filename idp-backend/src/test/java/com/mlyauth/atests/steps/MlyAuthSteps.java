@@ -23,7 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.mlyauth.beans.AttributeBean.newAttribute;
-import static com.mlyauth.constants.AspectAttribute.*;
+import static com.mlyauth.constants.AspectAttribute.SP_BASIC_PASSWORD;
+import static com.mlyauth.constants.AspectAttribute.SP_BASIC_SSO_URL;
+import static com.mlyauth.constants.AspectAttribute.SP_BASIC_USERNAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.HttpStatus.ACCEPTED;

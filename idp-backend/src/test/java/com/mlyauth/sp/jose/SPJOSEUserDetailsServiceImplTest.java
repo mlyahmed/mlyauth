@@ -27,7 +27,11 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashSet;
 
-import static com.mlyauth.token.Claims.*;
+import static com.mlyauth.token.Claims.ACTION;
+import static com.mlyauth.token.Claims.APPLICATION;
+import static com.mlyauth.token.Claims.CLIENT_ID;
+import static com.mlyauth.token.Claims.CLIENT_PROFILE;
+import static com.mlyauth.token.Claims.ENTITY_ID;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;

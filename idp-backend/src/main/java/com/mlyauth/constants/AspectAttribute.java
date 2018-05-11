@@ -1,7 +1,16 @@
 package com.mlyauth.constants;
 
-import static com.mlyauth.constants.AspectType.*;
-import static com.mlyauth.constants.AttributeType.*;
+import static com.mlyauth.constants.AspectType.CL_JOSE;
+import static com.mlyauth.constants.AspectType.IDP_JOSE;
+import static com.mlyauth.constants.AspectType.RS_JOSE;
+import static com.mlyauth.constants.AspectType.SP_BASIC;
+import static com.mlyauth.constants.AspectType.SP_SAML;
+import static com.mlyauth.constants.AttributeType.CERTIFICATE;
+import static com.mlyauth.constants.AttributeType.CONTEXT;
+import static com.mlyauth.constants.AttributeType.ENDPOINT;
+import static com.mlyauth.constants.AttributeType.ENTITYID;
+import static com.mlyauth.constants.AttributeType.PASSWORD;
+import static com.mlyauth.constants.AttributeType.USERNAME;
 import static java.util.Arrays.stream;
 
 public enum AspectAttribute implements IStringEnum {

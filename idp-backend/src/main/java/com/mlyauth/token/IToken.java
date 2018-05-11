@@ -1,6 +1,12 @@
 package com.mlyauth.token;
 
-import com.mlyauth.constants.*;
+import com.mlyauth.constants.TokenNorm;
+import com.mlyauth.constants.TokenProcessingStatus;
+import com.mlyauth.constants.TokenRefreshMode;
+import com.mlyauth.constants.TokenScope;
+import com.mlyauth.constants.TokenType;
+import com.mlyauth.constants.TokenValidationMode;
+import com.mlyauth.constants.TokenVerdict;
 
 import java.time.LocalDateTime;
 import java.util.Set;

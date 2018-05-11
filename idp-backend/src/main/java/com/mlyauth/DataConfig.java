@@ -34,7 +34,7 @@ public class DataConfig implements TransactionManagementConfigurer {
     }
 
     @Bean
-    public HibernatePBEStringEncryptor hibernateStringEncryptor(StandardPBEStringEncryptor stringEncryptor){
+    public HibernatePBEStringEncryptor hibernateStringEncryptor(final StandardPBEStringEncryptor stringEncryptor){
         HibernatePBEStringEncryptor encryptor = new HibernatePBEStringEncryptor();
         encryptor.setEncryptor(stringEncryptor);
         encryptor.setRegisteredName("hibernateStringEncryptor");
