@@ -18,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class AbstractIntegrationTest {
 
-    public final static String MASTER_EMAIL = "ahmed.elidrissi.attach@gmail.com";
-    public final static String MASTER_PASSWORD = "root";
+    public static final String MASTER_EMAIL = "ahmed.elidrissi.attach@gmail.com";
+    public static final String MASTER_PASSWORD = "root";
 
     @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 
 
     @Rule

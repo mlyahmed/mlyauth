@@ -132,7 +132,7 @@ checkstyle {
     ignoreFailures = true
     configFile = file("${project.rootDir}/checkstyle.xml")
     configProperties = [ "checkstyle_conf_dir" : file("${project.rootDir}")]
-    checkstyleTest.enabled = false
+    checkstyleTest.enabled = true
     checkstyleMain.source = sourceSets.main.allJava
     configurations {
         checkstyle

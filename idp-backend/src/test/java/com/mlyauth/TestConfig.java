@@ -12,7 +12,7 @@ import java.security.Security;
 @Profile("test")
 public class TestConfig {
 
-    @Bean(name="jasyptStringEncryptor")
+    @Bean(name = "jasyptStringEncryptor")
     public StandardPBEStringEncryptor jasyptStringEncryptor() {
         Security.addProvider(new BouncyCastleProvider());
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
