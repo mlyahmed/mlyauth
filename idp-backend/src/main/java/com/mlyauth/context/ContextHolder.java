@@ -46,7 +46,7 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
-    public IContext newPersonContext(Person person) {
+    public IContext newPersonContext(final Person person) {
         final String contextId = newId();
         closeCurrentSession();
         final Context context = new Context(contextId, person, newAuthSession(person, contextId));
@@ -55,7 +55,7 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
-    public IContext newApplicationContext(Application application) {
+    public IContext newApplicationContext(final Application application) {
         final String contextId = newId();
         closeCurrentSession();
         final Context context = new Context(contextId, application, newAuthSession(application, contextId));
@@ -119,12 +119,12 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
-    public String getAttribute(String key) {
+    public String getAttribute(final String key) {
         return getContext() != null ? getContext().getAttribute(key) : null;
     }
 
     @Override
-    public boolean putAttribute(String key, String value) {
+    public boolean putAttribute(final String key, final String value) {
         return getContext() != null && getContext().putAttribute(key, value);
     }
 
@@ -147,7 +147,7 @@ public class ContextHolder implements IContextHolder {
         }
     }
 
-    private AuthenticationSession newAuthSession(Person person, String contextId) {
+    private AuthenticationSession newAuthSession(final Person person, final String contextId) {
         AuthenticationSession authSession = AuthenticationSession.newInstance()
                 .setContextId(contextId)
                 .setStatus(ACTIVE)
@@ -156,7 +156,7 @@ public class ContextHolder implements IContextHolder {
         return sauthSessionDAO.save(authSession);
     }
 
-    private AuthenticationSession newAuthSession(Application application, String contextId) {
+    private AuthenticationSession newAuthSession(final Application application, final String contextId) {
         AuthenticationSession authSession = AuthenticationSession.newInstance()
                 .setContextId(contextId)
                 .setStatus(ACTIVE)
@@ -178,7 +178,7 @@ public class ContextHolder implements IContextHolder {
         private final AuthenticationSession authSession;
         private Map<String, String> attributes = new HashMap<>();
 
-        protected Context(String id, Person person, AuthenticationSession authSession) {
+        protected Context(final String id, final Person person, final AuthenticationSession authSession) {
             this.id = id;
             this.person = person;
             this.application = null;
@@ -186,7 +186,7 @@ public class ContextHolder implements IContextHolder {
             getSession().setAttribute(CONTEXT_ID_ATTRIBUTE, id);
         }
 
-        protected Context(String id, Application application, AuthenticationSession authSession) {
+        protected Context(final String id, final Application application, final AuthenticationSession authSession) {
             this.id = id;
             this.person = null;
             this.application = application;
@@ -246,12 +246,12 @@ public class ContextHolder implements IContextHolder {
         }
 
         @Override
-        public String getAttribute(String key) {
+        public String getAttribute(final String key) {
             return attributes.get(key);
         }
 
         @Override
-        public boolean putAttribute(String key, String value) {
+        public boolean putAttribute(final String key, final String value) {
             return String.valueOf(attributes.get(key)).equals(attributes.put(key, value));
         }
 

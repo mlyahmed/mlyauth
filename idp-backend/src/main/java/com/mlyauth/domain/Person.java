@@ -20,12 +20,17 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name="PERSON")
+@Table(name = "PERSON")
 public class Person  implements EncryptedDomain {
+
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
 
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "PERSON_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", pkColumnValue = "PERSON_ID", valueColumnName = "SEQUENCEVALUE", initialValue = 9999, allocationSize=1)
+    @TableGenerator(name = "PERSON_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            pkColumnValue = "PERSON_ID", valueColumnName = "SEQUENCEVALUE",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "PERSON_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -53,12 +58,18 @@ public class Person  implements EncryptedDomain {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "PERSON_APPLICATION", joinColumns = @JoinColumn(name = "PERSON_ID"), inverseJoinColumns = @JoinColumn(name = "APPLICATION_ID"))
+    @JoinTable(name = "PERSON_APPLICATION", joinColumns = @JoinColumn(name = "PERSON_ID"),
+            inverseJoinColumns = @JoinColumn(name = "APPLICATION_ID"))
     private Set<Application> applications;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "PERSON_PROFILE", joinColumns = @JoinColumn(name = "PERSON_ID"), inverseJoinColumns = @JoinColumn(name = "PROFILE_CODE"))
+    @JoinTable(name = "PERSON_PROFILE", joinColumns = @JoinColumn(name = "PERSON_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PROFILE_CODE"))
     private Set<Profile> profiles;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "ROLE")
+    private Role role;
 
     public static Person newInstance() {
         return new Person();
@@ -68,20 +79,16 @@ public class Person  implements EncryptedDomain {
         return id;
     }
 
-    public Person setId(long id) {
+    public Person setId(final long id) {
         this.id = id;
         return this;
     }
-
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "ROLE")
-    private Role role;
 
     public String getExternalId() {
         return externalId;
     }
 
-    public Person setExternalId(String externalId) {
+    public Person setExternalId(final String externalId) {
         this.externalId = externalId;
         return this;
     }
@@ -90,7 +97,7 @@ public class Person  implements EncryptedDomain {
         return role;
     }
 
-    public Person setRole(Role role) {
+    public Person setRole(final Role role) {
         this.role = role;
         return this;
     }
@@ -99,7 +106,7 @@ public class Person  implements EncryptedDomain {
         return firstname;
     }
 
-    public Person setFirstname(String firstname) {
+    public Person setFirstname(final String firstname) {
         this.firstname = firstname;
         return this;
     }
@@ -108,7 +115,7 @@ public class Person  implements EncryptedDomain {
         return lastname;
     }
 
-    public Person setLastname(String lastname) {
+    public Person setLastname(final String lastname) {
         this.lastname = lastname;
         return this;
     }
@@ -117,7 +124,7 @@ public class Person  implements EncryptedDomain {
         return birthdate;
     }
 
-    public Person setBirthdate(Date birthdate) {
+    public Person setBirthdate(final Date birthdate) {
         this.birthdate = birthdate;
         return this;
     }
@@ -126,7 +133,7 @@ public class Person  implements EncryptedDomain {
         return email;
     }
 
-    public Person setEmail(String email) {
+    public Person setEmail(final String email) {
         this.email = email;
         return this;
     }
@@ -135,17 +142,17 @@ public class Person  implements EncryptedDomain {
         return authenticationInfo;
     }
 
-    public Person setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
+    public Person setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         return this;
     }
 
     public Set<Application> getApplications() {
-        if(applications == null) applications = Sets.newHashSet();
+        if (applications == null) applications = Sets.newHashSet();
         return applications;
     }
 
-    public Person setApplications(Set<Application> applications) {
+    public Person setApplications(final Set<Application> applications) {
         this.applications = applications;
         return this;
     }
@@ -154,7 +161,7 @@ public class Person  implements EncryptedDomain {
         return profiles;
     }
 
-    public void setProfiles(Set<Profile> profiles) {
+    public void setProfiles(final Set<Profile> profiles) {
         this.profiles = profiles;
     }
 }

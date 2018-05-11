@@ -1,9 +1,9 @@
 package com.mlyauth.credentials;
 
-import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.domain.ApplicationAspectAttribute;
+import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.nimbusds.jose.util.Base64URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.saml.key.KeyManager;
@@ -14,7 +14,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.util.Map;
 
 import static com.mlyauth.constants.AspectAttribute.get;
 import static com.mlyauth.constants.AttributeType.CERTIFICATE;
@@ -45,26 +44,33 @@ public class CredentialManagerImpl implements CredentialManager {
     }
 
     @Override
-    public Certificate getPeerCertificate(String entityId, AspectType aspectType) {
+    public Certificate getPeerCertificate(final String entityId, final AspectType aspectType) {
         return loadCertificate(entityId, aspectType);
     }
 
     @Override
-    public PublicKey getPeerKey(String entityId, AspectType aspectType) {
+    public PublicKey getPeerKey(final String entityId, final AspectType aspectType) {
         return loadCertificate(entityId, aspectType).getPublicKey();
     }
 
 
-    private Certificate loadCertificate(String entityId, AspectType aspect) {
+    private Certificate loadCertificate(final String entityId, final AspectType aspect) {
         try {
-            final ApplicationAspectAttribute issAttributes = attributeDAO.findByAttribute(get(aspect, ENTITYID).getValue(), entityId);
-            final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributeDAO.findAndIndex(issAttributes.getId().getApplicationId(), aspect.name());
-            final ApplicationAspectAttribute certificate = attributes.get(get(aspect, CERTIFICATE));
+            final ApplicationAspectAttribute certificate = getApplicationCertificate(entityId, aspect);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(new Base64URL(certificate.getValue()).decode());
             return CertificateFactory.getInstance("X.509").generateCertificate(inputStream);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ApplicationAspectAttribute getApplicationCertificate(final String entityId, final AspectType aspect) {
+        final ApplicationAspectAttributeId entity = getEntityAttribute(entityId, aspect);
+        return attributeDAO.findAndIndex(entity.getApplicationId(), aspect.name()).get(get(aspect, CERTIFICATE));
+    }
+
+    private ApplicationAspectAttributeId getEntityAttribute(final String entityId, final AspectType aspect) {
+        return attributeDAO.findByAttribute(get(aspect, ENTITYID).getValue(), entityId).getId();
     }
 
 }

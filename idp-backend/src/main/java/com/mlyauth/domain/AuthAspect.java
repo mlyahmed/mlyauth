@@ -29,7 +29,7 @@ public class AuthAspect implements Serializable {
         return type;
     }
 
-    public void setType(AspectType type) {
+    public void setType(final AspectType type) {
         this.type = type;
     }
 
@@ -37,7 +37,7 @@ public class AuthAspect implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -45,7 +45,7 @@ public class AuthAspect implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 }

@@ -23,12 +23,18 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-@Table(name="APPLICATION")
+@Table(name = "APPLICATION")
 public class Application  implements Serializable {
+
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
+
 
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "APPLICATION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", valueColumnName = "SEQUENCEVALUE", pkColumnValue = "APPLICATION_ID", initialValue = 9999, allocationSize=1)
+    @TableGenerator(name = "APPLICATION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            valueColumnName = "SEQUENCEVALUE", pkColumnValue = "APPLICATION_ID",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "APPLICATION_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -54,10 +60,11 @@ public class Application  implements Serializable {
     private AuthenticationInfo authenticationInfo;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "APPLICATION_PROFILE", joinColumns = @JoinColumn(name = "APPLICATION_ID"), inverseJoinColumns = @JoinColumn(name = "PROFILE_CODE"))
+    @JoinTable(name = "APPLICATION_PROFILE", joinColumns = @JoinColumn(name = "APPLICATION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PROFILE_CODE"))
     private Set<Profile> profiles;
 
-    public static Application newInstance(){
+    public static Application newInstance() {
         return new Application();
     }
 
@@ -65,7 +72,7 @@ public class Application  implements Serializable {
         return id;
     }
 
-    public Application setId(long id) {
+    public Application setId(final long id) {
         this.id = id;
         return this;
     }
@@ -74,7 +81,7 @@ public class Application  implements Serializable {
         return appname;
     }
 
-    public Application setAppname(String appname) {
+    public Application setAppname(final String appname) {
         this.appname = appname;
         return this;
     }
@@ -83,7 +90,7 @@ public class Application  implements Serializable {
         return title;
     }
 
-    public Application setTitle(String title) {
+    public Application setTitle(final String title) {
         this.title = title;
         return this;
     }
@@ -92,7 +99,7 @@ public class Application  implements Serializable {
         return type;
     }
 
-    public Application setType(ApplicationType type) {
+    public Application setType(final ApplicationType type) {
         this.type = type;
         return this;
     }
@@ -101,7 +108,7 @@ public class Application  implements Serializable {
         return aspects;
     }
 
-    public Application setAspects(Set<AspectType> aspects) {
+    public Application setAspects(final Set<AspectType> aspects) {
         this.aspects = aspects;
         return this;
     }
@@ -110,7 +117,7 @@ public class Application  implements Serializable {
         return authenticationInfo;
     }
 
-    public Application setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
+    public Application setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         return this;
     }
@@ -119,7 +126,7 @@ public class Application  implements Serializable {
         return profiles;
     }
 
-    public Application setProfiles(Set<Profile> profiles) {
+    public Application setProfiles(final Set<Profile> profiles) {
         this.profiles = profiles;
         return this;
     }

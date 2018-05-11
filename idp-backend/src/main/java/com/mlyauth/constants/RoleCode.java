@@ -7,7 +7,7 @@ public enum RoleCode implements IStringEnum {
 
     final String value;
 
-    RoleCode(final String value){
+    RoleCode(final String value) {
         this.value = value;
     }
 
@@ -26,7 +26,7 @@ public enum RoleCode implements IStringEnum {
         return this.value.equals(value);
     }
 
-    public boolean isClient(){
+    public boolean isClient() {
         return this == CLIENT;
     }
 

@@ -28,7 +28,7 @@ public class Attribute implements Serializable {
         return code;
     }
 
-    public Attribute setCode(String code) {
+    public Attribute setCode(final String code) {
         this.code = code;
         return this;
     }
@@ -37,7 +37,7 @@ public class Attribute implements Serializable {
         return title;
     }
 
-    public Attribute setTitle(String title) {
+    public Attribute setTitle(final String title) {
         this.title = title;
         return this;
     }
@@ -46,7 +46,7 @@ public class Attribute implements Serializable {
         return description;
     }
 
-    public Attribute setDescription(String description) {
+    public Attribute setDescription(final String description) {
         this.description = description;
         return this;
     }

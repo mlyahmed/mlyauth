@@ -5,12 +5,12 @@ public class AuthError {
     private final String code;
     private final String message;
 
-    public AuthError(String code, String message) {
+    public AuthError(final String code, final String message) {
         this.code = code;
         this.message = message;
     }
 
-    public static AuthError newInstance(String code) {
+    public static AuthError newInstance(final String code) {
         return new AuthError(code, "");
     }
 

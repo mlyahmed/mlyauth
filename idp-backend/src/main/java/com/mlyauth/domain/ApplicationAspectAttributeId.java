@@ -25,7 +25,7 @@ public class ApplicationAspectAttributeId implements Serializable {
         return applicationId;
     }
 
-    public ApplicationAspectAttributeId setApplicationId(long applicationId) {
+    public ApplicationAspectAttributeId setApplicationId(final long applicationId) {
         this.applicationId = applicationId;
         return this;
     }
@@ -34,7 +34,7 @@ public class ApplicationAspectAttributeId implements Serializable {
         return aspectCode;
     }
 
-    public ApplicationAspectAttributeId setAspectCode(String aspectCode) {
+    public ApplicationAspectAttributeId setAspectCode(final String aspectCode) {
         this.aspectCode = aspectCode;
         return this;
     }
@@ -43,24 +43,23 @@ public class ApplicationAspectAttributeId implements Serializable {
         return attributeCode;
     }
 
-    public ApplicationAspectAttributeId setAttributeCode(String attributeCode) {
+    public ApplicationAspectAttributeId setAttributeCode(final String attributeCode) {
         this.attributeCode = attributeCode;
         return this;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ApplicationAspectAttributeId that = (ApplicationAspectAttributeId) o;
-        return applicationId == that.applicationId &&
-                Objects.equals(aspectCode, that.aspectCode) &&
-                Objects.equals(attributeCode, that.attributeCode);
+        return applicationId == that.applicationId
+                && Objects.equals(aspectCode, that.aspectCode)
+                && Objects.equals(attributeCode, that.attributeCode);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(applicationId, aspectCode, attributeCode);
     }
 }

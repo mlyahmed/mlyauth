@@ -31,9 +31,14 @@ import java.util.stream.Collectors;
 @Table(name = "TOKEN")
 public class Token {
 
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
+
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "TOKEN_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", pkColumnValue = "TOKEN_ID", valueColumnName = "SEQUENCEVALUE", initialValue = 9999, allocationSize = 1)
+    @TableGenerator(name = "TOKEN_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            pkColumnValue = "TOKEN_ID", valueColumnName = "SEQUENCEVALUE",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "TOKEN_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -95,7 +100,7 @@ public class Token {
         return id;
     }
 
-    public Token setId(long id) {
+    public Token setId(final long id) {
         this.id = id;
         return this;
     }
@@ -104,7 +109,7 @@ public class Token {
         return validationMode;
     }
 
-    public Token setValidationMode(TokenValidationMode validationMode) {
+    public Token setValidationMode(final TokenValidationMode validationMode) {
         this.validationMode = validationMode;
         return this;
     }
@@ -113,7 +118,7 @@ public class Token {
         return refreshMode;
     }
 
-    public Token setRefreshMode(TokenRefreshMode refreshMode) {
+    public Token setRefreshMode(final TokenRefreshMode refreshMode) {
         this.refreshMode = refreshMode;
         return this;
     }
@@ -122,7 +127,7 @@ public class Token {
         return stamp;
     }
 
-    public Token setStamp(String stamp) {
+    public Token setStamp(final String stamp) {
         this.stamp = stamp;
         return this;
     }
@@ -131,7 +136,7 @@ public class Token {
         return checksum;
     }
 
-    public Token setChecksum(String checksum) {
+    public Token setChecksum(final String checksum) {
         this.checksum = checksum;
         return this;
     }
@@ -140,7 +145,7 @@ public class Token {
         return type;
     }
 
-    public Token setType(TokenType type) {
+    public Token setType(final TokenType type) {
         this.type = type;
         return this;
     }
@@ -149,7 +154,7 @@ public class Token {
         return norm;
     }
 
-    public Token setNorm(TokenNorm norm) {
+    public Token setNorm(final TokenNorm norm) {
         this.norm = norm;
         return this;
     }
@@ -158,7 +163,7 @@ public class Token {
         return purpose;
     }
 
-    public Token setPurpose(TokenPurpose purpose) {
+    public Token setPurpose(final TokenPurpose purpose) {
         this.purpose = purpose;
         return this;
     }
@@ -167,7 +172,7 @@ public class Token {
         return issuanceTime;
     }
 
-    public Token setIssuanceTime(Date issuanceTime) {
+    public Token setIssuanceTime(final Date issuanceTime) {
         this.issuanceTime = issuanceTime;
         return this;
     }
@@ -176,7 +181,7 @@ public class Token {
         return effectiveTime;
     }
 
-    public Token setEffectiveTime(Date effectiveTime) {
+    public Token setEffectiveTime(final Date effectiveTime) {
         this.effectiveTime = effectiveTime;
         return this;
     }
@@ -185,7 +190,7 @@ public class Token {
         return expiryTime;
     }
 
-    public Token setExpiryTime(Date expiryTime) {
+    public Token setExpiryTime(final Date expiryTime) {
         this.expiryTime = expiryTime;
         return this;
     }
@@ -194,7 +199,7 @@ public class Token {
         return status;
     }
 
-    public Token setStatus(TokenStatus status) {
+    public Token setStatus(final TokenStatus status) {
         this.status = status;
         return this;
     }
@@ -208,7 +213,7 @@ public class Token {
         return this.claims.stream().collect(Collectors.toMap(c -> c.getCode(), c -> c));
     }
 
-    public Token setClaims(Set<TokenClaim> claims) {
+    public Token setClaims(final Set<TokenClaim> claims) {
         claims.stream().forEach(claim -> claim.setToken(this));
         this.claims = claims;
         return this;
@@ -218,7 +223,7 @@ public class Token {
         return application;
     }
 
-    public Token setApplication(Application application) {
+    public Token setApplication(final Application application) {
         this.application = application;
         return this;
     }
@@ -227,7 +232,7 @@ public class Token {
         return session;
     }
 
-    public Token setSession(AuthenticationSession session) {
+    public Token setSession(final AuthenticationSession session) {
         this.session = session;
         return this;
     }

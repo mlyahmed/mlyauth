@@ -29,7 +29,7 @@ public class ApplicationType {
         return code;
     }
 
-    public ApplicationType setCode(ApplicationTypeCode code) {
+    public ApplicationType setCode(final ApplicationTypeCode code) {
         this.code = code;
         return this;
     }
@@ -38,7 +38,7 @@ public class ApplicationType {
         return description;
     }
 
-    public ApplicationType setDescription(String description) {
+    public ApplicationType setDescription(final String description) {
         this.description = description;
         return this;
     }

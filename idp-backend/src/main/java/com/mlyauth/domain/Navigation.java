@@ -24,9 +24,14 @@ import java.util.Set;
 @Table(name = "NAVIGATION")
 public class Navigation {
 
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
+
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "NAVIGATION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", pkColumnValue = "NAVIGATION_ID", valueColumnName = "SEQUENCEVALUE", initialValue = 9999, allocationSize = 1)
+    @TableGenerator(name = "NAVIGATION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            pkColumnValue = "NAVIGATION_ID", valueColumnName = "SEQUENCEVALUE",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "NAVIGATION_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -63,7 +68,7 @@ public class Navigation {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -71,7 +76,7 @@ public class Navigation {
         return targetURL;
     }
 
-    public Navigation setTargetURL(String targetURL) {
+    public Navigation setTargetURL(final String targetURL) {
         this.targetURL = targetURL;
         return this;
     }
@@ -80,7 +85,7 @@ public class Navigation {
         return createdAt;
     }
 
-    public Navigation setCreatedAt(Date createdAt) {
+    public Navigation setCreatedAt(final Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -89,7 +94,7 @@ public class Navigation {
         return direction;
     }
 
-    public Navigation setDirection(Direction direction) {
+    public Navigation setDirection(final Direction direction) {
         this.direction = direction;
         return this;
     }
@@ -98,7 +103,7 @@ public class Navigation {
         return timeConsumed;
     }
 
-    public Navigation setTimeConsumed(long timeConsumed) {
+    public Navigation setTimeConsumed(final long timeConsumed) {
         this.timeConsumed = timeConsumed;
         return this;
     }
@@ -107,14 +112,14 @@ public class Navigation {
         return attributes;
     }
 
-    public Navigation setAttributes(Set<NavigationAttribute> attributes) {
+    public Navigation setAttributes(final Set<NavigationAttribute> attributes) {
         attributes.stream().forEach(att -> att.setNavigation(this));
         this.attributes = attributes;
         return this;
     }
 
     @Transient
-    public NavigationAttribute getAttribute(String code) {
+    public NavigationAttribute getAttribute(final String code) {
         return this.getAttributes().stream().filter(att -> att.getCode().equals(code)).findFirst().orElse(null);
     }
 
@@ -122,7 +127,7 @@ public class Navigation {
         return session;
     }
 
-    public Navigation setSession(AuthenticationSession session) {
+    public Navigation setSession(final AuthenticationSession session) {
         this.session = session;
         return this;
     }
@@ -131,7 +136,7 @@ public class Navigation {
         return token;
     }
 
-    public Navigation setToken(Token token) {
+    public Navigation setToken(final Token token) {
         this.token = token;
         return this;
     }

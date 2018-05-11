@@ -21,9 +21,14 @@ import java.util.Date;
 @Table(name = "AUTHENTICATION_INFO")
 public class AuthenticationInfo {
 
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
+
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "AUTHENTICATION_INFO_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", valueColumnName = "SEQUENCEVALUE", pkColumnValue = "AUTHENTICATION_INFO_ID", initialValue = 9999, allocationSize = 1)
+    @TableGenerator(name = "AUTHENTICATION_INFO_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            valueColumnName = "SEQUENCEVALUE", pkColumnValue = "AUTHENTICATION_INFO_ID",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "AUTHENTICATION_INFO_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -57,7 +62,7 @@ public class AuthenticationInfo {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -65,7 +70,7 @@ public class AuthenticationInfo {
         return login;
     }
 
-    public AuthenticationInfo setLogin(String login) {
+    public AuthenticationInfo setLogin(final String login) {
         this.login = login;
         return this;
     }
@@ -74,7 +79,7 @@ public class AuthenticationInfo {
         return password;
     }
 
-    public AuthenticationInfo setPassword(String password) {
+    public AuthenticationInfo setPassword(final String password) {
         this.password = password;
         return this;
     }
@@ -83,7 +88,7 @@ public class AuthenticationInfo {
         return status;
     }
 
-    public AuthenticationInfo setStatus(AuthenticationInfoStatus status) {
+    public AuthenticationInfo setStatus(final AuthenticationInfoStatus status) {
         this.status = status;
         return this;
     }
@@ -92,7 +97,7 @@ public class AuthenticationInfo {
         return effectiveAt;
     }
 
-    public AuthenticationInfo setEffectiveAt(Date effectiveAt) {
+    public AuthenticationInfo setEffectiveAt(final Date effectiveAt) {
         this.effectiveAt = effectiveAt;
         return this;
     }
@@ -101,7 +106,7 @@ public class AuthenticationInfo {
         return expireAt;
     }
 
-    public AuthenticationInfo setExpireAt(Date expireAt) {
+    public AuthenticationInfo setExpireAt(final Date expireAt) {
         this.expireAt = expireAt;
         return this;
     }
@@ -110,7 +115,7 @@ public class AuthenticationInfo {
         return person;
     }
 
-    public AuthenticationInfo setPerson(Person person) {
+    public AuthenticationInfo setPerson(final Person person) {
         this.person = person;
         return this;
     }
@@ -119,7 +124,7 @@ public class AuthenticationInfo {
         return application;
     }
 
-    public AuthenticationInfo setApplication(Application application) {
+    public AuthenticationInfo setApplication(final Application application) {
         this.application = application;
         return this;
     }

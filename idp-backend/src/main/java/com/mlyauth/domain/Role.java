@@ -30,7 +30,7 @@ public class Role {
         return code;
     }
 
-    public Role setCode(RoleCode code) {
+    public Role setCode(final RoleCode code) {
         this.code = code;
         return this;
     }
@@ -39,7 +39,7 @@ public class Role {
         return description;
     }
 
-    public Role setDescription(String description) {
+    public Role setDescription(final String description) {
         this.description = description;
         return this;
     }

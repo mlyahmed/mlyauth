@@ -23,9 +23,14 @@ import java.util.Date;
 @Table(name = "AUTHENTICATION_SESSION")
 public class AuthenticationSession implements Cloneable, Serializable {
 
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
+
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "AUTHENTICATION_SESSION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", valueColumnName = "SEQUENCEVALUE", pkColumnValue = "AUTHENTICATION_SESSION_ID", initialValue = 9999, allocationSize = 1)
+    @TableGenerator(name = "AUTHENTICATION_SESSION_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            valueColumnName = "SEQUENCEVALUE", pkColumnValue = "AUTHENTICATION_SESSION_ID",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "AUTHENTICATION_SESSION_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -54,7 +59,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -62,7 +67,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return createdAt;
     }
 
-    public AuthenticationSession setCreatedAt(Date createdAt) {
+    public AuthenticationSession setCreatedAt(final Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -71,7 +76,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return status;
     }
 
-    public AuthenticationSession setStatus(AuthenticationSessionStatus status) {
+    public AuthenticationSession setStatus(final AuthenticationSessionStatus status) {
         this.status = status;
         return this;
     }
@@ -80,7 +85,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return contextId;
     }
 
-    public AuthenticationSession setContextId(String contextId) {
+    public AuthenticationSession setContextId(final String contextId) {
         this.contextId = contextId;
         return this;
     }
@@ -89,7 +94,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return authenticationInfo;
     }
 
-    public AuthenticationSession setAuthenticationInfo(AuthenticationInfo authenticationInfo) {
+    public AuthenticationSession setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         return this;
     }
@@ -98,7 +103,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return closedAt;
     }
 
-    public void setClosedAt(Date closedAt) {
+    public void setClosedAt(final Date closedAt) {
         this.closedAt = closedAt;
     }
 

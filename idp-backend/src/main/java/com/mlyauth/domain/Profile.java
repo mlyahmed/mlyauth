@@ -30,7 +30,7 @@ public class Profile {
         return code;
     }
 
-    public Profile setCode(ProfileCode code) {
+    public Profile setCode(final ProfileCode code) {
         this.code = code;
         return this;
     }
@@ -39,7 +39,7 @@ public class Profile {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 }

@@ -15,9 +15,14 @@ import javax.persistence.TableGenerator;
 @Table(name = "TOKEN_CLAIM")
 public class TokenClaim {
 
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
+
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "TOKEN_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", pkColumnValue = "TOKEN_ID", valueColumnName = "SEQUENCEVALUE", initialValue = 9999, allocationSize = 1)
+    @TableGenerator(name = "TOKEN_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            pkColumnValue = "TOKEN_ID", valueColumnName = "SEQUENCEVALUE",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "TOKEN_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -39,7 +44,7 @@ public class TokenClaim {
         return id;
     }
 
-    public TokenClaim setId(long id) {
+    public TokenClaim setId(final long id) {
         this.id = id;
         return this;
     }
@@ -48,7 +53,7 @@ public class TokenClaim {
         return code;
     }
 
-    public TokenClaim setCode(String code) {
+    public TokenClaim setCode(final String code) {
         this.code = code;
         return this;
     }
@@ -57,7 +62,7 @@ public class TokenClaim {
         return value;
     }
 
-    public TokenClaim setValue(String value) {
+    public TokenClaim setValue(final String value) {
         this.value = value;
         return this;
     }
@@ -66,7 +71,7 @@ public class TokenClaim {
         return token;
     }
 
-    public TokenClaim setToken(Token token) {
+    public TokenClaim setToken(final Token token) {
         this.token = token;
         return this;
     }

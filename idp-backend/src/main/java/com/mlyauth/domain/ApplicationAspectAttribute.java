@@ -28,7 +28,7 @@ public class ApplicationAspectAttribute {
         return id;
     }
 
-    public ApplicationAspectAttribute setId(ApplicationAspectAttributeId id) {
+    public ApplicationAspectAttribute setId(final ApplicationAspectAttributeId id) {
         this.id = id;
         return this;
     }
@@ -37,7 +37,7 @@ public class ApplicationAspectAttribute {
         return value;
     }
 
-    public ApplicationAspectAttribute setValue(String value) {
+    public ApplicationAspectAttribute setValue(final String value) {
         this.value = value;
         return this;
     }

@@ -11,12 +11,17 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
 @Entity
-@Table(name="PERSON_BY_EMAIL")
+@Table(name = "PERSON_BY_EMAIL")
 public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
+
+    public static final int ID_INIT_VALUE = 9999;
+    public static final int ID_INC_STEP = 1;
 
     @Id
     @Column(name = "ID", nullable = false)
-    @TableGenerator(name = "PERSON_BY_EMAIL_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME", pkColumnValue = "PERSON_BY_EMAIL_ID", valueColumnName = "SEQUENCEVALUE", initialValue = 9999, allocationSize=1)
+    @TableGenerator(name = "PERSON_BY_EMAIL_ID", table = "IDS_SEQUENCES", pkColumnName = "SEQUENCENAME",
+            pkColumnValue = "PERSON_BY_EMAIL_ID", valueColumnName = "SEQUENCEVALUE",
+            initialValue = ID_INIT_VALUE, allocationSize = ID_INC_STEP)
     @GeneratedValue(generator = "PERSON_BY_EMAIL_ID", strategy = GenerationType.TABLE)
     private long id;
 
@@ -36,7 +41,7 @@ public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
         return id;
     }
 
-    public PersonByEmail setId(long id) {
+    public PersonByEmail setId(final long id) {
         this.id = id;
         return this;
     }
@@ -45,7 +50,7 @@ public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
         return personId;
     }
 
-    public PersonByEmail setPersonId(String personId) {
+    public PersonByEmail setPersonId(final String personId) {
         this.personId = personId;
         return this;
     }
@@ -54,7 +59,7 @@ public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
         return email;
     }
 
-    public PersonByEmail setEmail(String email) {
+    public PersonByEmail setEmail(final String email) {
         this.email = email;
         return this;
     }
