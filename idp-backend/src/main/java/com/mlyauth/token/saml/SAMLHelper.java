@@ -66,6 +66,10 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import static org.opensaml.xml.Configuration.getBuilderFactory;
+import static org.opensaml.xml.Configuration.getMarshallerFactory;
+import static org.opensaml.xml.Configuration.getUnmarshallerFactory;
+
 @Component
 public class SAMLHelper {
     private static Logger logger = LoggerFactory.getLogger(SAMLHelper.class);
@@ -95,33 +99,34 @@ public class SAMLHelper {
         }
     }
 
-    public EntityDescriptorImpl toMetadata(String content) throws Exception {
+    public EntityDescriptorImpl toMetadata(final String content) throws Exception {
         final Document doc = parserPool.parse(new ByteArrayInputStream(content.getBytes()));
-        UnmarshallerFactory unmarshallerFactory = org.opensaml.xml.Configuration.getUnmarshallerFactory();
+        UnmarshallerFactory unmarshallerFactory = getUnmarshallerFactory();
         Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc.getDocumentElement());
         XMLObject xmlObject = unmarshaller.unmarshall(doc.getDocumentElement());
         return (EntityDescriptorImpl) xmlObject;
     }
 
-    public Attribute buildStringAttribute(String attName, String attValue) {
+    public Attribute buildStringAttribute(final String attName, final String attValue) {
         Attribute attribute = buildSAMLObject(Attribute.class);
         attribute.setName(attName);
-        XSStringBuilder stringBuilder = (XSStringBuilder) org.opensaml.xml.Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
+        XSStringBuilder stringBuilder = (XSStringBuilder) getBuilderFactory().getBuilder(XSString.TYPE_NAME);
         XSString value = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
         value.setValue(attValue);
         attribute.getAttributeValues().add(value);
         return attribute;
     }
 
-    public Credential getSigningCredential(EntityDescriptor descriptor, KeyInfoCredentialResolver keyInfoResolver) {
-        final IDPSSODescriptor idpssoDescriptor = descriptor.getIDPSSODescriptor(SAMLConstants.SAML20P_NS);
+    public Credential getSigningCredential(final EntityDescriptor desc, final KeyInfoCredentialResolver resolver) {
+        final IDPSSODescriptor idpssoDescriptor = desc.getIDPSSODescriptor(SAMLConstants.SAML20P_NS);
         return idpssoDescriptor.getKeyDescriptors().stream()
-                .map(desc -> resolvePeerSigningCred(descriptor.getEntityID(), keyInfoResolver, desc))
+                .map(d -> resolvePeerSigningCred(desc.getEntityID(), resolver, d))
                 .filter(keyInfo -> keyInfo != null)
                 .findFirst().get();
     }
 
-    public Credential resolvePeerSigningCred(String entityId, KeyInfoCredentialResolver keyRes, KeyDescriptor keyDes) {
+    public Credential resolvePeerSigningCred(final String entityId, final KeyInfoCredentialResolver keyRes,
+                                             final KeyDescriptor keyDes) {
         try {
             CriteriaSet criteriaSet = new CriteriaSet();
             criteriaSet.add(new EntityIDCriteria(entityId));
@@ -134,7 +139,7 @@ public class SAMLHelper {
         }
     }
 
-    public X509Certificate toX509Certificate(String encodedCertificate) {
+    public X509Certificate toX509Certificate(final String encodedCertificate) {
         try {
             final byte[] decode = org.opensaml.xml.util.Base64.decode(encodedCertificate);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
@@ -145,14 +150,14 @@ public class SAMLHelper {
         }
     }
 
-    public BasicX509Credential toBasicX509Credential(String encodedCertificate) {
+    public BasicX509Credential toBasicX509Credential(final String encodedCertificate) {
         BasicX509Credential credential = new BasicX509Credential();
         credential.setEntityCertificate(toX509Certificate(encodedCertificate));
         return credential;
     }
 
 
-    public Assertion decryptAssertion(EncryptedAssertion encryptedAssertion, Credential credential) {
+    public Assertion decryptAssertion(final EncryptedAssertion encryptedAssertion, final Credential credential) {
         try {
             StaticKeyInfoCredentialResolver keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(credential);
             Decrypter decrypter = new Decrypter(null, keyInfoCredentialResolver, encryptedKeyResolver);
@@ -163,7 +168,7 @@ public class SAMLHelper {
         }
     }
 
-    public EncryptedAssertion encryptAssertion(Assertion assertion, Credential credential) {
+    public EncryptedAssertion encryptAssertion(final Assertion assertion, final Credential credential) {
         try {
             EncryptionParameters encryptionParameters = new EncryptionParameters();
             encryptionParameters.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
@@ -178,21 +183,21 @@ public class SAMLHelper {
         }
     }
 
-    public void signObject(SignableSAMLObject object, Credential credential) {
+    public void signObject(final SignableSAMLObject object, final Credential credential) {
         try {
             Signature signature = this.buildSAMLObject(Signature.class);
             signature.setSigningCredential(credential);
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
             object.setSignature(signature);
-            org.opensaml.xml.Configuration.getMarshallerFactory().getMarshaller(object).marshall(object);
+            getMarshallerFactory().getMarshaller(object).marshall(object);
             Signer.signObject(signature);
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }
     }
 
-    public void validateSignature(SignableSAMLObject object, Credential credential) {
+    public void validateSignature(final SignableSAMLObject object, final Credential credential) {
         try {
             SAMLSignatureProfileValidator signatureProfileValidator = new SAMLSignatureProfileValidator();
             signatureProfileValidator.validate(object.getSignature());
@@ -203,7 +208,7 @@ public class SAMLHelper {
         }
     }
 
-    public Credential toCredential(PrivateKey privateKey, X509Certificate certificate) {
+    public Credential toCredential(final PrivateKey privateKey, final X509Certificate certificate) {
         try {
             BasicX509Credential credential = new BasicX509Credential();
             credential.setEntityCertificate(certificate);
@@ -214,28 +219,28 @@ public class SAMLHelper {
         }
     }
 
-    public XMLObject decode(String encodedObject) {
+    public XMLObject decode(final String encodedObject) {
         try {
             final byte[] decoded = Base64.decode(encodedObject);
             Document messageDoc = parserPool.parse(new ByteArrayInputStream(decoded));
             Element messageElem = messageDoc.getDocumentElement();
-            Unmarshaller unmarshaller = org.opensaml.xml.Configuration.getUnmarshallerFactory().getUnmarshaller(messageElem);
+            Unmarshaller unmarshaller = getUnmarshallerFactory().getUnmarshaller(messageElem);
             return unmarshaller.unmarshall(messageElem);
         } catch (Exception e) {
             throw IDPSAMLErrorException.newInstance(e);
         }
     }
 
-    public String getAttributeValue(Attribute attribute) {
+    public String getAttributeValue(final Attribute attribute) {
         return attribute != null ? ((XSString) attribute.getAttributeValues().get(0)).getValue() : null;
     }
 
-    public String toString(XMLObject xmlObject) {
+    public String toString(final XMLObject xmlObject) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.newDocument();
-            Marshaller out = org.opensaml.xml.Configuration.getMarshallerFactory().getMarshaller(xmlObject);
+            Marshaller out = getMarshallerFactory().getMarshaller(xmlObject);
             out.marshall(xmlObject, document);
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             StringWriter stringWriter = new StringWriter();

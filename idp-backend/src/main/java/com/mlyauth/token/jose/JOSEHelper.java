@@ -12,7 +12,7 @@ import java.security.PrivateKey;
 @Component
 public class JOSEHelper {
 
-    public String loadIssuer(String encodedToken, PrivateKey key) {
+    public String loadIssuer(final String encodedToken, final PrivateKey key) {
         try {
             EncryptedJWT tokenHolder = EncryptedJWT.parse(encodedToken);
             tokenHolder.decrypt(new RSADecrypter(key));

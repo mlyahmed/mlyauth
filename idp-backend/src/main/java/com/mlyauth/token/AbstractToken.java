@@ -26,11 +26,11 @@ public abstract class AbstractToken implements IToken {
         checkLocked();
     }
 
-    protected String compactScopes(Set<TokenScope> scopes) {
+    protected String compactScopes(final Set<TokenScope> scopes) {
         return scopes != null ? scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")) : null;
     }
 
-    protected Set<TokenScope> splitScopes(String scopes) {
+    protected Set<TokenScope> splitScopes(final String scopes) {
         return Arrays.stream(scopes.split("\\|")).map(TokenScope::valueOf).collect(Collectors.toSet());
     }
 }

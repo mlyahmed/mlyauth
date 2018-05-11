@@ -10,7 +10,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class TokenCompressor {
 
-    public byte[] compress(String data) throws IOException {
+    public byte[] compress(final String data) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
         GZIPOutputStream gzip = new GZIPOutputStream(bos);
         gzip.write(data.getBytes());
@@ -20,7 +20,7 @@ public class TokenCompressor {
         return compressed;
     }
 
-    public String decompress(byte[] compressed) throws IOException {
+    public String decompress(final byte[] compressed) throws IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(compressed);
         GZIPInputStream gis = new GZIPInputStream(bis);
         byte[] bytes = IOUtils.toByteArray(gis);

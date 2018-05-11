@@ -12,18 +12,20 @@ import static java.util.Date.from;
 
 public class JOSERefreshToken extends AbstractJOSEToken {
 
-    public JOSERefreshToken(PrivateKey privateKey, PublicKey publicKey) {
+    public static final int THREE_YEARS = 3;
+
+    public JOSERefreshToken(final PrivateKey privateKey, final PublicKey publicKey) {
         super(privateKey, publicKey);
         initTimes();
 
     }
 
-    public JOSERefreshToken(String serialized, PrivateKey privateKey, PublicKey publicKey) {
+    public JOSERefreshToken(final String serialized, final PrivateKey privateKey, final PublicKey publicKey) {
         super(serialized, privateKey, publicKey);
     }
 
     private void initTimes() {
-        builder = builder.expirationTime(from(now().plusYears(3).atZone(ZoneId.systemDefault()).toInstant()))
+        builder = builder.expirationTime(from(now().plusYears(THREE_YEARS).atZone(ZoneId.systemDefault()).toInstant()))
                 .notBeforeTime(new Date())
                 .issueTime(new Date());
     }

@@ -14,7 +14,7 @@ public class SAMLTokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SAMLAccessToken createAccessToken(Credential credential) {
+    public SAMLAccessToken createAccessToken(final Credential credential) {
         return new SAMLAccessToken(credential);
     }
 
@@ -22,7 +22,7 @@ public class SAMLTokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SAMLAccessToken createAccessToken(String serialized, Credential credential) {
+    public SAMLAccessToken createAccessToken(final String serialized, final Credential credential) {
         return new SAMLAccessToken(serialized, credential);
     }
 

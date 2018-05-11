@@ -1,6 +1,7 @@
 package com.mlyauth.sp.saml;
 
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
+import org.springframework.security.saml.context.SAMLMessageContext;
 import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 
 import javax.servlet.ServletException;
@@ -11,9 +12,10 @@ import java.io.IOException;
 public class SPSAMLMetadataDisplayFilter extends MetadataDisplayFilter {
 
     @Override
-    protected void processMetadataDisplay(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void processMetadataDisplay(final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException, ServletException {
         try {
-            org.springframework.security.saml.context.SAMLMessageContext context = contextProvider.getLocalEntity(request, response);
+            SAMLMessageContext context = contextProvider.getLocalEntity(request, response);
             String entityId = context.getLocalEntityId();
 //            response.setContentType("application/samlmetadata+xml"); // SAML_Meta, 4.1.1 - line 1235
 //            response.addHeader("Content-Disposition", "attachment; filename=\"prima_saml_metadata.xml\"");

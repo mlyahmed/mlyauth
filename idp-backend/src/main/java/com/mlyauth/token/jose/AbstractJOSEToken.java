@@ -59,7 +59,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     protected JWEObject token;
     protected JWTClaimsSet.Builder builder;
 
-    public AbstractJOSEToken(PrivateKey privateKey, PublicKey publicKey) {
+    public AbstractJOSEToken(final PrivateKey privateKey, final PublicKey publicKey) {
         notNull(privateKey, "The private key is mandatory");
         notNull(publicKey, "The public key is mandatory");
         this.privateKey = privateKey;
@@ -67,7 +67,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
         builder = new JWTClaimsSet.Builder();
     }
 
-    public AbstractJOSEToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
+    public AbstractJOSEToken(final String serialize, final PrivateKey privateKey, final PublicKey publicKey) {
         notNull(serialize, "The cyphered token is mandatory");
         notNull(privateKey, "The private key is mandatory");
         notNull(publicKey, "The public key is mandatory");
@@ -78,7 +78,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
         locked = true;
     }
 
-    private void parseCipheredToken(String serialize) {
+    private void parseCipheredToken(final String serialize) {
         try {
             token = JWEObject.parse(serialize);
         } catch (ParseException e) {
@@ -92,7 +92,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setStamp(String stamp) {
+    public void setStamp(final String stamp) {
         checkUnmodifiable();
         builder = builder.jwtID(stamp);
         status = TokenProcessingStatus.FORGED;
@@ -110,12 +110,12 @@ public abstract class AbstractJOSEToken extends AbstractToken {
 
     @Override
     public TokenRefreshMode getRefreshMode() {
-        if(builder.build().getClaim(REFRESH_MODE.getValue()) == null) return null;
+        if (builder.build().getClaim(REFRESH_MODE.getValue()) == null) return null;
         return TokenRefreshMode.valueOf((String) builder.build().getClaim(REFRESH_MODE.getValue()));
     }
 
     @Override
-    public void setRefreshMode(TokenRefreshMode mode) {
+    public void setRefreshMode(final TokenRefreshMode mode) {
         notNull(mode, "Refresh Mode is null.");
         checkUnmodifiable();
         builder = builder.claim(REFRESH_MODE.getValue(), mode.name());
@@ -124,12 +124,12 @@ public abstract class AbstractJOSEToken extends AbstractToken {
 
     @Override
     public TokenValidationMode getValidationMode() {
-        if(builder.build().getClaim(VALIDATION_MODE.getValue()) == null) return null;
+        if (builder.build().getClaim(VALIDATION_MODE.getValue()) == null) return null;
         return TokenValidationMode.valueOf((String) builder.build().getClaim(VALIDATION_MODE.getValue()));
     }
 
     @Override
-    public void setValidationMode(TokenValidationMode mode) {
+    public void setValidationMode(final TokenValidationMode mode) {
         notNull(mode, "Refresh Mode is null.");
         checkUnmodifiable();
         builder = builder.claim(VALIDATION_MODE.getValue(), mode.name());
@@ -150,7 +150,9 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     private void signAndEncrypt() throws JOSEException {
         SignedJWT tokenSigned = new SignedJWT(buildJWSHeader(), builder.build());
         tokenSigned.sign(new RSASSASigner(privateKey));
-        token = new JWEObject(new JWEHeader.Builder(RSA_OAEP_256, A128GCM).keyID(getAudience()).build(), new Payload(tokenSigned));
+        token = new JWEObject(new JWEHeader.Builder(RSA_OAEP_256, A128GCM).keyID(getAudience()).build(),
+                new Payload(tokenSigned)
+        );
         token.encrypt(new RSAEncrypter((RSAPublicKey) publicKey));
     }
 
@@ -172,7 +174,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setSubject(String subject) {
+    public void setSubject(final String subject) {
         checkUnmodifiable();
         builder = builder.subject(subject);
         status = TokenProcessingStatus.FORGED;
@@ -186,7 +188,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setScopes(Set<TokenScope> scopes) {
+    public void setScopes(final Set<TokenScope> scopes) {
         checkUnmodifiable();
         builder = builder.claim(SCOPES.getValue(), compactScopes(scopes));
         status = TokenProcessingStatus.FORGED;
@@ -198,7 +200,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setBP(String bp) {
+    public void setBP(final String bp) {
         checkUnmodifiable();
         builder = builder.claim(BP.getValue(), bp);
         status = TokenProcessingStatus.FORGED;
@@ -210,7 +212,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setState(String state) {
+    public void setState(final String state) {
         checkUnmodifiable();
         builder = builder.claim(STATE.getValue(), state);
         status = TokenProcessingStatus.FORGED;
@@ -222,7 +224,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setIssuer(String issuerURI) {
+    public void setIssuer(final String issuerURI) {
         checkUnmodifiable();
         builder = builder.issuer(issuerURI);
         status = TokenProcessingStatus.FORGED;
@@ -234,7 +236,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setAudience(String audienceURI) {
+    public void setAudience(final String audienceURI) {
         checkUnmodifiable();
         builder = builder.audience(audienceURI);
         status = TokenProcessingStatus.FORGED;
@@ -246,7 +248,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setTargetURL(String url) {
+    public void setTargetURL(final String url) {
         checkUnmodifiable();
         builder = builder.claim(TARGET_URL.getValue(), url);
         status = TokenProcessingStatus.FORGED;
@@ -258,7 +260,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setDelegator(String delegatorID) {
+    public void setDelegator(final String delegatorID) {
         checkUnmodifiable();
         builder = builder.claim(DELEGATOR.getValue(), delegatorID);
         status = TokenProcessingStatus.FORGED;
@@ -270,7 +272,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setDelegate(String delegateURI) {
+    public void setDelegate(final String delegateURI) {
         checkUnmodifiable();
         builder = builder.claim(DELEGATE.getValue(), delegateURI);
         status = TokenProcessingStatus.FORGED;
@@ -284,39 +286,39 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     }
 
     @Override
-    public void setVerdict(TokenVerdict verdict) {
+    public void setVerdict(final TokenVerdict verdict) {
         checkUnmodifiable();
         builder = builder.claim(VERDICT.getValue(), verdict != null ? verdict.name() : null);
         status = TokenProcessingStatus.FORGED;
     }
 
     @Override
-    public void setClaim(String claimURI, String value) {
+    public void setClaim(final String claimURI, final String value) {
         checkCommitted();
         builder = builder.claim(claimURI, value);
         status = TokenProcessingStatus.FORGED;
     }
 
     @Override
-    public String getClaim(String claimURI) {
+    public String getClaim(final String claimURI) {
         return (String) builder.build().getClaim(claimURI);
     }
 
     @Override
     public LocalDateTime getExpiryTime() {
-        if(builder.build().getExpirationTime() == null) return null;
+        if (builder.build().getExpirationTime() == null) return null;
         return LocalDateTime.ofInstant(builder.build().getExpirationTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public LocalDateTime getEffectiveTime() {
-        if(builder.build().getNotBeforeTime() == null) return null;
+        if (builder.build().getNotBeforeTime() == null) return null;
         return LocalDateTime.ofInstant(builder.build().getNotBeforeTime().toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public LocalDateTime getIssuanceTime() {
-        if(builder.build().getIssueTime() == null) return null;
+        if (builder.build().getIssueTime() == null) return null;
         return LocalDateTime.ofInstant(builder.build().getIssueTime().toInstant(), ZoneId.systemDefault());
     }
 
@@ -339,12 +341,13 @@ public abstract class AbstractJOSEToken extends AbstractToken {
         return signedJWT;
     }
 
-    private void checkIssuerMatch(SignedJWT signedJWT) throws ParseException {
-        if (!String.valueOf(signedJWT.getHeader().getCustomParam(ISSUER.getValue())).equals(signedJWT.getJWTClaimsSet().getIssuer()))
+    private void checkIssuerMatch(final SignedJWT signedJWT) throws ParseException {
+        if (!String.valueOf(signedJWT.getHeader().getCustomParam(ISSUER.getValue()))
+                .equals(signedJWT.getJWTClaimsSet().getIssuer()))
             throw InvalidTokenException.newInstance("Issuer mismatch");
     }
 
-    private void checkSignature(SignedJWT signedJWT) throws JOSEException {
+    private void checkSignature(final SignedJWT signedJWT) throws JOSEException {
         if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))
             throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
     }

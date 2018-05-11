@@ -17,7 +17,7 @@ public class JOSEAccessTokenValidator {
     protected String localEntityId;
 
 
-    public boolean validate(JOSEAccessToken access) {
+    public boolean validate(final JOSEAccessToken access) {
         notNull(access, "The token is null");
         assertClaimNotBlank(access.getStamp(), "The token Id is blank");
         assertClaimNotBlank(access.getSubject(), "The token Subject is blank");
@@ -33,32 +33,32 @@ public class JOSEAccessTokenValidator {
     }
 
 
-    private void assertClaimNotBlank(String claim, String message) {
+    private void assertClaimNotBlank(final String claim, final String message) {
         if (StringUtils.isBlank(claim))
             throw InvalidTokenException.newInstance(message);
     }
 
-    private void checkVerdict(JOSEAccessToken access) {
+    private void checkVerdict(final JOSEAccessToken access) {
         if (access.getVerdict() == null || access.getVerdict() == TokenVerdict.FAIL)
             throw InvalidTokenException.newInstance("The token verdict is not acceptable");
     }
 
-    private void checkAudience(JOSEAccessToken access) {
+    private void checkAudience(final JOSEAccessToken access) {
         if (!localEntityId.equalsIgnoreCase(access.getAudience()))
             throw InvalidTokenException.newInstance("The token audience is not acceptable");
     }
 
-    private void checkExpiryTime(JOSEAccessToken access) {
+    private void checkExpiryTime(final JOSEAccessToken access) {
         if (LocalDateTime.now().isAfter(access.getExpiryTime()))
             throw InvalidTokenException.newInstance("The token is expired");
     }
 
-    private void checkIssuanceTime(JOSEAccessToken access) {
+    private void checkIssuanceTime(final JOSEAccessToken access) {
         if (LocalDateTime.now().isBefore(access.getIssuanceTime()))
             throw InvalidTokenException.newInstance("The token issuance time is inconsistency");
     }
 
-    private void checkEffectiveTime(JOSEAccessToken access) {
+    private void checkEffectiveTime(final JOSEAccessToken access) {
         if (LocalDateTime.now().isBefore(access.getEffectiveTime()))
             throw InvalidTokenException.newInstance("The token effective time is inconsistency");
     }

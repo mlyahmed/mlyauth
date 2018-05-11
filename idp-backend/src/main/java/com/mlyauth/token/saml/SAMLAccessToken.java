@@ -328,7 +328,8 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public LocalDateTime getEffectiveTime() {
-        final Date date = assertion.getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault()).toDate();
+        final Date date = assertion.getAuthnStatements().get(0)
+                .getAuthnInstant().toDateTime(DateTimeZone.getDefault()).toDate();
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
@@ -396,13 +397,16 @@ public class SAMLAccessToken extends AbstractToken {
         return encodeBytes(samlHelper.toString(response).getBytes());
     }
 
-    private void setAttributeValue(String attributeName, String attributeValue) {
-        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
+    private void setAttributeValue(final String attributeName, final String attributeValue) {
+        final Attribute actual = assertion.getAttributeStatements().get(0)
+                .getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
         ((XSString) actual.getAttributeValues().get(0)).setValue(attributeValue);
     }
 
-    private String getAttributeValue(String attributeName) {
-        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().orElse(null);
+    private String getAttributeValue(final String attributeName) {
+        final Attribute actual = assertion.getAttributeStatements().get(0)
+                .getAttributes().stream().filter(attr -> attributeName.equals(attr.getName()))
+                .findFirst().orElse(null);
         return actual != null ? ((XSString) actual.getAttributeValues().get(0)).getValue() : null;
     }
 }

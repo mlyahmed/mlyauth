@@ -16,32 +16,32 @@ public class JOSETokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSEAccessToken createAccessToken(PrivateKey privateKey, PublicKey publicKey) {
-        return new JOSEAccessToken(privateKey, publicKey);
+    public JOSEAccessToken createAccessToken(final PrivateKey prKey, final PublicKey pbKey) {
+        return new JOSEAccessToken(prKey, pbKey);
     }
 
     @Bean("JOSEAccessToken")
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSEAccessToken createAccessToken(String seialized, PrivateKey privateKey, PublicKey publicKey) {
-        return new JOSEAccessToken(seialized, privateKey, publicKey);
+    public JOSEAccessToken createAccessToken(final String ser, final PrivateKey prKey, final PublicKey pbKey) {
+        return new JOSEAccessToken(ser, prKey, pbKey);
     }
 
     @Bean("JOSERefreshToken")
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSERefreshToken createRefreshToken(PrivateKey privateKey, PublicKey publicKey) {
-        return new JOSERefreshToken(privateKey, publicKey);
+    public JOSERefreshToken createRefreshToken(final PrivateKey prKey, final PublicKey pbKey) {
+        return new JOSERefreshToken(prKey, pbKey);
     }
 
     @Bean("JOSERefreshToken")
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSERefreshToken createRefreshToken(String serialized, PrivateKey privateKey, PublicKey publicKey) {
-        return new JOSERefreshToken(serialized, privateKey, publicKey);
+    public JOSERefreshToken createRefreshToken(final String ser, final PrivateKey prKey, final PublicKey pbKey) {
+        return new JOSERefreshToken(ser, prKey, pbKey);
     }
 
 }

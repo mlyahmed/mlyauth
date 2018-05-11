@@ -20,22 +20,22 @@ public class JOSETokenDecoder {
     @Autowired
     private CredentialManager credentialManager;
 
-    public JOSERefreshToken decodeRefresh(String serialized, AspectType peerAspect){
-        JOSERefreshToken token = tokenFactory.createRefreshToken(serialized, localKey(), peerKey(serialized, peerAspect));
-        token.decipher();
-        return token;
+    public JOSERefreshToken decodeRefresh(final String serialized, final AspectType peerAspect) {
+        JOSERefreshToken tkn = tokenFactory.createRefreshToken(serialized, localKey(), peerKey(serialized, peerAspect));
+        tkn.decipher();
+        return tkn;
     }
 
-    public JOSEAccessToken decodeAccess(String serialized, AspectType peerAspect){
-        JOSEAccessToken token = tokenFactory.createAccessToken(serialized, localKey(), peerKey(serialized, peerAspect));
-        token.decipher();
-        return token;
+    public JOSEAccessToken decodeAccess(final String serialized, final AspectType peerAspect) {
+        JOSEAccessToken tkn = tokenFactory.createAccessToken(serialized, localKey(), peerKey(serialized, peerAspect));
+        tkn.decipher();
+        return tkn;
     }
 
-    public JOSEAccessToken decodeAccess(String serialized){
-        JOSEAccessToken token = tokenFactory.createAccessToken(serialized, localKey(), localPublicKey());
-        token.decipher();
-        return token;
+    public JOSEAccessToken decodeAccess(final String serialized) {
+        JOSEAccessToken tkn = tokenFactory.createAccessToken(serialized, localKey(), localPublicKey());
+        tkn.decipher();
+        return tkn;
     }
 
     private PrivateKey localKey() {
@@ -46,11 +46,11 @@ public class JOSETokenDecoder {
         return credentialManager.getPublicKey();
     }
 
-    private String issuer(String serialized) {
+    private String issuer(final String serialized) {
         return joseHelper.loadIssuer(serialized, localKey());
     }
 
-    private PublicKey peerKey(String serialized, AspectType peerAspect) {
+    private PublicKey peerKey(final String serialized, final AspectType peerAspect) {
         return credentialManager.getPeerKey(issuer(serialized), peerAspect);
     }
 }

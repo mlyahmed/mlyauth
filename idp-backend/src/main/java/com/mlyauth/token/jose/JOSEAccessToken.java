@@ -17,11 +17,14 @@ import static java.time.LocalDateTime.now;
 
 public class JOSEAccessToken extends AbstractJOSEToken {
 
-    public JOSEAccessToken(String serialize, PrivateKey privateKey, PublicKey publicKey) {
+    public static final int THERTY_MINUTES = 60 * 30;
+    public static final int THREE_MINUTES = 60 * 3;
+
+    public JOSEAccessToken(final String serialize, final PrivateKey privateKey, final PublicKey publicKey) {
         super(serialize, privateKey, publicKey);
     }
 
-    public JOSEAccessToken(PrivateKey privateKey, PublicKey publicKey) {
+    public JOSEAccessToken(final PrivateKey privateKey, final PublicKey publicKey) {
         super(privateKey, publicKey);
         builder = builder.claim(REFRESH_MODE.getValue(), EACH_TIME.name());
         builder = builder.claim(VALIDATION_MODE.getValue(), STRICT.name());
@@ -39,21 +42,21 @@ public class JOSEAccessToken extends AbstractJOSEToken {
     }
 
     private void setTimes() {
-        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? 60 * 30 : 60 * 3);
+        setExpirationTime((getRefreshMode() == TokenRefreshMode.WHEN_EXPIRES) ? THERTY_MINUTES : THREE_MINUTES);
         setEffectiveTime(1);
         setIssuanceTime(1);
     }
 
-    private void setExpirationTime(long seconds){
+    private void setExpirationTime(final long seconds) {
         Instant expiration = now().plusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant();
         builder = builder.expirationTime(Date.from(expiration));
     }
 
-    private void setEffectiveTime(long seconds){
-        builder = builder.notBeforeTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
+    private void setEffectiveTime(final long sec) {
+        builder = builder.notBeforeTime(Date.from(now().minusSeconds(sec).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
-    private void setIssuanceTime(long seconds){
+    private void setIssuanceTime(final long seconds) {
         builder = builder.issueTime(Date.from(now().minusSeconds(seconds).atZone(ZoneId.systemDefault()).toInstant()));
     }
 

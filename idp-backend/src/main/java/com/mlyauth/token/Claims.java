@@ -25,7 +25,7 @@ public enum Claims implements IStringEnum {
 
     private final String value;
 
-    Claims(String value) {
+    Claims(final String value) {
         this.value = value;
     }
 
@@ -40,11 +40,11 @@ public enum Claims implements IStringEnum {
     }
 
     @Override
-    public boolean equals(String value) {
+    public boolean equals(final String value) {
         return this.value.equals(value);
     }
 
-    public static Claims create(String value) {
+    public static Claims create(final String value) {
         return stream(Claims.values()).filter(v -> v.value.equals(value)).findFirst().orElse(null);
     }
 }

@@ -5,5 +5,5 @@
         "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <suppress checks="EqualsHashCode"  files="com.mlyauth.constants.*.java" />
+    <suppress checks="EqualsHashCode"  files="com.mlyauth.constants.*.java|Claims.java" />
 </suppressions>

@@ -64,16 +64,17 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
     private SAMLHelper samlHelper;
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(final HttpServletRequest req, final HttpServletResponse res)
+            throws AuthenticationException {
         final Stopwatch started = Stopwatch.createStarted();
         try {
 
-            if (!"POST".equals(request.getMethod())) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource Not Found");
+            if (!"POST".equals(req.getMethod())) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource Not Found");
                 return null;
             } else {
-                final Authentication authentication = super.attemptAuthentication(request, response);
-                traceNavigation(request, response, started);
+                final Authentication authentication = super.attemptAuthentication(req, res);
+                traceNavigation(req, res, started);
                 return authentication;
             }
 
@@ -83,26 +84,28 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
         }
     }
 
-    private void traceNavigation(HttpServletRequest request, HttpServletResponse response, Stopwatch started) {
-        String serialized = request.getParameter("SAMLResponse");
-        final SAMLAccessToken access = loadAccess(serialized, request, response);
-        final Token token = saveToken(access, request);
+    private void traceNavigation(final HttpServletRequest req, final HttpServletResponse res,
+                                 final Stopwatch started) {
+        String serialized = req.getParameter("SAMLResponse");
+        final SAMLAccessToken access = loadAccess(serialized, req, res);
+        final Token token = saveToken(access, req);
         final Navigation navigation = buildNavigation(access, token);
         navigation.setAttributes(buildAttributes(serialized));
         navigation.setTimeConsumed(started.elapsed(TimeUnit.MILLISECONDS));
         navigationDAO.save(navigation);
     }
 
-    private SAMLAccessToken loadAccess(String serialized, HttpServletRequest request, HttpServletResponse response) {
-        SAMLMessageContext messageContext = retrieveMessageContext(request, response);
+    private SAMLAccessToken loadAccess(final String serialized, final HttpServletRequest req,
+                                       final HttpServletResponse res) {
+        SAMLMessageContext messageContext = retrieveMessageContext(req, res);
         final SAMLAccessToken access = tokenFactory.createAccessToken(serialized, buildCredential(messageContext));
         access.decipher();
         return access;
     }
 
-    private SAMLMessageContext retrieveMessageContext(HttpServletRequest request, HttpServletResponse response) {
+    private SAMLMessageContext retrieveMessageContext(final HttpServletRequest req, final HttpServletResponse res) {
         try {
-            SAMLMessageContext messageContext = contextProvider.getLocalAndPeerEntity(request, response);
+            SAMLMessageContext messageContext = contextProvider.getLocalAndPeerEntity(req, res);
             processor.retrieveMessage(messageContext);
             return messageContext;
         } catch (Exception e) {
@@ -110,15 +113,15 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
         }
     }
 
-    private Token saveToken(SAMLAccessToken access, HttpServletRequest request) {
+    private Token saveToken(final SAMLAccessToken access, final HttpServletRequest req) {
         Token token = tokenMapper.toToken(access);
         token.setPurpose(TokenPurpose.NAVIGATION).setSession(context.getAuthenticationSession());
         token.setStatus(TokenStatus.CHECKED);
-        token.setChecksum(DigestUtils.sha256Hex(request.getParameter("SAMLResponse")));
+        token.setChecksum(DigestUtils.sha256Hex(req.getParameter("SAMLResponse")));
         return tokenDAO.save(token);
     }
 
-    private Navigation buildNavigation(SAMLAccessToken access, Token token) {
+    private Navigation buildNavigation(final SAMLAccessToken access, final Token token) {
         return Navigation.newInstance()
                 .setCreatedAt(new Date())
                 .setDirection(INBOUND)
@@ -127,14 +130,14 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
                 .setSession(this.context.getAuthenticationSession());
     }
 
-    private HashSet<NavigationAttribute> buildAttributes(String encodedMessage) {
+    private HashSet<NavigationAttribute> buildAttributes(final String encodedMessage) {
         return new HashSet<>(asList(NavigationAttribute.newInstance()
                 .setCode("SAMLResponse")
                 .setAlias("SAMLResponse")
                 .setValue(encodedMessage)));
     }
 
-    private BasicX509Credential buildCredential(SAMLMessageContext context) {
+    private BasicX509Credential buildCredential(final SAMLMessageContext context) {
         try {
 
             final EntityDescriptor idpDescriptor = metadataManager.getEntityDescriptor(context.getPeerEntityId());

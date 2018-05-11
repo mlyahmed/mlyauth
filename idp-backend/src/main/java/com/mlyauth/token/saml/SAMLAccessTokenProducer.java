@@ -50,13 +50,13 @@ public class SAMLAccessTokenProducer {
     @Value("${idp.saml.entityId}")
     private String idpEntityId;
 
-    public SAMLAccessToken produce(Application app) {
+    public SAMLAccessToken produce(final Application app) {
         Assert.notNull(app, "The application parameter is null");
         validator.validate(app);
         return buildToken(loadAttributes(app));
     }
 
-    private SAMLAccessToken buildToken(List<ApplicationAspectAttribute> attributes) {
+    private SAMLAccessToken buildToken(final List<ApplicationAspectAttribute> attributes) {
         SAMLAccessToken token = tokenFactory.createAccessToken(buildCredential(attributes));
         token.setStamp(idGenerator.generateId());
         token.setIssuer(idpEntityId);
@@ -69,11 +69,11 @@ public class SAMLAccessTokenProducer {
         return token;
     }
 
-    private List<ApplicationAspectAttribute> loadAttributes(Application app) {
+    private List<ApplicationAspectAttribute> loadAttributes(final Application app) {
         return appAspectAttrDAO.findByAppAndAspect(app.getId(), SP_SAML.name());
     }
 
-    private BasicX509Credential buildCredential(List<ApplicationAspectAttribute> attributes) {
+    private BasicX509Credential buildCredential(final List<ApplicationAspectAttribute> attributes) {
         BasicX509Credential credential = new BasicX509Credential();
         credential.setEntityCertificate(loadApplicationEncryptionCertificate(attributes));
         credential.setPrivateKey(keyManager.getDefaultCredential().getPrivateKey());
@@ -81,23 +81,23 @@ public class SAMLAccessTokenProducer {
     }
 
 
-    private X509Certificate loadApplicationEncryptionCertificate(List<ApplicationAspectAttribute> attributes) {
+    private X509Certificate loadApplicationEncryptionCertificate(final List<ApplicationAspectAttribute> attributes) {
         return samlHelper.toX509Certificate(getEncryptionCertificate(attributes).getValue());
     }
 
-    private ApplicationAspectAttribute getEntityId(List<ApplicationAspectAttribute> attributes) {
+    private ApplicationAspectAttribute getEntityId(final List<ApplicationAspectAttribute> attributes) {
         return attributes.stream()
                 .filter(att -> SP_SAML_ENTITY_ID.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);
     }
 
-    private ApplicationAspectAttribute getEncryptionCertificate(List<ApplicationAspectAttribute> attributes) {
+    private ApplicationAspectAttribute getEncryptionCertificate(final List<ApplicationAspectAttribute> attributes) {
         return attributes.stream()
                 .filter(att -> SP_SAML_ENCRYPTION_CERTIFICATE.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);
     }
 
-    private ApplicationAspectAttribute getTargetURL(List<ApplicationAspectAttribute> attributes) {
+    private ApplicationAspectAttribute getTargetURL(final List<ApplicationAspectAttribute> attributes) {
         return attributes.stream()
                 .filter(att -> SP_SAML_SSO_URL.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);

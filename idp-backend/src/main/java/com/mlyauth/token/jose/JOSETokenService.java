@@ -64,24 +64,18 @@ public class JOSETokenService {
     @Autowired
     private ApplicationDAO applicationDAO;
 
-    public TokenBean refreshAccess(JOSERefreshToken refresh){
+    public TokenBean refreshAccess(final JOSERefreshToken refresh) {
         final Application client = context.getApplication();
-
-
-        final List<ApplicationAspectAttribute> attributes = attributeDAO.findByAppAndAspect(client.getId(), CL_JOSE.getValue());
-        final ApplicationAspectAttribute clientEntityId = attributes.stream().filter(attr -> attr.getAttributeCode().getType() == ENTITYID).findFirst().get();
-        notNull(clientEntityId, "The Client Entity ID not found");
-
-        isTrue(clientEntityId.getValue().equals(refresh.getIssuer()), "Untrusted peer");
-
-        ApplicationAspectAttribute rsEntityId = attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refresh.getAudience());
+        final List<ApplicationAspectAttribute> at = attributeDAO.findByAppAndAspect(client.getId(), CL_JOSE.getValue());
+        notNull(getClientEntityId(at), "The Client Entity ID not found");
+        isTrue(getClientEntityId(at).getValue().equals(refresh.getIssuer()), "Untrusted peer");
+        ApplicationAspectAttribute rsEntityId = getResourceHolderEntityId(refresh);
         notNull(rsEntityId, "The Resource Server Entity ID not found");
-
         final Token readyRefresh = tokenDAO.findByStamp(DigestUtils.sha256Hex(refresh.getStamp()));
         notNull(readyRefresh, "No Ready Refresh token found");
 
-        final PublicKey resourceServerKey = (localEntityId.equals(rsEntityId.getValue())) ? credManager.getPublicKey() : credManager.getPeerKey(refresh.getAudience(), RS_JOSE);
-        final JOSEAccessToken accessToken = tokenFactory.createAccessToken(credManager.getPrivateKey(), resourceServerKey);
+        final PublicKey rsKey = getResourceServerKey(refresh, rsEntityId);
+        final JOSEAccessToken accessToken = tokenFactory.createAccessToken(credManager.getPrivateKey(), rsKey);
         accessToken.setStamp(idGenerator.generateId());
         accessToken.setSubject(refresh.getSubject());
         accessToken.setIssuer(localEntityId);
@@ -101,8 +95,22 @@ public class JOSETokenService {
         return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
     }
 
+    private PublicKey getResourceServerKey(final JOSERefreshToken refresh, final ApplicationAspectAttribute rsId) {
+        return (localEntityId.equals(rsId.getValue()))
+                ? credManager.getPublicKey()
+                : credManager.getPeerKey(refresh.getAudience(), RS_JOSE);
+    }
 
-    public void checkAccess(String access){
+    private ApplicationAspectAttribute getResourceHolderEntityId(final JOSERefreshToken refresh) {
+        return attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refresh.getAudience());
+    }
+
+    private ApplicationAspectAttribute getClientEntityId(final List<ApplicationAspectAttribute> attributes) {
+        return attributes.stream().filter(attr -> attr.getAttributeCode().getType() == ENTITYID).findFirst().get();
+    }
+
+
+    public void checkAccess(final String access) {
         final Token token = tokenDAO.findByChecksum(DigestUtils.sha256Hex(access));
         Assert.notNull(token, "Token not found");
         Assert.isTrue(token.getExpiryTime().after(new Date()), "The token is expired");

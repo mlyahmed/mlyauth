@@ -35,12 +35,12 @@ import static com.mlyauth.token.Claims.VERDICT;
 @Component
 public class TokenMapper {
 
-    public Token toToken(IToken token) {
+    public Token toToken(final IToken token) {
         if (token == null) return null;
         return mapToken(token).setClaims(mapClaims(token));
     }
 
-    private Token mapToken(IToken token) {
+    private Token mapToken(final IToken token) {
         return Token.newInstance()
                 .setValidationMode(token.getValidationMode()) //TODO: To be covered
                 .setRefreshMode(token.getRefreshMode()) //TODO: To be covered
@@ -52,7 +52,7 @@ public class TokenMapper {
                 .setNorm(token.getNorm());
     }
 
-    private HashSet<TokenClaim> mapClaims(IToken token) {
+    private HashSet<TokenClaim> mapClaims(final IToken token) {
         final HashSet<TokenClaim> claims = new HashSet<>();
         if (StringUtils.isNotBlank(token.getSubject()))
             claims.add(newInstance().setCode(SUBJECT.getValue()).setValue(token.getSubject()));
@@ -88,7 +88,8 @@ public class TokenMapper {
             claims.add(newInstance().setCode(CLIENT_ID.getValue()).setValue(token.getClaim(CLIENT_ID.getValue())));
 
         if (StringUtils.isNotBlank(token.getClaim(CLIENT_PROFILE.getValue())))
-            claims.add(newInstance().setCode(CLIENT_PROFILE.getValue()).setValue(token.getClaim(CLIENT_PROFILE.getValue())));
+            claims.add(newInstance().setCode(CLIENT_PROFILE.getValue())
+                    .setValue(token.getClaim(CLIENT_PROFILE.getValue())));
 
         if (StringUtils.isNotBlank(token.getClaim(ENTITY_ID.getValue())))
             claims.add(newInstance().setCode(ENTITY_ID.getValue()).setValue(token.getClaim(ENTITY_ID.getValue())));
@@ -103,11 +104,11 @@ public class TokenMapper {
     }
 
 
-    private Date toDate(LocalDateTime time) {
+    private Date toDate(final LocalDateTime time) {
         return Date.from(time.atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    private String compactScopes(Set<TokenScope> scopes) {
+    private String compactScopes(final Set<TokenScope> scopes) {
         return scopes != null ? scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")) : null;
     }
 }

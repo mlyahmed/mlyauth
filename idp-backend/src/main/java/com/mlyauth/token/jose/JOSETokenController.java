@@ -26,13 +26,13 @@ public class JOSETokenController {
     @PostMapping(value = "/access", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    TokenBean newAccessToken(@RequestBody String refresh) {
+    TokenBean newAccessToken(@RequestBody final String refresh) {
         return joseTokenService.refreshAccess(tokenDecoder.decodeRefresh(refresh, CL_JOSE));
     }
 
     @PostMapping(value = "/access/_check", consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void checkAccessToken(@RequestBody String access) {
+    public void checkAccessToken(@RequestBody final String access) {
         joseTokenService.checkAccess(access);
     }
 }
