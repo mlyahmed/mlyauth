@@ -1,8 +1,8 @@
 package com.mlyauth.exception;
 
-public class TokenUnmodifiableException extends IDPException {
+public final class TokenUnmodifiableException extends IDPException {
 
-    private TokenUnmodifiableException(String message) {
+    private TokenUnmodifiableException(final String message) {
         super(message);
     }
 

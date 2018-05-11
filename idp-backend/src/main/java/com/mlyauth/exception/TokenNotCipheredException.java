@@ -1,8 +1,8 @@
 package com.mlyauth.exception;
 
-public class TokenNotCipheredException extends IDPException {
+public final class TokenNotCipheredException extends IDPException {
 
-    private TokenNotCipheredException(String message) {
+    private TokenNotCipheredException(final String message) {
         super(message);
     }
 

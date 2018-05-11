@@ -31,7 +31,7 @@ public class IDPBasicNavigationService extends AbstractIDPNavigationService {
 
 
     @Override
-    public NavigationBean process(String appname) {
+    public NavigationBean process(final String appname) {
 
         Collection<AttributeBean> navigationAttributes = new LinkedList<>();
         NavigationBean navigation = new NavigationBean();
@@ -39,8 +39,7 @@ public class IDPBasicNavigationService extends AbstractIDPNavigationService {
         final UserDetails userdetails = (UserDetails) authentication.getPrincipal();
         final Person person = personLookuper.byEmail(userdetails.getUsername());
         Collection<Application> applications = person.getApplications();
-        if (applications.stream().noneMatch(app -> app.getAppname().equals(appname)))
-            throw IDPException.newInstance("");
+        if (applications.stream().noneMatch(a -> a.getAppname().equals(appname))) throw IDPException.newInstance("");
 
         navigationAttributes.add(newAttribute(SP_BASIC_SSO_URL.getValue())
                 .setAlias("authurl").setValue("https://localhost/j_spring_security_check"));

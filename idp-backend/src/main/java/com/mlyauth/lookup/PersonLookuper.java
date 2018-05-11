@@ -20,12 +20,12 @@ public class PersonLookuper {
     @Autowired
     private PersonByEmailDAO personByEmailDAO;
 
-    public Person byEmail(final String email){
+    public Person byEmail(final String email) {
         final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(email);
         return isEmpty(byEmail) ? null : filterByEmail(byEmail, email);
     }
 
-    private Person filterByEmail(final Set<PersonByEmail> index, final String email){
+    private Person filterByEmail(final Set<PersonByEmail> index, final String email) {
         return index.stream().map(entry -> personDAO.findByExternalId(entry.getPersonId()))
                 .filter(person -> person != null)
                 .filter(person -> person.getEmail().equals(email))

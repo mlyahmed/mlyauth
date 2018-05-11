@@ -1,12 +1,12 @@
 package com.mlyauth.exception;
 
-public class IDPSAMLErrorException extends IDPException {
+public final class IDPSAMLErrorException extends IDPException {
 
-    private IDPSAMLErrorException(Exception e) {
+    private IDPSAMLErrorException(final Exception e) {
         super(e);
     }
 
-    public static IDPSAMLErrorException newInstance(Exception e) {
+    public static IDPSAMLErrorException newInstance(final Exception e) {
         return new IDPSAMLErrorException(e);
     }
 

@@ -52,7 +52,8 @@ public class IDPSAMLMetadataGenerator {
 
             return metadata;
         } catch (Exception e) {
-            throw IDPException.newInstance().setErrors(Arrays.asList(new AuthError("IDP_SAML_METADATA_ERROR", e.getMessage())));
+            throw IDPException.newInstance()
+                    .setErrors(Arrays.asList(new AuthError("IDP_SAML_METADATA_ERROR", e.getMessage())));
         }
 
     }

@@ -7,11 +7,11 @@ public class IDPException extends RuntimeException {
 
     private Collection<AuthError> errors = new LinkedHashSet<>();
 
-    protected IDPException(Exception e) {
+    protected IDPException(final Exception e) {
         super(e);
     }
 
-    protected IDPException(String message) {
+    protected IDPException(final String message) {
         super(message);
     }
 
@@ -23,17 +23,19 @@ public class IDPException extends RuntimeException {
         return new IDPException();
     }
 
-    public static IDPException newInstance(Exception e) {
+    public static IDPException newInstance(final Exception e) {
         return new IDPException(e);
     }
 
-    public static IDPException newInstance(String message) { return new IDPException(message); }
+    public static IDPException newInstance(final String message) {
+        return new IDPException(message);
+    }
 
     public Collection<AuthError> getErrors() {
         return errors;
     }
 
-    public IDPException setErrors(Collection<AuthError> errors) {
+    public IDPException setErrors(final Collection<AuthError> errors) {
         this.errors = errors;
         return this;
     }

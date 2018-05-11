@@ -15,7 +15,7 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
     private static Logger logger = LoggerFactory.getLogger(ExceptionInterceptor.class);
 
     @ExceptionHandler(IDPException.class)
-    public ModelAndView exception(HttpServletRequest request, IDPException error) {
+    public ModelAndView exception(final HttpServletRequest request, final IDPException error) {
         logger.error("Error : ", error);
         request.setAttribute("errorMessage", error.getMessage());
         request.setAttribute("MLY_AUTH_ERROR_CODE", "APP_NOT_ASSIGNED");
@@ -24,10 +24,9 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
         return view;
     }
 
-    private HttpStatus getStatus(HttpServletRequest request) {
-        Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        if (statusCode == null)
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+    private HttpStatus getStatus(final HttpServletRequest request) {
+        final Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        if (statusCode == null) return HttpStatus.INTERNAL_SERVER_ERROR;
         return HttpStatus.valueOf(statusCode);
     }
 }

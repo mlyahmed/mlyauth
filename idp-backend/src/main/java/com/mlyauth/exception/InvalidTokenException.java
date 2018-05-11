@@ -1,12 +1,12 @@
 package com.mlyauth.exception;
 
-public class InvalidTokenException extends IDPException {
+public final class InvalidTokenException extends IDPException {
 
-    private InvalidTokenException(String message) {
+    private InvalidTokenException(final String message) {
         super(message);
     }
 
-    public static InvalidTokenException newInstance(String message) {
+    public static InvalidTokenException newInstance(final String message) {
         return new InvalidTokenException(message);
     }
 

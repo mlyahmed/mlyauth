@@ -1,13 +1,13 @@
 package com.mlyauth.exception;
 
-public class BadSPSAMLAspectAttributeValueException extends IDPException {
+public final class BadSPSAMLAspectAttributeValueException extends IDPException {
 
     private BadSPSAMLAspectAttributeValueException() {
 
     }
 
 
-    private BadSPSAMLAspectAttributeValueException(Exception e) {
+    private BadSPSAMLAspectAttributeValueException(final Exception e) {
         super(e);
     }
 
@@ -15,7 +15,7 @@ public class BadSPSAMLAspectAttributeValueException extends IDPException {
         return new BadSPSAMLAspectAttributeValueException();
     }
 
-    public static BadSPSAMLAspectAttributeValueException newInstance(Exception e) {
+    public static BadSPSAMLAspectAttributeValueException newInstance(final Exception e) {
         return new BadSPSAMLAspectAttributeValueException(e);
     }
 }

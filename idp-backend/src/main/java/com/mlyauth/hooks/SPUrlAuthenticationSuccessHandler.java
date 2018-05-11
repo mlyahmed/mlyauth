@@ -32,13 +32,14 @@ public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
+                                        final Authentication authentication) throws IOException, ServletException {
 
         if (StringUtils.isNotBlank(context.getAttribute(APPLICATION.getValue()))) {
 
             sendToTarget(request, response, context.getAttribute(APPLICATION.getValue()));
 
-        } else if(getDefaultTarget() != null){
+        } else if (getDefaultTarget() != null) {
 
             sendToTarget(request, response, getDefaultTarget().getAppname());
 
@@ -48,16 +49,17 @@ public class SPUrlAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
     }
 
-    private Application getDefaultTarget(){
+    private Application getDefaultTarget() {
         final Role role = context.getPerson().getRole();
         final AutoNavigation autoNavigation = autoNavigationDAO.findByRole(role);
-        if(autoNavigation == null) return null;
+        if (autoNavigation == null) return null;
         return context.getPerson().getApplications().stream()
                 .filter(app -> app.getType().getCode() == autoNavigation.getApplicationType().getCode())
                 .findFirst().orElse(null);
     }
 
-    private void sendToTarget(HttpServletRequest request, HttpServletResponse response, String appname) throws IOException {
-        getRedirectStrategy().sendRedirect(request, response, "/navigate/forward/to/" + appname);
+    private void sendToTarget(final HttpServletRequest req, final HttpServletResponse res, final String appname)
+            throws IOException {
+        getRedirectStrategy().sendRedirect(req, res, "/navigate/forward/to/" + appname);
     }
 }

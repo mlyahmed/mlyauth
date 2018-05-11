@@ -25,12 +25,12 @@ public class HooksController {
     private PersonDAO personDAO;
 
     @RequestMapping("/")
-    public String entry(Model model) {
+    public String entry(final Model model) {
         return home(model);
     }
 
     @RequestMapping("/home")
-    public String home(Model model) {
+    public String home(final Model model) {
         final Person person = personDAO.findOne(context.getPerson().getId());
         final Set<Application> applications = person.getApplications();
         final Set<ApplicationBean> beans = new HashSet<>();
@@ -46,12 +46,12 @@ public class HooksController {
     }
 
     @RequestMapping("/401.html")
-    public String Unauthorized() {
+    public String unauthorized() {
         return "error/401";
     }
 
     @RequestMapping("/login-error.html")
-    public String loginError(Model model) {
+    public String loginError(final Model model) {
         model.addAttribute("loginError", true);
         return "login";
     }

@@ -1,20 +1,20 @@
 package com.mlyauth.exception;
 
-public class JOSEErrorException extends IDPException {
+public final class JOSEErrorException extends IDPException {
 
-    private JOSEErrorException(Exception e) {
+    private JOSEErrorException(final Exception e) {
         super(e);
     }
 
-    private JOSEErrorException(String message) {
+    private JOSEErrorException(final String message) {
         super(message);
     }
 
-    public static JOSEErrorException newInstance(Exception e) {
+    public static JOSEErrorException newInstance(final Exception e) {
         return new JOSEErrorException(e);
     }
 
-    public static JOSEErrorException newInstance(String message) {
+    public static JOSEErrorException newInstance(final String message) {
         return new JOSEErrorException(message);
     }
 

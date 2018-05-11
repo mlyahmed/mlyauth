@@ -23,24 +23,24 @@ public class IDPNavigationController {
     private final Map<AspectType, IDPNavigationService> services = new HashMap<>();
 
     @Autowired
-    public void init(Collection<IDPNavigationService> services) {
+    public void init(final Collection<IDPNavigationService> services) {
         services.forEach(service -> this.services.put(service.getSupportedAspect(), service));
     }
 
     @GetMapping("/to/{appname}")
-    public String navigateTo(@PathVariable String appname, Model model) {
+    public String navigateTo(@PathVariable final String appname, final Model model) {
         return samlNavigateTo(appname, model);
     }
 
     @GetMapping("/saml/to/{appname}")
-    public String samlNavigateTo(@PathVariable String appname, Model model) {
+    public String samlNavigateTo(@PathVariable final String appname, Model model) {
         final NavigationBean navigation = services.get(SP_SAML).newNavigation(appname);
         model.addAttribute("navigation", navigation);
         return "post-navigation";
     }
 
     @GetMapping("/basic/to/{appname}")
-    public String basicNavigateTo(@PathVariable String appname, Model model) {
+    public String basicNavigateTo(@PathVariable final String appname, final Model model) {
         final NavigationBean navigation = services.get(SP_BASIC).newNavigation(appname);
         model.addAttribute("navigation", navigation);
         return "post-navigation";

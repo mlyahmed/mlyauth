@@ -19,7 +19,7 @@ import static com.mlyauth.constants.Direction.OUTBOUND;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public abstract class AbstractIDPNavigationService implements IDPNavigationService {
-    protected final static Logger logger = LoggerFactory.getLogger(IDPNavigationService.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(IDPNavigationService.class);
 
     @Autowired
     private TokenDAO tokenDAO;
@@ -30,23 +30,23 @@ public abstract class AbstractIDPNavigationService implements IDPNavigationServi
     @Autowired
     private IContext context;
 
-    public NavigationBean newNavigation(String appname) {
+    public NavigationBean newNavigation(final String appname) {
         final Stopwatch started = Stopwatch.createStarted();
         final NavigationBean navigationBean = process(appname);
         traceNavigation(navigationBean, started.elapsed(MILLISECONDS));
         return navigationBean;
     }
 
-    private void traceNavigation(NavigationBean navigationBean, long consumedTime) {
+    private void traceNavigation(final NavigationBean navigationBean, final long consumedTime) {
         try {
             final Navigation navigation = navigationDAO.save(buildNavigation(navigationBean, consumedTime));
             navigationBean.setId(navigation.getId());
         } catch (Exception e) {
-            logger.error("Error when tracing navigation : ", e);
+            LOGGER.error("Error when tracing navigation : ", e);
         }
     }
 
-    private Navigation buildNavigation(NavigationBean navigationBean, long consumedTime) {
+    private Navigation buildNavigation(final NavigationBean navigationBean, final long consumedTime) {
         return Navigation.newInstance()
                 .setCreatedAt(new Date())
                 .setTimeConsumed(consumedTime)
@@ -57,12 +57,12 @@ public abstract class AbstractIDPNavigationService implements IDPNavigationServi
                 .setSession(context.getAuthenticationSession());
     }
 
-    private Set<NavigationAttribute> buildNavigationAttributes(NavigationBean navigationBean) {
+    private Set<NavigationAttribute> buildNavigationAttributes(final NavigationBean navigationBean) {
         return navigationBean.getAttributes().stream()
                 .map(att -> NavigationAttribute.newInstance().setCode(att.getCode())
                         .setAlias(att.getAlias()).setValue(att.getValue())).collect(Collectors.toSet());
     }
 
-    abstract NavigationBean process(String appname);
+    abstract NavigationBean process(final String appname);
 
 }
