@@ -116,10 +116,10 @@ public class TokenizedEmailTest {
     public static Object[][] emailAndTokenized() {
         // @formatter:off
         return new Object[][]{
-                {"ahmed@elidrissi.ma", "ah***@elidrissi.ma"},
+                {"ahmed@elidrissi.ma", "a****@elidrissi.ma"},
                 {"aei@prima-solutions.com", "a**@prima-solutions.com"},
-                {"ahmed.elidrissi@prima-solutions.com", "ahmed.e********@prima-solutions.com"},
-                {"mly.ahmed@gmail.com", "mly.*****@gmail.com"},
+                {"ahmed.elidrissi@prima-solutions.com", "ahmed**********@prima-solutions.com"},
+                {"mly.ahmed@gmail.com", "mly******@gmail.com"},
         };
         // @formatter:on
     }

@@ -9,7 +9,7 @@ public class EmailTokenizer {
     }
 
     public String tokenizeEmailAddress(String value) {
-        final String plain = getUsername(value).substring(0, getUsername(value).length() / 2);
+        final String plain = getUsername(value).substring(0, getUsername(value).length() / 3);
         return rightPad(plain, getUsername(value).length(), '*')  + "@" + getDomain(value);
     }
 

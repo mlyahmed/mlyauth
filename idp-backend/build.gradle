@@ -17,6 +17,7 @@ buildscript {
 plugins {
     id "java"
     id "jacoco"
+    id "checkstyle"
     id "org.unbroken-dome.test-sets" version "1.4.2"
     id "io.spring.dependency-management" version "1.0.4.RELEASE"
     id "org.springframework.boot" version "1.5.9.RELEASE"
@@ -125,6 +126,20 @@ jacocoTestReport {
         html.destination file("${buildDir}/reports/coverage/html")
     }
 }
+
+
+checkstyle {
+    ignoreFailures = true
+    configFile = file("${project.rootDir}/checkstyle.xml")
+    checkstyleMain {
+        source = sourceSets.main.allSource
+    }
+
+    configurations {
+        checkstyle
+    }
+}
+
 
 asciidoctor {
     def docAttributes = [:]
