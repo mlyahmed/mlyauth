@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "APPLICATION_ASPECT_ATTR")
-public class ApplicationAspectAttribute {
+public class AppAspAttr {
 
     @EmbeddedId
     private ApplicationAspectAttributeId id;
@@ -20,15 +20,15 @@ public class ApplicationAspectAttribute {
     @Lob
     private String value;
 
-    public static ApplicationAspectAttribute newInstance() {
-        return new ApplicationAspectAttribute();
+    public static AppAspAttr newInstance() {
+        return new AppAspAttr();
     }
 
     public ApplicationAspectAttributeId getId() {
         return id;
     }
 
-    public ApplicationAspectAttribute setId(final ApplicationAspectAttributeId id) {
+    public AppAspAttr setId(final ApplicationAspectAttributeId id) {
         this.id = id;
         return this;
     }
@@ -37,7 +37,7 @@ public class ApplicationAspectAttribute {
         return value;
     }
 
-    public ApplicationAspectAttribute setValue(final String value) {
+    public AppAspAttr setValue(final String value) {
         this.value = value;
         return this;
     }

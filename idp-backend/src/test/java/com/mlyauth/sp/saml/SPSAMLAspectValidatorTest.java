@@ -3,8 +3,8 @@ package com.mlyauth.sp.saml;
 import com.mlyauth.constants.AspectAttribute;
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.exception.BadSPSAMLAspectAttributeValueException;
 import com.mlyauth.exception.MissingSPSAMLAspectAttributeException;
@@ -17,8 +17,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.opensaml.xml.util.Base64;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
@@ -36,23 +36,21 @@ public class SPSAMLAspectValidatorTest {
     public static final long APPLICATION_ID = 2125485l;
 
     @InjectMocks
-    SPSAMLAspectValidator validator;
+    private SPSAMLAspectValidator validator;
 
     @Mock
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
 
-    @Spy
-    private SAMLHelper samlHelper = new SAMLHelper();
-
     private Application application;
-    private List<ApplicationAspectAttribute> attributes;
-    private ApplicationAspectAttribute certificateAttribute;
-    private ApplicationAspectAttribute ssoUrlAttribute;
-    private ApplicationAspectAttribute entityIdAttribute;
+    private List<AppAspAttr> attributes;
+    private AppAspAttr certificateAttribute;
+    private AppAspAttr ssoUrlAttribute;
+    private AppAspAttr entityIdAttribute;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(validator, "samlHelper", new SAMLHelper());
         attributes = new LinkedList<>();
         application = Application.newInstance().setId(APPLICATION_ID).setAspects(new HashSet<>(Arrays.asList(SP_SAML)));
         when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, SP_SAML.name())).thenReturn(attributes);
@@ -159,7 +157,7 @@ public class SPSAMLAspectValidatorTest {
                 .setAttributeCode(AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
         final Pair<PrivateKey, X509Certificate> credentialPair = KeysForTests.generateRSACredential();
         final String certificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
-        certificateAttribute = ApplicationAspectAttribute.newInstance()
+        certificateAttribute = AppAspAttr.newInstance()
                 .setId(encryptionCertificateId)
                 .setValue(certificate);
         attributes.add(certificateAttribute);
@@ -170,7 +168,7 @@ public class SPSAMLAspectValidatorTest {
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AspectType.SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_ENTITY_ID.getValue());
-        entityIdAttribute = ApplicationAspectAttribute.newInstance()
+        entityIdAttribute = AppAspAttr.newInstance()
                 .setId(ssoEntityIdAttribute)
                 .setValue("APP_SP_SAML_ID");
         attributes.add(entityIdAttribute);
@@ -181,7 +179,7 @@ public class SPSAMLAspectValidatorTest {
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AspectType.SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_SSO_URL.getValue());
-        ssoUrlAttribute = ApplicationAspectAttribute.newInstance()
+        ssoUrlAttribute = AppAspAttr.newInstance()
                 .setId(ssoUrlId)
                 .setValue("http://localhost/sp/saml/sso");
         attributes.add(ssoUrlAttribute);

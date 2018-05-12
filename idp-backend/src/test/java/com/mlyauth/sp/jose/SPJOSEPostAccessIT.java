@@ -11,8 +11,8 @@ import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.ApplicationTypeDAO;
 import com.mlyauth.dao.NavigationDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.exception.JOSEErrorException;
@@ -167,21 +167,21 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     private void given_a_peer_jose_idp_app_attributes() {
         try {
-            final ApplicationAspectAttribute entityIdAttribute = ApplicationAspectAttribute.newInstance()
+            final AppAspAttr entityIdAttribute = AppAspAttr.newInstance()
                     .setId(ApplicationAspectAttributeId.newInstance()
                             .setApplicationId(application.getId())
                             .setAspectCode(IDP_JOSE.name())
                             .setAttributeCode(IDP_JOSE_ENTITY_ID.getValue()))
                     .setValue(entityId);
 
-            final ApplicationAspectAttribute ssoUrlAttribute = ApplicationAspectAttribute.newInstance()
+            final AppAspAttr ssoUrlAttribute = AppAspAttr.newInstance()
                     .setId(ApplicationAspectAttributeId.newInstance()
                             .setApplicationId(application.getId())
                             .setAspectCode(IDP_JOSE.name())
                             .setAttributeCode(AspectAttribute.IDP_JOSE_SSO_URL.getValue()))
                     .setValue(ssoUrl);
 
-            final ApplicationAspectAttribute certificateAttribute = ApplicationAspectAttribute.newInstance()
+            final AppAspAttr certificateAttribute = AppAspAttr.newInstance()
                     .setId(ApplicationAspectAttributeId.newInstance()
                             .setApplicationId(application.getId())
                             .setAspectCode(IDP_JOSE.name())

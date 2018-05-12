@@ -7,8 +7,8 @@ import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.Token;
 import com.mlyauth.token.TokenIdGenerator;
 import com.mlyauth.token.TokenMapper;
@@ -66,10 +66,10 @@ public class JOSETokenService {
 
     public TokenBean refreshAccess(final JOSERefreshToken refresh) {
         final Application client = context.getApplication();
-        final List<ApplicationAspectAttribute> at = attributeDAO.findByAppAndAspect(client.getId(), CL_JOSE.getValue());
+        final List<AppAspAttr> at = attributeDAO.findByAppAndAspect(client.getId(), CL_JOSE.getValue());
         notNull(getClientEntityId(at), "The Client Entity ID not found");
         isTrue(getClientEntityId(at).getValue().equals(refresh.getIssuer()), "Untrusted peer");
-        ApplicationAspectAttribute rsEntityId = getResourceHolderEntityId(refresh);
+        AppAspAttr rsEntityId = getResourceHolderEntityId(refresh);
         notNull(rsEntityId, "The Resource Server Entity ID not found");
         final Token readyRefresh = tokenDAO.findByStamp(DigestUtils.sha256Hex(refresh.getStamp()));
         notNull(readyRefresh, "No Ready Refresh token found");
@@ -95,17 +95,17 @@ public class JOSETokenService {
         return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
     }
 
-    private PublicKey getResourceServerKey(final JOSERefreshToken refresh, final ApplicationAspectAttribute rsId) {
+    private PublicKey getResourceServerKey(final JOSERefreshToken refresh, final AppAspAttr rsId) {
         return (localEntityId.equals(rsId.getValue()))
                 ? credManager.getPublicKey()
                 : credManager.getPeerKey(refresh.getAudience(), RS_JOSE);
     }
 
-    private ApplicationAspectAttribute getResourceHolderEntityId(final JOSERefreshToken refresh) {
+    private AppAspAttr getResourceHolderEntityId(final JOSERefreshToken refresh) {
         return attributeDAO.findByAttribute(RS_JOSE_ENTITY_ID.getValue(), refresh.getAudience());
     }
 
-    private ApplicationAspectAttribute getClientEntityId(final List<ApplicationAspectAttribute> attributes) {
+    private AppAspAttr getClientEntityId(final List<AppAspAttr> attributes) {
         return attributes.stream().filter(attr -> attr.getAttributeCode().getType() == ENTITYID).findFirst().get();
     }
 

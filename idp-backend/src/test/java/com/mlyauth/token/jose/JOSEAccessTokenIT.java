@@ -13,8 +13,8 @@ import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.ApplicationTypeDAO;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Token;
@@ -183,14 +183,14 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private void given_the_client_space_with_client_aspect() throws CertificateEncodingException {
         clientCred = KeysForTests.generateRSACredential();
 
-        final ApplicationAspectAttribute clientSpaceEntityIdAttribute = ApplicationAspectAttribute.newInstance()
+        final AppAspAttr clientSpaceEntityIdAttribute = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
                         .setAttributeCode(CL_JOSE_ENTITY_ID.getValue()))
                 .setValue(CLIENT_APP_ENTITY_ID);
 
-        final ApplicationAspectAttribute clientSpaceContextAttribute = ApplicationAspectAttribute.newInstance()
+        final AppAspAttr clientSpaceContextAttribute = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
@@ -198,7 +198,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setValue("http://client.boursorama.assurances.com");
 
 
-        final ApplicationAspectAttribute clientSpaceCertificateAttribute = ApplicationAspectAttribute.newInstance()
+        final AppAspAttr clientSpaceCertificateAttribute = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
@@ -245,14 +245,14 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private void given_the_policy_with_resource_server_aspect() throws CertificateEncodingException {
         policyCred = KeysForTests.generateRSACredential();
 
-        final ApplicationAspectAttribute policyEntityIdAttribute = ApplicationAspectAttribute.newInstance()
+        final AppAspAttr policyEntityIdAttribute = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(RS_JOSE.name())
                         .setAttributeCode(RS_JOSE_ENTITY_ID.getValue()))
                 .setValue(POLICY_APP_ENTITY_ID);
 
-        final ApplicationAspectAttribute policyContextAttribute = ApplicationAspectAttribute.newInstance()
+        final AppAspAttr policyContextAttribute = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(RS_JOSE.name())
@@ -260,7 +260,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setValue("http://policy.sgi.prima-solutions.com");
 
 
-        final ApplicationAspectAttribute policyCertificateAttribute = ApplicationAspectAttribute.newInstance()
+        final AppAspAttr policyCertificateAttribute = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(RS_JOSE.name())

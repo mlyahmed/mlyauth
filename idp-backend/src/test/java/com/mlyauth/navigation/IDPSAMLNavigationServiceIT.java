@@ -8,8 +8,8 @@ import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.NavigationDAO;
 import com.mlyauth.dao.TokenDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.Navigation;
 import com.mlyauth.domain.NavigationAttribute;
 import com.mlyauth.domain.Token;
@@ -54,9 +54,9 @@ public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
     private IContext context;
 
     @Test
-    public void when_generate_a_saml_navigation_to_Policy_Dev_then_generate_it(){
-        final Application policyDev = applicationDAO.findByAppname(POLICY_DEV);
-        final Map<AspectAttribute, ApplicationAspectAttribute> attributes = attributesDAO.findAndIndex(policyDev.getId(), SP_SAML.name());
+    public void when_generate_a_saml_navigation_to_Policy_Dev_then_generate_it() {
+        final Application policy = applicationDAO.findByAppname(POLICY_DEV);
+        final Map<AspectAttribute, AppAspAttr> attributes = attributesDAO.findAndIndex(policy.getId(), SP_SAML.name());
         final NavigationBean navigation = navigationService.newNavigation(POLICY_DEV);
         assertThat(navigation, notNullValue());
         assertThat(navigation.getTarget(), equalTo(attributes.get(SP_SAML_SSO_URL).getValue()));

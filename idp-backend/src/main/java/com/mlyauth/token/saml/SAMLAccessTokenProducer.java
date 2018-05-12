@@ -3,8 +3,8 @@ package com.mlyauth.token.saml;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.context.IContext;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.sp.saml.ISPSAMLAspectValidator;
 import com.mlyauth.token.TokenIdGenerator;
 import org.opensaml.xml.security.x509.BasicX509Credential;
@@ -56,7 +56,7 @@ public class SAMLAccessTokenProducer {
         return buildToken(loadAttributes(app));
     }
 
-    private SAMLAccessToken buildToken(final List<ApplicationAspectAttribute> attributes) {
+    private SAMLAccessToken buildToken(final List<AppAspAttr> attributes) {
         SAMLAccessToken token = tokenFactory.createAccessToken(buildCredential(attributes));
         token.setStamp(idGenerator.generateId());
         token.setIssuer(idpEntityId);
@@ -69,11 +69,11 @@ public class SAMLAccessTokenProducer {
         return token;
     }
 
-    private List<ApplicationAspectAttribute> loadAttributes(final Application app) {
+    private List<AppAspAttr> loadAttributes(final Application app) {
         return appAspectAttrDAO.findByAppAndAspect(app.getId(), SP_SAML.name());
     }
 
-    private BasicX509Credential buildCredential(final List<ApplicationAspectAttribute> attributes) {
+    private BasicX509Credential buildCredential(final List<AppAspAttr> attributes) {
         BasicX509Credential credential = new BasicX509Credential();
         credential.setEntityCertificate(loadApplicationEncryptionCertificate(attributes));
         credential.setPrivateKey(keyManager.getDefaultCredential().getPrivateKey());
@@ -81,23 +81,23 @@ public class SAMLAccessTokenProducer {
     }
 
 
-    private X509Certificate loadApplicationEncryptionCertificate(final List<ApplicationAspectAttribute> attributes) {
+    private X509Certificate loadApplicationEncryptionCertificate(final List<AppAspAttr> attributes) {
         return samlHelper.toX509Certificate(getEncryptionCertificate(attributes).getValue());
     }
 
-    private ApplicationAspectAttribute getEntityId(final List<ApplicationAspectAttribute> attributes) {
+    private AppAspAttr getEntityId(final List<AppAspAttr> attributes) {
         return attributes.stream()
                 .filter(att -> SP_SAML_ENTITY_ID.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);
     }
 
-    private ApplicationAspectAttribute getEncryptionCertificate(final List<ApplicationAspectAttribute> attributes) {
+    private AppAspAttr getEncryptionCertificate(final List<AppAspAttr> attributes) {
         return attributes.stream()
                 .filter(att -> SP_SAML_ENCRYPTION_CERTIFICATE.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);
     }
 
-    private ApplicationAspectAttribute getTargetURL(final List<ApplicationAspectAttribute> attributes) {
+    private AppAspAttr getTargetURL(final List<AppAspAttr> attributes) {
         return attributes.stream()
                 .filter(att -> SP_SAML_SSO_URL.equals(att.getId().getAttributeCode()))
                 .findFirst().orElseGet(null);

@@ -6,8 +6,8 @@ import com.mlyauth.constants.AspectType;
 import com.mlyauth.context.IContext;
 import com.mlyauth.context.MockContext;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
-import com.mlyauth.domain.ApplicationAspectAttribute;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.exception.IDPException;
 import com.mlyauth.sp.saml.ISPSAMLAspectValidator;
@@ -96,10 +96,10 @@ public class SAMLAccessTokenProducerTest {
     @Spy
     private IContext context = new MockContext();
 
-    private List<ApplicationAspectAttribute> appAspectAttrobutes;
-    private ApplicationAspectAttribute ssoUrlAttribute;
-    private ApplicationAspectAttribute ssoEntityIdAttribute;
-    private ApplicationAspectAttribute ssoEncryptionCertificateAttribute;
+    private List<AppAspAttr> appAspectAttrobutes;
+    private AppAspAttr ssoUrlAttribute;
+    private AppAspAttr ssoEntityIdAttribute;
+    private AppAspAttr ssoEncryptionCertificateAttribute;
     private Application application;
     private Response response;
     private Assertion assertion;
@@ -280,7 +280,7 @@ public class SAMLAccessTokenProducerTest {
                 .setApplicationId(applicationId)
                 .setAspectCode(SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_SSO_URL.getValue());
-        ssoUrlAttribute = ApplicationAspectAttribute.newInstance().setId(ssoUrl).setValue(spSAMLSSOUrl);
+        ssoUrlAttribute = AppAspAttr.newInstance().setId(ssoUrl).setValue(spSAMLSSOUrl);
         appAspectAttrobutes.add(ssoUrlAttribute);
     }
 
@@ -289,7 +289,7 @@ public class SAMLAccessTokenProducerTest {
                 .setApplicationId(applicationId)
                 .setAspectCode(SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_ENTITY_ID.getValue());
-        ssoEntityIdAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEntityId).setValue(entityId);
+        ssoEntityIdAttribute = AppAspAttr.newInstance().setId(ssoEntityId).setValue(entityId);
         appAspectAttrobutes.add(ssoEntityIdAttribute);
     }
 
@@ -298,7 +298,7 @@ public class SAMLAccessTokenProducerTest {
                 .setApplicationId(applicationId)
                 .setAspectCode(SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
-        ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance()
+        ssoEncryptionCertificateAttribute = AppAspAttr.newInstance()
                 .setId(ssoEncryptionCertificate)
                 .setValue(encodedCertificate);
         appAspectAttrobutes.add(ssoEncryptionCertificateAttribute);

@@ -2,7 +2,7 @@ package com.mlyauth.credentials;
 
 import com.mlyauth.constants.AspectType;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
-import com.mlyauth.domain.ApplicationAspectAttribute;
+import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.nimbusds.jose.util.Base64URL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class CredentialManagerImpl implements CredentialManager {
 
     private Certificate loadCertificate(final String entityId, final AspectType aspect) {
         try {
-            final ApplicationAspectAttribute certificate = getApplicationCertificate(entityId, aspect);
+            final AppAspAttr certificate = getApplicationCertificate(entityId, aspect);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(new Base64URL(certificate.getValue()).decode());
             return CertificateFactory.getInstance("X.509").generateCertificate(inputStream);
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class CredentialManagerImpl implements CredentialManager {
         }
     }
 
-    private ApplicationAspectAttribute getApplicationCertificate(final String entityId, final AspectType aspect) {
+    private AppAspAttr getApplicationCertificate(final String entityId, final AspectType aspect) {
         final ApplicationAspectAttributeId entity = getEntityAttribute(entityId, aspect);
         return attributeDAO.findAndIndex(entity.getApplicationId(), aspect.name()).get(get(aspect, CERTIFICATE));
     }
