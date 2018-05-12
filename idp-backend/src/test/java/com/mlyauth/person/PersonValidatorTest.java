@@ -2,7 +2,6 @@ package com.mlyauth.person;
 
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.lookup.PersonLookuper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;

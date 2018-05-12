@@ -4,6 +4,7 @@ import com.mlyauth.dao.PersonByEmailDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.PersonByEmail;
+import com.mlyauth.person.PersonLookuper;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;

@@ -11,7 +11,6 @@ import com.mlyauth.dao.ProfileDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.Profile;
-import com.mlyauth.lookup.PersonLookuper;
 import com.mlyauth.tools.AccessTokenForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -49,14 +48,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class PersonControllerIT extends AbstractIntegrationTest {
 
-    public static final long FATIMA_EZZAHRAE_ID = 9001L;
-    public static final int EMAIL_INDEX = 4;
-    public static final int EXTERNAL_ID_INDEX = 0;
-    public static final int FIRSTNAME_INDEX = 1;
-    public static final int LASTNAME_INDEX = 2;
-    public static final int BIRTHDATE_INDEX = 3;
-    public static final int PASSWORD_INDEX = 5;
-    public static final long POLICY_DEV_ID = 9000L;
+    private static final long FATIMA_EZZAHRAE_ID = 9001L;
+    private static final int EMAIL_INDEX = 4;
+    private static final int EXTERNAL_ID_INDEX = 0;
+    private static final int FIRSTNAME_INDEX = 1;
+    private static final int LASTNAME_INDEX = 2;
+    private static final int BIRTHDATE_INDEX = 3;
+    private static final int PASSWORD_INDEX = 5;
+    private static final long POLICY_DEV_ID = 9000L;
 
     @Autowired
     private ApplicationDAO applicationDAO;

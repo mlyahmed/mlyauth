@@ -1,4 +1,4 @@
-package com.mlyauth.lookup;
+package com.mlyauth.person;
 
 import com.mlyauth.dao.PersonByEmailDAO;
 import com.mlyauth.dao.PersonDAO;
@@ -7,6 +7,7 @@ import com.mlyauth.domain.PersonByEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Set;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -27,7 +28,7 @@ public class PersonLookuper {
 
     private Person filterByEmail(final Set<PersonByEmail> index, final String email) {
         return index.stream().map(entry -> personDAO.findByExternalId(entry.getPersonId()))
-                .filter(person -> person != null)
+                .filter(Objects::nonNull)
                 .filter(person -> person.getEmail().equals(email))
                 .findFirst().orElse(null);
     }

@@ -3,7 +3,6 @@ package com.mlyauth.person;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.exception.AuthError;
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.lookup.PersonLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -6,7 +6,7 @@ import com.mlyauth.constants.AspectType;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.Person;
 import com.mlyauth.exception.IDPException;
-import com.mlyauth.lookup.PersonLookuper;
+import com.mlyauth.person.PersonLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
