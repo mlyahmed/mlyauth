@@ -13,11 +13,11 @@ public class ApplicationsHolder {
 
     private Map<String, ApplicationBean> applications = new HashMap<>();
 
-    public void addApplication(ApplicationBean application){
+    public void addApplication(final ApplicationBean application) {
         applications.put(application.getAppname(), application);
     }
 
-    public ApplicationBean getApplication(String appname){
+    public ApplicationBean getApplication(final String appname) {
         return applications.get(appname);
     }
 

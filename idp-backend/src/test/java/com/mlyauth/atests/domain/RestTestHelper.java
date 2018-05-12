@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Scope("cucumber-glue")
 public class RestTestHelper {
 
-    final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,7 +30,7 @@ public class RestTestHelper {
     @Autowired
     private AccessTokenForTests accessTokenGenerator;
 
-    public ResultActions performBearerPost(String endpoint, Object content) throws Exception {
+    public ResultActions performBearerPost(final String endpoint, final Object content) throws Exception {
         return mockMvc.perform(post(endpoint)
                 .content(mapper.writeValueAsString(content))
                 .header("Authorization", "Bearer " + accessTokenGenerator.generateMasterToken())
@@ -38,7 +38,7 @@ public class RestTestHelper {
                 .characterEncoding("UTF-8"));
     }
 
-    public ResultActions performBearerPut(String endpoint, Object content) throws Exception {
+    public ResultActions performBearerPut(final String endpoint, final Object content) throws Exception {
         return mockMvc.perform(put(endpoint)
                 .content(mapper.writeValueAsString(content))
                 .header("Authorization", "Bearer " + accessTokenGenerator.generateMasterToken())
@@ -46,14 +46,14 @@ public class RestTestHelper {
                 .characterEncoding("UTF-8"));
     }
 
-    public ResultActions performBearerGet(String endpoint) throws Exception {
+    public ResultActions performBearerGet(final String endpoint) throws Exception {
         return mockMvc.perform(get(endpoint)
                 .header("Authorization", "Bearer " + accessTokenGenerator.generateMasterToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8"));
     }
 
-    public ResultActions performBasicGet(String endpoint) throws Exception {
+    public ResultActions performBasicGet(final String endpoint) throws Exception {
         return mockMvc.perform(get(endpoint)
                 .with(httpBasic(currentPersonHolder.getUsername(), currentPersonHolder.getPassword()))
                 .contentType(MediaType.APPLICATION_JSON)

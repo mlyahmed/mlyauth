@@ -33,9 +33,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MlyAuthSteps extends AbstractStepsDef{
+public class MlyAuthSteps extends AbstractStepsDef {
 
-    final ObjectMapper mapper = new ObjectMapper();
+    public static final String RANDOM_EXTERNAL_ID = RandomStringUtils.random(20, true, true);
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private ApplicationsHolder applicationHolder;
@@ -51,71 +53,80 @@ public class MlyAuthSteps extends AbstractStepsDef{
     private ResultActionHolder resultActionHolder;
 
     @Given("^(.+), (.+) is a new person with (.+) as username and (.+) as email$")
-    public void an_existed_person_withe_username_and_email(String firstname, String lastname, String username, String email) throws Exception {
+    public void an_existed_person_withe_username_and_email(final String firstname, final String lastname,
+                                                           final String username, final String email) throws Exception {
         PersonBean person = PersonBean.newInstance()
                 .setRole(RoleCode.CLIENT)
                 .setFirstname(firstname)
-                .setExternalId(RandomStringUtils.random(20, true, true))
+                .setExternalId(RANDOM_EXTERNAL_ID)
                 .setLastname(lastname)
                 .setBirthdate("1984-17-10")
                 .setEmail(email)
                 .setPassword("password".toCharArray());
-        final ResultActions resultActions = restTestHelper.performBearerPost("/domain/person", person).andExpect(status().is(CREATED.value()));
-        person = mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), PersonBean.class);
+        final ResultActions result = restTestHelper.performBearerPost("/domain/person", person)
+                .andExpect(status().is(CREATED.value()));
+        person = mapper.readValue(result.andReturn().getResponse().getContentAsString(), PersonBean.class);
         person.setPassword("password".toCharArray());
         currentPersonHolder.setCurrentPerson(person);
     }
 
     @Given("^(.+) is a registered Application$")
-    public void is_a_registered_application(String appname) throws Exception {
+    public void is_a_registered_application(final String appname) throws Exception {
         ApplicationBean application = new ApplicationBean();
         application.setType(ApplicationTypeCode.STORE);
         application.setAppname(appname);
         application.setTitle(appname);
-        final ResultActions resultActions = restTestHelper.performBearerPost("/domain/application", application).andExpect(status().is(CREATED.value()));
-        applicationHolder.addApplication(mapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), ApplicationBean.class));
+        final ResultActions result = restTestHelper.performBearerPost("/domain/application", application)
+                .andExpect(status().is(CREATED.value()));
+        applicationHolder.addApplication(mapper.readValue(result.andReturn().getResponse().getContentAsString(),
+                ApplicationBean.class));
     }
 
     @Given("^(.+) has the basic authentication aspect$")
-    public void application_has_the_basic_authentication_aspect(String appname) throws Exception {
+    public void application_has_the_basic_authentication_aspect(final String appname) throws Exception {
         final ApplicationBean application = applicationHolder.getApplication(appname);
         Map<String, AttributeBean> authSettings = new LinkedHashMap<>();
         authSettings.put(SP_BASIC_SSO_URL.getValue(), newAttribute(SP_BASIC_SSO_URL.getValue())
                 .setAlias("authurl").setValue("https://localhost/j_spring_security_check"));
-        authSettings.put(SP_BASIC_USERNAME.getValue(), newAttribute(SP_BASIC_USERNAME.getValue()).setAlias("j_username").setValue("gestF"));
-        authSettings.put(SP_BASIC_PASSWORD.getValue(), newAttribute(SP_BASIC_PASSWORD.getValue()).setAlias("j_password").setValue("gestF"));
+        authSettings.put(SP_BASIC_USERNAME.getValue(), newAttribute(SP_BASIC_USERNAME.getValue())
+                .setAlias("j_username").setValue("gestF"));
+        authSettings.put(SP_BASIC_PASSWORD.getValue(), newAttribute(SP_BASIC_PASSWORD.getValue())
+                .setAlias("j_password").setValue("gestF"));
         application.setAuthSettings(authSettings);
         application.setAuthAspect(AspectType.SP_BASIC);
-        restTestHelper.performBearerPut("/domain/application", applicationHolder.getApplication(appname)).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performBearerPut("/domain/application", applicationHolder.getApplication(appname))
+                .andExpect(status().is(ACCEPTED.value()));
     }
 
 
     @When("^(.+) navigates to (.+)$")
-    public void user_navigate_to_app(String username, String appname) throws Exception {
+    public void user_navigate_to_app(final String username, final String appname) throws Exception {
         resultActionHolder.setResultActions(restTestHelper.performBasicGet("/navigate/forward/basic/to/" + appname));
     }
 
     @Then("^(.+) is posted to (.+)")
-    public void user_is_connected_to_app(String username, String appname) throws Exception {
+    public void user_is_connected_to_app(final String username, final String appname) throws Exception {
         resultActionHolder.getResultActions()
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(request().attribute("navigation", notNullValue()));
     }
 
     @Given("^(.+) is asigned to (.+)")
-    public void app_is_asigned_to_user(String appname, String username) throws Exception {
-        final String endpoint = String.format("/domain/person/_assign/%s/to/%s", appname, currentPersonHolder.getCurrentPerson().getExternalId());
+    public void app_is_asigned_to_user(final String appname, final String username) throws Exception {
+        final String endpoint = String.format("/domain/person/_assign/%s/to/%s", appname,
+                currentPersonHolder.getCurrentPerson().getExternalId());
         restTestHelper.performBearerPut(endpoint, null).andExpect(status().is(ACCEPTED.value()));
     }
 
     @Given("^(.+) is not asigned to (.+)")
-    public void app_is_not_asigned_to_user(String appname, String username) throws Exception {
+    public void app_is_not_asigned_to_user(final String appname, final String username) throws Exception {
         currentPersonHolder.getCurrentPerson().getApplications().remove(appname);
-        restTestHelper.performBearerPut("/domain/person", currentPersonHolder.getCurrentPerson()).andExpect(status().is(ACCEPTED.value()));
+        restTestHelper.performBearerPut("/domain/person", currentPersonHolder.getCurrentPerson())
+                .andExpect(status().is(ACCEPTED.value()));
     }
 
     @Then("^(.+) error$")
-    public void app_not_assigned_error(String errorCode) throws Exception {
+    public void app_not_assigned_error(final String errorCode) throws Exception {
         resultActionHolder.getResultActions()
                 .andExpect(status().is(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                 .andExpect(request().attribute("MLY_AUTH_ERROR_CODE", equalTo(errorCode)));

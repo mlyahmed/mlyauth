@@ -9,5 +9,5 @@
               files="com.mlyauth.constants.*.java|Claims.java" />
 
     <suppress checks="MethodName"
-              files="com.mlyauth.*.*Test.java|com.mlyauth.*.*IT.java|com.mlyauth.*.*Doc.java|com.mlyauth.*.*Steps.java" />
+              files="^((?!d/\w+(Test|IT|Doc|Steps)\.java).)*$" />
 </suppressions>

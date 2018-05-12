@@ -8,29 +8,29 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
 
-    private static Long IDS = 0l;
+    private static Long currentId = 0L;
     private Map<Long, AuthenticationSession> sessions = new HashMap<>();
 
     @Override
-    public AuthenticationSession save(AuthenticationSession entity) {
-        entity.setId(++IDS);
-        sessions.put(IDS, entity);
+    public AuthenticationSession save(final AuthenticationSession entity) {
+        entity.setId(++currentId);
+        sessions.put(currentId, entity);
         return entity.clone(); //Keep it to keep the tests valid
     }
 
 
     @Override
-    public <S extends AuthenticationSession> Iterable<S> save(Iterable<S> entities) {
+    public <S extends AuthenticationSession> Iterable<S> save(final Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public AuthenticationSession findOne(Long id) {
+    public AuthenticationSession findOne(final Long id) {
         return sessions.get(id).clone();  //Keep it to keep the tests valid
     }
 
     @Override
-    public boolean exists(Long aLong) {
+    public boolean exists(final Long aLong) {
         return false;
     }
 
@@ -40,7 +40,7 @@ public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
     }
 
     @Override
-    public Iterable<AuthenticationSession> findAll(Iterable<Long> longs) {
+    public Iterable<AuthenticationSession> findAll(final Iterable<Long> longs) {
         return null;
     }
 
@@ -50,17 +50,17 @@ public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
     }
 
     @Override
-    public void delete(Long aLong) {
+    public void delete(final Long aLong) {
 
     }
 
     @Override
-    public void delete(AuthenticationSession entity) {
+    public void delete(final AuthenticationSession entity) {
 
     }
 
     @Override
-    public void delete(Iterable<? extends AuthenticationSession> entities) {
+    public void delete(final Iterable<? extends AuthenticationSession> entities) {
 
     }
 

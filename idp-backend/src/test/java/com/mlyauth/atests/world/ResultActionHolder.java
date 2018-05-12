@@ -14,7 +14,7 @@ public class ResultActionHolder {
         return resultActions;
     }
 
-    public void setResultActions(ResultActions resultActions) {
+    public void setResultActions(final ResultActions resultActions) {
         this.resultActions = resultActions;
     }
 }

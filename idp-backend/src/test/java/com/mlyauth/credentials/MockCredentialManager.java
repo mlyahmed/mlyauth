@@ -15,7 +15,7 @@ public class MockCredentialManager implements CredentialManager {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    public MockCredentialManager(PrivateKey privateKey, PublicKey publicKey) {
+    public MockCredentialManager(final PrivateKey privateKey, final PublicKey publicKey) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }
@@ -36,18 +36,18 @@ public class MockCredentialManager implements CredentialManager {
     }
 
     @Override
-    public Certificate getPeerCertificate(String entityId, AspectType aspectType) {
+    public Certificate getPeerCertificate(final String entityId, final AspectType aspectType) {
         return peerCredentials.get(entityId) != null ? peerCredentials.get(entityId).get(aspectType) : null;
     }
 
     @Override
-    public PublicKey getPeerKey(String entityId, AspectType aspectType) {
+    public PublicKey getPeerKey(final String entityId, final AspectType aspectType) {
         final Certificate certificate = getPeerCertificate(entityId, aspectType);
         return certificate != null ? certificate.getPublicKey() : null;
     }
 
 
-    public void setPeerCertificate(String entityId, AspectType aspectType, Certificate certificate) {
+    public void setPeerCertificate(final String entityId, final AspectType aspectType, final Certificate certificate) {
         final Map<AspectType, Certificate> credentials = peerCredentials.get(entityId);
         if (credentials == null) peerCredentials.put(entityId, new HashMap<>());
         peerCredentials.get(entityId).put(aspectType, certificate);

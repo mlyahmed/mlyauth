@@ -128,12 +128,13 @@ public class IDPUserTest {
 
     @Test
     @UseDataProvider("profiles")
-    public void the_profiles_must_be_loaded(String profile) {
+    public void the_profiles_must_be_loaded(final String profile) {
         authInfo.setExpireAt(FUTURE_TIME);
         person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
         IDPUser user = new IDPUser(personContext);
         assertThat(user.getAuthorities(), notNullValue());
         assertThat(user.getAuthorities(), hasSize(1));
-        assertThat(user.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority(), equalTo(ProfileCode.valueOf(profile).name()));
+        assertThat(user.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority(),
+                equalTo(ProfileCode.valueOf(profile).name()));
     }
 }

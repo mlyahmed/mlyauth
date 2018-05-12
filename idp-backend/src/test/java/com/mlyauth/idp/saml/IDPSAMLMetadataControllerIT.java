@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml2.metadata.impl.EntityDescriptorImpl;
-import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.signature.X509Certificate;
 import org.opensaml.xml.signature.X509Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
 import java.io.ByteArrayInputStream;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -38,6 +37,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.opensaml.common.xml.SAMLConstants.SAML20P_NS;
+import static org.opensaml.xml.security.credential.UsageType.SIGNING;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,24 +80,24 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
     @Test
     public void when_request_IDP_metadata_then_returned() throws Exception {
         when_get_IDP_metadata();
-        final String metadata = result.getResponse().getContentAsString();
-        assertThat(metadata, notNullValue());
+        final String contentAsString = result.getResponse().getContentAsString();
+        assertThat(contentAsString, notNullValue());
     }
 
     @Test
     public void the_IDP_entity_id_must_be_defined() throws Exception {
         when_get_IDP_metadata();
-        EntityDescriptorImpl metadata = samlHelper.toMetadata(result.getResponse().getContentAsString());
-        assertThat(metadata, notNullValue());
-        assertThat(metadata.getEntityID(), equalTo(idpEntityId));
-        assertThat(metadata.getID(), equalTo(idpEntityId));
+        EntityDescriptorImpl entityDescriptor = samlHelper.toMetadata(result.getResponse().getContentAsString());
+        assertThat(entityDescriptor, notNullValue());
+        assertThat(entityDescriptor.getEntityID(), equalTo(idpEntityId));
+        assertThat(entityDescriptor.getID(), equalTo(idpEntityId));
     }
 
     @Test
     public void the_IDP_metadata_must_have_idp_description() throws Exception {
         when_get_IDP_metadata();
-        EntityDescriptorImpl metadata = samlHelper.toMetadata(result.getResponse().getContentAsString());
-        final IDPSSODescriptor idpssoDescriptor = metadata.getIDPSSODescriptor(SAML20P_NS);
+        EntityDescriptorImpl entityDescriptor = samlHelper.toMetadata(result.getResponse().getContentAsString());
+        final IDPSSODescriptor idpssoDescriptor = entityDescriptor.getIDPSSODescriptor(SAML20P_NS);
         assertThat(idpssoDescriptor, notNullValue());
     }
 
@@ -112,13 +112,13 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
         and_then_the_certificate_still_valid();
     }
 
-    private void then_there_is_one_signing_key(IDPSSODescriptor idpssoDescriptor) {
+    private void then_there_is_one_signing_key(final IDPSSODescriptor idpssoDescriptor) {
         keyDescriptors = idpssoDescriptor.getKeyDescriptors();
         assertThat(keyDescriptors, notNullValue());
-        Stream<KeyDescriptor> signingKeys = keyDescriptors.stream().filter(key -> UsageType.SIGNING.equals(key.getUse()));
-        assertThat(signingKeys.count(), equalTo(1l));
+        Stream<KeyDescriptor> signingKeys = keyDescriptors.stream().filter(key -> SIGNING.equals(key.getUse()));
+        assertThat(signingKeys.count(), equalTo(1L));
 
-        signingKeys = keyDescriptors.stream().filter(key -> UsageType.SIGNING.equals(key.getUse()));
+        signingKeys = keyDescriptors.stream().filter(key -> SIGNING.equals(key.getUse()));
         signingKey = signingKeys.findFirst().get();
         assertThat(signingKey, notNullValue());
         assertThat(signingKey.getKeyInfo(), notNullValue());
@@ -139,11 +139,11 @@ public class IDPSAMLMetadataControllerIT extends AbstractIntegrationTest {
         final byte[] decode = org.opensaml.xml.util.Base64.decode(x509Certificate.getValue());
         ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        java.security.cert.X509Certificate cert = (java.security.cert.X509Certificate) certFactory.generateCertificate(inputStream);
-        final Date notAfter = cert.getNotAfter();
-        final LocalDateTime expiryDate = Instant.ofEpochMilli(notAfter.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        final LocalDate limiteDate = LocalDate.now().plus(1l, ChronoUnit.DAYS);
-        Assert.assertThat(limiteDate, LocalDateMatchers.before(expiryDate.toLocalDate()));
+        final Certificate certificate = certFactory.generateCertificate(inputStream);
+        final Date notAfter = ((java.security.cert.X509Certificate) certificate).getNotAfter();
+        final LocalDate limitDate = LocalDate.now().plus(1L, ChronoUnit.DAYS);
+        Assert.assertThat(limitDate, LocalDateMatchers.before(Instant.ofEpochMilli(notAfter.getTime())
+                .atZone(ZoneId.systemDefault()).toLocalDateTime().toLocalDate()));
     }
 
     private void when_get_IDP_metadata() throws Exception {

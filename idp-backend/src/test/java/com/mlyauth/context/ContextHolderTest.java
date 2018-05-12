@@ -24,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 import static com.mlyauth.constants.AuthenticationSessionStatus.ACTIVE;
@@ -33,6 +32,7 @@ import static com.mlyauth.constants.ProfileCode.MASTER;
 import static com.mlyauth.constants.ProfileCode.NAVIGATOR;
 import static com.mlyauth.tools.RandomForTests.randomString;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
@@ -43,10 +43,17 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(DataProviderRunner.class)
 public class ContextHolderTest {
+    public static final String RANDOM_LOGIN = RandomStringUtils.random(20, true, true);
+
+    public static final String RANDOM_PASSWORD = RandomStringUtils.random(20, true, true);
+    public static final int FIFTY_MILLISECONDS = 50;
 
     private AuthenticationInfo authenticationInfo;
+
     private Person person;
+
     private Application application;
+
     private MockHttpServletRequest request;
 
     @Spy
@@ -59,8 +66,8 @@ public class ContextHolderTest {
     @Before
     public void setup() {
         authenticationInfo = new AuthenticationInfo();
-        authenticationInfo.setLogin(RandomStringUtils.random(20, true, true));
-        authenticationInfo.setPassword(RandomStringUtils.random(20, true, true));
+        authenticationInfo.setLogin(RANDOM_LOGIN);
+        authenticationInfo.setPassword(RANDOM_PASSWORD);
         person = Person.newInstance();
         person.setAuthenticationInfo(authenticationInfo);
         application = Application.newInstance();
@@ -125,16 +132,18 @@ public class ContextHolderTest {
     }
 
     private void then_a_new_auth_session_is_created() {
-        assertThat(holder.getAuthenticationSession(), notNullValue());
-        assertThat(context.getAuthenticationSession(), notNullValue());
-        assertThat(holder.getAuthenticationSession(), equalTo(context.getAuthenticationSession()));
-        assertThat(context.getAuthenticationSession().getId(), notNullValue());
-        assertThat(sessionDAO.findOne(context.getAuthenticationSession().getId()), notNullValue());
-        assertThat(context.getAuthenticationSession().getContextId(), equalTo(context.getId()));
-        assertThat(context.getAuthenticationSession().getStatus(), equalTo(ACTIVE));
-        assertThat(context.getAuthenticationSession().getCreatedAt(), notNullValue());
-        assertTrue(context.getAuthenticationSession().getCreatedAt().getTime() - currentTimeMillis() < 50);
-        assertThat(context.getAuthenticationSession().getAuthenticationInfo(), equalTo(authenticationInfo));
+        final AuthenticationSession holderSession = holder.getAuthenticationSession();
+        final AuthenticationSession contextSession = context.getAuthenticationSession();
+        assertThat(holderSession, notNullValue());
+        assertThat(contextSession, notNullValue());
+        assertThat(holderSession, equalTo(contextSession));
+        assertThat(contextSession.getId(), notNullValue());
+        assertThat(sessionDAO.findOne(contextSession.getId()), notNullValue());
+        assertThat(contextSession.getContextId(), equalTo(context.getId()));
+        assertThat(contextSession.getStatus(), equalTo(ACTIVE));
+        assertThat(contextSession.getCreatedAt(), notNullValue());
+        assertTrue(contextSession.getCreatedAt().getTime() - currentTimeMillis() < FIFTY_MILLISECONDS);
+        assertThat(contextSession.getAuthenticationInfo(), equalTo(authenticationInfo));
     }
 
 
@@ -217,7 +226,7 @@ public class ContextHolderTest {
     @Test
     public void bind_attribute_to_the_right_person_context() {
         request.setSession(new MockHttpSession());
-        final IContext context = holder.newPersonContext(person);
+        context = holder.newPersonContext(person);
         context.putAttribute("target", randomString());
         context.putAttribute("clientProfile", randomString());
         context.putAttribute("prestationId", randomString());
@@ -230,7 +239,7 @@ public class ContextHolderTest {
     @Test
     public void bind_attribute_to_the_right_application_context() {
         request.setSession(new MockHttpSession());
-        final IContext context = holder.newApplicationContext(application);
+        context = holder.newApplicationContext(application);
         context.putAttribute("verdict", randomString());
         context.putAttribute("delegator", randomString());
         context.putAttribute("delegate", randomString());
@@ -336,14 +345,14 @@ public class ContextHolderTest {
 
     @Test
     public void when_there_is_no_profile_then_the_person_context_must_return_empty_collection() {
-        final IContext context = holder.newPersonContext(person);
+        context = holder.newPersonContext(person);
         assertThat(context.getProfiles(), hasSize(0));
         assertThat(holder.getProfiles(), hasSize(0));
     }
 
     @Test
     public void when_there_is_no_profile_then_the_application_context_must_return_empty_collection() {
-        final IContext context = holder.newApplicationContext(application);
+        context = holder.newApplicationContext(application);
         assertThat(context.getProfiles(), hasSize(0));
         assertThat(holder.getProfiles(), hasSize(0));
     }
@@ -360,9 +369,9 @@ public class ContextHolderTest {
 
     @Test
     @UseDataProvider("profiles")
-    public void the_person_context_must_return_the_profiles(String profile) {
-        person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
-        final IContext context = holder.newPersonContext(person);
+    public void the_person_context_must_return_the_profiles(final String profile) {
+        person.setProfiles(new HashSet<>(asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
+        context = holder.newPersonContext(person);
         assertThat(context.getProfiles(), hasSize(1));
         assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
         assertThat(holder.getProfiles(), hasSize(1));
@@ -371,26 +380,29 @@ public class ContextHolderTest {
 
     @Test
     @UseDataProvider("profiles")
-    public void the_application_context_must_return_the_profiles(String profile) {
-        application.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
-        final IContext context = holder.newApplicationContext(application);
+    public void the_application_context_must_return_the_profiles(final String profile) {
+        application.setProfiles(new HashSet<>(asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
+        context = holder.newApplicationContext(application);
         assertThat(context.getProfiles(), hasSize(1));
         assertThat(context.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
         assertThat(holder.getProfiles(), hasSize(1));
         assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
     }
 
-    private void then_the_first_session_is_closed_and_new_one_is_created(AuthenticationSession firstSession, AuthenticationSession secondSession) {
+    private void then_the_first_session_is_closed_and_new_one_is_created(final AuthenticationSession firstSession,
+                                                                         final AuthenticationSession secondSession) {
         assertThat(firstSession, not(equalTo(secondSession)));
         assertThat(sessionDAO.findOne(firstSession.getId()).getStatus(), equalTo(CLOSED));
         assertThat(sessionDAO.findOne(firstSession.getId()).getClosedAt(), notNullValue());
-        assertTrue(sessionDAO.findOne(firstSession.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+        assertTrue(sessionDAO.findOne(firstSession.getId()).getClosedAt().getTime() - currentTimeMillis()
+                < FIFTY_MILLISECONDS);
     }
 
-    private void then_the_auth_session_is_closed(AuthenticationSession authSession) {
+    private void then_the_auth_session_is_closed(final AuthenticationSession authSession) {
         assertThat(sessionDAO.findOne(authSession.getId()).getStatus(), equalTo(CLOSED));
         assertThat(sessionDAO.findOne(authSession.getId()).getClosedAt(), notNullValue());
-        assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis() < 50);
+        assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis()
+                < FIFTY_MILLISECONDS);
     }
 
     private void the_no_context_is_set() {

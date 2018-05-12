@@ -32,7 +32,7 @@ public class PersonLookuperTest {
     private PersonByEmail personByEmail;
 
     @Before
-    public void setup(){
+    public void setup() {
         personLookuper = new PersonLookuper();
         personDAO = mock(PersonDAO.class);
         personByEmailDAO = mock(PersonByEmailDAO.class);
@@ -58,7 +58,7 @@ public class PersonLookuperTest {
 
     @Test
     @UseDataProvider("emails")
-    public void when_find_person_by_email_and_exists_then_return_the_person(String email){
+    public void when_find_person_by_email_and_exists_then_return_the_person(final String email) {
         person = Person.newInstance().setExternalId(randomString()).setEmail(email);
         personByEmail = PersonByEmail.newInstance().setPersonId(person.getExternalId()).setEmail(email);
         when(personByEmailDAO.findByEmail(email)).thenReturn(new HashSet<>(asList(personByEmail)));
@@ -70,7 +70,7 @@ public class PersonLookuperTest {
 
     @Test
     @UseDataProvider("emails")
-    public void when_the_person_by_email_index_returns_empty_result_then_return_null(String email){
+    public void when_the_person_by_email_index_returns_empty_result_then_return_null(final String email) {
         person = Person.newInstance().setExternalId(randomString()).setEmail(email);
         when(personByEmailDAO.findByEmail(email)).thenReturn(new HashSet<>());
         final Person expected = personLookuper.byEmail(email);
@@ -79,7 +79,7 @@ public class PersonLookuperTest {
 
     @Test
     @UseDataProvider("emails")
-    public void when_the_person_by_email_index_returns_null_then_return_null(String email){
+    public void when_the_person_by_email_index_returns_null_then_return_null(final String email) {
         person = Person.newInstance().setExternalId(randomString()).setEmail(email);
         when(personByEmailDAO.findByEmail(email)).thenReturn(null);
         final Person expected = personLookuper.byEmail(email);
@@ -88,7 +88,7 @@ public class PersonLookuperTest {
 
     @Test
     @UseDataProvider("emails")
-    public void when_many_emails_token_match_the_email_then_return_the_right_one(String email){
+    public void when_many_emails_token_match_the_email_then_return_the_right_one(final String email) {
         person = Person.newInstance().setExternalId(randomString()).setEmail(email);
 
         personByEmail = PersonByEmail.newInstance().setPersonId(person.getExternalId()).setEmail(email);

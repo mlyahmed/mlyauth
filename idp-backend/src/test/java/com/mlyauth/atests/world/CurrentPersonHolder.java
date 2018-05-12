@@ -14,15 +14,15 @@ public class CurrentPersonHolder {
         return currentPerson;
     }
 
-    public void setCurrentPerson(PersonBean currentPerson) {
+    public void setCurrentPerson(final PersonBean currentPerson) {
         this.currentPerson = currentPerson;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return (currentPerson != null) ? currentPerson.getEmail() : null;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return (currentPerson != null) ? String.valueOf(currentPerson.getPassword()) : null;
     }
 }

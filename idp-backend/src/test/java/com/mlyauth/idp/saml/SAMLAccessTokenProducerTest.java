@@ -34,6 +34,7 @@ import org.opensaml.saml2.core.AuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.security.x509.BasicX509Credential;
@@ -55,6 +56,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.mlyauth.constants.AspectType.SP_SAML;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -63,16 +65,18 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.opensaml.saml2.core.AuthnContext.PASSWORD_AUTHN_CTX;
 import static org.opensaml.saml2.core.SubjectConfirmation.METHOD_BEARER;
 
 public class SAMLAccessTokenProducerTest {
 
-    private static final long APPLICATION_ID = 2522l;
+    private static final long APPLICATION_ID = 2522L;
     private static final String SP_SAML_SSO_URL = "http://localhost:8889/primainsure/S/S/O/saml/SSO";
     private static final String IDP_ENTITY_ID = "primainsureIDP";
     public static final String SP_ENTITY_ID = "SPPolicy";
     public static final String APP_NAME = "Policy";
     public static final String KEYSTORE_TEST_ALIAS = "sgi.prima-solutions.com";
+    public static final int THIRTY_MINUTES = 30;
 
     @InjectMocks
     private SAMLAccessTokenProducer generator;
@@ -113,8 +117,8 @@ public class SAMLAccessTokenProducerTest {
         ReflectionTestUtils.setField(generator, "tokenFactory", new SAMLTokenFactory());
         ReflectionTestUtils.setField(generator, "idGenerator", new TokenIdGeneratorImpl());
         appAspectAttrobutes = new LinkedList<>();
-        when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, AspectType.SP_SAML.name())).thenReturn(appAspectAttrobutes);
-        given_an_application(APPLICATION_ID, new AspectType[]{AspectType.SP_SAML});
+        when(appAspectAttrDAO.findByAppAndAspect(APPLICATION_ID, SP_SAML.name())).thenReturn(appAspectAttrobutes);
+        given_an_application(APPLICATION_ID, new AspectType[]{SP_SAML});
         given_the_application_sp_sso_url(APPLICATION_ID, SP_SAML_SSO_URL);
         given_the_application_sp_entity_id(APPLICATION_ID, SP_ENTITY_ID);
         givent_the_application_sp_encryption_certificate(APPLICATION_ID);
@@ -177,18 +181,22 @@ public class SAMLAccessTokenProducerTest {
     public void given_a_saml_sp_app_when_generate_a_response_then_the_assertion_must_hold_a_subject_and_confirmation() {
         when_generate_a_response();
         and_decrypt_Assertion();
+
         final Subject subject = assertion.getSubject();
         assertThat(subject, notNullValue());
         assertThat(subject.getNameID(), notNullValue());
         assertThat(subject.getNameID().getFormat(), notNullValue());
-        assertThat(subject.getSubjectConfirmations(), hasSize(1));
-        assertThat(subject.getSubjectConfirmations().get(0).getMethod(), equalTo(METHOD_BEARER));
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData(), notNullValue());
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(SP_ENTITY_ID));
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getRecipient(), equalTo(SP_SAML_SSO_URL));
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotBefore(), nullValue());
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
-        assertThat(subject.getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(30).toInstant()), equalTo(true));
+
+        final List<SubjectConfirmation> subjectConfirmations = subject.getSubjectConfirmations();
+        assertThat(subjectConfirmations, hasSize(1));
+        assertThat(subjectConfirmations.get(0).getMethod(), equalTo(METHOD_BEARER));
+        assertThat(subjectConfirmations.get(0).getSubjectConfirmationData(), notNullValue());
+        assertThat(subjectConfirmations.get(0).getSubjectConfirmationData().getInResponseTo(), equalTo(SP_ENTITY_ID));
+        assertThat(subjectConfirmations.get(0).getSubjectConfirmationData().getRecipient(), equalTo(SP_SAML_SSO_URL));
+        assertThat(subjectConfirmations.get(0).getSubjectConfirmationData().getNotBefore(), nullValue());
+        assertThat(subjectConfirmations.get(0).getSubjectConfirmationData().getNotOnOrAfter(), notNullValue());
+        assertThat(subjectConfirmations.get(0).getSubjectConfirmationData().getNotOnOrAfter()
+                .isBefore((new DateTime()).plusMinutes(THIRTY_MINUTES).toInstant()), equalTo(true));
     }
 
 
@@ -197,11 +205,14 @@ public class SAMLAccessTokenProducerTest {
         when_generate_a_response();
         and_decrypt_Assertion();
         assertThat(assertion.getAuthnStatements(), hasSize(1));
-        assertThat(assertion.getAuthnStatements().get(0).getAuthnInstant(), notNullValue());
-        assertThat(assertion.getAuthnStatements().get(0).getAuthnInstant().isBeforeNow(), equalTo(true));
-        assertThat(assertion.getAuthnStatements().get(0).getAuthnContext(), notNullValue());
-        assertThat(assertion.getAuthnStatements().get(0).getAuthnContext().getAuthnContextClassRef(), notNullValue());
-        assertThat(assertion.getAuthnStatements().get(0).getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef(), equalTo(AuthnContext.PASSWORD_AUTHN_CTX));
+
+        final DateTime authInstant = assertion.getAuthnStatements().get(0).getAuthnInstant();
+        final AuthnContext authnContext = assertion.getAuthnStatements().get(0).getAuthnContext();
+        assertThat(authInstant, notNullValue());
+        assertThat(authInstant.isBeforeNow(), equalTo(true));
+        assertThat(authnContext, notNullValue());
+        assertThat(authnContext.getAuthnContextClassRef(), notNullValue());
+        assertThat(authnContext.getAuthnContextClassRef().getAuthnContextClassRef(), equalTo(PASSWORD_AUTHN_CTX));
     }
 
     @Test
@@ -211,10 +222,12 @@ public class SAMLAccessTokenProducerTest {
         assertThat(assertion.getConditions(), notNullValue());
         assertThat(assertion.getConditions().getNotBefore(), nullValue());
         assertThat(assertion.getConditions().getNotOnOrAfter(), notNullValue());
-        assertThat(assertion.getConditions().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(2).toInstant()), equalTo(true));
+        assertThat(assertion.getConditions().getNotOnOrAfter().isBefore((new DateTime()).plusMinutes(2).toInstant()),
+                equalTo(true));
         assertThat(assertion.getConditions().getAudienceRestrictions(), hasSize(1));
         assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences(), hasSize(1));
-        assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI(), equalTo(SP_ENTITY_ID));
+        assertThat(assertion.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI(),
+                equalTo(SP_ENTITY_ID));
     }
 
     @Test
@@ -229,8 +242,9 @@ public class SAMLAccessTokenProducerTest {
         assertThat(getAttributeValue("profile"), equalTo("CL"));
     }
 
-    private String getAttributeValue(String attributeName) {
-        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
+    private String getAttributeValue(final String attributeName) {
+        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream()
+                .filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
         return ((XSString) actual.getAttributeValues().get(0)).getValue();
     }
 
@@ -255,34 +269,38 @@ public class SAMLAccessTokenProducerTest {
         encodedCertificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
     }
 
-    private void given_an_application(long applicationId, AspectType[] supportedAspects) {
+    private void given_an_application(final long applicationId, final AspectType[] supportedAspects) {
         application = Application.newInstance()
                 .setAppname(APP_NAME).setId(applicationId)
                 .setAspects(Sets.newHashSet(supportedAspects));
     }
 
-    private void given_the_application_sp_sso_url(long applicationId, String spSAMLSSOUrl) {
+    private void given_the_application_sp_sso_url(final long applicationId, final String spSAMLSSOUrl) {
         final ApplicationAspectAttributeId ssoUrl = ApplicationAspectAttributeId.newInstance()
                 .setApplicationId(applicationId)
-                .setAspectCode(AspectType.SP_SAML.name())
+                .setAspectCode(SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_SSO_URL.getValue());
         ssoUrlAttribute = ApplicationAspectAttribute.newInstance().setId(ssoUrl).setValue(spSAMLSSOUrl);
         appAspectAttrobutes.add(ssoUrlAttribute);
     }
 
-    private void given_the_application_sp_entity_id(long applicationId, String entityId) {
-        final ApplicationAspectAttributeId ssoEntityId = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
-                .setAspectCode(AspectType.SP_SAML.name())
+    private void given_the_application_sp_entity_id(final long applicationId, final String entityId) {
+        final ApplicationAspectAttributeId ssoEntityId = ApplicationAspectAttributeId.newInstance()
+                .setApplicationId(applicationId)
+                .setAspectCode(SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_ENTITY_ID.getValue());
         ssoEntityIdAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEntityId).setValue(entityId);
         appAspectAttrobutes.add(ssoEntityIdAttribute);
     }
 
-    private void givent_the_application_sp_encryption_certificate(long applicationId) {
-        final ApplicationAspectAttributeId ssoEncryptionCertificate = ApplicationAspectAttributeId.newInstance().setApplicationId(applicationId)
-                .setAspectCode(AspectType.SP_SAML.name())
+    private void givent_the_application_sp_encryption_certificate(final long applicationId) {
+        final ApplicationAspectAttributeId ssoEncryptionCertificate = ApplicationAspectAttributeId.newInstance()
+                .setApplicationId(applicationId)
+                .setAspectCode(SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
-        ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance().setId(ssoEncryptionCertificate).setValue(encodedCertificate);
+        ssoEncryptionCertificateAttribute = ApplicationAspectAttribute.newInstance()
+                .setId(ssoEncryptionCertificate)
+                .setValue(encodedCertificate);
         appAspectAttrobutes.add(ssoEncryptionCertificateAttribute);
     }
 
@@ -303,7 +321,8 @@ public class SAMLAccessTokenProducerTest {
         keyManager = new JKSKeyManager(loadKeyStore(), passwords, KEYSTORE_TEST_ALIAS);
     }
 
-    private KeyStore loadKeyStore() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    private KeyStore loadKeyStore()
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(getClass().getResourceAsStream("/keys/keystore-test.jks"), "Bourso$17".toCharArray());
         return ks;

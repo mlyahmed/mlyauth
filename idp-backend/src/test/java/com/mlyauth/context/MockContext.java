@@ -66,12 +66,12 @@ public class MockContext implements IContext {
     }
 
     @Override
-    public String getAttribute(String key) {
+    public String getAttribute(final String key) {
         return attributes.get(key);
     }
 
     @Override
-    public boolean putAttribute(String key, String value) {
+    public boolean putAttribute(final String key, final String value) {
         return String.valueOf(attributes.get(key)).equals(attributes.put(key, value));
     }
 
