@@ -59,6 +59,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 public class SPJOSEProcessingFilterTest {
 
     public static final String PEER_IDP_ID = "peerId";
+    public static final int SERVER_PORT = 443;
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -102,7 +103,7 @@ public class SPJOSEProcessingFilterTest {
 
     @Test
     @UseDataProvider("methodsNotAllowed")
-    public void when_the_method_is_not_POST_then_error(HttpMethod method) {
+    public void when_the_method_is_not_POST_then_error(final HttpMethod method) {
         request.setMethod(method.name());
         final Authentication authentication = filter.attemptAuthentication(request, response);
         assertThat(authentication, Matchers.nullValue());
@@ -119,7 +120,7 @@ public class SPJOSEProcessingFilterTest {
     }
 
     @Test
-    public void when_post_as_form_a_valid_bearer_token_then_process(){
+    public void when_post_as_form_a_valid_bearer_token_then_process() {
         given_valid_token();
         given_the_target_url_does_match();
         request.setParameter("Bearer", token.serialize());
@@ -268,14 +269,14 @@ public class SPJOSEProcessingFilterTest {
     private void given_the_target_url_does_match() {
         request.setScheme("https");
         request.setServerName("sp.prima-idp.com");
-        request.setServerPort(443);
+        request.setServerPort(SERVER_PORT);
         request.setRequestURI("/sp/jose/sso");
     }
 
     private void given_the_target_url_does_not_match() {
         request.setScheme("http");
         request.setServerName(randomString());
-        request.setServerPort(443);
+        request.setServerPort(SERVER_PORT);
         request.setRequestURI(randomString());
     }
 

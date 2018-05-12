@@ -31,8 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class PersonControllerDoc extends AbstractIntegrationTest {
 
+    public static final String RANDOM_EXTERNAL_ID = RandomStringUtils.random(20, true, true);
+
     @Rule
-    public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build/generated-snippets");
+    public final JUnitRestDocumentation doc = new JUnitRestDocumentation("build/generated-snippets");
 
     @Autowired
     protected ObjectMapper mapper;
@@ -51,7 +53,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity())
-                .apply(documentationConfiguration(restDocumentation)).build();
+                .apply(documentationConfiguration(doc)).build();
         access = accessTokenGenerator.generateMasterToken();
     }
 
@@ -61,7 +63,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
 
         Map<String, Object> person = new HashMap<>();
         person.put("role", "CLIENT");
-        person.put("externalId", RandomStringUtils.random(20, true, true));
+        person.put("externalId", RANDOM_EXTERNAL_ID);
         person.put("firstname", "Ahmed");
         person.put("lastname", "Ahmed");
         person.put("birthdate", "1987-01-15");

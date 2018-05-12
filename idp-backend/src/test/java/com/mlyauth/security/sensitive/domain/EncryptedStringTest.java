@@ -28,7 +28,7 @@ public class EncryptedStringTest {
     private String plainValue;
 
     @Before
-    public void setup(){
+    public void setup() {
         set_up_the_encryptor();
         set_up_the_encrypted_type();
         result = new MockResultSet();
@@ -53,7 +53,7 @@ public class EncryptedStringTest {
     }
 
     @Test
-    public void when_get_a_message_and_not_wrapped_then_return_it() throws Exception{
+    public void when_get_a_message_and_not_wrapped_then_return_it() throws Exception {
         result.setString(COLUMN_NAME[0], RandomForTests.randomString());
         final Object expected = encryptedString.nullSafeGet(result, COLUMN_NAME, null, null);
         assertThat(expected, Matchers.equalTo(result.getString(COLUMN_NAME[0])));
@@ -77,7 +77,7 @@ public class EncryptedStringTest {
     }
 
 
-    private String unwrap(String message){
-        return message.substring(0, message.length() -1).replace("ENC(", "");
+    private String unwrap(final String message) {
+        return message.substring(0, message.length() - 1).replace("ENC(", "");
     }
 }

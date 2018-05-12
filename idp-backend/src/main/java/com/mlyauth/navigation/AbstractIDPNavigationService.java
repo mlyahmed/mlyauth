@@ -63,6 +63,6 @@ public abstract class AbstractIDPNavigationService implements IDPNavigationServi
                         .setAlias(att.getAlias()).setValue(att.getValue())).collect(Collectors.toSet());
     }
 
-    abstract NavigationBean process(final String appname);
+    abstract NavigationBean process(String appname);
 
 }

@@ -25,19 +25,19 @@ public class TokenizedEmailTest {
     private MockResultSet result;
 
     @Before
-    public void setup(){
+    public void setup() {
         tokenizedEmail = new TokenizedEmail();
         preparedStatement = new MockPreparedStatement();
         result = new MockResultSet();
     }
 
     @Test
-    public void the_sql_type_must_be_VARCHAR(){
-        assertThat(tokenizedEmail.sqlTypes(), equalTo(new int[]{ Types.VARCHAR }));
+    public void the_sql_type_must_be_VARCHAR() {
+        assertThat(tokenizedEmail.sqlTypes(), equalTo(new int[] {Types.VARCHAR}));
     }
 
     @Test
-    public void the_returned_class_must_be_string(){
+    public void the_returned_class_must_be_string() {
         assertThat(tokenizedEmail.returnedClass(), equalTo(String.class));
     }
 
@@ -57,7 +57,7 @@ public class TokenizedEmailTest {
 
     @Test
     @UseDataProvider("equalEmails")
-    public void when_two_objects_are_the_same_string_then_are_equal(String first, String second){
+    public void when_two_objects_are_the_same_string_then_are_equal(final String first, final String second) {
         assertThat(tokenizedEmail.equals(first, second), equalTo(true));
     }
 
@@ -76,7 +76,7 @@ public class TokenizedEmailTest {
 
     @Test
     @UseDataProvider("unequalEmails")
-    public void when_two_objects_are_not_the_same_then_they_are_not_equal(String first, String second){
+    public void when_two_objects_are_not_the_same_then_they_are_not_equal(final String first, final String second) {
         assertThat(tokenizedEmail.equals(first, second), equalTo(false));
     }
 
@@ -97,18 +97,18 @@ public class TokenizedEmailTest {
 
     @Test
     @UseDataProvider("emails")
-    public void the_hash_code_is_the_same_the_object_in_param(Object email){
+    public void the_hash_code_is_the_same_the_object_in_param(final Object email) {
         assertThat(tokenizedEmail.hashCode(email), equalTo(email.hashCode()));
     }
 
     @Test
-    public void when_the_object_is_null_then_its_hashcode_is_zero(){
+    public void when_the_object_is_null_then_its_hashcode_is_zero() {
         assertThat(tokenizedEmail.hashCode(null), equalTo(0));
     }
 
     @Test
     @UseDataProvider("emails")
-    public void when_get_value_then_get_it_as_it_is(String email) throws Exception {
+    public void when_get_value_then_get_it_as_it_is(final String email) throws Exception {
         result.setString(COLUMN_NAME[0], email);
         final Object expected = tokenizedEmail.nullSafeGet(result, COLUMN_NAME, null, null);
         assertThat(expected, equalTo(email));
@@ -128,7 +128,7 @@ public class TokenizedEmailTest {
 
     @Test
     @UseDataProvider("emailAndTokenized")
-    public void when_set_value_then_tokenize_it(String email, String tokenized) throws Exception {
+    public void when_set_value_then_tokenize_it(final String email, final String tokenized) throws Exception {
         tokenizedEmail.nullSafeSet(preparedStatement, email, 0, null);
         assertThat(preparedStatement.getParam(0).toString(), equalTo(tokenized));
     }
@@ -141,40 +141,40 @@ public class TokenizedEmailTest {
 
     @Test
     @UseDataProvider("emails")
-    public void when_deep_copy_and_email_then_return_the_same_object(String email){
+    public void when_deep_copy_and_email_then_return_the_same_object(final String email) {
         assertThat(tokenizedEmail.deepCopy(email), sameInstance(email));
     }
 
     @Test
-    public void the_tokenized_email_type_is_immutable(){
+    public void the_tokenized_email_type_is_immutable() {
         assertThat(tokenizedEmail.isMutable(), equalTo(false));
     }
 
     @Test
     @UseDataProvider("emails")
-    public void when_disassemble_an_email_return_the_same_value(String email){
+    public void when_disassemble_an_email_return_the_same_value(final String email) {
         assertThat(tokenizedEmail.disassemble(email), equalTo(email));
     }
 
     @Test
-    public void when_disassemble_a_null_value_then_return_null(){
+    public void when_disassemble_a_null_value_then_return_null() {
         assertThat(tokenizedEmail.disassemble(null), nullValue());
     }
 
     @Test
     @UseDataProvider("emails")
-    public void when_assemble_from_a_cached_email_then_return_the_cached_value(String email){
+    public void when_assemble_from_a_cached_email_then_return_the_cached_value(final String email) {
         assertThat(tokenizedEmail.assemble(email, null), equalTo(email));
     }
 
     @Test
-    public void when_assemble_from_a_null_value_then_return_null(){
+    public void when_assemble_from_a_null_value_then_return_null() {
         assertThat(tokenizedEmail.assemble(null, null), nullValue());
     }
 
     @Test
     @UseDataProvider("emails")
-    public void when_replace_then_return_the_origin_value(String email){
+    public void when_replace_then_return_the_origin_value(final String email) {
         assertThat(tokenizedEmail.replace(email, null, null), equalTo(email));
     }
 

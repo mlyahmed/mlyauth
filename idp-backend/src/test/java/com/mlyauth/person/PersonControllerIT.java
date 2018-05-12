@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -47,6 +48,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 public class PersonControllerIT extends AbstractIntegrationTest {
+
+    public static final long FATIMA_EZZAHRAE_ID = 9001L;
+    public static final int EMAIL_INDEX = 4;
+    public static final int EXTERNAL_ID_INDEX = 0;
+    public static final int FIRSTNAME_INDEX = 1;
+    public static final int LASTNAME_INDEX = 2;
+    public static final int BIRTHDATE_INDEX = 3;
+    public static final int PASSWORD_INDEX = 5;
+    public static final long POLICY_DEV_ID = 9000L;
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -81,7 +91,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private String access;
 
     private Person fatimaEzzahrae;
-    private Application policyDev;
+    private Application policy;
 
     @Before
     public void setup() {
@@ -102,7 +112,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
 
     @Test
     @UseDataProvider("properties")
-    public void when_create_a_new_person_then_create_him(String... properties) throws Exception {
+    public void when_create_a_new_person_then_create_him(final String... properties) throws Exception {
         given_the_root_is_a_master();
         PersonBean personBean = given_person(properties);
         when_create_new_person(personBean);
@@ -113,19 +123,20 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     @Test
     public void when_create_a_new_person_and_already_exists_then_error() throws Exception {
         given_the_root_is_a_master();
-        PersonBean personBean = given_person("201254", "Moulay", "ATTACH", "1980-02-15", "moulay.attach@gmail.com", "password");
+        final String[] properties = {"201254", "Moulay", "ATTACH", "1980-02-15", "moulay.attach@gmail.com", "password"};
+        PersonBean personBean = given_person(properties);
         when_create_new_person(personBean);
         result.andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$.[0].code", equalTo("PERSON_ALREADY_EXISTS")));
     }
 
     @Test
     @UseDataProvider("properties")
-    public void when_create_a_new_person_without_matser_profile_then_error(String... properties) throws Exception {
+    public void when_create_a_new_person_without_matser_profile_then_error(final String... prop) throws Exception {
         given_the_root_is_not_a_master();
-        PersonBean personBean = given_person(properties);
+        PersonBean personBean = given_person(prop);
         when_create_new_person(personBean);
         result.andExpect(status().isForbidden());
     }
@@ -141,18 +152,18 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void given_Fatima_Ezzahrare_an_existing_person_without_an_application() {
-        fatimaEzzahrae = personDAO.findOne(9001l);
+        fatimaEzzahrae = personDAO.findOne(FATIMA_EZZAHRAE_ID);
         fatimaEzzahrae.getApplications().clear();
         personDAO.saveAndFlush(fatimaEzzahrae);
     }
 
     private void given_PolicyDev_an_existing_application() {
-        policyDev = applicationDAO.findOne(9000l);
+        policy = applicationDAO.findOne(POLICY_DEV_ID);
     }
 
     private void when_assign_PolicyDev_to_Fatima_Ezzahrae() throws Exception {
         result = mockMvc.perform(put("/domain/person/_assign/{appname}/to/{personExternalId}",
-                policyDev.getAppname(),
+                policy.getAppname(),
                 fatimaEzzahrae.getExternalId())
                 .header("Authorization", "Bearer " + access)
                 .contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8"));
@@ -163,9 +174,9 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void then_PolicyDEV_is_assigned_to_Fatima_Ezzahrae() {
-        final Person expected = personDAO.findOne(9001l);
+        final Person expected = personDAO.findOne(FATIMA_EZZAHRAE_ID);
         Assert.assertThat(expected.getApplications(), Matchers.is(Matchers.not(Matchers.empty())));
-        Assert.assertThat(expected.getApplications(), Matchers.contains(policyDev));
+        Assert.assertThat(expected.getApplications(), Matchers.contains(policy));
     }
 
     private void given_the_root_is_a_master() {
@@ -181,40 +192,40 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         personDAO.save(master);
     }
 
-    private void and_he_is_well_created(String... properties) throws ParseException {
+    private void and_he_is_well_created(final String... properties) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        final Person person = personLookuper.byEmail(properties[4]);
+        final Person person = personLookuper.byEmail(properties[EMAIL_INDEX]);
         assertThat(person, notNullValue());
         assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), notNullValue());
-        assertThat(person.getExternalId(), equalTo(properties[0]));
-        assertThat(person.getFirstname(), equalTo(properties[1]));
-        assertThat(person.getLastname(), equalTo(properties[2]));
+        assertThat(person.getExternalId(), equalTo(properties[EXTERNAL_ID_INDEX]));
+        assertThat(person.getFirstname(), equalTo(properties[FIRSTNAME_INDEX]));
+        assertThat(person.getLastname(), equalTo(properties[LASTNAME_INDEX]));
         assertThat(person.getBirthdate(), notNullValue());
-        assertThat(person.getBirthdate(), equalTo(formatter.parse(properties[3])));
-        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(properties[4]));
-        assertThat(person.getEmail(), equalTo(properties[4]));
-        assertThat(person.getAuthenticationInfo().getPassword(), not(equalTo(properties[5])));
-        assertTrue(passwordEncoder.matches(properties[5], person.getAuthenticationInfo().getPassword()));
+        assertThat(person.getBirthdate(), equalTo(formatter.parse(properties[BIRTHDATE_INDEX])));
+        assertThat(person.getAuthenticationInfo().getLogin(), equalTo(properties[EMAIL_INDEX]));
+        assertThat(person.getEmail(), equalTo(properties[EMAIL_INDEX]));
+        assertThat(person.getAuthenticationInfo().getPassword(), not(equalTo(properties[PASSWORD_INDEX])));
+        assertTrue(passwordEncoder.matches(properties[PASSWORD_INDEX], person.getAuthenticationInfo().getPassword()));
     }
 
     private void then_is_created() throws Exception {
         result.andExpect(status().isCreated());
     }
 
-    private PersonBean given_person(String... properties) {
+    private PersonBean given_person(final String... properties) {
         PersonBean personBean = new PersonBean();
         personBean.setRole(RoleCode.CLIENT);
-        personBean.setExternalId(properties[0]);
-        personBean.setFirstname(properties[1]);
-        personBean.setLastname(properties[2]);
-        personBean.setBirthdate(properties[3]);
-        personBean.setEmail(properties[4]);
-        personBean.setPassword(properties[5].toCharArray());
+        personBean.setExternalId(properties[EXTERNAL_ID_INDEX]);
+        personBean.setFirstname(properties[FIRSTNAME_INDEX]);
+        personBean.setLastname(properties[LASTNAME_INDEX]);
+        personBean.setBirthdate(properties[BIRTHDATE_INDEX]);
+        personBean.setEmail(properties[EMAIL_INDEX]);
+        personBean.setPassword(properties[PASSWORD_INDEX].toCharArray());
         return personBean;
     }
 
-    private void when_create_new_person(PersonBean personBean) throws Exception {
+    private void when_create_new_person(final PersonBean personBean) throws Exception {
         result = mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(personBean))
                 .header("Authorization", "Bearer " + access)

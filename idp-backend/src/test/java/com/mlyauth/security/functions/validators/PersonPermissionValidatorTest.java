@@ -40,26 +40,26 @@ public class PersonPermissionValidatorTest {
 
     @Test
     @UseDataProvider("allActions")
-    public void when_person_is_null_then_permit(String action) {
+    public void when_person_is_null_then_permit(final String action) {
         assertThat(validator.hasPermission(authentication, null, IDPPermission.valueOf(action)), equalTo(true));
     }
 
     @Test
     @UseDataProvider("allActions")
-    public void when_authentication_is_null_and_person_null_then_not_permitted(String action) {
+    public void when_authentication_is_null_and_person_null_then_not_permitted(final String action) {
         assertThat(validator.hasPermission(null, null, IDPPermission.valueOf(action)), equalTo(false));
     }
 
     @Test
     @UseDataProvider("allActions")
-    public void when_authentication_is_null_then_not_permitted(String action) {
+    public void when_authentication_is_null_then_not_permitted(final String action) {
         assertThat(validator.hasPermission(null, null, IDPPermission.valueOf(action)), equalTo(false));
     }
 
 
     @Test
     @UseDataProvider("allActions")
-    public void when_the_person_is_a_master_then_permit(String action) {
+    public void when_the_person_is_a_master_then_permit(final String action) {
         authentication = new TestingAuthenticationToken(null, null, ProfileCode.MASTER.name());
         assertThat(validator.hasPermission(authentication, null, IDPPermission.valueOf(action)), equalTo(true));
     }

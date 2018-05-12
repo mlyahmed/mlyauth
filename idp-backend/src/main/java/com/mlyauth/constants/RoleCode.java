@@ -5,7 +5,7 @@ import static java.util.Arrays.stream;
 public enum RoleCode implements IStringEnum {
     ADMIN("ADMIN"), MANAGER("MANAGER"), CLIENT("CLIENT");
 
-    final String value;
+    private final String value;
 
     RoleCode(final String value) {
         this.value = value;
