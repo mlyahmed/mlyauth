@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mlyahmed
+      changes:
+        - createTable:
+            tableName: AUTHENTICATION_INFO_BY_LOGIN
+            columns:
+              - column:
+                  name: ID
+                  type: bigint
+                  constraints:
+                      primaryKey: true
+                      nullable: false
+              - column:
+                  name: AUTHENTICATION_INFO_ID
+                  type: varchar(300)
+                  constraints:
+                      nullable: false
+                      unique: true
+              - column:
+                  name: LOGIN
+                  type: varchar(300)
+                  constraints:
+                      nullable: false
+                      unique: true
