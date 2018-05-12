@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class PersonControllerDoc extends AbstractIntegrationTest {
 
-    public static final String RANDOM_EXTERNAL_ID = RandomStringUtils.random(20, true, true);
+    private static final String RANDOM_EXTERNAL_ID = RandomStringUtils.random(20, true, true);
 
     @Rule
     public final JUnitRestDocumentation doc = new JUnitRestDocumentation("build/generated-snippets");
@@ -42,12 +42,13 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext context;
 
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
     private AccessTokenForTests accessTokenGenerator;
 
     private String access;
+    private Map<String, Object> person;
 
     @Before
     public void setUp() {
@@ -61,14 +62,7 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
     @Test
     public void when_person_creation_is_ok_then_document_it() throws Exception {
 
-        Map<String, Object> person = new HashMap<>();
-        person.put("role", "CLIENT");
-        person.put("externalId", RANDOM_EXTERNAL_ID);
-        person.put("firstname", "Ahmed");
-        person.put("lastname", "Ahmed");
-        person.put("birthdate", "1987-01-15");
-        person.put("email", "ahmed@elidrissi.ma");
-        person.put("password", "Ahmed");
+        given_a_person();
 
         final ResultActions result = mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(person))
@@ -95,6 +89,17 @@ public class PersonControllerDoc extends AbstractIntegrationTest {
         );
 
         result.andDo(document("post-person-ok", requestDescription, responseDescription));
+    }
+
+    private void given_a_person() {
+        person = new HashMap<>();
+        person.put("role", "CLIENT");
+        person.put("externalId", RANDOM_EXTERNAL_ID);
+        person.put("firstname", "Ahmed");
+        person.put("lastname", "Ahmed");
+        person.put("birthdate", "1987-01-15");
+        person.put("email", "ahmed@elidrissi.ma");
+        person.put("password", "Ahmed");
     }
 
 }

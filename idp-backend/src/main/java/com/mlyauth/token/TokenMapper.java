@@ -52,6 +52,7 @@ public class TokenMapper {
                 .setNorm(token.getNorm());
     }
 
+    //CHECKSTYLE:OFF
     private HashSet<TokenClaim> mapClaims(final IToken token) {
         final HashSet<TokenClaim> claims = new HashSet<>();
         if (StringUtils.isNotBlank(token.getSubject()))
@@ -102,7 +103,7 @@ public class TokenMapper {
 
         return claims;
     }
-
+    //CHECKSTYLE:ON
 
     private Date toDate(final LocalDateTime time) {
         return Date.from(time.atZone(ZoneId.systemDefault()).toInstant());
