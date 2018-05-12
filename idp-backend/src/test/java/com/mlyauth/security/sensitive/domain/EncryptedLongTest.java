@@ -16,99 +16,117 @@ import org.junit.runner.RunWith;
 import java.security.Security;
 import java.sql.Types;
 import java.util.Properties;
+import java.util.UUID;
 
-import static com.mlyauth.tools.RandomForTests.randomString;
+import static com.mlyauth.tools.RandomForTests.randomLong;
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)
-public class EncryptedStringTest {
+public class EncryptedLongTest {
     private static final String[] COLUMN_NAME = new String[]{RandomForTests.randomString()};
     private static final String REGISTERED_NAME = "registerName";
 
     private StandardPBEStringEncryptor encryptor;
     private Properties typeParams;
-    private EncryptedString encryptedString;
+    private EncryptedLong encryptedLong;
     private MockResultSet result;
     private MockPreparedStatement preparedStatement;
-    private String plainValue;
 
     @Before
     public void setup() {
         set_up_the_encryptor();
-        set_up_the_encrypted_string_type();
+        set_up_the_encrypted_long_type();
         result = new MockResultSet();
         preparedStatement = new MockPreparedStatement();
-        plainValue = RandomForTests.randomString();
     }
 
     @Test
-    public void the_returned_class_type_must_be_string() {
-        assertThat(encryptedString.returnedClass(), equalTo(String.class));
+    public void the_returned_class_type_must_be_long() {
+        assertThat(encryptedLong.returnedClass(), equalTo(Long .class));
     }
 
     @DataProvider
-    public static String[] strings() {
+    public static String[] longAsString() {
         // @formatter:off
         return new String[]{
-                randomString(),
-                randomString(),
-                randomString(),
+                randomLong().toString(),
+                randomLong().toString(),
+                randomLong().toString(),
+                randomLong().toString(),
         };
         // @formatter:on
     }
 
     @Test
-    @UseDataProvider("strings")
-    public void keep_the_same_instance_when_converted_to_object(final String value) {
-        assertThat(encryptedString.convertToObject(value), Matchers.sameInstance(value));
+    @UseDataProvider("longAsString")
+    public void convert_the_oject_to_long(final String value) {
+        assertThat(encryptedLong.convertToObject(value), equalTo(new Long(value)));
     }
 
     @Test
     public void when_get_a_message_and_not_wrapped_then_return_it() throws Exception {
-        result.setString(COLUMN_NAME[0], RandomForTests.randomString());
-        final Object expected = encryptedString.nullSafeGet(result, COLUMN_NAME, null, null);
-        assertThat(expected, equalTo(result.getString(COLUMN_NAME[0])));
+        result.setString(COLUMN_NAME[0], randomLong().toString());
+        final Object expected = encryptedLong.nullSafeGet(result, COLUMN_NAME, null, null);
+        assertThat(expected, notNullValue());
+        assertThat(expected.toString(), equalTo(result.getString(COLUMN_NAME[0])));
     }
 
     @Test
-    public void when_get_a_message_and_wrapped_then_return_it_decrypted()  throws Exception {
-        final String encrypted = "ENC(" + encryptor.encrypt(plainValue) + ")";
+    @UseDataProvider("longAsString")
+    public void when_get_a_message_and_wrapped_then_return_it_decrypted(final String value)  throws Exception {
+        final String noisedValue = sha256Hex(UUID.randomUUID().toString()) + "::" + value;
+        final String encrypted = "ENC(" + encryptor.encrypt(noisedValue) + ")";
         result.setString(COLUMN_NAME[0], encrypted);
-        final Object expected = encryptedString.nullSafeGet(result, COLUMN_NAME, null, null);
-        assertThat(expected, equalTo(plainValue));
+        final Object expected = encryptedLong.nullSafeGet(result, COLUMN_NAME, null, null);
+        assertThat(expected, notNullValue());
+        assertThat(expected.toString(), equalTo(value));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void when_get_a_message_and_wrapped_but_corrupted_then_error()  throws Exception {
+        final String encrypted = "ENC(" + encryptor.encrypt(randomLong().toString()) + ")";
+        result.setString(COLUMN_NAME[0], encrypted);
+        encryptedLong.nullSafeGet(result, COLUMN_NAME, null, null);
     }
 
     @Test
-    public void when_set_message_then_encrypt_it_wrapped()  throws Exception {
-        encryptedString.nullSafeSet(preparedStatement, plainValue, 0, null);
+    @UseDataProvider("longAsString")
+    public void when_set_message_then_encrypt_it_wrapped(final String value)  throws Exception {
+        encryptedLong.nullSafeSet(preparedStatement, value, 0, null);
         assertThat(preparedStatement.getParam(0), notNullValue());
         assertThat(preparedStatement.getParam(0).toString(), Matchers.startsWith("ENC("));
         assertThat(preparedStatement.getParam(0).toString(), Matchers.endsWith(")"));
-        assertThat(encryptor.decrypt(unwrap(preparedStatement.getParam(0).toString())), equalTo(plainValue));
+
+        final String decrypted = encryptor.decrypt(unwrap(preparedStatement.getParam(0).toString()));
+        assertThat(decrypted.split("::"), arrayWithSize(2));
+        assertThat(decrypted.split("::")[1], equalTo(value));
     }
 
     @Test
     public void when_set_null_value_then_set_varchar_type_as_null() throws Exception {
-        encryptedString.nullSafeSet(preparedStatement, null, 0, null);
+        encryptedLong.nullSafeSet(preparedStatement, null, 0, null);
         assertThat(preparedStatement.getNull(0), equalTo(Types.VARCHAR));
     }
+
 
     private void set_up_the_encryptor() {
         Security.addProvider(new BouncyCastleProvider());
         encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword(RandomForTests.randomString());
-        encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
+        encryptor.setAlgorithm("PBEWithMD5AndDES");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
         HibernatePBEEncryptorRegistry.getInstance().registerPBEStringEncryptor(REGISTERED_NAME, encryptor);
     }
 
-    private void set_up_the_encrypted_string_type() {
+    private void set_up_the_encrypted_long_type() {
         typeParams = new Properties();
         typeParams.setProperty(ParameterNaming.ENCRYPTOR_NAME, REGISTERED_NAME);
-        encryptedString = new EncryptedString();
-        encryptedString.setParameterValues(typeParams);
+        encryptedLong = new EncryptedLong();
+        encryptedLong.setParameterValues(typeParams);
     }
 
 

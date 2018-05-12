@@ -7,17 +7,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.UUID;
 
-public class EncryptedString extends AbstractEncryptedType {
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+
+public class EncryptedLong extends AbstractEncryptedType {
 
     @Override
     public Object nullSafeGet(final ResultSet rs, final String[] names,
                               final SessionImplementor session, final Object owner)
             throws HibernateException, SQLException {
-
         checkInitialization();
-        final String value = rs.getString(names[0]);
-        return rs.wasNull() ? null : convertToObject(!isWrapped(value) ? value : encryptor.decrypt(unwrap(value)));
+        final String v = rs.getString(names[0]);
+        return rs.wasNull() ? null : convertToObject(!isWrapped(v) ? v : unNoise(encryptor.decrypt(unwrap(v))));
     }
 
     @Override
@@ -28,19 +30,27 @@ public class EncryptedString extends AbstractEncryptedType {
         if (value == null) {
             st.setNull(index, Types.VARCHAR);
         } else {
-            st.setString(index, wrap(encryptor.encrypt(convertToString(value))));
+            st.setString(index, wrap(encryptor.encrypt(noise(convertToString(value)))));
         }
     }
 
     @Override
-    protected Object convertToObject(final String stringValue) {
-        return stringValue;
+    protected Object convertToObject(final String string) {
+        return new Long(string);
     }
 
     @Override
     public Class returnedClass() {
-        return String.class;
+        return Long.class;
     }
 
+    private String noise(final String value) {
+        return sha256Hex(UUID.randomUUID().toString()) + "::" + value;
+    }
 
+    private String unNoise(final String noised) {
+        final String[] parts = noised.split("::");
+        if (parts.length != 2) throw new RuntimeException("Corrupted");
+        return parts[1];
+    }
 }
