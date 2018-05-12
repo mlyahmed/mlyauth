@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: database/changelog/data/init/id-sequence.sql
+  - include:
+      file: database/changelog/data/init/attribute-catalog.sql
+  - include:
+      file: database/changelog/data/init/auth-aspect.sql
+  - include:
+      file: database/changelog/data/init/profile.sql
+  - include:
+      file: database/changelog/data/init/role.sql
+  - include:
+      file: database/changelog/data/init/application-type.sql
+  - include:
+      file: database/changelog/data/init/application.sql
+  - include:
+      file: database/changelog/data/init/person.sql
+  - include:
+      file: database/changelog/data/init/auto-navigation.sql
