@@ -3,11 +3,13 @@ package com.mlyauth.person;
 import com.mlyauth.beans.PersonBean;
 import com.mlyauth.constants.AuthenticationInfoStatus;
 import com.mlyauth.dao.ApplicationDAO;
+import com.mlyauth.dao.AuthenticationInfoByLoginDAO;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonByEmailDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationInfoByLogin;
 import com.mlyauth.domain.Person;
 import com.mlyauth.domain.PersonByEmail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,16 @@ import java.util.UUID;
 @Transactional
 public class PersonService implements IPersonService {
 
-    public static final int A_CENTURY = 1000 * 60 * 60 * 24 * 365 * 100;
+    private static final int A_CENTURY = 1000 * 60 * 60 * 24 * 365 * 100;
 
     @Autowired
     private ApplicationDAO applicationDAO;
 
     @Autowired
     private AuthenticationInfoDAO authenticationInfoDAO;
+
+    @Autowired
+    private AuthenticationInfoByLoginDAO authInfoByLoginDAO;
 
     @Autowired
     private PersonDAO personDAO;
@@ -52,7 +57,10 @@ public class PersonService implements IPersonService {
         person = personDAO.saveAndFlush(person);
         personByEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(person.getExternalId())
                 .setEmail(person.getEmail()));
-        authenticationInfoDAO.saveAndFlush(person.getAuthenticationInfo());
+        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(person.getAuthenticationInfo());
+        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
+                .setAuthInfoId(authInfo.getId())
+                .setLogin(authInfo.getLogin()));
         return personMapper.toBean(person);
     }
 

@@ -4,6 +4,7 @@ import com.mlyauth.context.IContextHolder;
 import com.mlyauth.context.IDPUser;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.security.authentication.AuthenticationInfoLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class BasicUserDetailsService implements UserDetailsService {
 
     @Autowired
+    private AuthenticationInfoLookuper authenticationInfoLookuper;
+
+    @Autowired
     private IContextHolder contextHolder;
 
     @Autowired
@@ -23,7 +27,7 @@ public class BasicUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(username);
+        final AuthenticationInfo authenticationInfo = authenticationInfoLookuper.byLogin(username);
         if (authenticationInfo == null) return null;
 
         if (authenticationInfo.isPerson()) {

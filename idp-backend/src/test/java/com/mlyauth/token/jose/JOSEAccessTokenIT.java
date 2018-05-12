@@ -11,12 +11,14 @@ import com.mlyauth.credentials.CredentialManager;
 import com.mlyauth.dao.ApplicationAspectAttributeDAO;
 import com.mlyauth.dao.ApplicationDAO;
 import com.mlyauth.dao.ApplicationTypeDAO;
+import com.mlyauth.dao.AuthenticationInfoByLoginDAO;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.TokenDAO;
 import com.mlyauth.domain.AppAspAttr;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.ApplicationAspectAttributeId;
 import com.mlyauth.domain.AuthenticationInfo;
+import com.mlyauth.domain.AuthenticationInfoByLogin;
 import com.mlyauth.domain.Token;
 import com.mlyauth.token.TokenMapper;
 import com.mlyauth.tools.KeysForTests;
@@ -60,13 +62,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
-    public static final String CLIENT_SPACE_APP_LOGIN = "cl.clientSpace";
-    public static final String CLIENT_SPACE_APP_PASSWORD = "BrsAssu84;";
-    public static final String CLIENT_APP_ENTITY_ID = "clientSpace";
-    public static final String POLICY_APP_LOGIN = "rs.policy";
-    public static final String POLICY_APP_PASSWORD = "BrsAssu84;";
-    public static final String POLICY_APP_ENTITY_ID = "policy";
-    public static final int ONE_MINUTE = 1000 * 30 * 60;
+    private static final String CLIENT_SPACE_APP_LOGIN = "cl.clientSpace";
+    private static final String CLIENT_SPACE_APP_PASSWORD = "BrsAssu84;";
+    private static final String CLIENT_APP_ENTITY_ID = "clientSpace";
+    private static final String POLICY_APP_LOGIN = "rs.policy";
+    private static final String POLICY_APP_PASSWORD = "BrsAssu84;";
+    private static final String POLICY_APP_ENTITY_ID = "policy";
+    private static final int ONE_MINUTE = 1000 * 30 * 60;
 
     @Value("${idp.jose.entityId}")
     private String localEntityId;
@@ -97,6 +99,9 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
     @Autowired
     private AuthenticationInfoDAO authenticationInfoDAO;
+
+    @Autowired
+    private AuthenticationInfoByLoginDAO authInfoByLoginDAO;
 
     @Autowired
     private MockMvc mockMvc;
@@ -178,7 +183,11 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
         clientSpaceAuthInfo.setApplication(clientSpace);
         applicationDAO.save(clientSpace);
-        authenticationInfoDAO.save(clientSpaceAuthInfo);
+        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(clientSpaceAuthInfo);
+        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
+                .setAuthInfoId(authInfo.getId())
+                .setLogin(authInfo.getLogin()));
+
     }
 
     private void given_the_client_space_with_client_aspect() throws CertificateEncodingException {
@@ -240,7 +249,11 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
         policyAuthInfo.setApplication(policy);
         applicationDAO.save(policy);
-        authenticationInfoDAO.save(policyAuthInfo);
+        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(policyAuthInfo);
+        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
+                .setAuthInfoId(authInfo.getId())
+                .setLogin(authInfo.getLogin()));
+
     }
 
     private void given_the_policy_with_resource_server_aspect() throws CertificateEncodingException {

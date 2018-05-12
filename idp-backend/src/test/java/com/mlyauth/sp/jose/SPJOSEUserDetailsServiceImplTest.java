@@ -5,12 +5,12 @@ import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.context.IContextHolder;
 import com.mlyauth.context.IDPUser;
 import com.mlyauth.context.MockContextHolder;
-import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.dao.PersonDAO;
 import com.mlyauth.domain.Application;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.domain.Person;
 import com.mlyauth.exception.IDPException;
+import com.mlyauth.security.authentication.AuthenticationInfoLookuper;
 import com.mlyauth.token.jose.MockJOSEAccessToken;
 import com.mlyauth.tools.KeysForTests;
 import javafx.util.Pair;
@@ -41,7 +41,8 @@ import static org.mockito.Mockito.when;
 
 public class SPJOSEUserDetailsServiceImplTest {
 
-    public static final int SEXTY_SECONDS = 1000 * 60;
+    private static final int SEXTY_SECONDS = 1000 * 60;
+
     @Spy
     private IContextHolder context = new MockContextHolder();
 
@@ -49,7 +50,7 @@ public class SPJOSEUserDetailsServiceImplTest {
     private PersonDAO personDAO;
 
     @Mock
-    private AuthenticationInfoDAO authenticationInfoDAO;
+    private AuthenticationInfoLookuper authenticationInfoLookuper;
 
     @InjectMocks
     private SPJOSEUserDetailsServiceImpl service;
@@ -106,7 +107,7 @@ public class SPJOSEUserDetailsServiceImplTest {
         application = Application.newInstance();
         application.setAuthenticationInfo(authenticationInfo);
         authenticationInfo.setApplication(application);
-        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(authenticationInfo);
+        when(authenticationInfoLookuper.byLogin(token.getSubject())).thenReturn(authenticationInfo);
     }
 
     private void then_user_is_loaded_as_application() {
@@ -119,13 +120,13 @@ public class SPJOSEUserDetailsServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void when_no_authentication_infor_is_found_then_error() {
-        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(null);
+        when(authenticationInfoLookuper.byLogin(token.getSubject())).thenReturn(null);
         when_load_the_user();
     }
 
     @Test(expected = IDPException.class)
     public void when_the_authentication_info_is_not_a_person_neither_an_application_then_error() {
-        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(AuthenticationInfo.newInstance());
+        when(authenticationInfoLookuper.byLogin(token.getSubject())).thenReturn(AuthenticationInfo.newInstance());
         when_load_the_user();
     }
 
@@ -224,7 +225,7 @@ public class SPJOSEUserDetailsServiceImplTest {
         person = Person.newInstance();
         person.setAuthenticationInfo(authenticationInfo);
         authenticationInfo.setPerson(person);
-        when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(authenticationInfo);
+        when(authenticationInfoLookuper.byLogin(token.getSubject())).thenReturn(authenticationInfo);
     }
 
     private void when_load_the_user() {

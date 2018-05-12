@@ -31,28 +31,34 @@ public class AuthenticationInfoByLogin {
     @Column(name = "LOGIN", nullable = false)
     private String login;
 
+    public static AuthenticationInfoByLogin newInstance() {
+        return new AuthenticationInfoByLogin();
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(final long id) {
+    public AuthenticationInfoByLogin setId(final long id) {
         this.id = id;
+        return this;
     }
 
     public long getAuthInfoId() {
         return authInfoId;
     }
 
-    public void setAuthInfoId(final long authInfoId) {
+    public AuthenticationInfoByLogin setAuthInfoId(final long authInfoId) {
         this.authInfoId = authInfoId;
+        return this;
     }
 
     public String getLogin() {
         return login;
     }
 
-    public void setLogin(final String login) {
+    public AuthenticationInfoByLogin setLogin(final String login) {
         this.login = login;
+        return this;
     }
 }

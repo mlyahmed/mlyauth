@@ -6,6 +6,7 @@ import com.mlyauth.context.IDPUser;
 import com.mlyauth.dao.AuthenticationInfoDAO;
 import com.mlyauth.domain.AuthenticationInfo;
 import com.mlyauth.exception.IDPException;
+import com.mlyauth.security.authentication.AuthenticationInfoLookuper;
 import com.mlyauth.token.jose.JOSEAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,9 @@ import static org.springframework.util.Assert.notNull;
 public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
 
     @Autowired
+    private AuthenticationInfoLookuper authenticationInfoLookuper;
+
+    @Autowired
     private AuthenticationInfoDAO authenticationInfoDAO;
 
     @Autowired
@@ -39,7 +43,7 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
     }
 
     private IContext loadContext(final JOSEAccessToken credential) {
-        final AuthenticationInfo authenticationInfo = authenticationInfoDAO.findByLogin(credential.getSubject());
+        final AuthenticationInfo authenticationInfo = authenticationInfoLookuper.byLogin(credential.getSubject());
         Assert.notNull(authenticationInfo, "No AuthenticationInfo found for " + credential.getSubject());
 
         if (authenticationInfo.isPerson()) {

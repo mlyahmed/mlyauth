@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class MlyAuthSteps extends AbstractStepsDef {
 
-    public static final String RANDOM_EXTERNAL_ID = RandomStringUtils.random(20, true, true);
+    private static final String RANDOM_EXTERNAL_ID = RandomStringUtils.random(20, true, true);
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -101,7 +101,7 @@ public class MlyAuthSteps extends AbstractStepsDef {
 
     @When("^(.+) navigates to (.+)$")
     public void user_navigate_to_app(final String username, final String appname) throws Exception {
-        resultActionHolder.setResultActions(restTestHelper.performBasicGet("/navigate/forward/basic/to/" + appname));
+         resultActionHolder.setResultActions(restTestHelper.performBasicGet("/navigate/forward/basic/to/" + appname));
     }
 
     @Then("^(.+) is posted to (.+)")

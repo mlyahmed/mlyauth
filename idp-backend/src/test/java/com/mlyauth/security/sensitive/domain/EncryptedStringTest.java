@@ -52,7 +52,7 @@ public class EncryptedStringTest {
     public static String[] strings() {
         // @formatter:off
         return new String[]{
-                randomString(),
+                "ahmed.elidrissi.attach@gmail.com",
                 randomString(),
                 randomString(),
         };

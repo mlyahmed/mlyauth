@@ -1,6 +1,7 @@
 package com.mlyauth.domain;
 
 import com.mlyauth.constants.AuthenticationInfoStatus;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,12 +18,14 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import java.util.Date;
 
+import static com.mlyauth.domain.EncryptedDomain.ENCRYPTED_STRING;
+
 @Entity
 @Table(name = "AUTHENTICATION_INFO")
 public class AuthenticationInfo {
 
-    public static final int ID_INIT_VALUE = 9999;
-    public static final int ID_INC_STEP = 1;
+    private static final int ID_INIT_VALUE = 9999;
+    private static final int ID_INC_STEP = 1;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -33,6 +36,7 @@ public class AuthenticationInfo {
     private long id;
 
     @Column(name = "LOGIN", nullable = false, unique = true)
+    @Type(type = ENCRYPTED_STRING)
     private String login;
 
     @Column(name = "PASSWORD", nullable = false)
