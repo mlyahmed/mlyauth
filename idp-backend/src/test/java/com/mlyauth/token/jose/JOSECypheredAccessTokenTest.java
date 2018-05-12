@@ -65,6 +65,7 @@ import static org.junit.Assert.assertThat;
 
 public class JOSECypheredAccessTokenTest {
 
+    public static final int THREE_MINUTES = 1000 * 60 * 3;
     private Pair<PrivateKey, PublicKey> cypherCred;
     private Pair<PrivateKey, PublicKey> decipherCred;
     private JOSEAccessToken accessToken;
@@ -424,10 +425,12 @@ public class JOSECypheredAccessTokenTest {
                 .claim(Claims.TARGET_URL.getValue(), randomString())
                 .claim(Claims.DELEGATOR.getValue(), randomString())
                 .claim(Claims.DELEGATE.getValue(), randomString())
+                //CHECKSTYLE:OFF
                 .claim(Claims.VERDICT.getValue(), random.nextInt(2000) % 2 == 0 ? SUCCESS : FAIL)
                 .claim(Claims.VALIDATION_MODE.getValue(), random.nextInt(542154) % 2 == 0 ? STANDARD : STRICT)
                 .claim(Claims.REFRESH_MODE.getValue(), random.nextInt(54662)%2 == 0 ? WHEN_EXPIRES : EACH_TIME)
-                .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 3))
+                //CHECKSTYLE:ON
+                .expirationTime(new Date(System.currentTimeMillis() + THREE_MINUTES))
                 .notBeforeTime(new Date())
                 .issueTime(new Date())
                 .build();

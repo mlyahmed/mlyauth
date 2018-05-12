@@ -21,19 +21,19 @@ public class JOSETokenDecoder {
     private CredentialManager credentialManager;
 
     public JOSERefreshToken decodeRefresh(final String serialized, final AspectType peerAspect) {
-        JOSERefreshToken tkn = tokenFactory.createRefreshToken(serialized, localKey(), peerKey(serialized, peerAspect));
+        JOSERefreshToken tkn = tokenFactory.newRefreshToken(serialized, localKey(), peerKey(serialized, peerAspect));
         tkn.decipher();
         return tkn;
     }
 
     public JOSEAccessToken decodeAccess(final String serialized, final AspectType peerAspect) {
-        JOSEAccessToken tkn = tokenFactory.createAccessToken(serialized, localKey(), peerKey(serialized, peerAspect));
+        JOSEAccessToken tkn = tokenFactory.newAccessToken(serialized, localKey(), peerKey(serialized, peerAspect));
         tkn.decipher();
         return tkn;
     }
 
     public JOSEAccessToken decodeAccess(final String serialized) {
-        JOSEAccessToken tkn = tokenFactory.createAccessToken(serialized, localKey(), localPublicKey());
+        JOSEAccessToken tkn = tokenFactory.newAccessToken(serialized, localKey(), localPublicKey());
         tkn.decipher();
         return tkn;
     }

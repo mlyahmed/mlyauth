@@ -75,7 +75,7 @@ public class JOSETokenService {
         notNull(readyRefresh, "No Ready Refresh token found");
 
         final PublicKey rsKey = getResourceServerKey(refresh, rsEntityId);
-        final JOSEAccessToken accessToken = tokenFactory.createAccessToken(credManager.getPrivateKey(), rsKey);
+        final JOSEAccessToken accessToken = tokenFactory.newAccessToken(credManager.getPrivateKey(), rsKey);
         accessToken.setStamp(idGenerator.generateId());
         accessToken.setSubject(refresh.getSubject());
         accessToken.setIssuer(localEntityId);

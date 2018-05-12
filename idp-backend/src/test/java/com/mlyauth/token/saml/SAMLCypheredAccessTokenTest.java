@@ -68,6 +68,8 @@ import static org.opensaml.xml.util.Base64.encodeBytes;
 
 public class SAMLCypheredAccessTokenTest {
 
+    public static final int TWENTY_MINUTES = 20;
+    public static final int TWENTY_FIVE_MINUTES = 25;
     private SAMLAccessToken token;
     private SAMLHelper samlHelper;
     private Credential cypherCred;
@@ -183,7 +185,8 @@ public class SAMLCypheredAccessTokenTest {
     @Test
     public void when_given_cyphered_token_then_the_effective_time_is_loaded() {
         when_decipher_the_token();
-        final Date date = assertion.getAuthnStatements().get(0).getAuthnInstant().toDateTime(DateTimeZone.getDefault()).toDate();
+        final Date date = assertion.getAuthnStatements().get(0).getAuthnInstant()
+                .toDateTime(DateTimeZone.getDefault()).toDate();
         final LocalDateTime expected = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         assertThat(token.getEffectiveTime(), notNullValue());
         assertThat(token.getEffectiveTime(), within(0, ChronoUnit.SECONDS, expected));
@@ -437,7 +440,7 @@ public class SAMLCypheredAccessTokenTest {
         AudienceRestriction audienceRestriction = samlHelper.buildSAMLObject(AudienceRestriction.class);
         audienceRestriction.getAudiences().add(audience);
         conditions.getAudienceRestrictions().add(audienceRestriction);
-        conditions.setNotOnOrAfter(DateTime.now().plusMinutes(20));
+        conditions.setNotOnOrAfter(DateTime.now().plusMinutes(TWENTY_MINUTES));
         assertion.setConditions(conditions);
     }
 
@@ -448,12 +451,12 @@ public class SAMLCypheredAccessTokenTest {
         nameID.setFormat(NameIDType.TRANSIENT);
         subject.setNameID(nameID);
         final SubjectConfirmation subjectConfirmation = samlHelper.buildSAMLObject(SubjectConfirmation.class);
-        final SubjectConfirmationData subjectConfirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
-        subjectConfirmationData.setNotOnOrAfter(DateTime.now().plusMinutes(25));
-        subjectConfirmationData.setInResponseTo(randomString());
-        subjectConfirmationData.setRecipient(randomString());
+        final SubjectConfirmationData confirmationData = samlHelper.buildSAMLObject(SubjectConfirmationData.class);
+        confirmationData.setNotOnOrAfter(DateTime.now().plusMinutes(TWENTY_FIVE_MINUTES));
+        confirmationData.setInResponseTo(randomString());
+        confirmationData.setRecipient(randomString());
         subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
-        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+        subjectConfirmation.setSubjectConfirmationData(confirmationData);
         subject.getSubjectConfirmations().add(subjectConfirmation);
         assertion.setSubject(subject);
     }

@@ -23,7 +23,6 @@ import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import javafx.util.Pair;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +38,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class JOSEJWTTest {
@@ -47,6 +47,7 @@ public class JOSEJWTTest {
     public static final String ISSUER_URI = "https://idp.prima-solutions.com";
     public static final String SUB = "BA0000000000001";
     public static final String AUD_ID = "https://policy.clients.boursorama-assurances.com";
+    public static final int TEN_MINUTES = 1000 * 60 * 10;
 
     private JWTClaimsSet claims;
 
@@ -56,7 +57,7 @@ public class JOSEJWTTest {
                 .issuer(ISSUER_URI)
                 .subject(SUB)
                 .audience(AUD_ID)
-                .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .expirationTime(new Date(System.currentTimeMillis() + TEN_MINUTES))
                 .notBeforeTime(new Date())
                 .issueTime(new Date())
                 .jwtID(UUID.randomUUID().toString())
@@ -69,9 +70,10 @@ public class JOSEJWTTest {
         JWSObject tokenHolder = new JWSObject(new JWSHeader(JWSAlgorithm.RS256), new Payload(PAYLOAD_STRING_EXAMPLE));
         tokenHolder.sign(new RSASSASigner(pair.getKey()));
         String signedToken = tokenHolder.serialize();
-        Assert.assertThat(signedToken, notNullValue());
-        Assert.assertThat(signedToken.split("\\.").length, equalTo(3));
-
+        assertThat(signedToken, notNullValue());
+        //CHECKSTYLE:OFF
+        assertThat(signedToken.split("\\.").length, equalTo(3));
+        //CHECKSTYLE:ON
         tokenHolder = JWSObject.parse(signedToken);
         JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey) pair.getValue().getPublicKey());
         assertTrue(tokenHolder.verify(verifier));

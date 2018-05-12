@@ -148,7 +148,7 @@ public class SPSAMLUserDetailsServiceImplTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_the_application_code_attribute_exists_and_the_application_is_not_assigned_to_the_client_then_error() {
+    public void when_the_application_attribute_exists_and_the_application_is_not_assigned_to_the_client_then_error() {
         given_credential_with_all_attributes();
         given_the_person_exists();
         person.setApplications(Collections.emptySet());

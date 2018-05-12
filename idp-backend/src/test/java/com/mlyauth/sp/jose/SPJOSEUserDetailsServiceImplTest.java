@@ -41,6 +41,7 @@ import static org.mockito.Mockito.when;
 
 public class SPJOSEUserDetailsServiceImplTest {
 
+    public static final int SEXTY_SECONDS = 1000 * 60;
     @Spy
     private IContextHolder context = new MockContextHolder();
 
@@ -67,12 +68,12 @@ public class SPJOSEUserDetailsServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void when_the_token_is_null_then_error() {
-        SPJOSEUserDetailsServiceImpl service = new SPJOSEUserDetailsServiceImpl();
+        service = new SPJOSEUserDetailsServiceImpl();
         service.loadUserByJOSE(null);
     }
 
     @Test
-    public void when_the_person_authentication_info_exists_then_OK(){
+    public void when_the_person_authentication_info_exists_then_OK() {
         given_the_person_exists();
         when_load_the_user();
         then_the_attributes_are_loaded_in_the_context();
@@ -86,7 +87,7 @@ public class SPJOSEUserDetailsServiceImplTest {
     }
 
     @Test
-    public void when_the_application_authentication_info_exists_then_OK(){
+    public void when_the_application_authentication_info_exists_then_OK() {
         given_the_person_exists();
         when_load_the_user();
         then_the_attributes_are_loaded_in_the_context();
@@ -101,7 +102,7 @@ public class SPJOSEUserDetailsServiceImplTest {
 
     private void given_the_application_authentication_info_exists() {
         authenticationInfo = AuthenticationInfo.newInstance().setLogin(randomString()).setPassword(randomString())
-                .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 60)));
+                .setExpireAt(new Date(System.currentTimeMillis() + SEXTY_SECONDS));
         application = Application.newInstance();
         application.setAuthenticationInfo(authenticationInfo);
         authenticationInfo.setApplication(application);
@@ -117,13 +118,13 @@ public class SPJOSEUserDetailsServiceImplTest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_no_authentication_infor_is_found_then_error(){
+    public void when_no_authentication_infor_is_found_then_error() {
         when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(null);
         when_load_the_user();
     }
 
     @Test(expected = IDPException.class)
-    public void when_the_authentication_info_is_not_a_person_neighther_an_application_then_error(){
+    public void when_the_authentication_info_is_not_a_person_neither_an_application_then_error() {
         when(authenticationInfoDAO.findByLogin(token.getSubject())).thenReturn(AuthenticationInfo.newInstance());
         when_load_the_user();
     }
@@ -219,7 +220,7 @@ public class SPJOSEUserDetailsServiceImplTest {
         authenticationInfo = AuthenticationInfo.newInstance()
                 .setLogin(randomString())
                 .setPassword(randomString())
-                .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 60)));
+                .setExpireAt(new Date(System.currentTimeMillis() + (SEXTY_SECONDS)));
         person = Person.newInstance();
         person.setAuthenticationInfo(authenticationInfo);
         authenticationInfo.setPerson(person);

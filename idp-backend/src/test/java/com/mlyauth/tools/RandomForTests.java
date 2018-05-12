@@ -4,11 +4,16 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import java.util.Random;
 
-public class RandomForTests {
+public final class RandomForTests {
+
+    public static final int MAX_LENGTH = 50;
+
+    private RandomForTests() {
+    }
 
     public static String randomString() {
-        final int length = (new Random()).nextInt(50);
-        return RandomStringUtils.random(length > 0 ? length : 50, true, true);
+        final int length = (new Random()).nextInt(MAX_LENGTH);
+        return RandomStringUtils.random(length > 0 ? length : MAX_LENGTH, true, true);
     }
 
 

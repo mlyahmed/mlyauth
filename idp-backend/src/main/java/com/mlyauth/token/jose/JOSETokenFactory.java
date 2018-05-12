@@ -16,7 +16,7 @@ public class JOSETokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSEAccessToken createAccessToken(final PrivateKey prKey, final PublicKey pbKey) {
+    public JOSEAccessToken newAccessToken(final PrivateKey prKey, final PublicKey pbKey) {
         return new JOSEAccessToken(prKey, pbKey);
     }
 
@@ -24,7 +24,7 @@ public class JOSETokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSEAccessToken createAccessToken(final String ser, final PrivateKey prKey, final PublicKey pbKey) {
+    public JOSEAccessToken newAccessToken(final String ser, final PrivateKey prKey, final PublicKey pbKey) {
         return new JOSEAccessToken(ser, prKey, pbKey);
     }
 
@@ -32,7 +32,7 @@ public class JOSETokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSERefreshToken createRefreshToken(final PrivateKey prKey, final PublicKey pbKey) {
+    public JOSERefreshToken newRefreshToken(final PrivateKey prKey, final PublicKey pbKey) {
         return new JOSERefreshToken(prKey, pbKey);
     }
 
@@ -40,7 +40,7 @@ public class JOSETokenFactory {
     @Lazy
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public JOSERefreshToken createRefreshToken(final String ser, final PrivateKey prKey, final PublicKey pbKey) {
+    public JOSERefreshToken newRefreshToken(final String ser, final PrivateKey prKey, final PublicKey pbKey) {
         return new JOSERefreshToken(ser, prKey, pbKey);
     }
 

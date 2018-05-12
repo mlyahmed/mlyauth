@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 public class SPSAMLAspectValidatorTest {
 
-    public static final long APPLICATION_ID = 2125485l;
+    public static final long APPLICATION_ID = 2125485L;
 
     @InjectMocks
     private SPSAMLAspectValidator validator;

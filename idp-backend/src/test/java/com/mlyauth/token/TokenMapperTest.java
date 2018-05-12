@@ -3,6 +3,7 @@ package com.mlyauth.token;
 import com.mlyauth.constants.TokenScope;
 import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.domain.Token;
+import com.mlyauth.domain.TokenClaim;
 import com.mlyauth.exception.IDPSAMLErrorException;
 import com.mlyauth.token.saml.SAMLAccessToken;
 import com.mlyauth.token.saml.SAMLHelper;
@@ -21,6 +22,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -196,9 +198,10 @@ public class TokenMapperTest {
         final SAMLAccessToken access = given_an_access_saml_token();
         access.setClaim(CLIENT_ID.getValue(), randomString());
         final Token token = mapper.toToken(access);
-        assertThat(token.getClaimsMap().get(CLIENT_ID.getValue()), notNullValue());
-        assertThat(token.getClaimsMap().get(CLIENT_ID.getValue()).getValue(), equalTo(access.getClaim(CLIENT_ID.getValue())));
-        assertThat(token.getClaimsMap().get(CLIENT_ID.getValue()).getToken(), equalTo(token));
+        final Map<String, TokenClaim> claims = token.getClaimsMap();
+        assertThat(claims.get(CLIENT_ID.getValue()), notNullValue());
+        assertThat(claims.get(CLIENT_ID.getValue()).getValue(), equalTo(access.getClaim(CLIENT_ID.getValue())));
+        assertThat(claims.get(CLIENT_ID.getValue()).getToken(), equalTo(token));
     }
 
     @Test
@@ -206,9 +209,10 @@ public class TokenMapperTest {
         final SAMLAccessToken access = given_an_access_saml_token();
         access.setClaim(CLIENT_PROFILE.getValue(), randomString());
         final Token token = mapper.toToken(access);
-        assertThat(token.getClaimsMap().get(CLIENT_PROFILE.getValue()), notNullValue());
-        assertThat(token.getClaimsMap().get(CLIENT_PROFILE.getValue()).getValue(), equalTo(access.getClaim(CLIENT_PROFILE.getValue())));
-        assertThat(token.getClaimsMap().get(CLIENT_PROFILE.getValue()).getToken(), equalTo(token));
+        final Map<String, TokenClaim> clms = token.getClaimsMap();
+        assertThat(clms.get(CLIENT_PROFILE.getValue()), notNullValue());
+        assertThat(clms.get(CLIENT_PROFILE.getValue()).getValue(), equalTo(access.getClaim(CLIENT_PROFILE.getValue())));
+        assertThat(clms.get(CLIENT_PROFILE.getValue()).getToken(), equalTo(token));
     }
 
     @Test
@@ -216,9 +220,10 @@ public class TokenMapperTest {
         final SAMLAccessToken access = given_an_access_saml_token();
         access.setClaim(ENTITY_ID.getValue(), randomString());
         final Token token = mapper.toToken(access);
-        assertThat(token.getClaimsMap().get(ENTITY_ID.getValue()), notNullValue());
-        assertThat(token.getClaimsMap().get(ENTITY_ID.getValue()).getValue(), equalTo(access.getClaim(ENTITY_ID.getValue())));
-        assertThat(token.getClaimsMap().get(ENTITY_ID.getValue()).getToken(), equalTo(token));
+        final Map<String, TokenClaim> claimsMap = token.getClaimsMap();
+        assertThat(claimsMap.get(ENTITY_ID.getValue()), notNullValue());
+        assertThat(claimsMap.get(ENTITY_ID.getValue()).getValue(), equalTo(access.getClaim(ENTITY_ID.getValue())));
+        assertThat(claimsMap.get(ENTITY_ID.getValue()).getToken(), equalTo(token));
     }
 
     @Test
@@ -236,9 +241,10 @@ public class TokenMapperTest {
         final SAMLAccessToken access = given_an_access_saml_token();
         access.setClaim(APPLICATION.getValue(), randomString());
         final Token token = mapper.toToken(access);
-        assertThat(token.getClaimsMap().get(APPLICATION.getValue()), notNullValue());
-        assertThat(token.getClaimsMap().get(APPLICATION.getValue()).getValue(), equalTo(access.getClaim(APPLICATION.getValue())));
-        assertThat(token.getClaimsMap().get(APPLICATION.getValue()).getToken(), equalTo(token));
+        final Map<String, TokenClaim> claimsMap = token.getClaimsMap();
+        assertThat(claimsMap.get(APPLICATION.getValue()), notNullValue());
+        assertThat(claimsMap.get(APPLICATION.getValue()).getValue(), equalTo(access.getClaim(APPLICATION.getValue())));
+        assertThat(claimsMap.get(APPLICATION.getValue()).getToken(), equalTo(token));
     }
 
     @Test
@@ -253,11 +259,11 @@ public class TokenMapperTest {
         assertThat(token.getClaims(), is(empty()));
     }
 
-    private LocalDateTime toDateTime(Date date) {
+    private LocalDateTime toDateTime(final Date date) {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
-    protected String compactScopes(Set<TokenScope> scopes) {
+    protected String compactScopes(final Set<TokenScope> scopes) {
         return scopes != null ? scopes.stream().map(TokenScope::name).collect(Collectors.joining("|")) : null;
     }
 

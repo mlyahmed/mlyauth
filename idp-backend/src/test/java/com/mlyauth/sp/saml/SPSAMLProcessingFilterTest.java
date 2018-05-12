@@ -144,7 +144,7 @@ public class SPSAMLProcessingFilterTest {
 
     @Test
     @UseDataProvider("mothodsNotAllowed")
-    public void when_the_method_is_not_allowed_then_error(HttpMethod method) {
+    public void when_the_method_is_not_allowed_then_error(final HttpMethod method) {
         request.setMethod(method.name());
         final Authentication authentication = filter.attemptAuthentication(request, response);
         assertThat(authentication, Matchers.nullValue());
@@ -174,7 +174,7 @@ public class SPSAMLProcessingFilterTest {
         request.setMethod(HttpMethod.GET.name());
         response = new MockHttpServletResponse() {
             @Override
-            public void sendError(int status, String errorMessage) throws IOException {
+            public void sendError(final int status, final String errorMessage) throws IOException {
                 throw new IOException();
             }
         };
@@ -214,7 +214,8 @@ public class SPSAMLProcessingFilterTest {
         when(localEntityMetadata.getEndpoints()).thenReturn(Arrays.asList(endpoint));
         final MetadataMemoryProvider metadataProvider = new MetadataMemoryProvider(idpMetadata);
         MetadataCredentialResolver metadataResolver = new MetadataCredentialResolver(metadataProvider);
-        SignatureTrustEngine engine = new ExplicitKeySignatureTrustEngine(metadataResolver, Configuration.getGlobalSecurityConfiguration().getDefaultKeyInfoCredentialResolver());
+        SignatureTrustEngine engine = new ExplicitKeySignatureTrustEngine(metadataResolver,
+                Configuration.getGlobalSecurityConfiguration().getDefaultKeyInfoCredentialResolver());
         messageContext = new SAMLMessageContext();
         messageContext.setLocalEntityRoleMetadata(localEntityMetadata);
         messageContext.setInboundSAMLBinding(SAML2_POST_BINDING_URI);

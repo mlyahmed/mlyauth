@@ -66,6 +66,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     public static final String POLICY_APP_LOGIN = "rs.policy";
     public static final String POLICY_APP_PASSWORD = "BrsAssu84;";
     public static final String POLICY_APP_ENTITY_ID = "policy";
+    public static final int ONE_MINUTE = 1000 * 30 * 60;
 
     @Value("${idp.jose.entityId}")
     private String localEntityId;
@@ -108,7 +109,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private Application policy;
     private Pair<PrivateKey, X509Certificate> policyCred;
     private JOSEAccessToken accessToken;
-    private String serializedAccessToken;
+    private String serialized;
 
     @Test
     public void when_a_registered_client_asks_an_access_then_return_it() throws Exception {
@@ -156,7 +157,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
     private void when_policy_checks_the_access() throws Exception {
         resultActions = mockMvc.perform(post("/token/jose/access/_check")
-                .content(serializedAccessToken)
+                .content(serialized)
                 .with(httpBasic(POLICY_APP_LOGIN, POLICY_APP_PASSWORD))
                 .contentType("text/plain;charset=UTF-8"));
     }
@@ -164,7 +165,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private void given_the_client_space_application() {
         AuthenticationInfo clientSpaceAuthInfo = AuthenticationInfo.newInstance()
                 .setLogin(CLIENT_SPACE_APP_LOGIN)
-                .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 30 * 60)))
+                .setExpireAt(new Date(System.currentTimeMillis() + ONE_MINUTE))
                 .setPassword(passwordEncoder.encode(CLIENT_SPACE_APP_PASSWORD))
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
@@ -183,14 +184,14 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private void given_the_client_space_with_client_aspect() throws CertificateEncodingException {
         clientCred = KeysForTests.generateRSACredential();
 
-        final AppAspAttr clientSpaceEntityIdAttribute = AppAspAttr.newInstance()
+        final AppAspAttr entityId = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
                         .setAttributeCode(CL_JOSE_ENTITY_ID.getValue()))
                 .setValue(CLIENT_APP_ENTITY_ID);
 
-        final AppAspAttr clientSpaceContextAttribute = AppAspAttr.newInstance()
+        final AppAspAttr context = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
@@ -198,27 +199,27 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setValue("http://client.boursorama.assurances.com");
 
 
-        final AppAspAttr clientSpaceCertificateAttribute = AppAspAttr.newInstance()
+        final AppAspAttr certificate = AppAspAttr.newInstance()
                 .setId(ApplicationAspectAttributeId.newInstance()
                         .setApplicationId(clientSpace.getId())
                         .setAspectCode(CL_JOSE.name())
                         .setAttributeCode(AspectAttribute.CL_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
                 .setValue(Base64URL.encode(clientCred.getValue().getEncoded()).toString());
 
-        appAspectAttrDAO.save(asList(clientSpaceEntityIdAttribute, clientSpaceContextAttribute, clientSpaceCertificateAttribute));
+        appAspectAttrDAO.save(asList(entityId, context, certificate));
     }
 
     private void given_the_client_space_refresh_token_is_ready() {
-        clientRefreshToken = tokenFactory.createRefreshToken(credManager.getPrivateKey(), clientCred.getValue().getPublicKey());
+        final X509Certificate certificate = clientCred.getValue();
+        clientRefreshToken = tokenFactory.newRefreshToken(credManager.getPrivateKey(), certificate.getPublicKey());
         clientRefreshToken.setStamp(UUID.randomUUID().toString());
         clientRefreshToken.setAudience(CLIENT_APP_ENTITY_ID);
         clientRefreshToken.setVerdict(TokenVerdict.SUCCESS);
         clientRefreshToken.cypher();
-        final String serialized = clientRefreshToken.serialize();
         Token token = tokenMapper.toToken(clientRefreshToken);
         token.setPurpose(TokenPurpose.DELEGATION);
         token.setApplication(clientSpace);
-        token.setChecksum(DigestUtils.sha256Hex(serialized));
+        token.setChecksum(DigestUtils.sha256Hex(clientRefreshToken.serialize()));
         token.setStatus(TokenStatus.READY);
         tokenDAO.save(token);
     }
@@ -226,7 +227,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private void given_the_policy_application() {
         AuthenticationInfo policyAuthInfo = AuthenticationInfo.newInstance()
                 .setLogin(POLICY_APP_LOGIN)
-                .setExpireAt(new Date(System.currentTimeMillis() + (1000 * 30 * 60)))
+                .setExpireAt(new Date(System.currentTimeMillis() + ONE_MINUTE))
                 .setPassword(passwordEncoder.encode(POLICY_APP_PASSWORD))
                 .setStatus(AuthenticationInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
@@ -272,7 +273,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void given_a_token_to_ask_access_to_the_policy_app() {
-        clientQueryToken = tokenFactory.createRefreshToken(clientCred.getKey(), credManager.getPublicKey());
+        clientQueryToken = tokenFactory.newRefreshToken(clientCred.getKey(), credManager.getPublicKey());
         clientQueryToken.setIssuer(CLIENT_APP_ENTITY_ID);
         clientQueryToken.setAudience(POLICY_APP_ENTITY_ID);
         clientQueryToken.setStamp(clientRefreshToken.getStamp());
@@ -282,7 +283,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void given_a_token_to_ask_access_to_the_IDP_app() {
-        clientQueryToken = tokenFactory.createRefreshToken(clientCred.getKey(), credManager.getPublicKey());
+        clientQueryToken = tokenFactory.newRefreshToken(clientCred.getKey(), credManager.getPublicKey());
         clientQueryToken.setIssuer(CLIENT_APP_ENTITY_ID);
         clientQueryToken.setAudience(localEntityId);
         clientQueryToken.setStamp(clientRefreshToken.getStamp());
@@ -297,29 +298,30 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void then_an_access_token_is_returned() throws Exception {
-        resultActions.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+        resultActions.andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
         JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
-        JSONObject jsonObject = (JSONObject)parser.parse(resultActions.andReturn().getResponse().getContentAsString());
-        serializedAccessToken = jsonObject.getAsString("serialized");
-        assertThat(serializedAccessToken, notNullValue());
+        JSONObject jsonObject = (JSONObject) parser.parse(resultActions.andReturn().getResponse().getContentAsString());
+        serialized = jsonObject.getAsString("serialized");
+        assertThat(serialized, notNullValue());
     }
 
     private void and_the_access_token_returned_is_built_to_policy() {
-        accessToken = tokenFactory.createAccessToken(serializedAccessToken, policyCred.getKey(), credManager.getPublicKey());
+        accessToken = tokenFactory.newAccessToken(serialized, policyCred.getKey(), credManager.getPublicKey());
         accessToken.decipher();
         assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
         assertThat(accessToken.getAudience(), Matchers.equalTo(POLICY_APP_ENTITY_ID));
     }
 
     private void and_the_access_token_returned_is_built_to_the_IDP() {
-        accessToken = tokenFactory.createAccessToken(serializedAccessToken, credManager.getPrivateKey(), credManager.getPublicKey());
+        accessToken = tokenFactory.newAccessToken(serialized, credManager.getPrivateKey(), credManager.getPublicKey());
         accessToken.decipher();
         assertThat(accessToken.getIssuer(), Matchers.equalTo(localEntityId));
         assertThat(accessToken.getAudience(), Matchers.equalTo(localEntityId));
     }
 
     private void and_the_access_token_returned_is_traced() {
-        final Token tracedToken = tokenDAO.findByChecksum(DigestUtils.sha256Hex(serializedAccessToken));
+        final Token tracedToken = tokenDAO.findByChecksum(DigestUtils.sha256Hex(serialized));
         assertThat(tracedToken, notNullValue());
     }
 

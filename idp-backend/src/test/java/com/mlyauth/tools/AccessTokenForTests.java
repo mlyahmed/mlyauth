@@ -25,11 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Component
 public class AccessTokenForTests {
 
-    private final static String CL_LOGIN = "cl.prima.client.dev";
-    private final static String CL_PASSWORD = "n90014d8o621AXc";
-    private final static String CL_REFRESH_TOKEN_ID = "c810d2fe-5f91-4a41-accc-da88c5028fd3";
-    private final static String CL_ENTITY_ID = "prima.client.dev";
-    private final static String JOSE_ACCESS_URI = "/token/jose/access";
+    private static final String CL_LOGIN = "cl.prima.client.dev";
+    private static final String CL_PASSWORD = "n90014d8o621AXc";
+    private static final String CL_REFRESH_TOKEN_ID = "c810d2fe-5f91-4a41-accc-da88c5028fd3";
+    private static final String CL_ENTITY_ID = "prima.client.dev";
+    private static final String JOSE_ACCESS_URI = "/token/jose/access";
 
 
     @Value("${idp.jose.entityId}")
@@ -50,9 +50,9 @@ public class AccessTokenForTests {
 
     public final String generateMasterToken()  {
 
-        try{
+        try {
             final PrivateKey privateKey = decodeRSAPrivateKey(new String(Files.readAllBytes(privateKeyFile.toPath())));
-            JOSERefreshToken refreshToken = tokenFactory.createRefreshToken(privateKey, credManager.getPublicKey());
+            JOSERefreshToken refreshToken = tokenFactory.newRefreshToken(privateKey, credManager.getPublicKey());
             refreshToken.setStamp(CL_REFRESH_TOKEN_ID);
             refreshToken.setSubject(AbstractIntegrationTest.MASTER_EMAIL);
             refreshToken.setIssuer(CL_ENTITY_ID);
@@ -65,9 +65,9 @@ public class AccessTokenForTests {
             result.andExpect(status().isCreated());
 
             JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
-            JSONObject jsonObject = (JSONObject)parser.parse(result.andReturn().getResponse().getContentAsString());
+            JSONObject jsonObject = (JSONObject) parser.parse(result.andReturn().getResponse().getContentAsString());
             return jsonObject.getAsString("serialized");
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

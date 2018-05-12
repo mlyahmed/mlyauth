@@ -8,11 +8,11 @@ import com.mlyauth.constants.TokenVerdict;
 import com.mlyauth.exception.TokenNotCipheredException;
 import com.mlyauth.exception.TokenUnmodifiableException;
 import com.mlyauth.tools.KeysForTests;
+import com.mlyauth.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import javafx.util.Pair;
-import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -35,7 +35,6 @@ import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -64,6 +63,7 @@ import static org.opensaml.saml2.core.SubjectConfirmation.METHOD_BEARER;
 @RunWith(DataProviderRunner.class)
 public class SAMLFreshAccessTokenTest {
 
+    public static final int THREE_MINUTES = 3;
     private SAMLAccessToken token;
     private SAMLHelper samlHelper;
     private Credential cypherCred;
@@ -123,7 +123,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_stamp_then_must_be_set() {
-        String id = randomString();
+        String id = RandomForTests.randomString();
         token.setStamp(id);
         assertThat(token.getStamp(), equalTo(id));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -131,7 +131,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_stamp_must_be_committed() {
-        final String id = randomString();
+        final String id = RandomForTests.randomString();
         token.setStamp(id);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -153,7 +153,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("subjects")
-    public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(String subject) {
+    public void when_create_a_fresh_token_and_set_subject_then_it_must_be_set(final String subject) {
         token.setSubject(subject);
         assertThat(token.getSubject(), equalTo(subject));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -161,7 +161,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("subjects")
-    public void when_serialize_cyphered_token_then_the_subject_must_be_committed(String subject) {
+    public void when_serialize_cyphered_token_then_the_subject_must_be_committed(final String subject) {
         token.setSubject(subject);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -188,7 +188,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("scopes")
-    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
+    public void when_create_a_fresh_token_and_set_scopes_then_they_must_be_set(final String... scopesArrays) {
         final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
         token.setScopes(scopes);
         assertThat(token.getScopes(), equalTo(scopes));
@@ -197,7 +197,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("scopes")
-    public void when_serialize_cyphered_token_then_the_scopes_must_be_committed(String... scopesArray) {
+    public void when_serialize_cyphered_token_then_the_scopes_must_be_committed(final String... scopesArray) {
         final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         token.setScopes(scopes);
         when_cypher_the_token();
@@ -206,13 +206,13 @@ public class SAMLFreshAccessTokenTest {
         assertThat(getAttributeValue(assertion, SCOPES.getValue()), equalTo(compact(scopes)));
     }
 
-    private String compact(Set<TokenScope> scopesSet) {
+    private String compact(final Set<TokenScope> scopesSet) {
         return scopesSet.stream().map(TokenScope::name).collect(Collectors.joining("|"));
     }
 
     @Test
     public void when_create_a_fresh_token_and_set_BP_then_it_must_be_set() {
-        final String bp = randomString();
+        final String bp = RandomForTests.randomString();
         token.setBP(bp);
         assertThat(token.getBP(), equalTo(bp));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -220,7 +220,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_BP_must_be_committed() {
-        final String bp = randomString();
+        final String bp = RandomForTests.randomString();
         token.setBP(bp);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -230,7 +230,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_state_then_it_must_be_set() {
-        final String state = randomString();
+        final String state = RandomForTests.randomString();
         token.setState(state);
         assertThat(token.getState(), equalTo(state));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -238,7 +238,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_state_must_be_committed() {
-        final String state = randomString();
+        final String state = RandomForTests.randomString();
         token.setState(state);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -248,7 +248,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_issuer_then_it_must_be_set() {
-        final String issuerURI = randomString();
+        final String issuerURI = RandomForTests.randomString();
         token.setIssuer(issuerURI);
         assertThat(token.getIssuer(), equalTo(issuerURI));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -256,7 +256,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_issuer_must_be_committed() {
-        final String issuerURI = randomString();
+        final String issuerURI = RandomForTests.randomString();
         token.setIssuer(issuerURI);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -269,7 +269,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_audience_then_it_must_be_set() {
-        final String audience = randomString();
+        final String audience = RandomForTests.randomString();
         token.setAudience(audience);
         assertThat(token.getAudience(), equalTo(audience));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -277,7 +277,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_audience_must_be_committed() {
-        final String audience = randomString();
+        final String audience = RandomForTests.randomString();
         token.setAudience(audience);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -291,7 +291,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_target_URL_then_it_must_be_set() {
-        final String url = randomString();
+        final String url = RandomForTests.randomString();
         token.setTargetURL(url);
         assertThat(token.getTargetURL(), equalTo(url));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -299,7 +299,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_target_URL_must_be_committed() {
-        final String url = randomString();
+        final String url = RandomForTests.randomString();
         token.setTargetURL(url);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -311,7 +311,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_delegator_then_it_must_be_set() {
-        final String delegator = randomString();
+        final String delegator = RandomForTests.randomString();
         token.setDelegator(delegator);
         assertThat(token.getDelegator(), equalTo(delegator));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -319,7 +319,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_delegator_must_be_committed() {
-        final String delegator = randomString();
+        final String delegator = RandomForTests.randomString();
         token.setDelegator(delegator);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -329,7 +329,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_token_and_set_delegate_then_it_must_be_set() {
-        final String delegateURI = randomString();
+        final String delegateURI = RandomForTests.randomString();
         token.setDelegate(delegateURI);
         assertThat(token.getDelegate(), equalTo(delegateURI));
         assertThat(token.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -337,7 +337,7 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     public void when_serialize_cyphered_token_then_the_delegate_must_be_committed() {
-        final String delegateURI = randomString();
+        final String delegateURI = RandomForTests.randomString();
         token.setDelegate(delegateURI);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -378,7 +378,7 @@ public class SAMLFreshAccessTokenTest {
     @Test
     public void when_create_a_fresh_token_then_it_expires_in_3_minutes() {
         assertThat(token.getExpiryTime(), notNullValue());
-        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(3)), equalTo(true));
+        assertThat(token.getExpiryTime().isBefore(LocalDateTime.now().plusMinutes(THREE_MINUTES)), equalTo(true));
     }
 
     @Test
@@ -390,10 +390,10 @@ public class SAMLFreshAccessTokenTest {
                 .getNotOnOrAfter(), notNullValue());
         assertThat(assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData()
                 .getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
-                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+                .isBefore(DateTime.now().plusMinutes(THREE_MINUTES)), equalTo(true));
         assertThat(assertion.getConditions().getNotOnOrAfter(), notNullValue());
         assertThat(assertion.getConditions().getNotOnOrAfter().toDateTime(DateTimeZone.getDefault())
-                .isBefore(DateTime.now().plusMinutes(3)), equalTo(true));
+                .isBefore(DateTime.now().plusMinutes(THREE_MINUTES)), equalTo(true));
     }
 
     @Test
@@ -420,7 +420,6 @@ public class SAMLFreshAccessTokenTest {
         Assertion assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), decipherCred);
         assertThat(assertion.getAuthnStatements().get(0).getAuthnContext()
                 .getAuthnContextClassRef(), notNullValue());
-        ;
         assertThat(assertion.getAuthnStatements().get(0).getAuthnContext().getAuthnContextClassRef()
                 .getAuthnContextClassRef(), equalTo(AuthnContext.PASSWORD_AUTHN_CTX));
     }
@@ -458,14 +457,14 @@ public class SAMLFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("claims")
-    public void when_set_other_claim_then_it_must_be_set(String... claimPair) {
+    public void when_set_other_claim_then_it_must_be_set(final String... claimPair) {
         token.setClaim(claimPair[0], claimPair[1]);
         assertThat(token.getClaim(claimPair[0]), equalTo(claimPair[1]));
     }
 
     @Test
     @UseDataProvider("claims")
-    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(String... claimPair) {
+    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(final String... claimPair) {
         token.setClaim(claimPair[0], claimPair[1]);
         when_cypher_the_token();
         Response response = (Response) samlHelper.decode(when_serialize_the_token());
@@ -507,7 +506,7 @@ public class SAMLFreshAccessTokenTest {
     }
 
     @Test
-    public void when_serialize_a_cyphered_token_many_times_then_return_the_same_value(){
+    public void when_serialize_a_cyphered_token_many_times_then_return_the_same_value() {
         given_forged_token();
         when_cypher_the_token();
         final String first = when_serialize_the_token();
@@ -516,7 +515,7 @@ public class SAMLFreshAccessTokenTest {
     }
 
     @Test
-    public void when_serialize_each_time_after_cypher_then_return_different_value(){
+    public void when_serialize_each_time_after_cypher_then_return_different_value() {
         given_forged_token();
         when_cypher_the_token();
         final String first = when_serialize_the_token();
@@ -542,14 +541,14 @@ public class SAMLFreshAccessTokenTest {
     public void when_set_stamp_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setStamp(randomString());
+        token.setStamp(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_subject_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setSubject(randomString());
+        token.setSubject(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
@@ -563,49 +562,49 @@ public class SAMLFreshAccessTokenTest {
     public void when_set_BP_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setBP(randomString());
+        token.setBP(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_state_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setState(randomString());
+        token.setState(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_issuer_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setIssuer(randomString());
+        token.setIssuer(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_audience_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setAudience(randomString());
+        token.setAudience(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_target_URL_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setTargetURL(randomString());
+        token.setTargetURL(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_delegator_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setDelegator(randomString());
+        token.setDelegator(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
     public void when_set_delegate_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setDelegate(randomString());
+        token.setDelegate(RandomForTests.randomString());
     }
 
     @Test(expected = TokenUnmodifiableException.class)
@@ -619,21 +618,21 @@ public class SAMLFreshAccessTokenTest {
     public void when_set_claim_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
-        token.setClaim(randomString(), randomString());
+        token.setClaim(RandomForTests.randomString(), RandomForTests.randomString());
     }
 
     private void given_forged_token() {
-        token.setStamp(randomString());
+        token.setStamp(RandomForTests.randomString());
         token.setVerdict(TokenVerdict.SUCCESS);
-        token.setDelegate(randomString());
-        token.setDelegator(randomString());
-        token.setAudience(randomString());
-        token.setIssuer(randomString());
-        token.setState(randomString());
+        token.setDelegate(RandomForTests.randomString());
+        token.setDelegator(RandomForTests.randomString());
+        token.setAudience(RandomForTests.randomString());
+        token.setIssuer(RandomForTests.randomString());
+        token.setState(RandomForTests.randomString());
         token.setScopes(new HashSet<>(Arrays.asList(PERSON, POLICY)));
-        token.setBP(randomString());
-        token.setSubject(randomString());
-        token.setTargetURL(randomString());
+        token.setBP(RandomForTests.randomString());
+        token.setSubject(RandomForTests.randomString());
+        token.setTargetURL(RandomForTests.randomString());
     }
 
     private void when_cypher_the_token() {
@@ -648,13 +647,10 @@ public class SAMLFreshAccessTokenTest {
         token.decipher();
     }
 
-    private String getAttributeValue(Assertion assertion, String attributeName) {
-        final Attribute actual = assertion.getAttributeStatements().get(0).getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
+    private String getAttributeValue(final Assertion assertion, final String attributeName) {
+        final Attribute actual = assertion.getAttributeStatements().get(0)
+                .getAttributes().stream().filter(attr -> attributeName.equals(attr.getName())).findFirst().get();
         return ((XSString) actual.getAttributeValues().get(0)).getValue();
     }
 
-    private static String randomString() {
-        final int length = (new Random()).nextInt(30);
-        return RandomStringUtils.random(length > 0 ? length : 20, true, true);
-    }
 }

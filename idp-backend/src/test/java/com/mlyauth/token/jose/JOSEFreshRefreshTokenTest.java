@@ -107,14 +107,14 @@ public class JOSEFreshRefreshTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_refresh_token_and_set_refresh_mode_then_must_be_set(){
+    public void when_create_a_fresh_refresh_token_and_set_refresh_mode_then_must_be_set() {
         refreshToken.setRefreshMode(WHEN_EXPIRES);
         assertThat(refreshToken.getRefreshMode(), equalTo(WHEN_EXPIRES));
         assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_create_a_fresh_refresh_token_and_set_null_as_refresh_mode_then_error(){
+    public void when_create_a_fresh_refresh_token_and_set_null_as_refresh_mode_then_error() {
         refreshToken.setRefreshMode(null);
     }
 
@@ -130,14 +130,14 @@ public class JOSEFreshRefreshTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_refresh_token_and_set_validation_mode_then_must_be_set(){
+    public void when_create_a_fresh_refresh_token_and_set_validation_mode_then_must_be_set() {
         refreshToken.setValidationMode(STANDARD);
         assertThat(refreshToken.getValidationMode(), equalTo(STANDARD));
         assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_create_a_fresh_refresh_token_and_set_null_as_validation_mode_then_error(){
+    public void when_create_a_fresh_refresh_token_and_set_null_as_validation_mode_then_error() {
         refreshToken.setValidationMode(null);
     }
 
@@ -207,7 +207,7 @@ public class JOSEFreshRefreshTokenTest {
 
     @Test
     @UseDataProvider("refreshScopes")
-    public void when_create_a_fresh_refresh_token_and_set_scopes_then_they_must_be_set(String... scopesArrays) {
+    public void when_create_a_fresh_refresh_token_and_set_scopes_then_they_must_be_set(final String... scopesArrays) {
         final Set<TokenScope> scopes = Arrays.stream(scopesArrays).map(TokenScope::valueOf).collect(toSet());
         refreshToken.setScopes(scopes);
         assertThat(refreshToken.getScopes(), equalTo(scopes));
@@ -217,7 +217,8 @@ public class JOSEFreshRefreshTokenTest {
     @Test
     @UseDataProvider("refreshScopes")
     @SuppressWarnings("Duplicates")
-    public void when_serialize_cyphered_refresh_token_then_the_scopes_must_be_committed(String... scopesArray) throws Exception {
+    public void when_serialize_cyphered_refresh_token_then_the_scopes_must_be_committed(final String... scopesArray)
+            throws Exception {
         final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         refreshToken.setScopes(scopes);
         refreshToken.cypher();
@@ -400,7 +401,7 @@ public class JOSEFreshRefreshTokenTest {
 
     @Test
     @UseDataProvider("refreshClaims")
-    public void when_set_other_refresh_claim_then_it_must_be_set(String... claimPair) {
+    public void when_set_other_refresh_claim_then_it_must_be_set(final String... claimPair) {
         refreshToken.setClaim(claimPair[0], claimPair[1]);
         assertThat(refreshToken.getClaim(claimPair[0]), equalTo(claimPair[1]));
         assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -409,7 +410,8 @@ public class JOSEFreshRefreshTokenTest {
     @Test
     @UseDataProvider("refreshClaims")
     @SuppressWarnings("Duplicates")
-    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(String... claimPair) throws Exception {
+    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(final String... claimPair)
+            throws Exception {
         refreshToken.setClaim(claimPair[0], claimPair[1]);
         refreshToken.cypher();
         JWEObject loadedToken = JWEObject.parse(refreshToken.serialize());
@@ -420,13 +422,16 @@ public class JOSEFreshRefreshTokenTest {
 
     @Test
     public void when_create_a_fresh_refresh_token_then_it_expires_in_3_years() {
+        //CHECKSTYLE:OFF
         assertThat(refreshToken.getExpiryTime(), notNullValue());
         assertThat(refreshToken.getExpiryTime().isBefore(LocalDateTime.now().plusDays(366 * 3)), equalTo(true));
         assertThat(refreshToken.getExpiryTime().isAfter(LocalDateTime.now().plusDays(365 * 3)), equalTo(true));
+        //CHECKSTYLE:ON
     }
 
     @Test
     public void when_serialize_cyphered_access_token_then_the_expiry_time_must_be_committed() throws Exception {
+        //CHECKSTYLE:OFF
         refreshToken.cypher();
         Instant maxDate = LocalDateTime.now().plusDays(366 * 3).atZone(ZoneId.systemDefault()).toInstant();
         Instant minDate = LocalDateTime.now().plusDays(365 * 3).atZone(ZoneId.systemDefault()).toInstant();
@@ -435,6 +440,7 @@ public class JOSEFreshRefreshTokenTest {
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getExpirationTime().before(Date.from(maxDate)), equalTo(true));
         assertThat(signedJWT.getJWTClaimsSet().getExpirationTime().after(Date.from(minDate)), equalTo(true));
+        //CHECKSTYLE:ON
     }
 
     @Test
@@ -463,14 +469,14 @@ public class JOSEFreshRefreshTokenTest {
     }
 
     @Test
-    public void when_serialize_a_refresh_cyphered_token_many_times_then_return_the_same_value(){
+    public void when_serialize_a_refresh_cyphered_token_many_times_then_return_the_same_value() {
         refreshToken.cypher();
         assertThat(refreshToken.serialize(), equalTo(refreshToken.serialize()));
     }
 
     @Test
     @SuppressWarnings("Duplicates")
-    public void when_serialize_a_refresh_each_time_after_a_cypher_then_return_different_value(){
+    public void when_serialize_a_refresh_each_time_after_a_cypher_then_return_different_value() {
         refreshToken.cypher();
         final String first = refreshToken.serialize();
         refreshToken.cypher();

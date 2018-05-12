@@ -118,14 +118,14 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_access_token_and_set_refresh_mode_then_must_be_set(){
+    public void when_create_a_fresh_access_token_and_set_refresh_mode_then_must_be_set() {
         accessToken.setRefreshMode(WHEN_EXPIRES);
         assertThat(accessToken.getRefreshMode(), equalTo(WHEN_EXPIRES));
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_create_a_fresh_access_token_and_set_null_as_refresh_mode_then_error(){
+    public void when_create_a_fresh_access_token_and_set_null_as_refresh_mode_then_error() {
         accessToken.setRefreshMode(null);
     }
 
@@ -141,14 +141,14 @@ public class JOSEFreshAccessTokenTest {
     }
 
     @Test
-    public void when_create_a_fresh_access_token_and_set_validation_mode_then_must_be_set(){
+    public void when_create_a_fresh_access_token_and_set_validation_mode_then_must_be_set() {
         accessToken.setValidationMode(STANDARD);
         assertThat(accessToken.getValidationMode(), equalTo(STANDARD));
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void when_create_a_fresh_access_token_and_set_null_as_validation_mode_then_error(){
+    public void when_create_a_fresh_access_token_and_set_null_as_validation_mode_then_error() {
         accessToken.setValidationMode(null);
     }
 
@@ -218,7 +218,7 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("accessScopes")
-    public void when_create_a_fresh_access_token_and_set_scopes_then_they_must_be_set(String... scopesArray) {
+    public void when_create_a_fresh_access_token_and_set_scopes_then_they_must_be_set(final String... scopesArray) {
         final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         accessToken.setScopes(scopes);
         assertThat(accessToken.getScopes(), equalTo(scopes));
@@ -228,7 +228,8 @@ public class JOSEFreshAccessTokenTest {
     @Test
     @UseDataProvider("accessScopes")
     @SuppressWarnings("Duplicates")
-    public void when_serialize_cyphered_access_token_then_the_scopes_must_be_committed(String... scopesArray) throws Exception {
+    public void when_serialize_cyphered_access_token_then_the_scopes_must_be_committed(final String... scopesArray)
+            throws Exception {
         final Set<TokenScope> scopes = Arrays.stream(scopesArray).map(TokenScope::valueOf).collect(toSet());
         accessToken.setScopes(scopes);
         accessToken.cypher();
@@ -411,7 +412,7 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     @UseDataProvider("accessClaims")
-    public void when_set_other_access_claim_then_it_must_be_set(String... claimPair) {
+    public void when_set_other_access_claim_then_it_must_be_set(final String... claimPair) {
         accessToken.setClaim(claimPair[0], claimPair[1]);
         assertThat(accessToken.getClaim(claimPair[0]), equalTo(claimPair[1]));
         assertThat(accessToken.getStatus(), equalTo(TokenProcessingStatus.FORGED));
@@ -420,7 +421,8 @@ public class JOSEFreshAccessTokenTest {
     @Test
     @UseDataProvider("accessClaims")
     @SuppressWarnings("Duplicates")
-    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(String... claimPair) throws Exception {
+    public void when_serialize_cyphered_token_then_the_other_claims_must_be_committed(final String... claimPair)
+            throws Exception {
         accessToken.setClaim(claimPair[0], claimPair[1]);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
@@ -431,14 +433,17 @@ public class JOSEFreshAccessTokenTest {
 
     @Test
     public void when_create_a_fresh_access_token_then_it_expires_in_3_minutes() {
+        //CHECKSTYLE:OFF
         accessToken.cypher();
         assertThat(accessToken.getExpiryTime(), notNullValue());
         assertThat(accessToken.getExpiryTime(), LocalDateTimeMatchers.within(180, ChronoUnit.SECONDS, now()));
         assertThat(accessToken.getExpiryTime(), LocalDateTimeMatchers.after(now().plusSeconds(179)));
+        //CHECKSTYLE:ON
     }
 
     @Test
     public void when_serialize_cyphered_access_token_then_the_expiry_time_must_be_committed() throws Exception {
+        //CHECKSTYLE:OFF
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
         loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
@@ -446,10 +451,13 @@ public class JOSEFreshAccessTokenTest {
         final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         assertThat(expirationTime, DateMatchers.within(3, ChronoUnit.MINUTES, new Date()));
         assertThat(expirationTime, DateMatchers.after(new Date(currentTimeMillis() + (1000 * 59 * 3))));
+        //CHECKSTYLE:ON
     }
 
     @Test
-    public void when_create_a_fresh_access_token_and_each_time_refresh_mode_then_it_expires_in_3_minutes() throws Exception {
+    public void when_create_a_fresh_access_token_and_each_time_refresh_mode_then_it_expires_in_3_minutes()
+            throws Exception {
+        //CHECKSTYLE:OFF
         accessToken.setRefreshMode(TokenRefreshMode.EACH_TIME);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
@@ -458,10 +466,13 @@ public class JOSEFreshAccessTokenTest {
         final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         assertThat(expirationTime, DateMatchers.within(3, ChronoUnit.MINUTES, new Date()));
         assertThat(expirationTime, DateMatchers.after(new Date(currentTimeMillis() + (1000 * 59 * 3))));
+        //CHECKSTYLE:ON
     }
 
     @Test
-    public void when_create_a_fresh_access_token_and_expiry_refresh_mode_then_it_expires_in_30_minutes() throws Exception {
+    public void when_create_a_fresh_access_token_and_expiry_refresh_mode_then_it_expires_in_30_minutes()
+            throws Exception {
+        //CHECKSTYLE:OFF
         accessToken.setRefreshMode(TokenRefreshMode.WHEN_EXPIRES);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
@@ -470,6 +481,7 @@ public class JOSEFreshAccessTokenTest {
         final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         assertThat(expirationTime, DateMatchers.within(30, ChronoUnit.MINUTES, new Date()));
         assertThat(expirationTime, DateMatchers.after(new Date(currentTimeMillis() + (1000 * 60 * 29))));
+        //CHECKSTYLE:ON
     }
 
     @Test
@@ -512,14 +524,14 @@ public class JOSEFreshAccessTokenTest {
 
 
     @Test
-    public void when_serialize_an_access_cyphered_token_many_times_then_return_the_same_value(){
+    public void when_serialize_an_access_cyphered_token_many_times_then_return_the_same_value() {
         accessToken.cypher();
         assertThat(accessToken.serialize(), equalTo(accessToken.serialize()));
     }
 
     @Test
     @SuppressWarnings("Duplicates")
-    public void when_serialize_an_access_each_time_after_a_cypher_then_return_different_value(){
+    public void when_serialize_an_access_each_time_after_a_cypher_then_return_different_value() {
         accessToken.cypher();
         final String first = accessToken.serialize();
         accessToken.cypher();
