@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import java.security.Security;
 
+import static com.primasolutions.idp.tools.ConstantsForTests.TEST_START_UP_PASSPHRASE;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)
@@ -21,7 +22,7 @@ public class PBEEncryptionTest {
     public static Object[] sensitives() {
         // @formatter:off
         return new String[]{
-                "ahmed.elidrissi.attach@gmail.com",
+                RandomForTests.randomString(),
                 RandomForTests.randomString(),
                 RandomForTests.randomString(),
         };
@@ -33,7 +34,7 @@ public class PBEEncryptionTest {
     public void when_encrypt_a_value_then_encrypted_value_must_be_returned(final String sensitive) {
         Security.addProvider(new BouncyCastleProvider());
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword("UD`jS47)Gf976wT+>75TA'cQ,65Bjh(L");
+        encryptor.setPassword(TEST_START_UP_PASSPHRASE);
         encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
         final String encrypted = encryptor.encrypt(sensitive);

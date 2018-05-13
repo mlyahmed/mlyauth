@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Profile;
 
 import java.security.Security;
 
+import static com.primasolutions.idp.tools.ConstantsForTests.TEST_START_UP_PASSPHRASE;
+
 @Configuration
 @Profile("test")
 public class TestConfig {
@@ -16,7 +18,7 @@ public class TestConfig {
     public StandardPBEStringEncryptor jasyptStringEncryptor() {
         Security.addProvider(new BouncyCastleProvider());
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword("UD`jS47)Gf976wT+>75TA'cQ,65Bjh(L");
+        encryptor.setPassword(TEST_START_UP_PASSPHRASE);
         encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
         return encryptor;
