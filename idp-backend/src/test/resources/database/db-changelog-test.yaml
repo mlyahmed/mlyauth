@@ -3,8 +3,6 @@ databaseChangeLog:
       file: database/db-changelog.yaml
 
   - include:
-      file: database/examples/person-examples.sql
+      file: database/examples/001-applications.sql
   - include:
-      file: database/examples/application-examples.sql
-  - include:
-      file: database/examples/application-person-examples.sql
+      file: database/examples/002-persons.sql
