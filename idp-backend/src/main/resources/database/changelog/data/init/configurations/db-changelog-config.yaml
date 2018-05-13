@@ -1,11 +1,11 @@
 databaseChangeLog:
   - include:
-      file: database/changelog/data/init/configurations/id-sequence.sql
+      file: database/changelog/data/init/configurations/001-id-sequence.sql
   - include:
-      file: database/changelog/data/init/configurations/attribute-catalog.sql
+      file: database/changelog/data/init/configurations/002-attribute-catalog.sql
   - include:
-      file: database/changelog/data/init/configurations/profile.sql
+      file: database/changelog/data/init/configurations/003-profile.sql
   - include:
-      file: database/changelog/data/init/configurations/role.sql
+      file: database/changelog/data/init/configurations/003-role.sql
   - include:
-      file: database/changelog/data/init/configurations/application-type.sql
+      file: database/changelog/data/init/configurations/004-application-type.sql
