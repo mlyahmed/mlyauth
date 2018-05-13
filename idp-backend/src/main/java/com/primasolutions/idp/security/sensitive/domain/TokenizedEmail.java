@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-public class TokenizedEmail implements UserType {
+public final class TokenizedEmail implements UserType {
 
     private static final int SQL_TYPE = Types.VARCHAR;
 
@@ -25,12 +25,12 @@ public class TokenizedEmail implements UserType {
     }
 
     @Override
-    public final boolean equals(final Object x, final Object y) throws HibernateException {
-        return x == y || (x != null && y != null && x.equals(y));
+    public boolean equals(final Object x, final Object y) throws HibernateException {
+        return x == y || (x != null && x.equals(y));
     }
 
     @Override
-    public final int hashCode(final Object x) throws HibernateException {
+    public int hashCode(final Object x) throws HibernateException {
         return x == null ? 0 : x.hashCode();
     }
 
@@ -61,12 +61,12 @@ public class TokenizedEmail implements UserType {
     }
 
     @Override
-    public final Serializable disassemble(final Object value) throws HibernateException {
+    public Serializable disassemble(final Object value) throws HibernateException {
         return (value == null) ? null : (Serializable) deepCopy(value);
     }
 
     @Override
-    public final Object assemble(final Serializable cached, final Object owner) throws HibernateException {
+    public Object assemble(final Serializable cached, final Object owner) throws HibernateException {
         return (cached == null) ? null : deepCopy(cached);
     }
 

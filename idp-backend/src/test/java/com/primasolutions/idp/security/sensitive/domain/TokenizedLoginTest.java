@@ -11,6 +11,8 @@ import java.sql.Types;
 
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 @RunWith(DataProviderRunner.class)
@@ -92,12 +94,88 @@ public class TokenizedLoginTest {
 
     @Test
     @UseDataProvider("logins")
-    public void the_hash_code_is_the_same_the_object_in_param(final Object email) {
-        assertThat(tokenizedLogin.hashCode(email), equalTo(email.hashCode()));
+    public void the_hash_code_is_the_same_the_object_in_param(final Object login) {
+        assertThat(tokenizedLogin.hashCode(login), equalTo(login.hashCode()));
     }
 
     @Test
     public void when_the_object_is_null_then_its_hashcode_is_zero() {
         assertThat(tokenizedLogin.hashCode(null), equalTo(0));
+    }
+
+    @Test
+    @UseDataProvider("logins")
+    public void when_get_value_then_get_it_as_it_is(final String login) throws Exception {
+        result.setString(COLUMN_NAME[0], login);
+        final Object expected = tokenizedLogin.nullSafeGet(result, COLUMN_NAME, null, null);
+        assertThat(expected, equalTo(login));
+    }
+
+
+    @DataProvider
+    public static Object[][] loginAndTokenized() {
+        // @formatter:off
+        return new Object[][]{
+                {"ahmed@elidrissi.ma", "a****@elidrissi.ma"},
+                {"aei@prima-solutions.com", "a**@prima-solutions.com"},
+                {"I7LGCQI9ZI", "I**G*****I"},
+                {"RLN7OPVL1D", "R**7*****D"},
+                {"RLN7OPVL1D", "R**7*****D"},
+                {"RLN7OPVL1DXBYTS", "R****P********S"},
+                {"RLN7OPVL1DXBYTS", "R****P********S"},
+        };
+        // @formatter:on
+    }
+
+    @Test
+    @UseDataProvider("loginAndTokenized")
+    public void when_set_value_then_tokenize_it(final String login, final String tokenized) throws Exception {
+        tokenizedLogin.nullSafeSet(preparedStatement, login, 0, null);
+        assertThat(preparedStatement.getParam(0).toString(), equalTo(tokenized));
+    }
+
+    @Test
+    public void when_set_null_value_then_set_varchar_type_as_null() throws Exception {
+        tokenizedLogin.nullSafeSet(preparedStatement, null, 0, null);
+        assertThat(preparedStatement.getNull(0), equalTo(Types.VARCHAR));
+    }
+
+    @Test
+    @UseDataProvider("logins")
+    public void when_deep_copy_and_login_then_return_the_same_object(final String login) {
+        assertThat(tokenizedLogin.deepCopy(login), sameInstance(login));
+    }
+
+    @Test
+    public void the_tokenized_login_type_is_immutable() {
+        assertThat(tokenizedLogin.isMutable(), equalTo(false));
+    }
+
+    @Test
+    @UseDataProvider("logins")
+    public void when_disassemble_an_login_return_the_same_value(final String login) {
+        assertThat(tokenizedLogin.disassemble(login), equalTo(login));
+    }
+
+    @Test
+    public void when_disassemble_a_null_value_then_return_null() {
+        assertThat(tokenizedLogin.disassemble(null), nullValue());
+    }
+
+    @Test
+    @UseDataProvider("logins")
+    public void when_assemble_from_a_cached_login_then_return_the_cached_value(final String login) {
+        assertThat(tokenizedLogin.assemble(login, null), equalTo(login));
+    }
+
+    @Test
+    public void when_assemble_from_a_null_value_then_return_null() {
+        assertThat(tokenizedLogin.assemble(null, null), nullValue());
+    }
+
+    @Test
+    @UseDataProvider("logins")
+    public void when_replace_then_return_the_origin_value(final String login) {
+        assertThat(tokenizedLogin.replace(login, null, null), equalTo(login));
     }
 }
