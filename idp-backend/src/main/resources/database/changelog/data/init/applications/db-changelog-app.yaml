@@ -1,9 +1,11 @@
 databaseChangeLog:
   - include:
-      file: database/changelog/data/init/applications/prima-idp.sql
+      file: database/changelog/data/init/applications/001-prima-idp.sql
   - include:
-      file: database/changelog/data/init/applications/local-policy.sql
+      file: database/changelog/data/init/applications/002-local-policy.sql
   - include:
-      file: database/changelog/data/init/applications/sampl-delegated-idp.sql
+      file: database/changelog/data/init/applications/004-sample-idp.sql
   - include:
-      file: database/changelog/data/init/applications/application.sql
+      file: database/changelog/data/init/applications/005-sample-client.sql
+  - include:
+      file: database/changelog/data/init/applications/003-local-claims.sql

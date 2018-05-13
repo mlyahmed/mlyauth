@@ -4,9 +4,11 @@
 INSERT INTO APPLICATION (ID, TYPE, APP_NAME, TITLE)
 VALUES (2, 'IDP', 'SampleIDP', 'Sample IDP');
 
+--changeset ahmed.elidrissi:200 runOnChange:true context:dev
 INSERT INTO APPLICATION_ASPECT (APPLICATION_ID, ASPECT_CODE)
 VALUES (2, 'IDP_JOSE');
 
+--changeset ahmed.elidrissi:300 runOnChange:true context:dev
 INSERT INTO APPLICATION_ASPECT_ATTR (APPLICATION_ID, ASPECT_CODE, ATTRIBUTE_CODE, ATTRIBUTE_VALUE)
 VALUES (2, 'IDP_JOSE', 'Auth:IDP:JOSE:EndPoint', 'http://localhost:19999/idp/sso');
 

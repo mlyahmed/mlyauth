@@ -18,7 +18,5 @@ VALUES (0, 'MASTER');
 
 --changeset ahmed.elidrissi:200 runOnChange:true context:dev
 INSERT INTO PERSON_APPLICATION (PERSON_ID, APPLICATION_ID) VALUES (0, 1);
-
---changeset ahmed.elidrissi:300 runOnChange:true
 INSERT INTO PERSON_APPLICATION (PERSON_ID, APPLICATION_ID) VALUES (0, 4);
 
