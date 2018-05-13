@@ -4,4 +4,6 @@ databaseChangeLog:
   - include:
       file: database/changelog/data/init/applications/local-policy.sql
   - include:
+      file: database/changelog/data/init/applications/sampl-delegated-idp.sql
+  - include:
       file: database/changelog/data/init/applications/application.sql

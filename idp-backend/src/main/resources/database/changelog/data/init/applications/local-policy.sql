@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset ahmed.elidrissi:100 runOnChange:true
+--changeset ahmed.elidrissi:100 runOnChange:true context:dev
 INSERT INTO AUTHENTICATION_INFO (ID, LOGIN, PASSWORD, STATUS, EFFECTIVE_AT, EXPIRES_AT)
 VALUES (1, 'local-policy', '$2a$04$TPWHn0sWevSNsCrMD9/s.e45TRXSMQqUom/20qrIAGRbFTCTpa6Nu', 'ACTIVE', '2018-01-14 18:28:39', '2222-02-14 18:28:56');
 
@@ -17,7 +17,7 @@ VALUES (1, 'FEEDER');
 INSERT INTO APPLICATION_ASPECT (APPLICATION_ID, ASPECT_CODE)
 VALUES (1, 'SP_BASIC');
 
---changeset ahmed.elidrissi:300 runOnChange:true
+--changeset ahmed.elidrissi:300 runOnChange:true context:dev
 INSERT INTO APPLICATION_ASPECT (APPLICATION_ID, ASPECT_CODE)
 VALUES (1, 'SP_SAML');
 
@@ -68,7 +68,7 @@ l+i1rJopESqlG2s9mNQfXxv6xaAG1gXHhUL1rNGtAz2GHiS8WxO+K+y9uJqw+NfM
 M7KxjJYXo5CDegfPt+A6mTJLhtHRIVEEms5g11kbX2TuwIWDRhgXrqQShSW8VHwx
 nu2OGHOe/X1f/mB5Vzzoflyhn1qgiISkEaD4pdpxIgPV4w==');
 
---changeset ahmed.elidrissi:400 runOnChange:true
+--changeset ahmed.elidrissi:400 runOnChange:true context:dev
 INSERT INTO APPLICATION_ASPECT (APPLICATION_ID, ASPECT_CODE)
 VALUES (1, 'CL_JOSE');
 
@@ -125,7 +125,7 @@ VALUES (1, 'STRICT', 'EACH_TIME', 'ace69807fed2faa4d2c3f79a27e68995681c8d91c0af2
 INSERT INTO TOKEN_CLAIM (ID, CODE, VALUE, TOKEN_ID)
 VALUES (1, 'audience', 'local-policy', 1);
 
---changeset ahmed.elidrissi:500 runOnChange:true
+--changeset ahmed.elidrissi:500 runOnChange:true context:dev
 INSERT INTO APPLICATION_ASPECT (APPLICATION_ID, ASPECT_CODE)
 VALUES (1, 'RS_JOSE');
 
