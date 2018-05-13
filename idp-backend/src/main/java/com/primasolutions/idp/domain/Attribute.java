@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Attribute implements Serializable {
 
     @Id
-    @Column(name = "ID", nullable = false)
+    @Column(name = "CODE", nullable = false)
     private String code;
 
     @Column(name = "TITLE", nullable = false)

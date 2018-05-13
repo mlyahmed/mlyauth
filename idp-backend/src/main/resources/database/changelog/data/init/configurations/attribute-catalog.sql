@@ -1,6 +1,5 @@
 --liquibase formatted sql
 --changeset mlyahmed:1 runOnChange:true
-DELETE FROM ATTRIBUTE_CATALOG;
 INSERT INTO ATTRIBUTE_CATALOG (CODE, TITLE, DESCRIPTION) VALUES ('Auth:Basic:EndPoint', 'Endpoint', NULL);
 INSERT INTO ATTRIBUTE_CATALOG (CODE, TITLE, DESCRIPTION) VALUES ('Auth:Basic:Password', 'Password', NULL);
 INSERT INTO ATTRIBUTE_CATALOG (CODE, TITLE, DESCRIPTION) VALUES ('Auth:Basic:Username', 'Username', NULL);

@@ -1,6 +1,6 @@
 --liquibase formatted SQL
---changeset mlyahmed:1 runOnChange:true
-DELETE FROM APPLICATION_TYPE;
+
+--changeset ahmed.elidrissi:100 runOnChange:true
 INSERT INTO APPLICATION_TYPE (CODE, DESCRIPTION) VALUES ('IDP', 'The Prima IDP');
 INSERT INTO APPLICATION_TYPE (CODE, DESCRIPTION) VALUES ('POLICY', 'The Prima Policy');
 INSERT INTO APPLICATION_TYPE (CODE, DESCRIPTION) VALUES ('CLAIMS', 'The Prima Claims');
