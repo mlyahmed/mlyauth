@@ -20,17 +20,17 @@ public class TokenizedLogin implements UserType {
 
     @Override
     public Class returnedClass() {
-        return null;
+        return String.class;
     }
 
     @Override
-    public boolean equals(final Object x, final Object y) throws HibernateException {
-        return false;
+    public final boolean equals(final Object x, final Object y) throws HibernateException {
+        return x == y || (x != null && y != null && x.equals(y));
     }
 
     @Override
-    public int hashCode(final Object x) throws HibernateException {
-        return 0;
+    public final int hashCode(final Object x) throws HibernateException {
+        return x == null ? 0 : x.hashCode();
     }
 
     @Override
