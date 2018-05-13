@@ -20,3 +20,6 @@ keystore:
   path: classpath:keys/keystore.jks
   alias: sgi.prima-solutions.com
   password: ENC(DGOhG+fPHDnPCYZEz/6Q+9rfLIO3dCR8d1Fx7Fgaxtw=)
+
+liquibase:
+  contexts: prod
