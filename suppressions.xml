@@ -6,7 +6,7 @@
 
 <suppressions>
     <suppress checks="EqualsHashCode"
-              files="com.mlyauth.constants.*.java|Claims.java" />
+              files="com.primasolutions.idp.constants.*.java|Claims.java" />
 
     <suppress checks="MethodName"
               files="^((?!d/\w+(Test|IT|Doc|Steps)\.java).)*$" />

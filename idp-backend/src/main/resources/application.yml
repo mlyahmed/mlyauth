@@ -34,7 +34,7 @@ performance:
 
 
 logging:
-  file: logs/mlyauth.log
+  file: logs/primaidp.log
   level:
     ROOT: INFO
     org.opensaml: INFO
@@ -44,9 +44,9 @@ logging:
 
 info:
   build:
-    artifact: mly-auth
-    name: MlyAuth
-    description: Moulay Authentication
+    artifact: prima-idp
+    name: PrimaIDP
+    description: Prima-Solutions IDP
     version: 1.0
 
 management:

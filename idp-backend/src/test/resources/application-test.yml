@@ -27,7 +27,7 @@ test:
 
 
 logging:
-  file: logs/mlyauth-test.log
+  file: logs/primaidp-test.log
   level:
     ROOT: ERROR
     org.opensaml: INFO
