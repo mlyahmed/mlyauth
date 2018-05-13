@@ -1,19 +1,11 @@
 databaseChangeLog:
   - include:
-      file: database/changelog/data/init/id-sequence.sql
+      file: database/changelog/data/init/configurations/db-changelog-config.yaml
   - include:
-      file: database/changelog/data/init/attribute-catalog.sql
+      file: database/changelog/data/init/aspects/db-changelog-aspect.yaml
   - include:
-      file: database/changelog/data/init/auth-aspect.sql
+      file: database/changelog/data/init/applications/db-changelog-app.yaml
   - include:
-      file: database/changelog/data/init/profile.sql
+      file: database/changelog/data/init/navigations/db-changelog-nav.yaml
   - include:
-      file: database/changelog/data/init/role.sql
-  - include:
-      file: database/changelog/data/init/application-type.sql
-  - include:
-      file: database/changelog/data/init/application.sql
-  - include:
-      file: database/changelog/data/init/person.sql
-  - include:
-      file: database/changelog/data/init/auto-navigation.sql
+      file: database/changelog/data/init/persons/db-changelog-pers.yaml

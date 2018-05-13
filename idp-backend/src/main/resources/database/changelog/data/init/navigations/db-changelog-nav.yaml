@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: database/changelog/data/init/navigations/auto-navigation.sql

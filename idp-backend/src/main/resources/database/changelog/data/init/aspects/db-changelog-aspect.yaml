@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: database/changelog/data/init/aspects/auth-aspect.sql
