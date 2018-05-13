@@ -1,5 +1,7 @@
 package com.primasolutions.idp.domain;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import javax.persistence.TableGenerator;
 
 @Entity
 @Table(name = "AUTHENTICATION_INFO_BY_LOGIN")
-public class AuthenticationInfoByLogin {
+public class AuthenticationInfoByLogin implements EncryptedDomain, TokenizedDomain {
 
     public static final int ID_INIT_VALUE = 9999;
     public static final int ID_INC_STEP = 1;
@@ -26,9 +28,11 @@ public class AuthenticationInfoByLogin {
 
 
     @Column(name = "AUTHENTICATION_INFO_ID", nullable = false)
+    @Type(type = ENCRYPTED_LONG)
     private long authInfoId;
 
     @Column(name = "LOGIN", nullable = false)
+    @Type(type = TOKENIZED_LOGIN)
     private String login;
 
     public static AuthenticationInfoByLogin newInstance() {

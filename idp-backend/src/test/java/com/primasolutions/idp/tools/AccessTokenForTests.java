@@ -60,7 +60,8 @@ public class AccessTokenForTests {
             refreshToken.cypher();
 
             final ResultActions result = mockMvc.perform(post(JOSE_ACCESS_URI)
-                    .content(refreshToken.serialize()).with(httpBasic(CL_LOGIN, CL_PASSWORD))
+                    .content(refreshToken.serialize())
+                    .with(httpBasic(CL_LOGIN, CL_PASSWORD))
                     .contentType("text/plain;charset=UTF-8"));
             result.andExpect(status().isCreated());
 

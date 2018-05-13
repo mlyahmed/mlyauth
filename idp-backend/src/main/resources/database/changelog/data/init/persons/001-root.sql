@@ -5,7 +5,7 @@ INSERT INTO AUTHENTICATION_INFO (ID, LOGIN, PASSWORD, STATUS, EFFECTIVE_AT, EXPI
 VALUES (0, 'ENC(h0WlMYSqq/8jnD4V8yJIzOUIypoAP+f/WSOVXZEXVKREPfFdM+2kdPsd0kncoLNRv44d02OKn4LrWukYXlYDtQ==)', '$2a$13$zEbHV1Wwiq/bEUyhOGhnyOkVvg/JzUOVIBN5a7gclZbgiV/2mGeNK', 'ACTIVE', '2018-01-14 18:28:39', '2222-02-14 18:28:56');
 
 INSERT INTO AUTHENTICATION_INFO_BY_LOGIN (ID, AUTHENTICATION_INFO_ID, LOGIN)
-VALUES (0, '0', 'ahmed.elidrissi.attach@gmail.com');
+VALUES (0, '0', 'ahmed.e***************@gmail.com');
 
 INSERT INTO PERSON (id, role, external_id, firstname, lastname, birthdate, email, authentication_info_id)
 VALUES (0, 'ADMIN', 'gestF', 'ENC(PZB8TELfqD8ZGe3ZS3ZQdy9jLJi1QG9597uxnaMZW3g=)', 'ENC(By5P5eseJ9eLQA7Qlf9i54EKtCCAY9JveV5j5xj8mT8=)', '1984-10-17', 'ENC(bQQIp9T8uFZWLNJ4iCXWVgKv3ooMNNiFpFNu6BsNsHob97n2F9AVnGR6kD4HnQSHXUIMcSmbek0+6ffHaR6lkg==)', 0);

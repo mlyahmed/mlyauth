@@ -18,11 +18,9 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import java.util.Date;
 
-import static com.primasolutions.idp.domain.EncryptedDomain.ENCRYPTED_STRING;
-
 @Entity
 @Table(name = "AUTHENTICATION_INFO")
-public class AuthenticationInfo {
+public class AuthenticationInfo implements EncryptedDomain {
 
     private static final int ID_INIT_VALUE = 9999;
     private static final int ID_INC_STEP = 1;
