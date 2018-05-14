@@ -35,7 +35,7 @@ databaseChangeLog:
                       nullable: false
               - column:
                   name: BIRTHDATE
-                  type: DATETIME
+                  type: varchar(300)
                   constraints:
                       nullable: false
               - column:

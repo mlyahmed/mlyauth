@@ -49,6 +49,7 @@ public class Person  implements EncryptedDomain {
 
     @Column(name = "BIRTHDATE", nullable = false)
     @Temporal(TemporalType.DATE)
+    @Type(type = ENCRYPTED_DATE)
     private java.util.Date birthdate;
 
     @Column(name = "EMAIL", nullable = false, unique = true)
