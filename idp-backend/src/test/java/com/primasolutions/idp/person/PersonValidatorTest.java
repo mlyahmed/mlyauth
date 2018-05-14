@@ -34,7 +34,7 @@ public class PersonValidatorTest {
                 .setPassword("password".toCharArray())
                 .setEmail("ahmed@gmail.com");
 
-        validator.validateNewPerson(person);
+        validator.validateNew(person);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class PersonValidatorTest {
         IDPException ex = null;
 
         try {
-            validator.validateNewPerson(null);
+            validator.validateNew(null);
         } catch (IDPException e) {
             ex = e;
         }
@@ -64,7 +64,7 @@ public class PersonValidatorTest {
         IDPException ex = null;
 
         try {
-            validator.validateNewPerson(person);
+            validator.validateNew(person);
         } catch (IDPException e) {
             ex = e;
         }

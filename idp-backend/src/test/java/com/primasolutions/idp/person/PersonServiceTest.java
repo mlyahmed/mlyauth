@@ -23,7 +23,7 @@ public class PersonServiceTest {
 
     @Test(expected = IDPException.class)
     public void when_validation_is_ko_then_error() {
-        Mockito.doThrow(IDPException.newInstance()).when(personValidator).validateNewPerson(Mockito.any());
+        Mockito.doThrow(IDPException.newInstance()).when(personValidator).validateNew(Mockito.any());
         personService.createPerson(null);
     }
 

@@ -17,7 +17,7 @@ public class PersonValidator implements IPersonValidator {
     private PersonLookuper personLookuper;
 
     @Override
-    public void validateNewPerson(final PersonBean bean) {
+    public void validateNew(final PersonBean bean) {
         if (bean == null)
             throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("PERSON_IS_NULL")));
 

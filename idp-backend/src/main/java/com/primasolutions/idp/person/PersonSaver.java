@@ -26,7 +26,7 @@ public class PersonSaver {
     @Autowired
     private PersonByEmailDAO personByEmailDAO;
 
-    public void save(final Person p) {
+    public void create(final Person p) {
         final Person person = personDAO.saveAndFlush(p);
 
         personByEmailDAO.saveAndFlush(PersonByEmail.newInstance()
@@ -38,5 +38,10 @@ public class PersonSaver {
         authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));
+    }
+
+
+    public void update(final Person p) {
+        personDAO.saveAndFlush(p);
     }
 }

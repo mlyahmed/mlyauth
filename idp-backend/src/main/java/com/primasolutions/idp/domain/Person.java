@@ -144,6 +144,7 @@ public class Person  implements EncryptedDomain {
 
     public Person setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
+        this.authenticationInfo.setPerson(this);
         return this;
     }
 
