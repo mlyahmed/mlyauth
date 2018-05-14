@@ -33,14 +33,14 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(DataProviderRunner.class)
-public class PersonMapperTest {
+public class PersonBuilderTest {
 
-    public static final int ID_INDEX = 0;
-    public static final int EXTERNAL_ID_INDEX = 1;
-    public static final int FIRSTNAME_INDEX = 2;
-    public static final int LASTNAME_INDEX = 3;
-    public static final int BIRTHDATE_INDEX = 4;
-    public static final int EMAIL_INDEX = 5;
+    private static final int ID_INDEX = 0;
+    private static final int EXTERNAL_ID_INDEX = 1;
+    private static final int FIRSTNAME_INDEX = 2;
+    private static final int LASTNAME_INDEX = 3;
+    private static final int BIRTHDATE_INDEX = 4;
+    private static final int EMAIL_INDEX = 5;
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     private Role role;
@@ -56,7 +56,7 @@ public class PersonMapperTest {
     private RoleDAO roleDAO;
 
     @InjectMocks
-    private PersonMapper mapper;
+    private PersonBuilder mapper;
 
     @Before
     public void setup() {

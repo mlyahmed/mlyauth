@@ -1,24 +1,16 @@
 package com.primasolutions.idp.person;
 
+import com.primasolutions.idp.application.ApplicationLookuper;
 import com.primasolutions.idp.beans.PersonBean;
-import com.primasolutions.idp.constants.AuthenticationInfoStatus;
-import com.primasolutions.idp.dao.ApplicationDAO;
-import com.primasolutions.idp.domain.Application;
-import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.domain.Person;
+import com.primasolutions.idp.security.authentication.AuthenticationInfoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.UUID;
 
 @Service
 @Transactional
 public class PersonService implements IPersonService {
-
-    private static final int A_CENTURY = 1000 * 60 * 60 * 24 * 365 * 100;
 
     @Autowired
     private PersonSaver personSaver;
@@ -27,35 +19,22 @@ public class PersonService implements IPersonService {
     private PersonLookuper personLookuper;
 
     @Autowired
-    private ApplicationDAO applicationDAO;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private PersonMapper personMapper;
+    private PersonBuilder personBuilder;
 
     @Autowired
     private IPersonValidator personValidator;
 
+    @Autowired
+    private ApplicationLookuper applicationLookuper;
+
+    @Autowired
+    private AuthenticationInfoBuilder authInfoBuilder;
+
     @Override
     public PersonBean createPerson(final PersonBean bean) {
         personValidator.validateNew(bean);
-        personSaver.create(personMapper.toEntity(bean).setAuthenticationInfo(newAuthenticationInfo(bean)));
-        return personMapper.toBean(personLookuper.byExternalId(bean.getExternalId()));
-    }
-
-    private AuthenticationInfo newAuthenticationInfo(final PersonBean bean) {
-        return AuthenticationInfo.newInstance()
-                    .setLogin(bean.getEmail())
-                    .setPassword(passwordEncoder.encode(getPassword(bean)))
-                    .setStatus(AuthenticationInfoStatus.ACTIVE)
-                    .setEffectiveAt(new Date())
-                    .setExpireAt(new Date(System.currentTimeMillis() + A_CENTURY));
-    }
-
-    private String getPassword(final PersonBean bean) {
-        return bean.getPassword() == null ? UUID.randomUUID().toString() : String.valueOf(bean.getPassword());
+        personSaver.create(personBuilder.toEntity(bean).setAuthenticationInfo(authInfoBuilder.toEntity(bean)));
+        return personBuilder.toBean(personLookuper.byExternalId(bean.getExternalId()));
     }
 
     @Override
@@ -63,7 +42,7 @@ public class PersonService implements IPersonService {
         final Person person = personLookuper.byExternalId(bean.getExternalId());
         if (person != null) {
             personSaver.update(person);
-            return personMapper.toBean(personLookuper.byExternalId(person.getExternalId()));
+            return personBuilder.toBean(personLookuper.byExternalId(person.getExternalId()));
         } else {
             return createPerson(bean);
         }
@@ -72,8 +51,7 @@ public class PersonService implements IPersonService {
     @Override
     public void assignApplication(final String appname, final String personExternalId) {
         final Person person = personLookuper.byExternalId(personExternalId);
-        final Application application = applicationDAO.findByAppname(appname);
-        person.getApplications().add(application);
+        person.getApplications().add(applicationLookuper.byName(appname));
         personSaver.update(person);
     }
 
