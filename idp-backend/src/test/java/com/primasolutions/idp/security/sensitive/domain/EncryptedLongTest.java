@@ -67,7 +67,7 @@ public class EncryptedLongTest {
     }
 
     @Test
-    public void when_get_a_message_and_not_wrapped_then_return_it() throws Exception {
+    public void when_get_value_and_not_wrapped_then_return_it() throws Exception {
         result.setString(COLUMN_NAME[0], RandomForTests.randomLong().toString());
         final Object expected = encryptedLong.nullSafeGet(result, COLUMN_NAME, null, null);
         assertThat(expected, notNullValue());
@@ -76,17 +76,17 @@ public class EncryptedLongTest {
 
     @Test
     @UseDataProvider("longAsString")
-    public void when_get_a_message_and_wrapped_then_return_it_decrypted(final String value)  throws Exception {
+    @SuppressWarnings("Duplicates")
+    public void when_get_value_and_wrapped_then_return_it_decrypted(final String value)  throws Exception {
         final String noisedValue = sha256Hex(UUID.randomUUID().toString()) + "::" + value;
-        final String encrypted = "ENC(" + encryptor.encrypt(noisedValue) + ")";
-        result.setString(COLUMN_NAME[0], encrypted);
+        result.setString(COLUMN_NAME[0], "ENC(" + encryptor.encrypt(noisedValue) + ")");
         final Object expected = encryptedLong.nullSafeGet(result, COLUMN_NAME, null, null);
         assertThat(expected, notNullValue());
         assertThat(expected.toString(), equalTo(value));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void when_get_a_message_and_wrapped_but_corrupted_then_error()  throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void when_get_value_and_wrapped_but_corrupted_then_error()  throws Exception {
         final String encrypted = "ENC(" + encryptor.encrypt(RandomForTests.randomLong().toString()) + ")";
         result.setString(COLUMN_NAME[0], encrypted);
         encryptedLong.nullSafeGet(result, COLUMN_NAME, null, null);
@@ -94,7 +94,7 @@ public class EncryptedLongTest {
 
     @Test
     @UseDataProvider("longAsString")
-    public void when_set_message_then_encrypt_it_wrapped(final String value)  throws Exception {
+    public void when_set_value_then_encrypt_it_wrapped(final String value)  throws Exception {
         encryptedLong.nullSafeSet(preparedStatement, value, 0, null);
         assertThat(preparedStatement.getParam(0), notNullValue());
         assertThat(preparedStatement.getParam(0).toString(), Matchers.startsWith("ENC("));

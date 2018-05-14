@@ -50,7 +50,7 @@ public class EncryptedLong extends AbstractEncryptedType {
 
     private String unNoise(final String noised) {
         final String[] parts = noised.split("::");
-        if (parts.length != 2) throw new RuntimeException("Corrupted");
+        if (parts.length != 2) throw new IllegalArgumentException("Corrupted");
         return parts[1];
     }
 }
