@@ -4,7 +4,8 @@
 UPDATE person
 SET firstname = 'ENC(MJHeuzNiuOxQ3GasAeleA323P36NGBLzccIkLra4MRI=)',
     lastname = 'ENC(ceSqPgyQOWrFI4UNAP+BszW5mnh1bWj6CggXF85iecg=)',
-    email = 'ENC(AoYBfbRjSQkHLYkxDI7LR2hkCJ8DmThH8Bwg29AA6D6bOucCI60qCrpuYM1vlZUmKp4wge3UKMh38LFjx3VNcQ==)'
+    email = 'ENC(AoYBfbRjSQkHLYkxDI7LR2hkCJ8DmThH8Bwg29AA6D6bOucCI60qCrpuYM1vlZUmKp4wge3UKMh38LFjx3VNcQ==)',
+    birthdate = 'ENC(TO2p7EZU9ookQrPm5cTDO0MVeCSemdCJ/dIjoXhr4Ex2HF8sF3hqiHXc4AkIoezJqNXH39yCWqNtWe+rbtoMCiQPcF9Gtj1ogA2dEifZjl3sMm/J7ix7FHl0rjahg6SN)'
 WHERE id=0;
 
 --changeset ahmed.elidrissi:110 runOnChange:true context:test
