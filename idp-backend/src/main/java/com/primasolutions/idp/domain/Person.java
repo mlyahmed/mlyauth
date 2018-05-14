@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.Set;
 
@@ -46,6 +48,7 @@ public class Person  implements EncryptedDomain {
     private String lastname;
 
     @Column(name = "BIRTHDATE", nullable = false)
+    @Temporal(TemporalType.DATE)
     private java.util.Date birthdate;
 
     @Column(name = "EMAIL", nullable = false, unique = true)
