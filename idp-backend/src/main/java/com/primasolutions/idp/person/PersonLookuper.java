@@ -26,6 +26,11 @@ public class PersonLookuper {
         return isEmpty(byEmail) ? null : filterByEmail(byEmail, email);
     }
 
+
+    public Person byExternalId(final String externalId) {
+        return personDAO.findByExternalId(externalId);
+    }
+
     private Person filterByEmail(final Set<PersonByEmail> index, final String email) {
         return index.stream().map(entry -> personDAO.findByExternalId(entry.getPersonId()))
                 .filter(Objects::nonNull)

@@ -9,9 +9,7 @@ import com.primasolutions.idp.dao.PersonByEmailDAO;
 import com.primasolutions.idp.dao.PersonDAO;
 import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
-import com.primasolutions.idp.domain.AuthenticationInfoByLogin;
 import com.primasolutions.idp.domain.Person;
-import com.primasolutions.idp.domain.PersonByEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,12 @@ import java.util.UUID;
 public class PersonService implements IPersonService {
 
     private static final int A_CENTURY = 1000 * 60 * 60 * 24 * 365 * 100;
+
+    @Autowired
+    private PersonSaver personSaver;
+
+    @Autowired
+    private PersonLookuper personLookuper;
 
     @Autowired
     private ApplicationDAO applicationDAO;
@@ -53,15 +57,8 @@ public class PersonService implements IPersonService {
     @Override
     public PersonBean createPerson(final PersonBean bean) {
         personValidator.validateNewPerson(bean);
-        Person person = buildPerson(bean);
-        person = personDAO.saveAndFlush(person);
-        personByEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(person.getExternalId())
-                .setEmail(person.getEmail()));
-        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(person.getAuthenticationInfo());
-        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
-                .setAuthInfoId(authInfo.getId())
-                .setLogin(authInfo.getLogin()));
-        return personMapper.toBean(person);
+        personSaver.save(buildPerson(bean));
+        return personMapper.toBean(personLookuper.byExternalId(bean.getExternalId()));
     }
 
     private Person buildPerson(final PersonBean bean) {
