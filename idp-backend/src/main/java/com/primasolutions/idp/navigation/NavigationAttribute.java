@@ -1,4 +1,4 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.navigation;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

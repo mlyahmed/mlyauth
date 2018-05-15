@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.navigation;
 
-import com.primasolutions.idp.domain.AutoNavigation;
 import com.primasolutions.idp.domain.Role;
 import org.springframework.data.repository.CrudRepository;
 

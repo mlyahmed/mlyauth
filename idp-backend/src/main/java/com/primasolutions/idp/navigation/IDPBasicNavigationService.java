@@ -2,7 +2,6 @@ package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.AttributeBean;
-import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.Person;

@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.navigation;
 
-import com.primasolutions.idp.domain.Navigation;
 import org.springframework.data.repository.CrudRepository;
 
 public interface NavigationDAO extends CrudRepository<Navigation, Long> {

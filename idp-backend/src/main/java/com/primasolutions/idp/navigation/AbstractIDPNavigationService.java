@@ -1,12 +1,8 @@
 package com.primasolutions.idp.navigation;
 
 import com.google.common.base.Stopwatch;
-import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.NavigationDAO;
-import com.primasolutions.idp.dao.TokenDAO;
-import com.primasolutions.idp.domain.Navigation;
-import com.primasolutions.idp.domain.NavigationAttribute;
+import com.primasolutions.idp.token.TokenDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,10 @@
 package com.primasolutions.idp.sp.saml;
 
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.NavigationDAO;
-import com.primasolutions.idp.dao.TokenDAO;
-import com.primasolutions.idp.domain.Navigation;
-import com.primasolutions.idp.domain.Token;
+import com.primasolutions.idp.navigation.Navigation;
+import com.primasolutions.idp.navigation.NavigationDAO;
+import com.primasolutions.idp.token.Token;
+import com.primasolutions.idp.token.TokenDAO;
 import com.primasolutions.idp.token.TokenMapper;
 import com.primasolutions.idp.token.saml.SAMLAccessToken;
 import com.primasolutions.idp.token.saml.SAMLHelper;

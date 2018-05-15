@@ -1,6 +1,5 @@
 package com.primasolutions.idp.navigation;
 
-import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.constants.AspectType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

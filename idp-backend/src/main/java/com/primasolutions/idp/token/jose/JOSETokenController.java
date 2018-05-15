@@ -1,7 +1,7 @@
 package com.primasolutions.idp.token.jose;
 
-import com.primasolutions.idp.beans.TokenBean;
 import com.primasolutions.idp.constants.AspectType;
+import com.primasolutions.idp.token.TokenBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

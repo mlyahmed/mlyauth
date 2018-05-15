@@ -1,4 +1,4 @@
-package com.primasolutions.idp.beans;
+package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.application.AttributeBean;
 

@@ -1,7 +1,7 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.domain.EncryptedDomain;
-import com.primasolutions.idp.domain.TokenizedDomain;
+import com.primasolutions.idp.security.sensitive.domain.EncryptedDomain;
+import com.primasolutions.idp.security.sensitive.domain.TokenizedDomain;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;

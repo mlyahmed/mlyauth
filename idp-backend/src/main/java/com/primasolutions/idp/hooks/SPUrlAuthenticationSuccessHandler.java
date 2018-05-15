@@ -2,9 +2,9 @@ package com.primasolutions.idp.hooks;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.AutoNavigationDAO;
-import com.primasolutions.idp.domain.AutoNavigation;
 import com.primasolutions.idp.domain.Role;
+import com.primasolutions.idp.navigation.AutoNavigation;
+import com.primasolutions.idp.navigation.AutoNavigationDAO;
 import com.primasolutions.idp.token.Claims;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,8 +2,6 @@ package com.primasolutions.idp.token;
 
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.domain.Token;
-import com.primasolutions.idp.domain.TokenClaim;
 import com.primasolutions.idp.exception.IDPSAMLErrorException;
 import com.primasolutions.idp.token.saml.SAMLAccessToken;
 import com.primasolutions.idp.token.saml.SAMLHelper;

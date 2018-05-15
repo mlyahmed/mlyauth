@@ -2,9 +2,9 @@ package com.primasolutions.idp.sp.saml;
 
 import com.google.common.collect.Iterators;
 import com.primasolutions.idp.AbstractIntegrationTest;
-import com.primasolutions.idp.dao.NavigationDAO;
-import com.primasolutions.idp.domain.Navigation;
 import com.primasolutions.idp.exception.IDPSAMLErrorException;
+import com.primasolutions.idp.navigation.Navigation;
+import com.primasolutions.idp.navigation.NavigationDAO;
 import com.primasolutions.idp.token.TokenIdGenerator;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import org.apache.commons.codec.digest.DigestUtils;

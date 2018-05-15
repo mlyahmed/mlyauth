@@ -1,7 +1,5 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.security.sensitive.domain;
 
-import com.primasolutions.idp.security.sensitive.domain.TokenizedEmail;
-import com.primasolutions.idp.security.sensitive.domain.TokenizedLogin;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 

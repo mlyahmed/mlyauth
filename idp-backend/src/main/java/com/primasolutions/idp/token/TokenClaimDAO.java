@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.token;
 
-import com.primasolutions.idp.domain.TokenClaim;
 import org.springframework.data.repository.CrudRepository;
 
 public interface TokenClaimDAO extends CrudRepository<TokenClaim, Long> {

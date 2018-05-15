@@ -1,6 +1,8 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.constants.Direction;
+import com.primasolutions.idp.domain.AuthenticationSession;
+import com.primasolutions.idp.token.Token;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

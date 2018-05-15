@@ -1,8 +1,5 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.security.sensitive.domain;
 
-import com.primasolutions.idp.security.sensitive.domain.EncryptedDate;
-import com.primasolutions.idp.security.sensitive.domain.EncryptedLong;
-import com.primasolutions.idp.security.sensitive.domain.EncryptedString;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
