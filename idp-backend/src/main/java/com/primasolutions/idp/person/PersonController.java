@@ -1,6 +1,5 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.beans.PersonBean;
 import com.primasolutions.idp.exception.IDPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

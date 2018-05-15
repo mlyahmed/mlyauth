@@ -1,6 +1,11 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
+import com.primasolutions.idp.domain.Application;
+import com.primasolutions.idp.domain.AuthenticationInfo;
+import com.primasolutions.idp.domain.EncryptedDomain;
+import com.primasolutions.idp.domain.Profile;
+import com.primasolutions.idp.domain.Role;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;

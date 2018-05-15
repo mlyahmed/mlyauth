@@ -1,8 +1,8 @@
 package com.primasolutions.idp.security.authentication;
 
-import com.primasolutions.idp.beans.PersonBean;
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
 import com.primasolutions.idp.domain.AuthenticationInfo;
+import com.primasolutions.idp.person.PersonBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

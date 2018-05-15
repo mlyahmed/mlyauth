@@ -1,5 +1,7 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.person;
 
+import com.primasolutions.idp.domain.EncryptedDomain;
+import com.primasolutions.idp.domain.TokenizedDomain;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;

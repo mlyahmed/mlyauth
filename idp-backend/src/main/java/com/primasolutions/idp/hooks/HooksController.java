@@ -2,9 +2,9 @@ package com.primasolutions.idp.hooks;
 
 import com.primasolutions.idp.beans.ApplicationBean;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.PersonDAO;
 import com.primasolutions.idp.domain.Application;
-import com.primasolutions.idp.domain.Person;
+import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.PersonDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package com.primasolutions.idp.security.functions.validators;
 
-import com.primasolutions.idp.beans.PersonBean;
 import com.primasolutions.idp.constants.ProfileCode;
+import com.primasolutions.idp.person.PersonBean;
 import com.primasolutions.idp.security.functions.IDPPermission;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;

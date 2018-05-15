@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.domain.PersonByEmail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Set;

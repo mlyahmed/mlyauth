@@ -1,4 +1,4 @@
-package com.primasolutions.idp.beans;
+package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.constants.RoleCode;
 

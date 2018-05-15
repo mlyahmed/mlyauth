@@ -1,6 +1,7 @@
 package com.primasolutions.idp.domain;
 
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
+import com.primasolutions.idp.person.Person;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;

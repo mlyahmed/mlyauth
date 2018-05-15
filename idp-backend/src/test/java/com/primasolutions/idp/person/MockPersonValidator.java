@@ -1,7 +1,5 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.beans.PersonBean;
-
 public class MockPersonValidator extends PersonValidator {
 
     private RuntimeException forcedError;

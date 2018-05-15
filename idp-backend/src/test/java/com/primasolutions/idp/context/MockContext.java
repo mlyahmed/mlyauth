@@ -3,8 +3,8 @@ package com.primasolutions.idp.context;
 import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.domain.AuthenticationSession;
-import com.primasolutions.idp.domain.Person;
 import com.primasolutions.idp.domain.Profile;
+import com.primasolutions.idp.person.Person;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;

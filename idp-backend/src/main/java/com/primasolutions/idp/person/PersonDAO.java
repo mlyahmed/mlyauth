@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.domain.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PersonDAO extends JpaRepository<Person, Long> {

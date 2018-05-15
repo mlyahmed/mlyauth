@@ -1,9 +1,5 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.dao.PersonByEmailDAO;
-import com.primasolutions.idp.dao.PersonDAO;
-import com.primasolutions.idp.domain.Person;
-import com.primasolutions.idp.domain.PersonByEmail;
 import com.primasolutions.idp.security.authentication.AuthenticationInfoSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

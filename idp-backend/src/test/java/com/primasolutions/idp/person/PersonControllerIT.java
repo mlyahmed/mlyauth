@@ -2,14 +2,11 @@ package com.primasolutions.idp.person;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.primasolutions.idp.AbstractIntegrationTest;
-import com.primasolutions.idp.beans.PersonBean;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.dao.ApplicationDAO;
-import com.primasolutions.idp.dao.PersonDAO;
 import com.primasolutions.idp.dao.ProfileDAO;
 import com.primasolutions.idp.domain.Application;
-import com.primasolutions.idp.domain.Person;
 import com.primasolutions.idp.domain.Profile;
 import com.primasolutions.idp.tools.AccessTokenForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;

@@ -2,7 +2,7 @@ package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
 import com.primasolutions.idp.domain.Application;
-import com.primasolutions.idp.domain.Person;
+import com.primasolutions.idp.person.Person;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
