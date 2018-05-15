@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.saml;
+package com.primasolutions.idp.authentication.sp.saml;
 
 import com.primasolutions.idp.application.AppAspAttr;
 import com.primasolutions.idp.application.Application;

@@ -1,7 +1,7 @@
 package com.primasolutions.idp;
 
 import com.primasolutions.idp.authentication.rs.JOSEBearerAuthenticationFilter;
-import com.primasolutions.idp.sp.jose.JOSEAuthenticationProvider;
+import com.primasolutions.idp.authentication.sp.jose.JOSEAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

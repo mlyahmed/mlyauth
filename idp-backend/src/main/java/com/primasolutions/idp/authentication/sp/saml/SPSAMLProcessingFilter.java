@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.saml;
+package com.primasolutions.idp.authentication.sp.saml;
 
 import com.google.common.base.Stopwatch;
 import com.primasolutions.idp.constants.Direction;

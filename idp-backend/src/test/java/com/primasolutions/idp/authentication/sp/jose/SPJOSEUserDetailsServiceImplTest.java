@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.jose;
+package com.primasolutions.idp.authentication.sp.jose;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.authentication.AuthenticationInfo;

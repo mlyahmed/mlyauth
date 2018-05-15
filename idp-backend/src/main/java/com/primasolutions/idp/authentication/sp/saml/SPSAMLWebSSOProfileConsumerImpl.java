@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.saml;
+package com.primasolutions.idp.authentication.sp.saml;
 
 import org.opensaml.common.SAMLException;
 import org.opensaml.common.SAMLObject;

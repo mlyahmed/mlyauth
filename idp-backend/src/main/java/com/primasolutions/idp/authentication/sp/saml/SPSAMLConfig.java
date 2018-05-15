@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.saml;
+package com.primasolutions.idp.authentication.sp.saml;
 
 import liquibase.util.file.FilenameUtils;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;

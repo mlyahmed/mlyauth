@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.jose;
+package com.primasolutions.idp.authentication.sp.jose;
 
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.TokenScope;

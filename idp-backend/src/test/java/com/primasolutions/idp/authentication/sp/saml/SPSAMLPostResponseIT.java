@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.saml;
+package com.primasolutions.idp.authentication.sp.saml;
 
 import com.google.common.collect.Iterators;
 import com.primasolutions.idp.AbstractIntegrationTest;

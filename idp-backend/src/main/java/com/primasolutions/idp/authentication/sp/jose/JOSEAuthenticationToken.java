@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.jose;
+package com.primasolutions.idp.authentication.sp.jose;
 
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

@@ -1,4 +1,4 @@
-package com.primasolutions.idp.security.basic;
+package com.primasolutions.idp.authentication.sp.basic;
 
 import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.AuthenticationInfoDAO;

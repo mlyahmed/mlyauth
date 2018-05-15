@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.saml;
+package com.primasolutions.idp.authentication.sp.saml;
 
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.context.IContextHolder;

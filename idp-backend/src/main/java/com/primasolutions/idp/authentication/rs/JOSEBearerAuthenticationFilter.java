@@ -1,6 +1,6 @@
 package com.primasolutions.idp.authentication.rs;
 
-import com.primasolutions.idp.sp.jose.JOSEAuthenticationToken;
+import com.primasolutions.idp.authentication.sp.jose.JOSEAuthenticationToken;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import com.primasolutions.idp.token.jose.JOSETokenDecoder;
 import org.apache.commons.lang.StringUtils;

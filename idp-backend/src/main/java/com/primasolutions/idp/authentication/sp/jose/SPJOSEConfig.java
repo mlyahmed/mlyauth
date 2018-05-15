@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.jose;
+package com.primasolutions.idp.authentication.sp.jose;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;

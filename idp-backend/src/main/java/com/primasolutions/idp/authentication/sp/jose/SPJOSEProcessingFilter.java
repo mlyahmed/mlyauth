@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sp.jose;
+package com.primasolutions.idp.authentication.sp.jose;
 
 import com.google.common.base.Stopwatch;
 import com.primasolutions.idp.constants.AspectType;
