@@ -1,4 +1,4 @@
-package com.primasolutions.idp.security;
+package com.primasolutions.idp.authentication.sp.basic;
 
 import com.primasolutions.idp.AbstractIntegrationTest;
 import org.junit.Ignore;
