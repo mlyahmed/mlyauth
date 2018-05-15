@@ -1,10 +1,5 @@
-package com.primasolutions.idp.lookup;
+package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.person.Person;
-import com.primasolutions.idp.person.PersonByEmail;
-import com.primasolutions.idp.person.PersonByEmailDAO;
-import com.primasolutions.idp.person.PersonDAO;
-import com.primasolutions.idp.person.PersonLookuper;
 import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
