@@ -5,7 +5,7 @@ import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.authentication.Role;
-import com.primasolutions.idp.security.sensitive.domain.EncryptedDomain;
+import com.primasolutions.idp.sensitive.EncryptedDomain;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;

@@ -22,7 +22,7 @@ public class PersonController {
     private IPersonService personService;
 
     @PostMapping
-    @PreAuthorize("hasPermission(#person, T(com.primasolutions.idp.security.functions.IDPPermission).CREATE)")
+    @PreAuthorize("hasPermission(#person, T(com.primasolutions.idp.permission.IDPPermission).CREATE)")
     public ResponseEntity newPerson(@RequestBody final PersonBean person) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(person));
