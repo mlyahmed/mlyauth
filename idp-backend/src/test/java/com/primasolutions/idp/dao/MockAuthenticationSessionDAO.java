@@ -1,6 +1,7 @@
 package com.primasolutions.idp.dao;
 
-import com.primasolutions.idp.domain.AuthenticationSession;
+import com.primasolutions.idp.authentication.AuthenticationSession;
+import com.primasolutions.idp.authentication.AuthenticationSessionDAO;
 
 import java.util.HashMap;
 import java.util.Map;

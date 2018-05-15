@@ -1,10 +1,10 @@
 package com.primasolutions.idp.security.basic;
 
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
+import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
-import com.primasolutions.idp.dao.AuthenticationInfoDAO;
-import com.primasolutions.idp.domain.AuthenticationInfo;
-import com.primasolutions.idp.security.authentication.AuthenticationInfoLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

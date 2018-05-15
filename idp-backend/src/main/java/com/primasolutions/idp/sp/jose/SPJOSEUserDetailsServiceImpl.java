@@ -1,12 +1,12 @@
 package com.primasolutions.idp.sp.jose;
 
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
+import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
-import com.primasolutions.idp.dao.AuthenticationInfoDAO;
-import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.exception.IDPException;
-import com.primasolutions.idp.security.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.token.Claims;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;

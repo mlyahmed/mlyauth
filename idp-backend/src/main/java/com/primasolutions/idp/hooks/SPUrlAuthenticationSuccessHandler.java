@@ -1,8 +1,8 @@
 package com.primasolutions.idp.hooks;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.domain.Role;
 import com.primasolutions.idp.navigation.AutoNavigation;
 import com.primasolutions.idp.navigation.AutoNavigationDAO;
 import com.primasolutions.idp.token.Claims;

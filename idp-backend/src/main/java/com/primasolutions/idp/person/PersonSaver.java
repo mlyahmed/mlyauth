@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.security.authentication.AuthenticationInfoSaver;
+import com.primasolutions.idp.authentication.AuthenticationInfoSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

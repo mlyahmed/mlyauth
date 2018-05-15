@@ -1,7 +1,7 @@
 package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.application.ApplicationType;
-import com.primasolutions.idp.domain.Role;
+import com.primasolutions.idp.authentication.Role;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

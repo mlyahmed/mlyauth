@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.authentication;
 
-import com.primasolutions.idp.domain.AuthenticationInfoByLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Set;

@@ -2,9 +2,9 @@ package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.ApplicationDAO;
+import com.primasolutions.idp.authentication.AuthenticationSession;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.domain.AuthenticationSession;
 import com.primasolutions.idp.exception.ApplicationNotFoundException;
 import com.primasolutions.idp.exception.NotSPSAMLApplicationException;
 import com.primasolutions.idp.token.Token;

@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.authentication;
 
-import com.primasolutions.idp.domain.AuthenticationSession;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AuthenticationSessionDAO extends CrudRepository<AuthenticationSession, Long> {

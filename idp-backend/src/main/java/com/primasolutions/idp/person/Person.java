@@ -2,9 +2,9 @@ package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.domain.AuthenticationInfo;
-import com.primasolutions.idp.domain.Profile;
-import com.primasolutions.idp.domain.Role;
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.Profile;
+import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.security.sensitive.domain.EncryptedDomain;
 import org.hibernate.annotations.Type;
 

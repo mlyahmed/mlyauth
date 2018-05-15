@@ -1,4 +1,4 @@
-package com.primasolutions.idp.rs;
+package com.primasolutions.idp.authentication.rs;
 
 import com.primasolutions.idp.sp.jose.JOSEAuthenticationToken;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;

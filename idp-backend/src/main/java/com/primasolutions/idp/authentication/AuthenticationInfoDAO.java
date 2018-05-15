@@ -1,6 +1,5 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.authentication;
 
-import com.primasolutions.idp.domain.AuthenticationInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AuthenticationInfoDAO extends JpaRepository<AuthenticationInfo, Long> {

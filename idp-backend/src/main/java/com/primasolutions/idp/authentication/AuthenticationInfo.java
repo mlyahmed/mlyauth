@@ -1,4 +1,4 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;

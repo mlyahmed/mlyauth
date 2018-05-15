@@ -1,9 +1,9 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.domain.AuthenticationInfo;
-import com.primasolutions.idp.domain.AuthenticationSession;
-import com.primasolutions.idp.domain.Profile;
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthenticationSession;
+import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.person.Person;
 
 import javax.servlet.http.HttpSession;

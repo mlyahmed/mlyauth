@@ -1,13 +1,13 @@
 package com.primasolutions.idp.token;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthenticationSession;
 import com.primasolutions.idp.constants.TokenNorm;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenRefreshMode;
 import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.constants.TokenType;
 import com.primasolutions.idp.constants.TokenValidationMode;
-import com.primasolutions.idp.domain.AuthenticationSession;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

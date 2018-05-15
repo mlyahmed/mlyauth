@@ -1,8 +1,8 @@
 package com.primasolutions.idp.application;
 
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.domain.AuthenticationInfo;
-import com.primasolutions.idp.domain.Profile;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;

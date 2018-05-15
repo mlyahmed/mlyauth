@@ -1,4 +1,4 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.constants.AuthenticationSessionStatus;
 import com.primasolutions.idp.exception.IDPException;

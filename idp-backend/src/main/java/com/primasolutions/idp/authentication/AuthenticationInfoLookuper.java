@@ -1,9 +1,5 @@
-package com.primasolutions.idp.security.authentication;
+package com.primasolutions.idp.authentication;
 
-import com.primasolutions.idp.dao.AuthenticationInfoByLoginDAO;
-import com.primasolutions.idp.dao.AuthenticationInfoDAO;
-import com.primasolutions.idp.domain.AuthenticationInfo;
-import com.primasolutions.idp.domain.AuthenticationInfoByLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

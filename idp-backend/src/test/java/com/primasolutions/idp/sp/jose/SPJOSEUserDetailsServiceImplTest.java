@@ -1,16 +1,16 @@
 package com.primasolutions.idp.sp.jose;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
 import com.primasolutions.idp.context.MockContextHolder;
-import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonDAO;
-import com.primasolutions.idp.security.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.token.jose.MockJOSEAccessToken;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;

@@ -1,4 +1,4 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.security.sensitive.domain.EncryptedDomain;
 import com.primasolutions.idp.security.sensitive.domain.TokenizedDomain;
