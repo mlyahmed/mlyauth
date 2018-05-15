@@ -1,9 +1,9 @@
 package com.primasolutions.idp.context;
 
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.dao.AuthenticationSessionDAO;
 import com.primasolutions.idp.dao.MockAuthenticationSessionDAO;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.domain.AuthenticationSession;
 import com.primasolutions.idp.domain.Profile;

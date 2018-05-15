@@ -1,15 +1,15 @@
 package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.AbstractIntegrationTest;
+import com.primasolutions.idp.application.AppAspAttr;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
+import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.ApplicationAspectAttributeDAO;
-import com.primasolutions.idp.dao.ApplicationDAO;
 import com.primasolutions.idp.dao.NavigationDAO;
 import com.primasolutions.idp.dao.TokenDAO;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.Navigation;
 import com.primasolutions.idp.domain.NavigationAttribute;
 import com.primasolutions.idp.domain.Token;

@@ -1,6 +1,6 @@
 package com.primasolutions.idp.context;
 
-import com.primasolutions.idp.domain.Application;
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.person.Person;
 
 public interface IContextHolder extends IContext {

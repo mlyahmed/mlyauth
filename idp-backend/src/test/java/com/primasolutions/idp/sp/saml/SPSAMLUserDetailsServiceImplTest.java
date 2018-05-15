@@ -1,10 +1,10 @@
 package com.primasolutions.idp.sp.saml;
 
 import com.google.common.collect.Sets;
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
 import com.primasolutions.idp.context.MockContextHolder;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonDAO;

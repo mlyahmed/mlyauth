@@ -1,4 +1,4 @@
-package com.primasolutions.idp.beans;
+package com.primasolutions.idp.application;
 
 import com.primasolutions.idp.constants.ApplicationTypeCode;
 import com.primasolutions.idp.constants.AspectType;

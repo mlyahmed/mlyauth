@@ -1,8 +1,8 @@
 package com.primasolutions.idp.context;
 
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
 import com.primasolutions.idp.constants.ProfileCode;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.domain.Profile;
 import com.primasolutions.idp.person.Person;

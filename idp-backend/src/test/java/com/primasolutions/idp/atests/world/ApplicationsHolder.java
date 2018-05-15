@@ -1,6 +1,6 @@
 package com.primasolutions.idp.atests.world;
 
-import com.primasolutions.idp.beans.ApplicationBean;
+import com.primasolutions.idp.application.ApplicationBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

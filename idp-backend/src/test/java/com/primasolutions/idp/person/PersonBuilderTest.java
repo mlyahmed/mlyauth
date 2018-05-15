@@ -1,9 +1,9 @@
 package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.dao.RoleDAO;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.domain.Role;
 import com.tngtech.java.junit.dataprovider.DataProvider;

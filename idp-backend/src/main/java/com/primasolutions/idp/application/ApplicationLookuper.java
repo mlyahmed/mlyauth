@@ -1,7 +1,5 @@
 package com.primasolutions.idp.application;
 
-import com.primasolutions.idp.dao.ApplicationDAO;
-import com.primasolutions.idp.domain.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

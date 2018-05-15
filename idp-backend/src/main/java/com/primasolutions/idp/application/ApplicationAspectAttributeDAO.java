@@ -1,8 +1,6 @@
-package com.primasolutions.idp.dao;
+package com.primasolutions.idp.application;
 
 import com.primasolutions.idp.constants.AspectAttribute;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.ApplicationAspectAttributeId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

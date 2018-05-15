@@ -1,10 +1,10 @@
 package com.primasolutions.idp.credentials;
 
 import com.nimbusds.jose.util.Base64URL;
+import com.primasolutions.idp.application.AppAspAttr;
+import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
+import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.dao.ApplicationAspectAttributeDAO;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.ApplicationAspectAttributeId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.stereotype.Component;

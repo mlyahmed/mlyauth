@@ -1,12 +1,12 @@
 package com.primasolutions.idp.token.saml;
 
+import com.primasolutions.idp.application.AppAspAttr;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.ApplicationAspectAttributeDAO;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.sp.saml.ISPSAMLAspectValidator;
 import com.primasolutions.idp.token.TokenIdGenerator;
 import org.opensaml.xml.security.x509.BasicX509Credential;

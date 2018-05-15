@@ -1,14 +1,14 @@
 package com.primasolutions.idp.idp.saml;
 
 import com.google.common.collect.Sets;
+import com.primasolutions.idp.application.AppAspAttr;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
+import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.context.MockContext;
-import com.primasolutions.idp.dao.ApplicationAspectAttributeDAO;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.Application;
-import com.primasolutions.idp.domain.ApplicationAspectAttributeId;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.sp.saml.ISPSAMLAspectValidator;
 import com.primasolutions.idp.token.IToken;

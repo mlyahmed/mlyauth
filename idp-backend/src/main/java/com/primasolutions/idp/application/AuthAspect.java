@@ -1,4 +1,4 @@
-package com.primasolutions.idp.domain;
+package com.primasolutions.idp.application;
 
 import com.primasolutions.idp.constants.AspectType;
 

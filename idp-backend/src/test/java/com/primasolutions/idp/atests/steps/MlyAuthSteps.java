@@ -1,12 +1,12 @@
 package com.primasolutions.idp.atests.steps;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.primasolutions.idp.application.ApplicationBean;
+import com.primasolutions.idp.application.AttributeBean;
 import com.primasolutions.idp.atests.domain.RestTestHelper;
 import com.primasolutions.idp.atests.world.ApplicationsHolder;
 import com.primasolutions.idp.atests.world.CurrentPersonHolder;
 import com.primasolutions.idp.atests.world.ResultActionHolder;
-import com.primasolutions.idp.beans.ApplicationBean;
-import com.primasolutions.idp.beans.AttributeBean;
 import com.primasolutions.idp.constants.ApplicationTypeCode;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.RoleCode;
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.primasolutions.idp.beans.AttributeBean.newAttribute;
+import static com.primasolutions.idp.application.AttributeBean.newAttribute;
 import static com.primasolutions.idp.constants.AspectAttribute.SP_BASIC_PASSWORD;
 import static com.primasolutions.idp.constants.AspectAttribute.SP_BASIC_SSO_URL;
 import static com.primasolutions.idp.constants.AspectAttribute.SP_BASIC_USERNAME;

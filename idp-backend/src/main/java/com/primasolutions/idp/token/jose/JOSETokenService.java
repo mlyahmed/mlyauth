@@ -1,5 +1,9 @@
 package com.primasolutions.idp.token.jose;
 
+import com.primasolutions.idp.application.AppAspAttr;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
+import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.beans.TokenBean;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
@@ -9,11 +13,7 @@ import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.credentials.CredentialManager;
-import com.primasolutions.idp.dao.ApplicationAspectAttributeDAO;
-import com.primasolutions.idp.dao.ApplicationDAO;
 import com.primasolutions.idp.dao.TokenDAO;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.Token;
 import com.primasolutions.idp.token.TokenIdGenerator;
 import com.primasolutions.idp.token.TokenMapper;

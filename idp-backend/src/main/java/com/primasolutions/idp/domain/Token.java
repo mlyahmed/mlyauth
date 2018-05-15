@@ -1,5 +1,6 @@
 package com.primasolutions.idp.domain;
 
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.TokenNorm;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenRefreshMode;

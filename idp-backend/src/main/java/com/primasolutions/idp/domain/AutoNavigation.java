@@ -1,5 +1,7 @@
 package com.primasolutions.idp.domain;
 
+import com.primasolutions.idp.application.ApplicationType;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

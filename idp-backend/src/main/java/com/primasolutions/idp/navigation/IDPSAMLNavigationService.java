@@ -1,14 +1,14 @@
 package com.primasolutions.idp.navigation;
 
-import com.primasolutions.idp.beans.AttributeBean;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationDAO;
+import com.primasolutions.idp.application.AttributeBean;
 import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.ApplicationDAO;
 import com.primasolutions.idp.dao.TokenDAO;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.Token;
 import com.primasolutions.idp.exception.ApplicationNotFoundException;
 import com.primasolutions.idp.exception.NotSPSAMLApplicationException;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static com.primasolutions.idp.beans.AttributeBean.newAttribute;
+import static com.primasolutions.idp.application.AttributeBean.newAttribute;
 import static com.primasolutions.idp.constants.AspectType.SP_SAML;
 
 @Service

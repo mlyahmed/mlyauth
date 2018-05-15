@@ -1,8 +1,8 @@
 package com.primasolutions.idp.context;
 
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.AuthenticationSessionStatus;
 import com.primasolutions.idp.dao.AuthenticationSessionDAO;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationInfo;
 import com.primasolutions.idp.domain.AuthenticationSession;
 import com.primasolutions.idp.domain.Profile;

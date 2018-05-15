@@ -1,8 +1,8 @@
 package com.primasolutions.idp.hooks;
 
-import com.primasolutions.idp.beans.ApplicationBean;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationBean;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonDAO;
 import org.springframework.beans.factory.annotation.Autowired;

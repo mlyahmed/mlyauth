@@ -1,5 +1,7 @@
 package com.primasolutions.idp.beans;
 
+import com.primasolutions.idp.application.AttributeBean;
+
 import java.util.Collection;
 
 public class NavigationBean {

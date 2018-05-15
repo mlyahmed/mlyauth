@@ -2,8 +2,8 @@ package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
 import com.primasolutions.idp.IDomainMapper;
+import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.dao.RoleDAO;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.exception.IDPException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

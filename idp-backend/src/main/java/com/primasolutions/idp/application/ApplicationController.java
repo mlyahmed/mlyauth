@@ -1,6 +1,5 @@
 package com.primasolutions.idp.application;
 
-import com.primasolutions.idp.beans.ApplicationBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;

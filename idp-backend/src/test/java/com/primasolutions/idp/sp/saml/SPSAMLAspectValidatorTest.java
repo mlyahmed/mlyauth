@@ -1,11 +1,11 @@
 package com.primasolutions.idp.sp.saml;
 
+import com.primasolutions.idp.application.AppAspAttr;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
+import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.dao.ApplicationAspectAttributeDAO;
-import com.primasolutions.idp.domain.AppAspAttr;
-import com.primasolutions.idp.domain.Application;
-import com.primasolutions.idp.domain.ApplicationAspectAttributeId;
 import com.primasolutions.idp.exception.BadSPSAMLAspectAttributeValueException;
 import com.primasolutions.idp.exception.MissingSPSAMLAspectAttributeException;
 import com.primasolutions.idp.exception.NotSPSAMLApplicationException;

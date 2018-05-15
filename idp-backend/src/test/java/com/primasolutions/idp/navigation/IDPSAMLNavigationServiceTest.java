@@ -1,11 +1,11 @@
 package com.primasolutions.idp.navigation;
 
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.dao.ApplicationDAO;
 import com.primasolutions.idp.dao.TokenDAO;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.domain.AuthenticationSession;
 import com.primasolutions.idp.domain.Token;
 import com.primasolutions.idp.exception.ApplicationNotFoundException;

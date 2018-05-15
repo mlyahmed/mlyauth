@@ -1,9 +1,9 @@
 package com.primasolutions.idp.navigation;
 
-import com.primasolutions.idp.beans.AttributeBean;
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.AttributeBean;
 import com.primasolutions.idp.beans.NavigationBean;
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.domain.Application;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonLookuper;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static com.primasolutions.idp.beans.AttributeBean.newAttribute;
+import static com.primasolutions.idp.application.AttributeBean.newAttribute;
 import static com.primasolutions.idp.constants.AspectAttribute.SP_BASIC_PASSWORD;
 import static com.primasolutions.idp.constants.AspectAttribute.SP_BASIC_SSO_URL;
 import static com.primasolutions.idp.constants.AspectAttribute.SP_BASIC_USERNAME;
