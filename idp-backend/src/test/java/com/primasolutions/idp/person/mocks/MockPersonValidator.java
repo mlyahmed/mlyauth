@@ -3,12 +3,24 @@ package com.primasolutions.idp.person.mocks;
 import com.primasolutions.idp.person.PersonBean;
 import com.primasolutions.idp.person.PersonValidator;
 
-public class MockPersonValidator extends PersonValidator {
+public final class MockPersonValidator extends PersonValidator {
+
+    private static MockPersonValidator instance;
 
     private RuntimeException forcedError;
 
-    public MockPersonValidator() {
-        personLookuper = new MockPersonLookuper();
+    public static MockPersonValidator getInstance() {
+        if (instance == null) {
+            synchronized (MockPersonValidator.class) {
+                if (instance == null)
+                    instance = new MockPersonValidator();
+            }
+        }
+        return instance;
+    }
+
+    private MockPersonValidator() {
+        personLookuper = MockPersonLookuper.getInstance();
     }
 
     public void setForcedError(final RuntimeException forcedError) {

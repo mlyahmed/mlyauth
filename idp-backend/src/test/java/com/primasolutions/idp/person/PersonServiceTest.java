@@ -31,12 +31,12 @@ public class PersonServiceTest {
     @Before
     public void setup() {
         personService = new PersonService();
-        personValidator = new MockPersonValidator();
+        personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
         setField(personService, "personSaver", new MockPersonSaver());
         setField(personService, "personBuilder", new MockPersonBuilder());
         setField(personService, "authInfoBuilder", new MockAuthenticationInfoBuilder());
-        setField(personService, "personLookuper", new MockPersonLookuper());
+        setField(personService, "personLookuper", MockPersonLookuper.getInstance());
     }
 
     @After
