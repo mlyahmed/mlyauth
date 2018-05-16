@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sensitive;
+package com.primasolutions.idp.sensitive.mocks;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -28,11 +28,11 @@ public class MockPreparedStatement implements PreparedStatement {
     private HashMap<Integer, Object> params = new HashMap<>();
     private HashMap<Integer, Integer> nulls = new HashMap<>();
 
-    Object getParam(final int index) {
+    public Object getParam(final int index) {
         return this.params.get(index);
     }
 
-    int getNull(final int index) {
+    public int getNull(final int index) {
         return nulls.get(index);
     }
 

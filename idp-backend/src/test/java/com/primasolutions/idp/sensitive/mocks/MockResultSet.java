@@ -1,4 +1,4 @@
-package com.primasolutions.idp.sensitive;
+package com.primasolutions.idp.sensitive.mocks;
 
 import java.io.InputStream;
 import java.io.Reader;

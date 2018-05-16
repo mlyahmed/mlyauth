@@ -1,5 +1,7 @@
 package com.primasolutions.idp.sensitive;
 
+import com.primasolutions.idp.sensitive.mocks.MockPreparedStatement;
+import com.primasolutions.idp.sensitive.mocks.MockResultSet;
 import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
