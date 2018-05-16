@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.authentication.MockRoleDAO;
+import com.primasolutions.idp.authentication.mocks.MockRoleDAO;
 
 public class MockPersonBuilder extends PersonBuilder {
 

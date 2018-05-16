@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.authentication.MockAuthenticationInfoBuilder;
+import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.tools.MockReseter;

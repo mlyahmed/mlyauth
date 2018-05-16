@@ -1,5 +1,7 @@
-package com.primasolutions.idp.authentication;
+package com.primasolutions.idp.authentication.mocks;
 
+import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 import org.springframework.data.domain.Example;

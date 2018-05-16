@@ -1,5 +1,7 @@
-package com.primasolutions.idp.authentication;
+package com.primasolutions.idp.authentication.mocks;
 
+import com.primasolutions.idp.authentication.AuthenticationSession;
+import com.primasolutions.idp.authentication.AuthenticationSessionDAO;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 

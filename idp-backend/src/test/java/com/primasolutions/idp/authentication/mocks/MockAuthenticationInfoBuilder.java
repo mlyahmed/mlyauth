@@ -1,5 +1,6 @@
-package com.primasolutions.idp.authentication;
+package com.primasolutions.idp.authentication.mocks;
 
+import com.primasolutions.idp.authentication.AuthenticationInfoBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class MockAuthenticationInfoBuilder extends AuthenticationInfoBuilder {
