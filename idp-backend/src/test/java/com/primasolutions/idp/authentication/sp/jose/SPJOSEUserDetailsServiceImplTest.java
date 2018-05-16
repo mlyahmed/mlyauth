@@ -7,7 +7,7 @@ import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
-import com.primasolutions.idp.context.MockContextHolder;
+import com.primasolutions.idp.context.mocks.MockContextHolder;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonDAO;

@@ -1,6 +1,8 @@
-package com.primasolutions.idp.context;
+package com.primasolutions.idp.context.mocks;
 
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationSessionDAO;
+import com.primasolutions.idp.context.ContextHolder;
+import com.primasolutions.idp.context.ContextIdGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.RequestContextHolder;

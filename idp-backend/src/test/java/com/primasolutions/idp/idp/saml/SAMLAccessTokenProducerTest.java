@@ -9,7 +9,7 @@ import com.primasolutions.idp.authentication.sp.saml.ISPSAMLAspectValidator;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.context.MockContext;
+import com.primasolutions.idp.context.mocks.MockContext;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.token.IToken;
 import com.primasolutions.idp.token.TokenIdGeneratorImpl;

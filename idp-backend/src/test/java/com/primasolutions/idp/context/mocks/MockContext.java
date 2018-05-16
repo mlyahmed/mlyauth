@@ -1,9 +1,10 @@
-package com.primasolutions.idp.context;
+package com.primasolutions.idp.context.mocks;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.AuthenticationSession;
 import com.primasolutions.idp.authentication.Profile;
+import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.person.Person;
 
 import javax.servlet.http.HttpSession;
