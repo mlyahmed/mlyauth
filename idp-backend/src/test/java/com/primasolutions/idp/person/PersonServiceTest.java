@@ -4,19 +4,21 @@ import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.mocks.MockPersonBuilder;
+import com.primasolutions.idp.person.mocks.MockPersonDAO;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
 import com.primasolutions.idp.person.mocks.MockPersonSaver;
 import com.primasolutions.idp.person.mocks.MockPersonValidator;
 import com.primasolutions.idp.tools.MockReseter;
-import org.hamcrest.Matchers;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomFrenchEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class PersonServiceTest {
@@ -47,12 +49,19 @@ public class PersonServiceTest {
         personService.createPerson(null);
     }
 
-
     @Test(expected = IDPException.class)
     public void when_create_a_new_person_and_not_valid_then_error() {
         personValidator.setForcedError(IDPException.newInstance());
         given_new_person_to_create();
-        personService.createPerson(person);
+        when_create_new_person();
+    }
+
+    @Test
+    public void when_create_a_new_valid_person_then_save_her() {
+        given_new_person_to_create();
+        final PersonBean result = when_create_new_person();
+        assertThat(result, notNullValue());
+        assertThat(MockPersonDAO.getInstance().exists(result.getId()), equalTo(true));
     }
 
     private void given_new_person_to_create() {
@@ -65,10 +74,7 @@ public class PersonServiceTest {
                 .setEmail(randomFrenchEmail());
     }
 
-    @Test
-    public void when_create_a_new_valid_person_then_save_her() {
-        given_new_person_to_create();
-        final PersonBean result = personService.createPerson(person);
-        Assert.assertThat(result, Matchers.notNullValue());
+    private PersonBean when_create_new_person() {
+        return personService.createPerson(person);
     }
 }

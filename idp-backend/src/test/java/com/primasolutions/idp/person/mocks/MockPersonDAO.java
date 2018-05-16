@@ -111,7 +111,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public boolean exists(final Long aLong) {
-        return false;
+        return persons.get(aLong) != null;
     }
 
     @Override
