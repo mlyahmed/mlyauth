@@ -1,5 +1,7 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.mocks;
 
+import com.primasolutions.idp.person.PersonByEmail;
+import com.primasolutions.idp.person.PersonByEmailDAO;
 import com.primasolutions.idp.sensitive.EmailTokenizer;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;

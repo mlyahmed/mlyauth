@@ -1,5 +1,7 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.mocks;
 
+import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.PersonDAO;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 import org.springframework.data.domain.Example;

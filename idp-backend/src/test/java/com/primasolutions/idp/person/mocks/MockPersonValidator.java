@@ -1,4 +1,7 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.mocks;
+
+import com.primasolutions.idp.person.PersonBean;
+import com.primasolutions.idp.person.PersonValidator;
 
 public class MockPersonValidator extends PersonValidator {
 

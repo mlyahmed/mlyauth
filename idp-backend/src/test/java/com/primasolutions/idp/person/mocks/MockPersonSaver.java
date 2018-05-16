@@ -1,6 +1,7 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.mocks;
 
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoSaver;
+import com.primasolutions.idp.person.PersonSaver;
 
 public class MockPersonSaver extends PersonSaver {
 
