@@ -15,7 +15,7 @@ public class AuthenticationInfoBuilder {
     private static final int A_CENTURY = 1000 * 60 * 60 * 24 * 365 * 100;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    protected PasswordEncoder passwordEncoder;
 
     public AuthenticationInfo toEntity(final PersonBean bean) {
         return AuthenticationInfo.newInstance()

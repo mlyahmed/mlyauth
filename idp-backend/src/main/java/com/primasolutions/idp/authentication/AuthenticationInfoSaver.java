@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 public class AuthenticationInfoSaver {
 
     @Autowired
-    private AuthenticationInfoDAO authenticationInfoDAO;
+    protected AuthenticationInfoDAO authenticationInfoDAO;
 
     @Autowired
-    private AuthenticationInfoByLoginDAO authInfoByLoginDAO;
+    protected AuthenticationInfoByLoginDAO authInfoByLoginDAO;
 
     public void create(final AuthenticationInfo auth) {
         final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(auth);

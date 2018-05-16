@@ -14,7 +14,7 @@ public class MockContextHolder extends ContextHolder {
         ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request);
         RequestContextHolder.setRequestAttributes(requestAttributes);
         idGenerator = new ContextIdGenerator();
-        sauthSessionDAO = new MockAuthenticationSessionDAO();
+        authSessionDAO = MockAuthenticationSessionDAO.getInstance();
     }
 
 

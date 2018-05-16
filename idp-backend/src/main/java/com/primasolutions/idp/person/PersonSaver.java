@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 public class PersonSaver {
 
     @Autowired
-    private PersonDAO personDAO;
+    protected PersonDAO personDAO;
 
     @Autowired
-    private PersonByEmailDAO personByEmailDAO;
+    protected PersonByEmailDAO personByEmailDAO;
 
     @Autowired
-    private AuthenticationInfoSaver authenticationInfoSaver;
+    protected AuthenticationInfoSaver authenticationInfoSaver;
 
     public void create(final Person p) {
         final Person person = personDAO.saveAndFlush(p);

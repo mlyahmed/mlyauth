@@ -1,13 +1,40 @@
 package com.primasolutions.idp.authentication;
 
+import com.primasolutions.idp.tools.MockReseter;
+import com.primasolutions.idp.tools.ResettableMock;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class MockAuthenticationSessionDAO implements AuthenticationSessionDAO {
+public final class MockAuthenticationSessionDAO implements AuthenticationSessionDAO, ResettableMock {
 
-    private static Long currentId = 0L;
-    private Map<Long, AuthenticationSession> sessions = new HashMap<>();
+    private static final long INITIAL_VALUE = 7665L;
+    private static Long currentId = INITIAL_VALUE;
+
+    private static MockAuthenticationSessionDAO instance;
+
+    private Map<Long, AuthenticationSession> sessions;
+
+    public static MockAuthenticationSessionDAO getInstance() {
+        if (instance == null) {
+            synchronized (MockAuthenticationSessionDAO.class) {
+                if (instance == null)
+                    instance = new MockAuthenticationSessionDAO();
+            }
+        }
+        return instance;
+    }
+
+
+    private MockAuthenticationSessionDAO() {
+        sessions = new HashMap<>();
+        MockReseter.register(this);
+    }
+
+    public void reset() {
+        instance = null;
+    }
 
     @Override
     public AuthenticationSession save(final AuthenticationSession entity) {

@@ -12,10 +12,10 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class PersonLookuper {
 
     @Autowired
-    private PersonDAO personDAO;
+    protected PersonDAO personDAO;
 
     @Autowired
-    private PersonByEmailDAO personByEmailDAO;
+    protected PersonByEmailDAO personByEmailDAO;
 
     public Person byEmail(final String email) {
         final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(email);

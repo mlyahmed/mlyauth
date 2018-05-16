@@ -8,16 +8,17 @@ import com.primasolutions.idp.authentication.MockAuthenticationSessionDAO;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.tools.MockReseter;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.apache.commons.lang.RandomStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -43,10 +44,10 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(DataProviderRunner.class)
 public class ContextHolderTest {
-    public static final String RANDOM_LOGIN = RandomStringUtils.random(20, true, true);
 
-    public static final String RANDOM_PASSWORD = RandomStringUtils.random(20, true, true);
-    public static final int FIFTY_MILLISECONDS = 50;
+    private static final String RANDOM_LOGIN = RandomStringUtils.random(20, true, true);
+    private static final String RANDOM_PASSWORD = RandomStringUtils.random(20, true, true);
+    private static final int FIFTY_MILLISECONDS = 50;
 
     private AuthenticationInfo authenticationInfo;
 
@@ -56,15 +57,16 @@ public class ContextHolderTest {
 
     private MockHttpServletRequest request;
 
-    @Spy
-    private AuthenticationSessionDAO sessionDAO = new MockAuthenticationSessionDAO();
+    private AuthenticationSessionDAO sessionDAO;
 
     @InjectMocks
     private ContextHolder holder;
+
     private IContext context;
 
     @Before
     public void setup() {
+        sessionDAO = MockAuthenticationSessionDAO.getInstance();
         authenticationInfo = new AuthenticationInfo();
         authenticationInfo.setLogin(RANDOM_LOGIN);
         authenticationInfo.setPassword(RANDOM_PASSWORD);
@@ -78,6 +80,12 @@ public class ContextHolderTest {
         RequestContextHolder.setRequestAttributes(requestAttributes);
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(holder, "idGenerator", new ContextIdGenerator());
+        ReflectionTestUtils.setField(holder, "authSessionDAO", sessionDAO);
+    }
+
+    @After
+    public void tearDow() {
+        MockReseter.resetAllMocks();
     }
 
     @Test

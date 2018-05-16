@@ -21,10 +21,10 @@ public class PersonBuilder implements IDomainMapper<Person, PersonBean> {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
-    private PersonDAO personDAO;
+    protected PersonDAO personDAO;
 
     @Autowired
-    private RoleDAO roleDAO;
+    protected RoleDAO roleDAO;
 
     @Override
     public PersonBean toBean(final Person person) {

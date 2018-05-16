@@ -32,7 +32,7 @@ public class ContextHolder implements IContextHolder {
     protected IContextIdGenerator idGenerator;
 
     @Autowired
-    protected AuthenticationSessionDAO sauthSessionDAO;
+    protected AuthenticationSessionDAO authSessionDAO;
 
     @Override
     public String getId() {
@@ -142,7 +142,7 @@ public class ContextHolder implements IContextHolder {
         if (currentAuthSession != null) {
             currentAuthSession.setStatus(AuthenticationSessionStatus.CLOSED);
             currentAuthSession.setClosedAt(new Date());
-            sauthSessionDAO.save(currentAuthSession);
+            authSessionDAO.save(currentAuthSession);
         }
     }
 
@@ -152,7 +152,7 @@ public class ContextHolder implements IContextHolder {
                 .setStatus(AuthenticationSessionStatus.ACTIVE)
                 .setCreatedAt(new Date())
                 .setAuthenticationInfo(person.getAuthenticationInfo());
-        return sauthSessionDAO.save(authSession);
+        return authSessionDAO.save(authSession);
     }
 
     private AuthenticationSession newAuthSession(final Application application, final String contextId) {
@@ -161,7 +161,7 @@ public class ContextHolder implements IContextHolder {
                 .setStatus(AuthenticationSessionStatus.ACTIVE)
                 .setCreatedAt(new Date())
                 .setAuthenticationInfo(application.getAuthenticationInfo());
-        return sauthSessionDAO.save(authSession);
+        return authSessionDAO.save(authSession);
     }
 
     private String newId() {

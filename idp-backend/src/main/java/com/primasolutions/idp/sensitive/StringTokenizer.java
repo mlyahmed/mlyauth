@@ -11,7 +11,7 @@ public class StringTokenizer {
         return new StringTokenizer();
     }
 
-    String tokenize(final String value) {
+    public String tokenize(final String value) {
         return left(value) + mid(value) + right(value);
     }
 
