@@ -3,7 +3,7 @@ package com.primasolutions.idp.authentication.sp.jose;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.context.mocks.MockContext;
-import com.primasolutions.idp.credentials.MockCredentialManager;
+import com.primasolutions.idp.credentials.mocks.MockCredentialManager;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
 import com.primasolutions.idp.token.Token;

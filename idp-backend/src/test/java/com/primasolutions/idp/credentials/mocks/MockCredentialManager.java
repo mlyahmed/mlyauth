@@ -1,6 +1,7 @@
-package com.primasolutions.idp.credentials;
+package com.primasolutions.idp.credentials.mocks;
 
 import com.primasolutions.idp.constants.AspectType;
+import com.primasolutions.idp.credentials.CredentialManager;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
