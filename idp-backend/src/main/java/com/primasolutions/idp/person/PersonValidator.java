@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 public class PersonValidator implements IPersonValidator {
 
     @Autowired
-    private PersonLookuper personLookuper;
+    protected PersonLookuper personLookuper;
 
     @Override
     public void validateNew(final PersonBean bean) {

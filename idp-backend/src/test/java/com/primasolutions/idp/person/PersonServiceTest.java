@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomFrenchEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -22,29 +23,18 @@ public class PersonServiceTest {
 
     private MockPersonValidator personValidator;
 
-    private MockPersonSaver personSaver;
-
-    private MockPersonBuilder personBuilder;
-
-    private MockPersonLookuper personLookuper;
-
-    private MockAuthenticationInfoBuilder authInfoBuilder;
-
     private PersonService personService;
+    private PersonBean person;
 
     @Before
     public void setup() {
         personService = new PersonService();
         personValidator = new MockPersonValidator();
-        personSaver = new MockPersonSaver();
-        personBuilder = new MockPersonBuilder();
-        personLookuper = new MockPersonLookuper();
-        authInfoBuilder = new MockAuthenticationInfoBuilder();
         setField(personService, "personValidator", personValidator);
-        setField(personService, "personSaver", personSaver);
-        setField(personService, "personBuilder", personBuilder);
-        setField(personService, "authInfoBuilder", authInfoBuilder);
-        setField(personService, "personLookuper", personLookuper);
+        setField(personService, "personSaver", new MockPersonSaver());
+        setField(personService, "personBuilder", new MockPersonBuilder());
+        setField(personService, "authInfoBuilder", new MockAuthenticationInfoBuilder());
+        setField(personService, "personLookuper", new MockPersonLookuper());
     }
 
     @After
@@ -61,26 +51,23 @@ public class PersonServiceTest {
     @Test(expected = IDPException.class)
     public void when_create_a_new_person_and_not_valid_then_error() {
         personValidator.setForcedError(IDPException.newInstance());
-        final PersonBean person = PersonBean.newInstance()
+        given_new_person_to_create();
+        personService.createPerson(person);
+    }
+
+    private void given_new_person_to_create() {
+        person = PersonBean.newInstance()
                 .setExternalId(randomString())
                 .setFirstname(randomString())
                 .setLastname(randomString())
-                .setBirthdate("1984-10-10")
+                .setBirthdate(randomBirthdate())
                 .setRole(RoleCode.CLIENT)
                 .setEmail(randomFrenchEmail());
-        personService.createPerson(person);
     }
 
     @Test
     public void when_create_a_new_valid_person_then_save_her() {
-        personValidator.setForceOK();
-        final PersonBean person = PersonBean.newInstance()
-                .setExternalId(randomString())
-                .setFirstname(randomString())
-                .setLastname(randomString())
-                .setBirthdate("1984-10-10")
-                .setRole(RoleCode.CLIENT)
-                .setEmail(randomFrenchEmail());
+        given_new_person_to_create();
         final PersonBean result = personService.createPerson(person);
         Assert.assertThat(result, Matchers.notNullValue());
     }

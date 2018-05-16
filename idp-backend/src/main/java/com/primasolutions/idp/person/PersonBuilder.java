@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 @Component
 public class PersonBuilder implements IDomainMapper<Person, PersonBean> {
 
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
 
     @Autowired
     protected PersonDAO personDAO;
