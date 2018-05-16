@@ -3,6 +3,7 @@ package com.primasolutions.idp.token.jose;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.exception.InvalidTokenException;
+import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessToken;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import javafx.util.Pair;

@@ -1,4 +1,6 @@
-package com.primasolutions.idp.token.jose;
+package com.primasolutions.idp.token.jose.mocks;
+
+import com.primasolutions.idp.token.jose.JOSEAccessToken;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

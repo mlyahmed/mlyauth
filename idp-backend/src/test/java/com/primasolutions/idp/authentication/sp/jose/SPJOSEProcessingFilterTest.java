@@ -13,7 +13,7 @@ import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import com.primasolutions.idp.token.jose.JOSEHelper;
 import com.primasolutions.idp.token.jose.JOSETokenDecoder;
 import com.primasolutions.idp.token.jose.JOSETokenFactory;
-import com.primasolutions.idp.token.jose.MockJOSEAccessTokenValidator;
+import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessTokenValidator;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;

@@ -1,4 +1,7 @@
-package com.primasolutions.idp.token.jose;
+package com.primasolutions.idp.token.jose.mocks;
+
+import com.primasolutions.idp.token.jose.JOSEAccessToken;
+import com.primasolutions.idp.token.jose.JOSEAccessTokenValidator;
 
 public class MockJOSEAccessTokenValidator extends JOSEAccessTokenValidator {
 

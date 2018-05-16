@@ -11,7 +11,7 @@ import com.primasolutions.idp.context.mocks.MockContextHolder;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonDAO;
-import com.primasolutions.idp.token.jose.MockJOSEAccessToken;
+import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessToken;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import javafx.util.Pair;
