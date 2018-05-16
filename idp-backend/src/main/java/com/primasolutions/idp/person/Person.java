@@ -5,6 +5,7 @@ import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.authentication.Role;
+import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.sensitive.EncryptedDomain;
 import org.hibernate.annotations.Type;
 
@@ -23,12 +24,13 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
 @Table(name = "PERSON")
-public class Person  implements EncryptedDomain {
+public class Person  implements EncryptedDomain, Cloneable, Serializable {
 
     public static final int ID_INIT_VALUE = 9999;
     public static final int ID_INC_STEP = 1;
@@ -173,5 +175,13 @@ public class Person  implements EncryptedDomain {
 
     public void setProfiles(final Set<Profile> profiles) {
         this.profiles = profiles;
+    }
+
+    public Person clone() {
+        try {
+            return (Person) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw IDPException.newInstance(e);
+        }
     }
 }

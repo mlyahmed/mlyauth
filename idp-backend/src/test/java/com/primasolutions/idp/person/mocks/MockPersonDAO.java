@@ -94,7 +94,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public <S extends Person> S save(final S entity) {
-        if (entity.getId() < 1) entity.setId(currentID++);
+        if (entity.getId() < 1) entity.setId(++currentID);
         persons.put(entity.getId(), entity);
         return entity;
     }
