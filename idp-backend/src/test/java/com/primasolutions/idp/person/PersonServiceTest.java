@@ -26,6 +26,7 @@ public class PersonServiceTest {
     private MockPersonValidator personValidator;
 
     private PersonService personService;
+
     private PersonBean person;
 
     @Before
@@ -33,9 +34,9 @@ public class PersonServiceTest {
         personService = new PersonService();
         personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
-        setField(personService, "personSaver", new MockPersonSaver());
-        setField(personService, "personBuilder", new MockPersonBuilder());
-        setField(personService, "authInfoBuilder", new MockAuthenticationInfoBuilder());
+        setField(personService, "personSaver", MockPersonSaver.getInstance());
+        setField(personService, "personBuilder", MockPersonBuilder.getInstance());
+        setField(personService, "authInfoBuilder", MockAuthenticationInfoBuilder.getInstance());
         setField(personService, "personLookuper", MockPersonLookuper.getInstance());
     }
 
