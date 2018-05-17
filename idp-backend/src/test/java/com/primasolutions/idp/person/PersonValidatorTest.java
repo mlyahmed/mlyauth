@@ -1,15 +1,16 @@
 package com.primasolutions.idp.person;
 
+import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
+import com.primasolutions.idp.person.mocks.MockPersonLookuper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class PersonValidatorTest {
 
@@ -21,8 +22,8 @@ public class PersonValidatorTest {
     @Before
     public void setup() {
         validator = new PersonValidator();
-        personLookuper = Mockito.mock(PersonLookuper.class);
-        ReflectionTestUtils.setField(validator, "personLookuper", personLookuper);
+        personLookuper = MockPersonLookuper.getInstance();
+        setField(validator, "personLookuper", personLookuper);
     }
 
     @Test
@@ -30,7 +31,7 @@ public class PersonValidatorTest {
         final PersonBean person = PersonBean.newInstance()
                 .setFirstname("Ahmed")
                 .setLastname("EL IDRISSI")
-                .setPassword("password".toCharArray())
+                .setRole(RoleCode.CLIENT)
                 .setEmail("ahmed@gmail.com");
 
         validator.validateNew(person);
