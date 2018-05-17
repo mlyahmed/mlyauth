@@ -17,7 +17,7 @@ public final class MockAuthenticationInfoDAO implements AuthenticationInfoDAO, R
 
 
     private static final int INITIAL_VALUE = 98;
-    private static long authenticationID = INITIAL_VALUE;
+    private static long lastID = INITIAL_VALUE;
 
     private static MockAuthenticationInfoDAO instance;
 
@@ -90,7 +90,8 @@ public final class MockAuthenticationInfoDAO implements AuthenticationInfoDAO, R
 
     @Override
     public <S extends AuthenticationInfo> S save(final S entity) {
-        if (entity.getId() < 1) entity.setId(authenticationID++);
+        if (entity.getId() < 1) entity.setId(++lastID);
+        authentications.put(entity.getId(), entity);
         return entity;
     }
 

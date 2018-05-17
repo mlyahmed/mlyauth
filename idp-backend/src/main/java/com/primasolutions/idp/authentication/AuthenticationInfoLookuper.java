@@ -9,10 +9,10 @@ import java.util.Set;
 public class AuthenticationInfoLookuper {
 
     @Autowired
-    private AuthenticationInfoDAO authInfoDAO;
+    protected AuthenticationInfoDAO authInfoDAO;
 
     @Autowired
-    private AuthenticationInfoByLoginDAO authInfoByLoginDAO;
+    protected AuthenticationInfoByLoginDAO authInfoByLoginDAO;
 
     public AuthenticationInfo byLogin(final String login) {
         final Set<AuthenticationInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(login);

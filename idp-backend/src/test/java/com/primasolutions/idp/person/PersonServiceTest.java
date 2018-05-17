@@ -1,6 +1,7 @@
 package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
+import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoLookuper;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.mocks.MockPersonBuilder;
@@ -63,6 +64,13 @@ public class PersonServiceTest {
         final PersonBean result = when_create_new_person();
         assertThat(result, notNullValue());
         assertThat(MockPersonDAO.getInstance().exists(result.getId()), equalTo(true));
+    }
+
+    @Test
+    public void when_create_a_new_valid_person_then_save_her_auth_info() {
+        given_new_person_to_create();
+        when_create_new_person();
+        assertThat(MockAuthenticationInfoLookuper.getInstance().byLogin((person.getEmail())), notNullValue());
     }
 
     private void given_new_person_to_create() {
