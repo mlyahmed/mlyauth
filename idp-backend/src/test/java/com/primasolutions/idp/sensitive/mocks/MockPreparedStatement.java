@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class MockPreparedStatement implements PreparedStatement {
+public final class MockPreparedStatement implements PreparedStatement {
 
     private HashMap<Integer, Object> params = new HashMap<>();
     private HashMap<Integer, Integer> nulls = new HashMap<>();

@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MockResultSet implements ResultSet {
+public final class MockResultSet implements ResultSet {
 
     private HashMap<String, Object> columns = new HashMap<>();
 
