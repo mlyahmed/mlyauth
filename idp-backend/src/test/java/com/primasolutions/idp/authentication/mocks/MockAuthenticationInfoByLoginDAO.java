@@ -21,18 +21,14 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     private static final int INITIAL_VALUE = 908;
     private static long currentID = INITIAL_VALUE;
 
-    private static MockAuthenticationInfoByLoginDAO instance;
-
     private Map<Long, AuthenticationInfoByLogin> index;
 
+    private static class LazyHolder {
+        static final MockAuthenticationInfoByLoginDAO INSTANCE = new MockAuthenticationInfoByLoginDAO();
+    }
+
     public static MockAuthenticationInfoByLoginDAO getInstance() {
-        if (instance == null) {
-            synchronized (MockAuthenticationInfoByLoginDAO.class) {
-                if (instance == null)
-                    instance = new MockAuthenticationInfoByLoginDAO();
-            }
-        }
-        return instance;
+        return LazyHolder.INSTANCE;
     }
 
     private MockAuthenticationInfoByLoginDAO() {
@@ -42,7 +38,7 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
 
     @Override
     public void reset() {
-        instance = null;
+        index.clear();
     }
 
     @Override
