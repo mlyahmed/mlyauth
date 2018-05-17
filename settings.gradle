@@ -4,5 +4,5 @@ include('idp-samples')
 include('idp-samples:idp')
 include('idp-samples:client')
 
-rootProject.name = 'mly-auth'
+rootProject.name = 'prima-idp'
 
