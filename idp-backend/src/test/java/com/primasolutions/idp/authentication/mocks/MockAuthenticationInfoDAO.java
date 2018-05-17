@@ -19,28 +19,24 @@ public final class MockAuthenticationInfoDAO implements AuthenticationInfoDAO, R
     private static final int INITIAL_VALUE = 98;
     private static long lastID = INITIAL_VALUE;
 
-    private static MockAuthenticationInfoDAO instance;
-
     private HashMap<Long, AuthenticationInfo> authentications;
 
+    private static class LazyHolder {
+        static final MockAuthenticationInfoDAO INSTANCE = new MockAuthenticationInfoDAO();
+    }
+
     public static MockAuthenticationInfoDAO getInstance() {
-        if (instance == null) {
-            synchronized (MockAuthenticationInfoDAO.class) {
-                if (instance == null)
-                    instance = new MockAuthenticationInfoDAO();
-            }
-        }
-        return instance;
+        return LazyHolder.INSTANCE;
     }
 
     private MockAuthenticationInfoDAO() {
-        authentications = new LinkedHashMap<>();
         MockReseter.register(this);
+        authentications = new LinkedHashMap<>();
     }
 
     @Override
     public void reset() {
-        instance = null;
+        authentications.clear();
     }
 
     @Override
