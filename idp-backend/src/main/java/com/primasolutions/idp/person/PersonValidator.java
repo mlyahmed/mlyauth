@@ -19,7 +19,7 @@ public class PersonValidator implements IPersonValidator {
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_IS_NULL")));
 
         if (bean.getEmail() == null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_INVALID")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_NULL")));
 
         if (personLookuper.byEmail(bean.getEmail()) != null)
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));

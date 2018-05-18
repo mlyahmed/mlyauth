@@ -51,12 +51,11 @@ public class PersonValidatorTest {
 
 
     @Test
-    public void when_email_is_not_valid_then_error() {
+    public void when_email_is_null_then_error() {
         final PersonBean person = PersonBean.newInstance()
                 .setFirstname("Ahmed")
                 .setLastname("EL IDRISSI")
-                .setPassword("password".toCharArray())
-                .setEmail(null);
+                .setPassword("password".toCharArray());
 
         IDPException ex = null;
 
@@ -68,7 +67,7 @@ public class PersonValidatorTest {
 
         assertThat(ex, Matchers.notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EMAIL_INVALID"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_NULL"));
 
     }
 
