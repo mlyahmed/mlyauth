@@ -1,15 +1,20 @@
 package com.primasolutions.idp.authentication.mocks;
 
 import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
+import com.primasolutions.idp.tools.ResettableMock;
 
-public final class MockAuthenticationInfoLookuper extends AuthenticationInfoLookuper {
+public final class MockAuthenticationInfoLookuper extends AuthenticationInfoLookuper implements ResettableMock {
 
-    private static class LazyHolder {
-        static final MockAuthenticationInfoLookuper INSTANCE = new MockAuthenticationInfoLookuper();
-    }
+    private static MockAuthenticationInfoLookuper instance;
 
     public static MockAuthenticationInfoLookuper getInstance() {
-        return LazyHolder.INSTANCE;
+        if (instance == null) {
+            synchronized (MockAuthenticationInfoLookuper.class) {
+                if (instance == null)
+                    instance = new MockAuthenticationInfoLookuper();
+            }
+        }
+        return instance;
     }
 
     private MockAuthenticationInfoLookuper() {
@@ -17,4 +22,8 @@ public final class MockAuthenticationInfoLookuper extends AuthenticationInfoLook
         authInfoByLoginDAO = MockAuthenticationInfoByLoginDAO.getInstance();
     }
 
+    @Override
+    public void reset() {
+        instance = null;
+    }
 }
