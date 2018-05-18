@@ -129,7 +129,7 @@ test {
     }
 
 }
-
+test.finalizedBy(jacocoTestReport)
 
 jacoco {
     toolVersion = "0.7.9"
@@ -176,12 +176,6 @@ task installApiDoc(type: Copy){
 }
 installApiDoc.dependsOn(asciidoctor)
 jar.dependsOn(installApiDoc)
-
-
-test.finalizedBy(jacocoTestReport)
-test {
-    outputs.dir snippetsDir
-}
 
 docker {
     name "${project.group}/${jar.baseName}"
