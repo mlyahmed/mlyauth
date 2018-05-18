@@ -3,8 +3,6 @@ package com.primasolutions.idp.authentication.mocks;
 import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.authentication.RoleDAO;
 import com.primasolutions.idp.constants.RoleCode;
-import com.primasolutions.idp.tools.MockReseter;
-import com.primasolutions.idp.tools.ResettableMock;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,28 +10,19 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-public final class MockRoleDAO implements RoleDAO, ResettableMock {
+public final class MockRoleDAO implements RoleDAO {
 
-    private static MockRoleDAO instance;
+    private static class LazyHolder {
+        static final MockRoleDAO INSTANCE = new MockRoleDAO();
+    }
 
     public static MockRoleDAO getInstance() {
-        if (instance == null) {
-            synchronized (MockRoleDAO.class) {
-                if (instance == null)
-                    instance = new MockRoleDAO();
-            }
-        }
-        return instance;
+        return LazyHolder.INSTANCE;
     }
 
     private MockRoleDAO() {
-        MockReseter.register(this);
     }
 
-    @Override
-    public void reset() {
-        instance = null;
-    }
 
     @Override
     public List<Role> findAll() {
