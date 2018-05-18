@@ -14,25 +14,28 @@ public final class MockAuthenticationSessionDAO implements AuthenticationSession
     private static final long INITIAL_VALUE = 7665L;
     private static Long currentId = INITIAL_VALUE;
 
+    private static MockAuthenticationSessionDAO instance;
+
     private Map<Long, AuthenticationSession> sessions;
 
-    private static class LazyHolder {
-        static final MockAuthenticationSessionDAO INSTANCE = new MockAuthenticationSessionDAO();
-    }
-
     public static MockAuthenticationSessionDAO getInstance() {
-        return LazyHolder.INSTANCE;
+        if (instance == null) {
+            synchronized (MockAuthenticationSessionDAO.class) {
+                if (instance == null)
+                    instance = new MockAuthenticationSessionDAO();
+            }
+        }
+        return instance;
     }
 
 
     private MockAuthenticationSessionDAO() {
-        MockReseter.register(this);
         sessions = new HashMap<>();
+        MockReseter.register(this);
     }
 
-    @Override
     public void reset() {
-        sessions.clear();
+        instance = null;
     }
 
     @Override
