@@ -29,7 +29,7 @@ public class PersonValidatorTest {
     @Test
     public void when_a_new_person_is_valid_then_no_error() {
         final PersonBean person = PersonBean.newInstance()
-                .setFirstname("Ahmed")
+                .setFirstname("Moulay Ahmed")
                 .setLastname("EL IDRISSI")
                 .setRole(RoleCode.CLIENT)
                 .setEmail("ahmed@gmail.com");
