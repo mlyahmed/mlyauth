@@ -15,15 +15,12 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 public class PersonValidatorTest {
 
 
-    private PersonLookuper personLookuper;
-
     private PersonValidator validator;
 
     @Before
     public void setup() {
         validator = new PersonValidator();
-        personLookuper = MockPersonLookuper.getInstance();
-        setField(validator, "personLookuper", personLookuper);
+        setField(validator, "personLookuper", MockPersonLookuper.getInstance());
     }
 
     @Test
