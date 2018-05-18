@@ -59,24 +59,33 @@ dependencies {
     compile('org.webjars:jquery:2.2.1')
     compile('org.webjars:font-awesome:5.0.6')
     compile("org.jasypt:jasypt-hibernate4:1.9.2")
+    compile("org.bouncycastle:bcpkix-jdk15on:1.47")
+
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")
     testCompile("org.springframework.restdocs:spring-restdocs-restassured")
     testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
     testCompile("com.h2database:h2")
     testCompile("io.cucumber:cucumber-java:2.3.1")
     testCompile("io.cucumber:cucumber-junit:2.3.1")
     testCompile("io.cucumber:cucumber-spring:2.3.1")
     testCompile("io.cucumber:cucumber-jvm:2.3.1")
+
     testCompile("junit:junit:4.12")
+    testCompile("org.junit.vintage:junit-vintage-engine:5.2.0")
+
     testCompile("pl.pragmatists:JUnitParams:1.1.1")
     testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
     testCompile("org.mockito:mockito-core:2.13.0")
     testCompile("org.hamcrest:hamcrest-all:1.3")
     testCompile("org.exparity:hamcrest-date:2.0.4")
-    compile("org.bouncycastle:bcpkix-jdk15on:1.47")
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testCompile("org.junit.jupiter:junit-jupiter-params:5.2.0")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+
 }
 
 
@@ -102,6 +111,11 @@ configurations {
 }
 
 test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+        includeEngines 'junit-vintage'
+    }
+
     testLogging {
         showStandardStreams = false
         afterSuite { desc, result ->
@@ -114,6 +128,7 @@ test {
         }
     }
 }
+
 
 jacoco {
     toolVersion = "0.7.9"
@@ -145,7 +160,6 @@ checkstyle {
 asciidoctor {
     def docAttributes = [:]
     docAttributes.put("generated-snippets", project.ext["snippetsDir"])
-
     attributes docAttributes
     outputDir "build/apidoc"
     inputs.dir project.ext["snippetsDir"]

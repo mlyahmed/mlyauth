@@ -10,6 +10,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class PersonValidatorTest {
@@ -26,24 +27,16 @@ public class PersonValidatorTest {
     @Test
     public void when_a_new_person_is_valid_then_no_error() {
         final PersonBean person = PersonBean.newInstance()
-                .setFirstname("Moulay Ahmed")
+                .setFirstname("Ahmed")
                 .setLastname("EL IDRISSI")
                 .setRole(RoleCode.CLIENT)
                 .setEmail("ahmed@gmail.com");
-
         validator.validateNew(person);
     }
 
     @Test
     public void when_validate_new_person_and_null_then_error() {
-        IDPException ex = null;
-
-        try {
-            validator.validateNew(null);
-        } catch (IDPException e) {
-            ex = e;
-        }
-
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(null));
         assertThat(ex, Matchers.notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_IS_NULL"));
@@ -57,14 +50,7 @@ public class PersonValidatorTest {
                 .setLastname("EL IDRISSI")
                 .setPassword("password".toCharArray());
 
-        IDPException ex = null;
-
-        try {
-            validator.validateNew(person);
-        } catch (IDPException e) {
-            ex = e;
-        }
-
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, Matchers.notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_NULL"));
