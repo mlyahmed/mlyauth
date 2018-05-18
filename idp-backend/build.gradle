@@ -61,7 +61,7 @@ dependencies {
     compile("org.jasypt:jasypt-hibernate4:1.9.2")
     compile("org.bouncycastle:bcpkix-jdk15on:1.47")
 
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.0.RELEASE")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")
