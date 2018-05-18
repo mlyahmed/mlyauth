@@ -18,7 +18,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
     private static final int INITIAL_VALUE = 9429;
     private static long currentID = INITIAL_VALUE;
 
-    private static MockPersonDAO instance;
+    private static volatile MockPersonDAO instance;
 
     private HashMap<Long, Person> persons;
 

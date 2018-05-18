@@ -14,7 +14,7 @@ import java.util.List;
 
 public final class MockRoleDAO implements RoleDAO, ResettableMock {
 
-    private static MockRoleDAO instance;
+    private static volatile MockRoleDAO instance;
 
     public static MockRoleDAO getInstance() {
         if (instance == null) {

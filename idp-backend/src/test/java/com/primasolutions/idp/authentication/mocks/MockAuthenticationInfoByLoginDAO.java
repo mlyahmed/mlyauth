@@ -32,8 +32,8 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     private MockAuthenticationInfoByLoginDAO() {
-        index = new LinkedHashMap<>();
         MockReseter.register(this);
+        index = new LinkedHashMap<>();
     }
 
     @Override

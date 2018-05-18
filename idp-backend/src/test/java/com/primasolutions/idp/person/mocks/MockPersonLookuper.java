@@ -6,7 +6,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 public final class MockPersonLookuper extends PersonLookuper implements ResettableMock {
 
-    private static MockPersonLookuper instance;
+    private static volatile MockPersonLookuper instance;
 
     public static MockPersonLookuper getInstance() {
         if (instance == null) {

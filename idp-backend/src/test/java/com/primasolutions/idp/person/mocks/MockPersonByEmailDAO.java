@@ -21,7 +21,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
     private static final int INITIAL_VALUE = 9519;
     private static long currentID = INITIAL_VALUE;
 
-    private static MockPersonByEmailDAO instance;
+    private static volatile MockPersonByEmailDAO instance;
 
     private Map<Long, PersonByEmail> index;
 

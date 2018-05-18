@@ -19,7 +19,7 @@ public final class MockAuthenticationInfoDAO implements AuthenticationInfoDAO, R
     private static final int INITIAL_VALUE = 98;
     private static long lastID = INITIAL_VALUE;
 
-    private static MockAuthenticationInfoDAO instance;
+    private static volatile MockAuthenticationInfoDAO instance;
 
     private HashMap<Long, AuthenticationInfo> authentications;
 

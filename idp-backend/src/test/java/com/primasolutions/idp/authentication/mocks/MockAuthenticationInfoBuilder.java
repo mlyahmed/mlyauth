@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public final class MockAuthenticationInfoBuilder extends AuthenticationInfoBuilder implements ResettableMock {
 
-    private static MockAuthenticationInfoBuilder instance;
+    private static volatile MockAuthenticationInfoBuilder instance;
 
     private static final int STRENGTH = 4;
 

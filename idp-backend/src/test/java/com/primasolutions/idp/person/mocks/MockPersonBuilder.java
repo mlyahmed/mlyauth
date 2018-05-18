@@ -7,7 +7,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 public final class MockPersonBuilder extends PersonBuilder implements ResettableMock {
 
-    private static MockPersonBuilder instance;
+    private static volatile MockPersonBuilder instance;
 
     public static MockPersonBuilder getInstance() {
         if (instance == null) {

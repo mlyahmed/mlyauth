@@ -7,7 +7,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 public final class MockPersonValidator extends PersonValidator implements ResettableMock {
 
-    private static MockPersonValidator instance;
+    private static volatile MockPersonValidator instance;
 
     private RuntimeException forcedError;
 

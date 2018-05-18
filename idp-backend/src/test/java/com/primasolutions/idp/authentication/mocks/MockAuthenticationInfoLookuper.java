@@ -5,7 +5,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 public final class MockAuthenticationInfoLookuper extends AuthenticationInfoLookuper implements ResettableMock {
 
-    private static MockAuthenticationInfoLookuper instance;
+    private static volatile MockAuthenticationInfoLookuper instance;
 
     public static MockAuthenticationInfoLookuper getInstance() {
         if (instance == null) {

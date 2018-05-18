@@ -14,7 +14,7 @@ public final class MockAuthenticationSessionDAO implements AuthenticationSession
     private static final long INITIAL_VALUE = 7665L;
     private static Long currentId = INITIAL_VALUE;
 
-    private static MockAuthenticationSessionDAO instance;
+    private static volatile MockAuthenticationSessionDAO instance;
 
     private Map<Long, AuthenticationSession> sessions;
 

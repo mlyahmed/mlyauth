@@ -7,7 +7,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 public final class MockPersonSaver extends PersonSaver implements ResettableMock {
 
-    private static MockPersonSaver instance;
+    private static volatile MockPersonSaver instance;
 
     public static MockPersonSaver getInstance() {
         if (instance == null) {
@@ -23,7 +23,7 @@ public final class MockPersonSaver extends PersonSaver implements ResettableMock
         MockReseter.register(this);
         personDAO = MockPersonDAO.getInstance();
         personByEmailDAO = MockPersonByEmailDAO.getInstance();
-        authenticationInfoSaver = new MockAuthenticationInfoSaver();
+        authenticationInfoSaver = MockAuthenticationInfoSaver.getInstance();
     }
 
     @Override
