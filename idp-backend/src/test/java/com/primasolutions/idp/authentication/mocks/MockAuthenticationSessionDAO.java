@@ -35,7 +35,7 @@ public final class MockAuthenticationSessionDAO implements AuthenticationSession
     }
 
     public void reset() {
-        instance = null;
+        sessions.clear();
     }
 
     @Override

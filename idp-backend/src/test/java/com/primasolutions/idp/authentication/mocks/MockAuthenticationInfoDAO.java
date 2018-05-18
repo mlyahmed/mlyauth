@@ -40,7 +40,7 @@ public final class MockAuthenticationInfoDAO implements AuthenticationInfoDAO, R
 
     @Override
     public void reset() {
-        instance = null;
+        authentications.clear();
     }
 
     @Override

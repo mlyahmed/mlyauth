@@ -42,7 +42,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
 
     @Override
     public void reset() {
-        instance = null;
+        index.clear();
     }
 
     @Override

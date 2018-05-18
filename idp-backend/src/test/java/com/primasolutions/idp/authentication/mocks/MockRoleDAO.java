@@ -32,7 +32,6 @@ public final class MockRoleDAO implements RoleDAO, ResettableMock {
 
     @Override
     public void reset() {
-        instance = null;
     }
 
     @Override

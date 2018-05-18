@@ -39,7 +39,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public void reset() {
-        instance = null;
+        persons.clear();
     }
 
     @Override
