@@ -31,11 +31,11 @@ class PersonValidatorTest {
     void setup() {
         validator = new PersonValidator();
         setField(validator, "personLookuper", MockPersonLookuper.getInstance());
+        given_valid_person_to_create();
     }
 
     @Test
     void when_a_new_person_is_valid_then_no_error() {
-        given_valid_person_to_create();
         validator.validateNew(person);
     }
 
@@ -47,14 +47,13 @@ class PersonValidatorTest {
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_IS_NULL"));
     }
 
-    private static Stream<String> emptyEmails() {
+    private static Stream<String> emptyStrings() {
         return Stream.of(null, "");
     }
 
     @ParameterizedTest
-    @MethodSource("emptyEmails")
+    @MethodSource("emptyStrings")
     void when_email_address_is_empty_then_error(final String email) {
-        given_valid_person_to_create();
         and_email_address_is(email);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
@@ -65,7 +64,6 @@ class PersonValidatorTest {
 
     @Test
     void when_email_address_is_not_valid_then_error() {
-        given_valid_person_to_create();
         and_email_address_is(randomString());
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
@@ -86,12 +84,21 @@ class PersonValidatorTest {
     @ParameterizedTest
     @MethodSource("tooLongEmails")
     void when_email_address_is_too_long_then_error(final String tooLongEmail) {
-        given_valid_person_to_create();
         and_email_address_is(tooLongEmail);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_TOO_LONG"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_first_name_is_empty_then_error(final String empty) {
+        person.setFirstname(empty);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_FIRSTNAME_IS_EMPTY"));
     }
 
     private void and_email_address_is(final String email) {

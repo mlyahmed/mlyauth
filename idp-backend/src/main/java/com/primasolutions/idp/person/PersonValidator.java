@@ -2,6 +2,7 @@ package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,9 @@ public class PersonValidator implements IPersonValidator {
         thePersonMustNotBeNull(bean);
         theEmailMustBeValid(bean);
         theEmailMustBeNew(bean);
+
+        if (StringUtils.isEmpty(bean.getFirstname()))
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_FIRSTNAME_IS_EMPTY")));
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
