@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.validator;
 
 import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;

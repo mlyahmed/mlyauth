@@ -2,6 +2,7 @@ package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.application.ApplicationLookuper;
 import com.primasolutions.idp.authentication.AuthenticationInfoBuilder;
+import com.primasolutions.idp.person.validator.IPersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

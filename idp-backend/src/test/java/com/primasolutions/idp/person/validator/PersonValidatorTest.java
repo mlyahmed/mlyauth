@@ -1,7 +1,8 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.validator;
 
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
+import com.primasolutions.idp.person.PersonBean;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
