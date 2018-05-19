@@ -7,6 +7,7 @@ import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml2.metadata.KeyDescriptor;
+import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
 import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
@@ -32,29 +33,33 @@ public class IDPSAMLMetadataGenerator {
     public EntityDescriptor generateMetadata() {
 
         try {
-
-            EntityDescriptor metadata = samlHelper.buildSAMLObject(EntityDescriptor.class);
-            IDPSSODescriptor idpDescriptor = samlHelper.buildSAMLObject(IDPSSODescriptor.class);
-
-            X509KeyInfoGeneratorFactory keyInfoGeneratorFactory = new X509KeyInfoGeneratorFactory();
-            keyInfoGeneratorFactory.setEmitEntityCertificate(true);
-            KeyInfoGenerator keyInfoGenerator = keyInfoGeneratorFactory.newInstance();
-
-            KeyDescriptor signKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
-            signKeyDescriptor.setUse(UsageType.SIGNING);
-            signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
-            idpDescriptor.getKeyDescriptors().add(signKeyDescriptor);
-            idpDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
-
+            final KeyInfoGenerator keyInfoGenerator = keyInfoGenerator();
+            final IDPSSODescriptor idpDescriptor = idpDescriptor(keyInfoGenerator);
+            final EntityDescriptor metadata = samlHelper.buildSAMLObject(EntityDescriptor.class);
             metadata.getRoleDescriptors().add(idpDescriptor);
             metadata.setEntityID(idpEntityId);
             metadata.setID(idpEntityId);
-
             return metadata;
         } catch (Exception e) {
             throw IDPException.newInstance()
                     .setErrors(Arrays.asList(new AuthError("IDP_SAML_METADATA_ERROR", e.getMessage())));
         }
 
+    }
+
+    private KeyInfoGenerator keyInfoGenerator() {
+        X509KeyInfoGeneratorFactory keyInfoGeneratorFactory = new X509KeyInfoGeneratorFactory();
+        keyInfoGeneratorFactory.setEmitEntityCertificate(true);
+        return keyInfoGeneratorFactory.newInstance();
+    }
+
+    private IDPSSODescriptor idpDescriptor(final KeyInfoGenerator keyInfoGenerator) throws SecurityException {
+        final IDPSSODescriptor idpDescriptor = samlHelper.buildSAMLObject(IDPSSODescriptor.class);
+        KeyDescriptor signKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
+        signKeyDescriptor.setUse(UsageType.SIGNING);
+        signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(keyManeger.getDefaultCredential()));
+        idpDescriptor.getKeyDescriptors().add(signKeyDescriptor);
+        idpDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
+        return idpDescriptor;
     }
 }

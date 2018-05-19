@@ -1,7 +1,7 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.constants.AuthenticationInfoStatus;
+import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.person.Person;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -18,10 +18,10 @@ public class IDPUser extends User {
     public IDPUser(final IContext context) {
         super(context.getLogin(),
                 context.getPassword(),
-                context.getAuthenticationInfo().getStatus() == AuthenticationInfoStatus.ACTIVE,
+                context.getAuthenticationInfo().getStatus() == AuthInfoStatus.ACTIVE,
                 context.getAuthenticationInfo().getExpireAt().after(new Date()),
                 true,
-                context.getAuthenticationInfo().getStatus() != AuthenticationInfoStatus.LOCKED,
+                context.getAuthenticationInfo().getStatus() != AuthInfoStatus.LOCKED,
                 toAuthorities(context)
         );
 

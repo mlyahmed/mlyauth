@@ -73,6 +73,12 @@ public class JOSETokenService {
         final Token readyRefresh = tokenDAO.findByStamp(DigestUtils.sha256Hex(refresh.getStamp()));
         notNull(readyRefresh, "No Ready Refresh token found");
 
+        final JOSEAccessToken accessToken = newAccessToken(refresh, rsEntityId);
+        saveToken(rsEntityId, accessToken);
+        return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
+    }
+
+    private JOSEAccessToken newAccessToken(final JOSERefreshToken refresh, final AppAspAttr rsEntityId) {
         final PublicKey rsKey = getResourceServerKey(refresh, rsEntityId);
         final JOSEAccessToken accessToken = tokenFactory.newAccessToken(credManager.getPrivateKey(), rsKey);
         accessToken.setStamp(idGenerator.generateId());
@@ -82,7 +88,10 @@ public class JOSETokenService {
         accessToken.setAudience(refresh.getAudience());
         accessToken.setVerdict(TokenVerdict.SUCCESS);
         accessToken.cypher();
+        return accessToken;
+    }
 
+    private void saveToken(final AppAspAttr rsEntityId, final JOSEAccessToken accessToken) {
         final Token token = tokenMapper.toToken(accessToken);
         token.setPurpose(TokenPurpose.DELEGATION);
         token.setStatus(TokenStatus.READY);
@@ -90,8 +99,6 @@ public class JOSETokenService {
         token.setSession(context.getAuthenticationSession());
         token.setApplication(applicationDAO.findOne(rsEntityId.getId().getApplicationId()));
         tokenDAO.saveAndFlush(token);
-
-        return new TokenBean(accessToken.serialize(), accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
     }
 
     private PublicKey getResourceServerKey(final JOSERefreshToken refresh, final AppAspAttr rsId) {

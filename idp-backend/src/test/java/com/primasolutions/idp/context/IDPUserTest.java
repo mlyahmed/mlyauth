@@ -3,7 +3,7 @@ package com.primasolutions.idp.context;
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.Profile;
-import com.primasolutions.idp.constants.AuthenticationInfoStatus;
+import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.context.mocks.MockContextHolder;
 import com.primasolutions.idp.person.Person;
@@ -104,7 +104,7 @@ public class IDPUserTest {
     @Test
     public void when_the_person_account_status_is_not_active_then_is_locked() {
         authInfo.setExpireAt(FUTURE_TIME);
-        authInfo.setStatus(AuthenticationInfoStatus.LOCKED);
+        authInfo.setStatus(AuthInfoStatus.LOCKED);
         IDPUser user = new IDPUser(personContext);
         assertThat(user.isAccountNonLocked(), equalTo(false));
     }
@@ -112,7 +112,7 @@ public class IDPUserTest {
     @Test
     public void when_the_application_account_status_is_not_active_then_is_locked() {
         authInfo.setExpireAt(FUTURE_TIME);
-        authInfo.setStatus(AuthenticationInfoStatus.LOCKED);
+        authInfo.setStatus(AuthInfoStatus.LOCKED);
         IDPUser user = new IDPUser(applicationContext);
         assertThat(user.isAccountNonLocked(), equalTo(false));
     }

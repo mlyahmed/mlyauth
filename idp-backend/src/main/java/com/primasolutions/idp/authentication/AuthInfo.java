@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.constants.AuthenticationInfoStatus;
+import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.sensitive.EncryptedDomain;
 import org.hibernate.annotations.Type;
@@ -45,7 +45,7 @@ public class AuthInfo implements EncryptedDomain {
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
-    private AuthenticationInfoStatus status;
+    private AuthInfoStatus status;
 
     @Column(name = "EFFECTIVE_AT", nullable = false)
     private java.util.Date effectiveAt;
@@ -89,11 +89,11 @@ public class AuthInfo implements EncryptedDomain {
         return this;
     }
 
-    public AuthenticationInfoStatus getStatus() {
+    public AuthInfoStatus getStatus() {
         return status;
     }
 
-    public AuthInfo setStatus(final AuthenticationInfoStatus status) {
+    public AuthInfo setStatus(final AuthInfoStatus status) {
         this.status = status;
         return this;
     }

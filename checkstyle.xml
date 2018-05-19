@@ -66,7 +66,7 @@
         </module>
 
         <module name="MethodLength">
-            <property name="max" value="30"/>
+            <property name="max" value="25"/>
             <property name="countEmpty" value="false"/>
         </module>
 
@@ -133,13 +133,6 @@
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
         <module name="UpperEll"/>
-
-        <!--
-            <module name="TodoComment">
-                <property name="format" value="(TODO)|(FIXME)"/>
-            </module>
-        -->
-
 
     </module>
 

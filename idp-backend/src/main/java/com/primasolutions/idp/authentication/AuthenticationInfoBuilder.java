@@ -1,6 +1,6 @@
 package com.primasolutions.idp.authentication;
 
-import com.primasolutions.idp.constants.AuthenticationInfoStatus;
+import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.person.PersonBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +21,7 @@ public class AuthenticationInfoBuilder {
         return AuthInfo.newInstance()
                 .setLogin(bean.getEmail())
                 .setPassword(passwordEncoder.encode(buildPassword(bean)))
-                .setStatus(AuthenticationInfoStatus.ACTIVE)
+                .setStatus(AuthInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date())
                 .setExpireAt(new Date(System.currentTimeMillis() + A_CENTURY));
     }

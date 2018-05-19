@@ -1,5 +1,5 @@
 package com.primasolutions.idp.constants;
 
-public enum AuthenticationInfoStatus {
+public enum AuthInfoStatus {
     ACTIVE, LOCKED
 }

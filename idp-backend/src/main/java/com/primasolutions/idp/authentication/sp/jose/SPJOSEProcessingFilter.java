@@ -84,11 +84,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             final JOSEAccessToken token = tokenDecoder.decodeAccess(getRawBearer(request), AspectType.IDP_JOSE);
             accessTokenValidator.validate(token);
 
-            if (!"SSO".equals(token.getBP()))
-                throw JOSEErrorException.newInstance("The Token BP must be SSO");
-
-            if (!getFullURL(request).equals(token.getTargetURL()))
-                throw JOSEErrorException.newInstance("The Token Target URL does not match");
+            if (!"SSO".equals(token.getBP())) throw JOSEErrorException.newInstance("The Token BP must be SSO");
+            if (!isTheRightTarget(request, token)) throw JOSEErrorException.newInstance("The target URL doesn't match");
 
             final Authentication auth = getAuthenticationManager().authenticate(new JOSEAuthenticationToken(token));
             traceNavigation(request, started, token);
@@ -115,10 +112,14 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             throw JOSEErrorException.newInstance();
     }
 
-    public String getFullURL(final HttpServletRequest request) {
+    private String getFullURL(final HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         return request.getQueryString() == null
                 ? requestURL.toString() : requestURL.append('?').append(request.getQueryString()).toString();
+    }
+
+    private boolean isTheRightTarget(final HttpServletRequest request, final JOSEAccessToken token) {
+        return getFullURL(request).equals(token.getTargetURL());
     }
 
     private void traceNavigation(final HttpServletRequest req, final Stopwatch started, final JOSEAccessToken token) {

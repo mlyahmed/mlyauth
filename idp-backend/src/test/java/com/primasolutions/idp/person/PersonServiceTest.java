@@ -5,7 +5,7 @@ import com.primasolutions.idp.authentication.AuthInfoByLogin;
 import com.primasolutions.idp.authentication.mocks.MockAuthInfoByLoginDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthInfoDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
-import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoLookuper;
+import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.mocks.MockPersonBuilder;
@@ -15,7 +15,7 @@ import com.primasolutions.idp.person.mocks.MockPersonLookuper;
 import com.primasolutions.idp.person.mocks.MockPersonSaver;
 import com.primasolutions.idp.person.mocks.MockPersonValidator;
 import com.primasolutions.idp.tools.MockReseter;
-import org.hamcrest.Matchers;
+import org.exparity.hamcrest.date.DateMatchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -39,6 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 class PersonServiceTest {
+
+    private  static final int ONE_SECOND = 1000;
 
     private MockPersonValidator personValidator;
 
@@ -110,17 +113,11 @@ class PersonServiceTest {
 
         final AuthInfo authInfo = MockAuthInfoDAO.getInstance().findOne(byLogin.iterator().next().getAuthInfoId());
         assertThat(authInfo, notNullValue());
+        assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
+        assertThat(authInfo.getEffectiveAt(), DateMatchers.before(new Date(System.currentTimeMillis() + ONE_SECOND)));
+        assertThat(authInfo.getStatus(), equalTo(AuthInfoStatus.ACTIVE));
     }
 
-
-    @Test
-    void when_create_a_new_valid_person_then_save_her_auth_info() {
-        given_new_person_to_create();
-        when_create_new_person();
-        final AuthInfo actual = MockAuthenticationInfoLookuper.getInstance().byLogin((person.getEmail()));
-        assertThat(actual, notNullValue());
-        assertThat(actual.getLogin(), Matchers.equalTo(person.getEmail()));
-    }
 
     private static Stream<String> emailAddresses() {
         // @formatter:off

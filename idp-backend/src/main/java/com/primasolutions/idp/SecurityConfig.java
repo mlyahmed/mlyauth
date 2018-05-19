@@ -85,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JOSEBearerAuthenticationFilter();
     }
 
+    //CHECKSTYLE:OFF
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
@@ -110,5 +111,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(requestContextFilter(), ChannelProcessingFilter.class);
         http.csrf().disable();
     }
-
+    //CHECKSTYLE:ON
 }

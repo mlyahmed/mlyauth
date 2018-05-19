@@ -14,7 +14,7 @@ import com.primasolutions.idp.authentication.AuthInfoByLoginDAO;
 import com.primasolutions.idp.authentication.AuthInfoDAO;
 import com.primasolutions.idp.constants.ApplicationTypeCode;
 import com.primasolutions.idp.constants.AspectAttribute;
-import com.primasolutions.idp.constants.AuthenticationInfoStatus;
+import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.constants.TokenVerdict;
@@ -172,7 +172,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setLogin(CLIENT_SPACE_APP_LOGIN)
                 .setExpireAt(new Date(System.currentTimeMillis() + ONE_MINUTE))
                 .setPassword(passwordEncoder.encode(CLIENT_SPACE_APP_PASSWORD))
-                .setStatus(AuthenticationInfoStatus.ACTIVE)
+                .setStatus(AuthInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         clientSpace = Application.newInstance()
                 .setType(applicationTypeDAO.findOne(ApplicationTypeCode.CLIENT_SPACE))
@@ -238,7 +238,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setLogin(POLICY_APP_LOGIN)
                 .setExpireAt(new Date(System.currentTimeMillis() + ONE_MINUTE))
                 .setPassword(passwordEncoder.encode(POLICY_APP_PASSWORD))
-                .setStatus(AuthenticationInfoStatus.ACTIVE)
+                .setStatus(AuthInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         policy = Application.newInstance()
                 .setType(applicationTypeDAO.findOne(ApplicationTypeCode.POLICY))
