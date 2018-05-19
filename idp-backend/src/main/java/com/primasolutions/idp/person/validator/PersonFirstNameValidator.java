@@ -16,10 +16,10 @@ public class PersonFirstNameValidator {
 
     public void validate(final String firstName) {
         if (StringUtils.isEmpty(firstName))
-            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("FIRSTNAME_IS_EMPTY")));
+            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("FIRST_NAME_EMPTY")));
 
         if (firstName.length() > MAX_LENGTH)
-            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("FIRSTNAME_TOO_LONG")));
+            throw IDPException.newInstance().setErrors(Arrays.asList(AuthError.newInstance("FIRST_NAME_TOO_LONG")));
     }
 
 }

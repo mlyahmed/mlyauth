@@ -125,7 +125,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         result.andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$.[0].code", equalTo("PERSON_ALREADY_EXISTS")));
+                .andExpect(jsonPath("$.[0].code", equalTo("EMAIL_ALREADY_EXISTS")));
     }
 
     @Test

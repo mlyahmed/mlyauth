@@ -21,6 +21,7 @@ public class PersonValidator implements IPersonValidator {
         theEmailMustBeValid(bean);
         theEmailMustBeNew(bean);
         theFirstNameMustBeValid(bean);
+        theLastNameMustBeValid(bean);
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
@@ -34,10 +35,14 @@ public class PersonValidator implements IPersonValidator {
 
     private void theEmailMustBeNew(final PersonBean bean) {
         if (personLookuper.byEmail(bean.getEmail()) != null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_ALREADY_EXISTS")));
     }
 
     private void theFirstNameMustBeValid(final PersonBean bean) {
         PersonFirstNameValidator.newInstance().validate(bean.getFirstname());
+    }
+
+    private void theLastNameMustBeValid(final PersonBean bean) {
+        PersonLastNameValidator.newInstance().validate(bean.getLastname());
     }
 }
