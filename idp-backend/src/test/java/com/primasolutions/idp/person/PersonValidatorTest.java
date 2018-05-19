@@ -53,12 +53,16 @@ class PersonValidatorTest {
     @MethodSource("emptyEmails")
     void when_email_is_empty_then_error(final String email) {
         given_valid_person_to_create();
-        person.setEmail(email);
+        and_email_address_is(email);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_EMPTY"));
 
+    }
+
+    private void and_email_address_is(final String email) {
+        person.setEmail(email);
     }
 
     private void given_valid_person_to_create() {
