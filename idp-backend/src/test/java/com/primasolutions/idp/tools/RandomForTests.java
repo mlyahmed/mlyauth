@@ -1,10 +1,13 @@
 package com.primasolutions.idp.tools;
 
 import com.primasolutions.idp.person.PersonBuilder;
+import org.ajbrown.namemachine.NameGenerator;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public final class RandomForTests {
@@ -13,6 +16,24 @@ public final class RandomForTests {
     private static final long MAX_LONG = 10000000000000L;
     private static final int MIN_YEAR = 1950;
     private static final int MAX_YEAR = 1999;
+
+    public static class NamePair {
+        private final String firstName;
+        private final String lastName;
+
+        NamePair(final String firstName, final String lastName) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+    }
 
     private RandomForTests() {
     }
@@ -29,7 +50,8 @@ public final class RandomForTests {
 
 
     public static String randomFrenchEmail() {
-        return randomString() + "@" + randomString() + ".fr";
+        List<String> domains = Arrays.asList("amazon.com", "gmail.com", "yahoo.fr", "hotmail.fr");
+        return randomString() + "@" + domains.get(new Random().nextInt(domains.size()));
     }
 
     public static String randomBirthdate() {
@@ -40,4 +62,9 @@ public final class RandomForTests {
         return randomBirthDate.format(DateTimeFormatter.ofPattern(PersonBuilder.DATE_FORMAT));
     }
 
+    public static NamePair randomName() {
+        NameGenerator generator = new NameGenerator();
+        List<org.ajbrown.namemachine.Name> name = generator.generateNames(1);
+        return new NamePair(name.get(0).getFirstName(), name.get(0).getLastName());
+    }
 }
