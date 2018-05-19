@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomName;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
+import static org.apache.commons.lang.StringUtils.leftPad;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -70,6 +71,27 @@ class PersonValidatorTest {
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_INVALID"));
+    }
+
+    private static Stream<String> tooLongEmails() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                leftPad("@yahoo.fr", 65, randomString().charAt(1)),
+                leftPad("@hotmail.com", 67, randomString().charAt(1)),
+                leftPad("@gmail.com", 100, randomString().charAt(1))
+                //CHECKSTYLE:ON
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("tooLongEmails")
+    void when_email_address_is_too_long_then_error(final String tooLongEmail) {
+        given_valid_person_to_create();
+        and_email_address_is(tooLongEmail);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_TOO_LONG"));
     }
 
     private void and_email_address_is(final String email) {

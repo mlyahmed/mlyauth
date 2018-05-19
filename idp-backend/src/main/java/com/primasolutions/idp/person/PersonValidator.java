@@ -12,6 +12,8 @@ import static java.util.Arrays.asList;
 @Component
 public class PersonValidator implements IPersonValidator {
 
+    private static final int MAX_EMAIL_LENGTH = 64;
+
     @Autowired
     protected PersonLookuper personLookuper;
 
@@ -22,6 +24,9 @@ public class PersonValidator implements IPersonValidator {
 
         if (StringUtils.isEmpty(bean.getEmail()))
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_EMPTY")));
+
+        if (bean.getEmail().length() > MAX_EMAIL_LENGTH)
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_TOO_LONG")));
 
         if (!EmailValidator.getInstance().isValid(bean.getEmail()))
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_INVALID")));
