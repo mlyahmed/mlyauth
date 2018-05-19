@@ -49,7 +49,7 @@ public final class RandomForTests {
     }
 
 
-    public static String randomFrenchEmail() {
+    public static String randomEmail() {
         List<String> domains = Arrays.asList("amazon.com", "gmail.com", "yahoo.fr", "hotmail.fr");
         return randomString() + "@" + domains.get(new Random().nextInt(domains.size()));
     }

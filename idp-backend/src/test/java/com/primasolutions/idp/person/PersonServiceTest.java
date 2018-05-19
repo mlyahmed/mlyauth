@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
-import static com.primasolutions.idp.tools.RandomForTests.randomFrenchEmail;
+import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -87,10 +87,10 @@ public class PersonServiceTest {
     public static Object[] emailAddresses() {
         // @formatter:off
         return new Object[]{
-                randomFrenchEmail(),
-                randomFrenchEmail(),
-                randomFrenchEmail(),
-                randomFrenchEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
         };
         // @formatter:on
     }
@@ -122,7 +122,7 @@ public class PersonServiceTest {
                 .setLastname(randomString())
                 .setBirthdate(randomBirthdate())
                 .setRole(RoleCode.CLIENT)
-                .setEmail(randomFrenchEmail());
+                .setEmail(randomEmail());
     }
 
     private PersonBean when_create_new_person() {

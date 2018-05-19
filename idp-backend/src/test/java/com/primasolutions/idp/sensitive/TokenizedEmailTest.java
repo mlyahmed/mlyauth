@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import java.sql.Types;
 
+import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
@@ -68,9 +69,9 @@ public class TokenizedEmailTest {
         return new Object[][]{
                 {"ahmed@elidrissi.ma", "ahmed@elidrissi.fr"},
                 {null, "ahmed@elidrissi.fr"},
-                {RandomForTests.randomFrenchEmail(), RandomForTests.randomFrenchEmail()},
-                {RandomForTests.randomFrenchEmail(), RandomForTests.randomFrenchEmail()},
-                {RandomForTests.randomFrenchEmail(), RandomForTests.randomFrenchEmail()},
+                {randomEmail(), randomEmail()},
+                {randomEmail(), randomEmail()},
+                {randomEmail(), randomEmail()},
         };
         // @formatter:on
     }
@@ -85,13 +86,13 @@ public class TokenizedEmailTest {
     public static Object[] emails() {
         // @formatter:off
         return new Object[]{
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
         };
         // @formatter:on
     }

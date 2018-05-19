@@ -39,13 +39,13 @@ public class PersonLookuperTest {
     public static String[] emails() {
         // @formatter:off
         return new String[]{
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
-                RandomForTests.randomFrenchEmail(),
+                RandomForTests.randomEmail(),
+                RandomForTests.randomEmail(),
+                RandomForTests.randomEmail(),
+                RandomForTests.randomEmail(),
+                RandomForTests.randomEmail(),
+                RandomForTests.randomEmail(),
+                RandomForTests.randomEmail(),
         };
         // @formatter:on
     }
@@ -89,7 +89,7 @@ public class PersonLookuperTest {
         personByEmail = PersonByEmail.newInstance().setPersonId(person.getExternalId()).setEmail(email);
         PersonByEmail bias = PersonByEmail.newInstance()
                 .setPersonId(RandomForTests.randomString())
-                .setEmail(RandomForTests.randomFrenchEmail());
+                .setEmail(RandomForTests.randomEmail());
 
         when(personByEmailDAO.findByEmail(email)).thenReturn(new HashSet<>(asList(personByEmail, bias)));
         when(personDAO.findByExternalId(personByEmail.getPersonId())).thenReturn(person);
