@@ -3,6 +3,7 @@ package com.primasolutions.idp.person;
 import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,9 @@ public class PersonValidator implements IPersonValidator {
 
         if (StringUtils.isEmpty(bean.getEmail()))
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_EMPTY")));
+
+        if (!EmailValidator.getInstance().isValid(bean.getEmail()))
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_INVALID")));
 
         if (personLookuper.byEmail(bean.getEmail()) != null)
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_ALREADY_EXISTS")));

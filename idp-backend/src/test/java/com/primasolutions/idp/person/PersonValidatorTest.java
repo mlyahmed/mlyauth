@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomName;
+import static com.primasolutions.idp.tools.RandomForTests.randomString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -51,7 +52,7 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyEmails")
-    void when_email_is_empty_then_error(final String email) {
+    void when_email_address_is_empty_then_error(final String email) {
         given_valid_person_to_create();
         and_email_address_is(email);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
@@ -59,6 +60,16 @@ class PersonValidatorTest {
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_EMPTY"));
 
+    }
+
+    @Test
+    void when_email_address_is_not_valid_then_error() {
+        given_valid_person_to_create();
+        and_email_address_is(randomString());
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_INVALID"));
     }
 
     private void and_email_address_is(final String email) {
