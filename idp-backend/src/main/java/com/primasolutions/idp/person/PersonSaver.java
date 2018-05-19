@@ -11,17 +11,15 @@ public class PersonSaver {
     protected PersonDAO personDAO;
 
     @Autowired
-    protected PersonByEmailDAO personByEmailDAO;
+    protected PersonByEmailDAO byEmailDAO;
 
     @Autowired
     protected AuthenticationInfoSaver authenticationInfoSaver;
 
     public void create(final Person p) {
-        final Person person = personDAO.saveAndFlush(p);
-        personByEmailDAO.saveAndFlush(PersonByEmail.newInstance()
-                .setPersonId(person.getExternalId())
-                .setEmail(person.getEmail()));
-        authenticationInfoSaver.create(person.getAuthenticationInfo());
+        personDAO.saveAndFlush(p);
+        byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
+        authenticationInfoSaver.create(p.getAuthenticationInfo());
     }
 
 

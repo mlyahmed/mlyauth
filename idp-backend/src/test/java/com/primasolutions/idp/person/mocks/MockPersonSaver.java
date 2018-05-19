@@ -22,7 +22,7 @@ public final class MockPersonSaver extends PersonSaver implements ResettableMock
     private MockPersonSaver() {
         MockReseter.register(this);
         personDAO = MockPersonDAO.getInstance();
-        personByEmailDAO = MockPersonByEmailDAO.getInstance();
+        byEmailDAO = MockPersonByEmailDAO.getInstance();
         authenticationInfoSaver = MockAuthenticationInfoSaver.getInstance();
     }
 
