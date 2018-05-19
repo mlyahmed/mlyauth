@@ -60,7 +60,7 @@ public class MlyAuthSteps extends AbstractStepsDef {
                 .setFirstname(firstname)
                 .setExternalId(RANDOM_EXTERNAL_ID)
                 .setLastname(lastname)
-                .setBirthdate("1984-17-10")
+                .setBirthdate("1984-10-17")
                 .setEmail(email)
                 .setPassword("password".toCharArray());
         final ResultActions result = restTestHelper.performBearerPost("/domain/person", person)

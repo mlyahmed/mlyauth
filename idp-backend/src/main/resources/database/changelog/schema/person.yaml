@@ -37,7 +37,7 @@ databaseChangeLog:
                   name: BIRTHDATE
                   type: varchar(1000)
                   constraints:
-                      nullable: false
+                      nullable: true
               - column:
                   name: EMAIL
                   type: varchar(1000)

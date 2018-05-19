@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(glue = {"com.primasolutions.idp.atests", "cucumber.api.spring"},
-        features = {"classpath:features"}, tags = {"~@Ignore"})
+        features = {"classpath:features"}, tags = {"not @Ignore"})
 public class AcceptanceTests {
 
 }

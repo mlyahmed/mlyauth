@@ -2,6 +2,7 @@ package com.primasolutions.idp.exception;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 public class IDPException extends RuntimeException {
 
@@ -33,6 +34,10 @@ public class IDPException extends RuntimeException {
 
     public Collection<AuthError> getErrors() {
         return errors;
+    }
+
+    public Collection<String> getErrorCodes() {
+        return errors.stream().map(err -> err.getCode()).collect(Collectors.toList());
     }
 
     public IDPException setErrors(final Collection<AuthError> errors) {
