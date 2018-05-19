@@ -225,6 +225,25 @@ class PersonValidatorTest {
         assertThat(ex.getErrorCodes(), Matchers.contains("BIRTH_DATE_BAD_FORMAT"));
     }
 
+
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_role_code_is_empty_then_error(final String empty) {
+        person.setRole(empty);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("ROLE_EMPTY"));
+    }
+
+    @Test
+    void when_role_code_is_bad_then_error() {
+        person.setRole(randomString());
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("ROLE_INVALID"));
+    }
+
+
     private void and_email_address_is(final String email) {
         person.setEmail(email);
     }

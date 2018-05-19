@@ -1,5 +1,6 @@
 package com.primasolutions.idp.person.validator;
 
+import com.primasolutions.idp.authentication.RoleValidator;
 import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.PersonBean;
@@ -25,6 +26,7 @@ public class PersonValidator implements IPersonValidator {
         theExternalIdMustBeValid(bean);
         theExternalIdMustBeNew(bean);
         theBirthDateMustBeValid(bean);
+        theRoleMustBeValid(bean);
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
@@ -60,6 +62,10 @@ public class PersonValidator implements IPersonValidator {
 
     private void theBirthDateMustBeValid(final PersonBean bean) {
         PersonBirthDateValidator.newInstance().validate(bean.getBirthdate());
+    }
+
+    private void theRoleMustBeValid(final PersonBean bean) {
+        RoleValidator.newInstance().validate(bean.getRole());
     }
 
 }
