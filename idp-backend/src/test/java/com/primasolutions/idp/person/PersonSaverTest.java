@@ -1,7 +1,10 @@
 package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.authentication.AuthInfo;
+import com.primasolutions.idp.authentication.AuthInfoByLogin;
 import com.primasolutions.idp.authentication.Role;
+import com.primasolutions.idp.authentication.mocks.MockAuthInfoByLoginDAO;
+import com.primasolutions.idp.authentication.mocks.MockAuthInfoDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoSaver;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
@@ -11,9 +14,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomName;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -22,6 +32,10 @@ class PersonSaverTest {
     private MockPersonDAO personDAO;
 
     private MockPersonByEmailDAO personByEmailDAO;
+
+    private MockAuthInfoDAO authInfoDAO;
+
+    private MockAuthInfoByLoginDAO authInfoByLoginDAO;
 
     private MockAuthenticationInfoSaver authenticationInfoSaver;
 
@@ -34,6 +48,8 @@ class PersonSaverTest {
     void before() {
         personDAO = MockPersonDAO.getInstance();
         personByEmailDAO = MockPersonByEmailDAO.getInstance();
+        authInfoDAO = MockAuthInfoDAO.getInstance();
+        authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
         authenticationInfoSaver = MockAuthenticationInfoSaver.getInstance();
         saver = new PersonSaver();
         setField(saver, "personDAO", personDAO);
@@ -51,7 +67,8 @@ class PersonSaverTest {
         given_the_person_to_process();
         and_the_person_authentication_info();
         when_create_person();
-
+        then_the_person_is_created();
+        then_the_person_authentication_info_is_created();
     }
 
     @Test
@@ -82,6 +99,29 @@ class PersonSaverTest {
 
     private void when_create_person() {
         saver.create(person);
+    }
+
+    private void then_the_person_is_created() {
+        final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(person.getEmail());
+        assertThat(byEmail, hasSize(1));
+
+        final Person p = personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
+        assertThat(p, notNullValue());
+        assertThat(p.getExternalId(), equalTo(person.getExternalId()));
+        assertThat(p.getEmail(), equalTo(person.getEmail()));
+        assertThat(p.getFirstname(), equalTo(person.getFirstname()));
+        assertThat(p.getLastname(), equalTo(person.getLastname()));
+        assertThat(p.getBirthdate(), equalTo(person.getBirthdate()));
+        assertThat(p.getRole(), notNullValue());
+        assertThat(p.getRole().getCode(), equalTo(person.getRole().getCode()));
+    }
+
+    private void then_the_person_authentication_info_is_created() {
+        final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
+        assertThat(byLogin, hasSize(1));
+
+        final AuthInfo auth = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
+        assertThat(auth, sameInstance(person.getAuthenticationInfo()));
     }
 
 }
