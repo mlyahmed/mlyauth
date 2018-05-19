@@ -43,6 +43,14 @@ class PersonServiceTest {
 
     private  static final int ONE_SECOND = 1000;
 
+    private MockPersonDAO personDAO;
+
+    private MockPersonByEmailDAO personByEmailDAO;
+
+    private MockAuthInfoDAO authInfoDAO;
+
+    private MockAuthInfoByLoginDAO authInfoByLoginDAO;
+
     private MockPersonValidator personValidator;
 
     private PersonService personService;
@@ -51,6 +59,10 @@ class PersonServiceTest {
 
     @BeforeEach
     void setup() {
+        personDAO = MockPersonDAO.getInstance();
+        personByEmailDAO = MockPersonByEmailDAO.getInstance();
+        authInfoDAO = MockAuthInfoDAO.getInstance();
+        authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
         personService = new PersonService();
         personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
@@ -89,10 +101,10 @@ class PersonServiceTest {
         given_new_person_to_create();
         when_create_new_person();
 
-        final Set<PersonByEmail> byEmail = MockPersonByEmailDAO.getInstance().findByEmail(person.getEmail());
+        final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(person.getEmail());
         assertThat(byEmail, hasSize(1));
 
-        final Person p = MockPersonDAO.getInstance().findByExternalId(byEmail.iterator().next().getPersonId());
+        final Person p = personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
         assertThat(p, notNullValue());
         assertThat(p.getExternalId(), equalTo(person.getExternalId()));
         assertThat(p.getEmail(), equalTo(person.getEmail()));
@@ -108,10 +120,10 @@ class PersonServiceTest {
         given_new_person_to_create();
         when_create_new_person();
 
-        final Set<AuthInfoByLogin> byLogin = MockAuthInfoByLoginDAO.getInstance().findByLogin(person.getEmail());
+        final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
         assertThat(byLogin, hasSize(1));
 
-        final AuthInfo authInfo = MockAuthInfoDAO.getInstance().findOne(byLogin.iterator().next().getAuthInfoId());
+        final AuthInfo authInfo = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
         assertThat(authInfo, notNullValue());
         assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
         assertThat(authInfo.getEffectiveAt(), DateMatchers.before(new Date(System.currentTimeMillis() + ONE_SECOND)));
@@ -141,8 +153,8 @@ class PersonServiceTest {
     private void given_an_existing_person_with_email(final String emailAddress) {
         final Person p = Person.newInstance().setExternalId(randomString()).setEmail(emailAddress);
         final PersonByEmail pbe = PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail());
-        MockPersonDAO.getInstance().save(p);
-        MockPersonByEmailDAO.getInstance().save(pbe);
+        personDAO.save(p);
+        personByEmailDAO.save(pbe);
     }
 
     private void given_new_person_to_create_with_email(final String emailAddress) {
