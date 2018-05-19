@@ -22,6 +22,8 @@ public class PersonValidator implements IPersonValidator {
         theEmailMustBeNew(bean);
         theFirstNameMustBeValid(bean);
         theLastNameMustBeValid(bean);
+        theExternalIdMustBeValid(bean);
+        theExternalIdMustBeNew(bean);
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
@@ -45,4 +47,14 @@ public class PersonValidator implements IPersonValidator {
     private void theLastNameMustBeValid(final PersonBean bean) {
         PersonLastNameValidator.newInstance().validate(bean.getLastname());
     }
+
+    private void theExternalIdMustBeValid(final PersonBean bean) {
+        PersonExternalIdValidator.newInstance().validate(bean.getExternalId());
+    }
+
+    private void theExternalIdMustBeNew(final PersonBean bean) {
+        if (personLookuper.byExternalId(bean.getExternalId()) != null)
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EXTERNAL_ID_ALREADY_EXISTS")));
+    }
+
 }

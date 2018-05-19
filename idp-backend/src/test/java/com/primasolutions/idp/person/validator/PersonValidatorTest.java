@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
@@ -98,9 +97,9 @@ class PersonValidatorTest {
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EMAIL_TOO_LONG"));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"ahmed@elidrissi.ma", "aei@prima-solutions.com", "mlyahmed@gmail.com"})
-    void when_email_address_already_exists_then_error(final String emailAddress) {
+    @Test
+    void when_email_address_already_exists_then_error() {
+        final String emailAddress = randomEmail();
         given_an_existing_person_with_email(emailAddress);
         and_email_address_is(emailAddress);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
@@ -109,6 +108,47 @@ class PersonValidatorTest {
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EMAIL_ALREADY_EXISTS"));
     }
 
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_external_id_is_empty_then_error(final String externalId) {
+        and_external_id_is(externalId);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EXTERNAL_ID_EMPTY"));
+
+    }
+
+    private static Stream<String> tooLongExternalIds() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                RandomStringUtils.random(101, true, true),
+                RandomStringUtils.random(102, true, true),
+                RandomStringUtils.random(230, true, true)
+                //CHECKSTYLE:ON
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("tooLongExternalIds")
+    void when_external_id_is_too_long_then_error(final String tooLongExternalId) {
+        and_external_id_is(tooLongExternalId);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EXTERNAL_ID_TOO_LONG"));
+    }
+
+    @Test
+    void when_external_id_already_exists_then_error() {
+        final String externalId = randomString();
+        given_an_existing_person_with_external_id(externalId);
+        and_external_id_is(externalId);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EXTERNAL_ID_ALREADY_EXISTS"));
+    }
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
@@ -173,9 +213,10 @@ class PersonValidatorTest {
 
     //TODO: When birth date is empty then error
     //TODO: When birth date is too long then error
-    //TODO: When external ID is empty then error
-    //TODO: When external ID is too long then error
-    //TODO: When external ID already exists then error
+
+    private void and_email_address_is(final String email) {
+        person.setEmail(email);
+    }
 
     private void given_an_existing_person_with_email(final String emailAddress) {
         final Person p = Person.newInstance().setExternalId(randomString()).setEmail(emailAddress);
@@ -184,8 +225,15 @@ class PersonValidatorTest {
         MockPersonByEmailDAO.getInstance().save(pbe);
     }
 
-    private void and_email_address_is(final String email) {
-        person.setEmail(email);
+    private void and_external_id_is(final String tooLongExternalId) {
+        person.setExternalId(tooLongExternalId);
+    }
+
+    private void given_an_existing_person_with_external_id(final String externalId) {
+        final Person p = Person.newInstance().setExternalId(externalId).setEmail(randomEmail());
+        final PersonByEmail pbe = PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail());
+        MockPersonDAO.getInstance().save(p);
+        MockPersonByEmailDAO.getInstance().save(pbe);
     }
 
     private void and_first_name_is(final String firstName) {
@@ -194,6 +242,7 @@ class PersonValidatorTest {
 
     private void given_valid_person_to_create() {
         person = PersonBean.newInstance()
+                .setExternalId(randomString())
                 .setFirstname(randomName().getFirstName())
                 .setLastname(randomName().getLastName())
                 .setRole(RoleCode.CLIENT)
