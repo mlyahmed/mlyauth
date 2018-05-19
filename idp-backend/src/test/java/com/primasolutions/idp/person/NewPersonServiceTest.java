@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-class PersonServiceTest {
+class NewPersonServiceTest {
 
     private  static final int ONE_SECOND = 1000;
 
@@ -53,7 +53,7 @@ class PersonServiceTest {
 
     private MockPersonValidator personValidator;
 
-    private PersonService personService;
+    private NewPersonService personService;
 
     private PersonBean person;
 
@@ -63,7 +63,7 @@ class PersonServiceTest {
         personByEmailDAO = MockPersonByEmailDAO.getInstance();
         authInfoDAO = MockAuthInfoDAO.getInstance();
         authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
-        personService = new PersonService();
+        personService = new NewPersonService();
         personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
         setField(personService, "personSaver", MockPersonSaver.getInstance());

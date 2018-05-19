@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class PersonService implements IPersonService {
+public class NewPersonService implements INewPersonService {
 
     @Autowired
     private PersonSaver personSaver;

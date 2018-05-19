@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
 
     @Autowired
-    private IPersonService personService;
+    private INewPersonService newPersonService;
 
     @PostMapping
     @PreAuthorize("hasPermission(#person, T(com.primasolutions.idp.permission.IDPPermission).CREATE)")
     public ResponseEntity newPerson(@RequestBody final PersonBean person) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(person));
+            return ResponseEntity.status(HttpStatus.CREATED).body(newPersonService.createPerson(person));
         } catch (IDPException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
         }
@@ -34,13 +34,13 @@ public class PersonController {
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public @ResponseBody PersonBean updatePerson(@RequestBody final PersonBean person) {
-        return personService.updatePerson(person);
+        return newPersonService.updatePerson(person);
     }
 
     @PutMapping("/_assign/{appname}/to/{personExternalId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void assignApplication(@PathVariable final String appname, @PathVariable final String personExternalId) {
-        personService.assignApplication(appname, personExternalId);
+        newPersonService.assignApplication(appname, personExternalId);
     }
 
 }

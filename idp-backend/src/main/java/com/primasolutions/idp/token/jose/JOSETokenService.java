@@ -118,7 +118,6 @@ public class JOSETokenService {
                 .get();
     }
 
-
     public void checkAccess(final String access) {
         final Token token = tokenDAO.findByChecksum(DigestUtils.sha256Hex(access));
         Assert.notNull(token, "Token not found");
