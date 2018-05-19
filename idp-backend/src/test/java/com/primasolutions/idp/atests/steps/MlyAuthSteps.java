@@ -56,7 +56,7 @@ public class MlyAuthSteps extends AbstractStepsDef {
     public void an_existed_person_withe_username_and_email(final String firstname, final String lastname,
                                                            final String username, final String email) throws Exception {
         PersonBean person = PersonBean.newInstance()
-                .setRole(RoleCode.CLIENT)
+                .setRole(RoleCode.CLIENT.getValue())
                 .setFirstname(firstname)
                 .setExternalId(RANDOM_EXTERNAL_ID)
                 .setLastname(lastname)

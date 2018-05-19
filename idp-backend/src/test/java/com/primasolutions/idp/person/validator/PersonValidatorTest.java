@@ -257,7 +257,7 @@ class PersonValidatorTest {
                 .setFirstname(randomName().getFirstName())
                 .setLastname(randomName().getLastName())
                 .setBirthdate(randomBirthdate())
-                .setRole(RoleCode.CLIENT)
+                .setRole(RoleCode.CLIENT.getValue())
                 .setEmail(randomEmail());
     }
 

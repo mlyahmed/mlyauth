@@ -121,7 +121,7 @@ public class PersonServiceTest {
                 .setFirstname(randomString())
                 .setLastname(randomString())
                 .setBirthdate(randomBirthdate())
-                .setRole(RoleCode.CLIENT)
+                .setRole(RoleCode.CLIENT.getValue())
                 .setEmail(randomEmail());
     }
 

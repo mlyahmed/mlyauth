@@ -34,9 +34,9 @@ public class PersonBuilderTest {
 
     private static final int ID_INDEX = 0;
     private static final int EXTERNAL_ID_INDEX = 1;
-    private static final int FIRSTNAME_INDEX = 2;
-    private static final int LASTNAME_INDEX = 3;
-    private static final int BIRTHDATE_INDEX = 4;
+    private static final int FIRST_NAME_INDEX = 2;
+    private static final int LAST_NAME_INDEX = 3;
+    private static final int BIRTH_DATE_INDEX = 4;
     private static final int EMAIL_INDEX = 5;
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -111,9 +111,9 @@ public class PersonBuilderTest {
     private void given_person(final Object[] properties) throws ParseException {
         person.setId((Long) properties[ID_INDEX])
                 .setExternalId(String.valueOf(properties[EXTERNAL_ID_INDEX]))
-                .setFirstname(String.valueOf(properties[FIRSTNAME_INDEX]))
-                .setLastname(String.valueOf(properties[LASTNAME_INDEX]))
-                .setBirthdate(dateFormatter.parse(String.valueOf(properties[BIRTHDATE_INDEX])))
+                .setFirstname(String.valueOf(properties[FIRST_NAME_INDEX]))
+                .setLastname(String.valueOf(properties[LAST_NAME_INDEX]))
+                .setBirthdate(dateFormatter.parse(String.valueOf(properties[BIRTH_DATE_INDEX])))
                 .setEmail(String.valueOf(properties[EMAIL_INDEX]));
     }
 
@@ -137,9 +137,9 @@ public class PersonBuilderTest {
         assertThat(bean, notNullValue());
         assertThat(bean.getId(), equalTo((Long) properties[ID_INDEX]));
         assertThat(bean.getExternalId(), equalTo(String.valueOf(properties[EXTERNAL_ID_INDEX])));
-        assertThat(bean.getFirstname(), equalTo(String.valueOf(properties[FIRSTNAME_INDEX])));
-        assertThat(bean.getLastname(), equalTo(String.valueOf(properties[LASTNAME_INDEX])));
-        assertThat(bean.getBirthdate(), equalTo(String.valueOf(properties[BIRTHDATE_INDEX])));
+        assertThat(bean.getFirstname(), equalTo(String.valueOf(properties[FIRST_NAME_INDEX])));
+        assertThat(bean.getLastname(), equalTo(String.valueOf(properties[LAST_NAME_INDEX])));
+        assertThat(bean.getBirthdate(), equalTo(String.valueOf(properties[BIRTH_DATE_INDEX])));
         assertThat(bean.getEmail(), equalTo(String.valueOf(properties[EMAIL_INDEX])));
     }
 
@@ -219,9 +219,9 @@ public class PersonBuilderTest {
         assertThat(person, notNullValue());
         assertThat(person.getId(), equalTo((Long) properties[ID_INDEX]));
         assertThat(person.getExternalId(), equalTo(String.valueOf(properties[EXTERNAL_ID_INDEX])));
-        assertThat(person.getFirstname(), equalTo(String.valueOf(properties[FIRSTNAME_INDEX])));
-        assertThat(person.getLastname(), equalTo(String.valueOf(properties[LASTNAME_INDEX])));
-        assertThat(person.getBirthdate(), equalTo(dateFormatter.parse(String.valueOf(properties[BIRTHDATE_INDEX]))));
+        assertThat(person.getFirstname(), equalTo(String.valueOf(properties[FIRST_NAME_INDEX])));
+        assertThat(person.getLastname(), equalTo(String.valueOf(properties[LAST_NAME_INDEX])));
+        assertThat(person.getBirthdate(), equalTo(dateFormatter.parse(String.valueOf(properties[BIRTH_DATE_INDEX]))));
         assertThat(person.getEmail(), equalTo(String.valueOf(properties[EMAIL_INDEX])));
     }
 
@@ -232,9 +232,9 @@ public class PersonBuilderTest {
     private void given_bean(final Object... properties) {
         bean.setId((Long) properties[ID_INDEX])
                 .setExternalId(String.valueOf(properties[EXTERNAL_ID_INDEX]))
-                .setFirstname(String.valueOf(properties[FIRSTNAME_INDEX]))
-                .setLastname(String.valueOf(properties[LASTNAME_INDEX]))
-                .setBirthdate(String.valueOf(properties[BIRTHDATE_INDEX]))
+                .setFirstname(String.valueOf(properties[FIRST_NAME_INDEX]))
+                .setLastname(String.valueOf(properties[LAST_NAME_INDEX]))
+                .setBirthdate(String.valueOf(properties[BIRTH_DATE_INDEX]))
                 .setEmail(String.valueOf(properties[EMAIL_INDEX]));
     }
 

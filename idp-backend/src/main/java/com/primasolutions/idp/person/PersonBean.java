@@ -1,14 +1,12 @@
 package com.primasolutions.idp.person;
 
-import com.primasolutions.idp.constants.RoleCode;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
 public class PersonBean {
 
     private long id;
-    private RoleCode role;
+    private String role;
     private String externalId;
     private String firstname;
     private String lastname;
@@ -31,11 +29,11 @@ public class PersonBean {
     }
 
 
-    public RoleCode getRole() {
+    public String getRole() {
         return role;
     }
 
-    public PersonBean setRole(final RoleCode role) {
+    public PersonBean setRole(final String role) {
         this.role = role;
         return this;
     }

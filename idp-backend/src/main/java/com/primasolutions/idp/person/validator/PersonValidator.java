@@ -25,7 +25,6 @@ public class PersonValidator implements IPersonValidator {
         theExternalIdMustBeValid(bean);
         theExternalIdMustBeNew(bean);
         theBirthDateMustBeValid(bean);
-
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
