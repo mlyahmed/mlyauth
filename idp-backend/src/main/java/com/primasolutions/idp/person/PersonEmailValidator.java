@@ -17,12 +17,12 @@ public final class PersonEmailValidator {
 
     public void validate(final String email) {
         if (StringUtils.isEmpty(email))
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_EMPTY")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_EMPTY")));
 
         if (email.length() > MAX_EMAIL_LENGTH)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_TOO_LONG")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_TOO_LONG")));
 
         if (!EmailValidator.getInstance().isValid(email))
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_EMAIL_IS_INVALID")));
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_INVALID")));
     }
 }

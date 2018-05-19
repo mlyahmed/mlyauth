@@ -3,6 +3,7 @@ package com.primasolutions.idp.person;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,7 +45,7 @@ class PersonValidatorTest {
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(null));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_IS_NULL"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_NULL"));
     }
 
     private static Stream<String> emptyStrings() {
@@ -58,7 +59,7 @@ class PersonValidatorTest {
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_EMPTY"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EMAIL_EMPTY"));
 
     }
 
@@ -68,7 +69,7 @@ class PersonValidatorTest {
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_INVALID"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EMAIL_INVALID"));
     }
 
     private static Stream<String> tooLongEmails() {
@@ -88,7 +89,7 @@ class PersonValidatorTest {
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_TOO_LONG"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("EMAIL_TOO_LONG"));
     }
 
     @ParameterizedTest
@@ -98,7 +99,27 @@ class PersonValidatorTest {
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_FIRSTNAME_IS_EMPTY"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("FIRSTNAME_IS_EMPTY"));
+    }
+
+    private static Stream<String> tooLongFirstNames() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                RandomStringUtils.random(101, true, true),
+                RandomStringUtils.random(301, true, true),
+                RandomStringUtils.random(201, true, true)
+                //CHECKSTYLE:ON
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("tooLongFirstNames")
+    void when_first_name_is_too_long_then_error(final String tooLongFirstName) {
+        person.setFirstname(tooLongFirstName);
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
+        assertThat(ex, notNullValue());
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("FIRSTNAME_TOO_LONG"));
     }
 
     private void and_email_address_is(final String email) {
