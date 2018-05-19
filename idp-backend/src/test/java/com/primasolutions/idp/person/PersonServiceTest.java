@@ -22,12 +22,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.text.ParseException;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static com.primasolutions.idp.person.PersonBuilder.DATE_FORMAT;
 import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
+import static org.apache.commons.lang.time.DateUtils.parseDate;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -72,11 +75,29 @@ class PersonServiceTest {
     }
 
     @Test
-    void when_create_a_new_valid_person_then_save_her() {
+    void when_create_a_new_valid_person_then_return_valid_result() {
         given_new_person_to_create();
         final PersonBean result = when_create_new_person();
         assertThat(result, notNullValue());
-        assertThat(MockPersonDAO.getInstance().exists(result.getId()), equalTo(true));
+    }
+
+    @Test
+    void when_create_a_new_valid_person_then_save_her() throws ParseException {
+        given_new_person_to_create();
+        when_create_new_person();
+
+        final Set<PersonByEmail> byEmail = MockPersonByEmailDAO.getInstance().findByEmail(person.getEmail());
+        assertThat(byEmail, hasSize(1));
+
+        final Person p = MockPersonDAO.getInstance().findByExternalId(byEmail.iterator().next().getPersonId());
+        assertThat(p, notNullValue());
+        assertThat(p.getExternalId(), equalTo(person.getExternalId()));
+        assertThat(p.getEmail(), equalTo(person.getEmail()));
+        assertThat(p.getFirstname(), equalTo(person.getFirstname()));
+        assertThat(p.getLastname(), equalTo(person.getLastname()));
+        assertThat(p.getBirthdate(), equalTo(parseDate(person.getBirthdate(), new String[]{DATE_FORMAT})));
+        assertThat(p.getRole(), notNullValue());
+        assertThat(p.getRole().getCode().getValue(), equalTo(person.getRole()));
     }
 
     @Test
@@ -84,11 +105,11 @@ class PersonServiceTest {
         given_new_person_to_create();
         when_create_new_person();
 
-        final Set<AuthInfoByLogin> byLogin = MockAuthInfoByLoginDAO.getInstance()
-                .findByLogin(person.getEmail());
+        final Set<AuthInfoByLogin> byLogin = MockAuthInfoByLoginDAO.getInstance().findByLogin(person.getEmail());
         assertThat(byLogin, hasSize(1));
-        assertThat(MockAuthInfoDAO.getInstance()
-                .findOne(byLogin.iterator().next().getAuthInfoId()), notNullValue());
+
+        final AuthInfo authInfo = MockAuthInfoDAO.getInstance().findOne(byLogin.iterator().next().getAuthInfoId());
+        assertThat(authInfo, notNullValue());
     }
 
 
