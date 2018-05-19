@@ -1,9 +1,9 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.authentication.AuthSessionDAO;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AuthenticationSessionStatus;
 import com.primasolutions.idp.person.Person;
@@ -84,7 +84,7 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
-    public AuthenticationInfo getAuthenticationInfo() {
+    public AuthInfo getAuthenticationInfo() {
         if (isAPerson()) {
             return getPerson() != null ? getPerson().getAuthenticationInfo() : null;
         } else {
@@ -214,7 +214,7 @@ public class ContextHolder implements IContextHolder {
         }
 
         @Override
-        public AuthenticationInfo getAuthenticationInfo() {
+        public AuthInfo getAuthenticationInfo() {
             return isAPerson() ? person.getAuthenticationInfo() : application.getAuthenticationInfo();
         }
 

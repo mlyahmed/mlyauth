@@ -1,9 +1,9 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.authentication.AuthSessionDAO;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.authentication.mocks.MockAuthSessionDAO;
 import com.primasolutions.idp.constants.ProfileCode;
@@ -49,7 +49,7 @@ public class ContextHolderTest {
     private static final String RANDOM_PASSWORD = RandomStringUtils.random(20, true, true);
     private static final int FIFTY_MILLISECONDS = 50;
 
-    private AuthenticationInfo authenticationInfo;
+    private AuthInfo authenticationInfo;
 
     private Person person;
 
@@ -67,7 +67,7 @@ public class ContextHolderTest {
     @Before
     public void setup() {
         sessionDAO = MockAuthSessionDAO.getInstance();
-        authenticationInfo = new AuthenticationInfo();
+        authenticationInfo = new AuthInfo();
         authenticationInfo.setLogin(RANDOM_LOGIN);
         authenticationInfo.setPassword(RANDOM_PASSWORD);
         person = Person.newInstance();

@@ -1,8 +1,8 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthSession;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.person.Person;
 
@@ -20,7 +20,7 @@ public interface IContext {
 
     Application getApplication();
 
-    AuthenticationInfo getAuthenticationInfo();
+    AuthInfo getAuthenticationInfo();
 
     AuthSession getAuthenticationSession();
 

@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.sp.jose;
 
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoDAO;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.context.IContextHolder;
@@ -39,8 +39,8 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
     }
 
     private IContext loadContext(final JOSEAccessToken credential) {
-        final AuthenticationInfo authenticationInfo = authenticationInfoLookuper.byLogin(credential.getSubject());
-        Assert.notNull(authenticationInfo, "No AuthenticationInfo found for " + credential.getSubject());
+        final AuthInfo authenticationInfo = authenticationInfoLookuper.byLogin(credential.getSubject());
+        Assert.notNull(authenticationInfo, "No AuthInfo found for " + credential.getSubject());
 
         if (authenticationInfo.isPerson()) {
             return contextHolder.newPersonContext(authenticationInfo.getPerson());
@@ -48,7 +48,7 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
             return contextHolder.newApplicationContext(authenticationInfo.getApplication());
         }
 
-        throw IDPException.newInstance("AuthenticationInfo found (" + credential.getSubject() + ") is not valid.");
+        throw IDPException.newInstance("AuthInfo found (" + credential.getSubject() + ") is not valid.");
     }
 
     private void checkParams(final JOSEAccessToken credential) {

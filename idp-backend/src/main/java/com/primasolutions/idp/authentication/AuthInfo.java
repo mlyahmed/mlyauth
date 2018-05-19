@@ -23,7 +23,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "AUTHENTICATION_INFO")
-public class AuthenticationInfo implements EncryptedDomain {
+public class AuthInfo implements EncryptedDomain {
 
     private static final int ID_INIT_VALUE = 9999;
     private static final int ID_INC_STEP = 1;
@@ -59,8 +59,8 @@ public class AuthenticationInfo implements EncryptedDomain {
     @OneToOne(mappedBy = "authenticationInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Application application;
 
-    public static AuthenticationInfo newInstance() {
-        return new AuthenticationInfo();
+    public static AuthInfo newInstance() {
+        return new AuthInfo();
     }
 
     public long getId() {
@@ -75,7 +75,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return login;
     }
 
-    public AuthenticationInfo setLogin(final String login) {
+    public AuthInfo setLogin(final String login) {
         this.login = login;
         return this;
     }
@@ -84,7 +84,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return password;
     }
 
-    public AuthenticationInfo setPassword(final String password) {
+    public AuthInfo setPassword(final String password) {
         this.password = password;
         return this;
     }
@@ -93,7 +93,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return status;
     }
 
-    public AuthenticationInfo setStatus(final AuthenticationInfoStatus status) {
+    public AuthInfo setStatus(final AuthenticationInfoStatus status) {
         this.status = status;
         return this;
     }
@@ -102,7 +102,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return effectiveAt;
     }
 
-    public AuthenticationInfo setEffectiveAt(final Date effectiveAt) {
+    public AuthInfo setEffectiveAt(final Date effectiveAt) {
         this.effectiveAt = effectiveAt;
         return this;
     }
@@ -111,7 +111,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return expireAt;
     }
 
-    public AuthenticationInfo setExpireAt(final Date expireAt) {
+    public AuthInfo setExpireAt(final Date expireAt) {
         this.expireAt = expireAt;
         return this;
     }
@@ -120,7 +120,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return person;
     }
 
-    public AuthenticationInfo setPerson(final Person person) {
+    public AuthInfo setPerson(final Person person) {
         this.person = person;
         return this;
     }
@@ -129,7 +129,7 @@ public class AuthenticationInfo implements EncryptedDomain {
         return application;
     }
 
-    public AuthenticationInfo setApplication(final Application application) {
+    public AuthInfo setApplication(final Application application) {
         this.application = application;
         return this;
     }

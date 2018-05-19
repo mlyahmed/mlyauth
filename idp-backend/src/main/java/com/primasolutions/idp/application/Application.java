@@ -1,6 +1,6 @@
 package com.primasolutions.idp.application;
 
-import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AspectType;
 
@@ -59,7 +59,7 @@ public class Application  implements Serializable {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "AUTHENTICATION_INFO_ID")
-    private AuthenticationInfo authenticationInfo;
+    private AuthInfo authenticationInfo;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "APPLICATION_PROFILE", joinColumns = @JoinColumn(name = "APPLICATION_ID"),
@@ -115,11 +115,11 @@ public class Application  implements Serializable {
         return this;
     }
 
-    public AuthenticationInfo getAuthenticationInfo() {
+    public AuthInfo getAuthenticationInfo() {
         return authenticationInfo;
     }
 
-    public Application setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
+    public Application setAuthenticationInfo(final AuthInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         return this;
     }

@@ -17,8 +17,8 @@ public class AuthenticationInfoBuilder {
     @Autowired
     protected PasswordEncoder passwordEncoder;
 
-    public AuthenticationInfo toEntity(final PersonBean bean) {
-        return AuthenticationInfo.newInstance()
+    public AuthInfo toEntity(final PersonBean bean) {
+        return AuthInfo.newInstance()
                 .setLogin(bean.getEmail())
                 .setPassword(passwordEncoder.encode(buildPassword(bean)))
                 .setStatus(AuthenticationInfoStatus.ACTIVE)

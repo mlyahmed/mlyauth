@@ -2,7 +2,7 @@ package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.exception.IDPException;
@@ -65,7 +65,7 @@ public class Person  implements EncryptedDomain, Cloneable, Serializable {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "AUTHENTICATION_INFO_ID")
-    private AuthenticationInfo authenticationInfo;
+    private AuthInfo authenticationInfo;
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -149,11 +149,11 @@ public class Person  implements EncryptedDomain, Cloneable, Serializable {
         return this;
     }
 
-    public AuthenticationInfo getAuthenticationInfo() {
+    public AuthInfo getAuthenticationInfo() {
         return authenticationInfo;
     }
 
-    public Person setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
+    public Person setAuthenticationInfo(final AuthInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         this.authenticationInfo.setPerson(this);
         return this;

@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.mocks;
 
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoDAO;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 import org.springframework.data.domain.Example;
@@ -21,7 +21,7 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
 
     private static volatile MockAuthInfoDAO instance;
 
-    private HashMap<Long, AuthenticationInfo> authentications;
+    private HashMap<Long, AuthInfo> authentications;
 
     public static MockAuthInfoDAO getInstance() {
         if (instance == null) {
@@ -44,22 +44,22 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public List<AuthenticationInfo> findAll() {
+    public List<AuthInfo> findAll() {
         return null;
     }
 
     @Override
-    public List<AuthenticationInfo> findAll(final Sort sort) {
+    public List<AuthInfo> findAll(final Sort sort) {
         return null;
     }
 
     @Override
-    public Page<AuthenticationInfo> findAll(final Pageable pageable) {
+    public Page<AuthInfo> findAll(final Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<AuthenticationInfo> findAll(final Iterable<Long> longs) {
+    public List<AuthInfo> findAll(final Iterable<Long> longs) {
         return null;
     }
 
@@ -74,12 +74,12 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final AuthenticationInfo entity) {
+    public void delete(final AuthInfo entity) {
 
     }
 
     @Override
-    public void delete(final Iterable<? extends AuthenticationInfo> entities) {
+    public void delete(final Iterable<? extends AuthInfo> entities) {
 
     }
 
@@ -89,19 +89,19 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public <S extends AuthenticationInfo> S save(final S entity) {
+    public <S extends AuthInfo> S save(final S entity) {
         if (entity.getId() < 1) entity.setId(++lastID);
         authentications.put(entity.getId(), entity);
         return entity;
     }
 
     @Override
-    public <S extends AuthenticationInfo> List<S> save(final Iterable<S> entities) {
+    public <S extends AuthInfo> List<S> save(final Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public AuthenticationInfo findOne(final Long aLong) {
+    public AuthInfo findOne(final Long aLong) {
         return authentications.get(aLong);
     }
 
@@ -116,12 +116,12 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public <S extends AuthenticationInfo> S saveAndFlush(final S entity) {
+    public <S extends AuthInfo> S saveAndFlush(final S entity) {
         return save(entity);
     }
 
     @Override
-    public void deleteInBatch(final Iterable<AuthenticationInfo> entities) {
+    public void deleteInBatch(final Iterable<AuthInfo> entities) {
 
     }
 
@@ -131,37 +131,37 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public AuthenticationInfo getOne(final Long aLong) {
+    public AuthInfo getOne(final Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfo> S findOne(final Example<S> example) {
+    public <S extends AuthInfo> S findOne(final Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfo> List<S> findAll(final Example<S> example) {
+    public <S extends AuthInfo> List<S> findAll(final Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfo> List<S> findAll(final Example<S> example, final Sort sort) {
+    public <S extends AuthInfo> List<S> findAll(final Example<S> example, final Sort sort) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfo> Page<S> findAll(final Example<S> example, final Pageable pageable) {
+    public <S extends AuthInfo> Page<S> findAll(final Example<S> example, final Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfo> long count(final Example<S> example) {
+    public <S extends AuthInfo> long count(final Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends AuthenticationInfo> boolean exists(final Example<S> example) {
+    public <S extends AuthInfo> boolean exists(final Example<S> example) {
         return false;
     }
 }

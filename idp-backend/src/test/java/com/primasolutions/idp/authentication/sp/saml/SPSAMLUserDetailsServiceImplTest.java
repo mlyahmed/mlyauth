@@ -2,7 +2,7 @@ package com.primasolutions.idp.authentication.sp.saml;
 
 import com.google.common.collect.Sets;
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
 import com.primasolutions.idp.context.mocks.MockContextHolder;
@@ -66,7 +66,7 @@ public class SPSAMLUserDetailsServiceImplTest {
     private List<Attribute> attributes;
     private SAMLCredential credential;
     private Person person;
-    private AuthenticationInfo authenticationInfo;
+    private AuthInfo authenticationInfo;
     private Object user;
 
     @Before
@@ -193,7 +193,7 @@ public class SPSAMLUserDetailsServiceImplTest {
     }
 
     private void given_the_person_exists() {
-        authenticationInfo = AuthenticationInfo.newInstance()
+        authenticationInfo = AuthInfo.newInstance()
                 .setLogin(USERNAME)
                 .setPassword(SECRET)
                 .setExpireAt(FUTURE_TIME);

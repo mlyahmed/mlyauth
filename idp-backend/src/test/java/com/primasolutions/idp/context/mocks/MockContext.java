@@ -1,8 +1,8 @@
 package com.primasolutions.idp.context.mocks;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthSession;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.person.Person;
@@ -37,7 +37,7 @@ public class MockContext implements IContext {
     }
 
     @Override
-    public AuthenticationInfo getAuthenticationInfo() {
+    public AuthInfo getAuthenticationInfo() {
         return null;
     }
 

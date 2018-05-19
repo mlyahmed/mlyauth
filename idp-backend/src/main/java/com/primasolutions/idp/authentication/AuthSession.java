@@ -46,7 +46,7 @@ public class AuthSession implements Cloneable, Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "AUTHENTICATION_INFO_ID", nullable = false, updatable = false)
-    private AuthenticationInfo authenticationInfo;
+    private AuthInfo authenticationInfo;
 
     @Column(name = "CLOSED_AT")
     private java.util.Date closedAt;
@@ -90,11 +90,11 @@ public class AuthSession implements Cloneable, Serializable {
         return this;
     }
 
-    public AuthenticationInfo getAuthenticationInfo() {
+    public AuthInfo getAuthenticationInfo() {
         return authenticationInfo;
     }
 
-    public AuthSession setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
+    public AuthSession setAuthenticationInfo(final AuthInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         return this;
     }

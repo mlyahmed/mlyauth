@@ -2,7 +2,7 @@ package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.authentication.RoleDAO;
 import com.primasolutions.idp.constants.RoleCode;
@@ -146,7 +146,7 @@ public class PersonBuilderTest {
     @Test
     @UseDataProvider("passwords")
     public void when_map_to_bean_then_do_not_map_password(final String password) {
-        person.setAuthenticationInfo(AuthenticationInfo.newInstance().setPassword(password));
+        person.setAuthenticationInfo(AuthInfo.newInstance().setPassword(password));
         when_map_person_to_bean();
         then_the_person_password_is_not_mapped();
     }

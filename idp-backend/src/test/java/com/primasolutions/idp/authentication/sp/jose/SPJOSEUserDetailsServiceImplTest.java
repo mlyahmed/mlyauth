@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.sp.jose;
 
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
@@ -58,7 +58,7 @@ public class SPJOSEUserDetailsServiceImplTest {
     private MockJOSEAccessToken token;
     private Person person;
     private Application application;
-    private AuthenticationInfo authenticationInfo;
+    private AuthInfo authenticationInfo;
     private IDPUser user;
 
     @Before
@@ -102,7 +102,7 @@ public class SPJOSEUserDetailsServiceImplTest {
     }
 
     private void given_the_application_authentication_info_exists() {
-        authenticationInfo = AuthenticationInfo.newInstance()
+        authenticationInfo = AuthInfo.newInstance()
                 .setLogin(RandomForTests.randomString())
                 .setPassword(RandomForTests.randomString())
                 .setExpireAt(new Date(System.currentTimeMillis() + SEXTY_SECONDS));
@@ -128,7 +128,7 @@ public class SPJOSEUserDetailsServiceImplTest {
 
     @Test(expected = IDPException.class)
     public void when_the_authentication_info_is_not_a_person_neither_an_application_then_error() {
-        when(authenticationInfoLookuper.byLogin(token.getSubject())).thenReturn(AuthenticationInfo.newInstance());
+        when(authenticationInfoLookuper.byLogin(token.getSubject())).thenReturn(AuthInfo.newInstance());
         when_load_the_user();
     }
 
@@ -220,7 +220,7 @@ public class SPJOSEUserDetailsServiceImplTest {
     }
 
     private void given_the_person_exists() {
-        authenticationInfo = AuthenticationInfo.newInstance()
+        authenticationInfo = AuthInfo.newInstance()
                 .setLogin(RandomForTests.randomString())
                 .setPassword(RandomForTests.randomString())
                 .setExpireAt(new Date(System.currentTimeMillis() + (SEXTY_SECONDS)));

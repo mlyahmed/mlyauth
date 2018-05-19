@@ -8,10 +8,10 @@ import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
 import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.application.ApplicationTypeDAO;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoByLogin;
 import com.primasolutions.idp.authentication.AuthInfoByLoginDAO;
 import com.primasolutions.idp.authentication.AuthInfoDAO;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.constants.ApplicationTypeCode;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
@@ -168,7 +168,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void given_the_client_space_application() {
-        AuthenticationInfo clientSpaceAuthInfo = AuthenticationInfo.newInstance()
+        AuthInfo clientSpaceAuthInfo = AuthInfo.newInstance()
                 .setLogin(CLIENT_SPACE_APP_LOGIN)
                 .setExpireAt(new Date(System.currentTimeMillis() + ONE_MINUTE))
                 .setPassword(passwordEncoder.encode(CLIENT_SPACE_APP_PASSWORD))
@@ -183,7 +183,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
         clientSpaceAuthInfo.setApplication(clientSpace);
         applicationDAO.save(clientSpace);
-        final AuthenticationInfo authInfo = authInfoDAO.saveAndFlush(clientSpaceAuthInfo);
+        final AuthInfo authInfo = authInfoDAO.saveAndFlush(clientSpaceAuthInfo);
         authInfoByLoginDAO.saveAndFlush(AuthInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));
@@ -234,7 +234,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     }
 
     private void given_the_policy_application() {
-        AuthenticationInfo policyAuthInfo = AuthenticationInfo.newInstance()
+        AuthInfo policyAuthInfo = AuthInfo.newInstance()
                 .setLogin(POLICY_APP_LOGIN)
                 .setExpireAt(new Date(System.currentTimeMillis() + ONE_MINUTE))
                 .setPassword(passwordEncoder.encode(POLICY_APP_PASSWORD))
@@ -249,7 +249,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
         policyAuthInfo.setApplication(policy);
         applicationDAO.save(policy);
-        final AuthenticationInfo authInfo = authInfoDAO.saveAndFlush(policyAuthInfo);
+        final AuthInfo authInfo = authInfoDAO.saveAndFlush(policyAuthInfo);
         authInfoByLoginDAO.saveAndFlush(AuthInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));

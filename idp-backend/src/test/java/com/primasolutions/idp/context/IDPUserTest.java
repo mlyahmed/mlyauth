@@ -1,7 +1,7 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
 import com.primasolutions.idp.constants.ProfileCode;
@@ -39,7 +39,7 @@ public class IDPUserTest {
     private IContextHolder contextHolder;
     private Person person;
     private Application application;
-    private AuthenticationInfo authInfo;
+    private AuthInfo authInfo;
     private IContext personContext;
     private IContext applicationContext;
 
@@ -48,7 +48,7 @@ public class IDPUserTest {
         contextHolder = new MockContextHolder();
         person = Person.newInstance();
         application = Application.newInstance();
-        authInfo = AuthenticationInfo.newInstance();
+        authInfo = AuthInfo.newInstance();
         authInfo.setLogin(RANDOM_LOGIN);
         authInfo.setPassword(RANDOM_PASSWORD);
         person.setAuthenticationInfo(authInfo);

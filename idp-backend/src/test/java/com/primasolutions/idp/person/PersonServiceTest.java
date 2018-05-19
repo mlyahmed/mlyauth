@@ -1,7 +1,7 @@
 package com.primasolutions.idp.person;
 
+import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoByLogin;
-import com.primasolutions.idp.authentication.AuthenticationInfo;
 import com.primasolutions.idp.authentication.mocks.MockAuthInfoByLoginDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthInfoDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
@@ -96,7 +96,7 @@ class PersonServiceTest {
     void when_create_a_new_valid_person_then_save_her_auth_info() {
         given_new_person_to_create();
         when_create_new_person();
-        final AuthenticationInfo actual = MockAuthenticationInfoLookuper.getInstance().byLogin((person.getEmail()));
+        final AuthInfo actual = MockAuthenticationInfoLookuper.getInstance().byLogin((person.getEmail()));
         assertThat(actual, notNullValue());
         assertThat(actual.getLogin(), Matchers.equalTo(person.getEmail()));
     }

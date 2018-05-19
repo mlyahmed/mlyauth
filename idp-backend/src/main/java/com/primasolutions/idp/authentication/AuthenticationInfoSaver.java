@@ -12,8 +12,8 @@ public class AuthenticationInfoSaver {
     @Autowired
     protected AuthInfoByLoginDAO authInfoByLoginDAO;
 
-    public void create(final AuthenticationInfo auth) {
-        final AuthenticationInfo authInfo = authInfoDAO.saveAndFlush(auth);
+    public void create(final AuthInfo auth) {
+        final AuthInfo authInfo = authInfoDAO.saveAndFlush(auth);
         authInfoByLoginDAO.saveAndFlush(AuthInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));

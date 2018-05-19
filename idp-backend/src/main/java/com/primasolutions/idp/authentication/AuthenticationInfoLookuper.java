@@ -14,7 +14,7 @@ public class AuthenticationInfoLookuper {
     @Autowired
     protected AuthInfoByLoginDAO authInfoByLoginDAO;
 
-    public AuthenticationInfo byLogin(final String login) {
+    public AuthInfo byLogin(final String login) {
         final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(login);
         return authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
     }
