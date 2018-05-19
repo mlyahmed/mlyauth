@@ -96,7 +96,7 @@ class PersonValidatorTest {
     @ParameterizedTest
     @MethodSource("emptyStrings")
     void when_first_name_is_empty_then_error(final String empty) {
-        person.setFirstname(empty);
+        and_first_name_is(empty);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
@@ -116,11 +116,15 @@ class PersonValidatorTest {
     @ParameterizedTest
     @MethodSource("tooLongFirstNames")
     void when_first_name_is_too_long_then_error(final String tooLongFirstName) {
-        person.setFirstname(tooLongFirstName);
+        and_first_name_is(tooLongFirstName);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("FIRSTNAME_TOO_LONG"));
+    }
+
+    private void and_first_name_is(final String firstName) {
+        person.setFirstname(firstName);
     }
 
     private void and_email_address_is(final String email) {
