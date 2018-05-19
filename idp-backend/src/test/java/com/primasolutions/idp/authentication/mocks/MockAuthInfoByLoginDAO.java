@@ -21,14 +21,18 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
     private static final int INITIAL_VALUE = 908;
     private static long currentID = INITIAL_VALUE;
 
-    private Map<Long, AuthenticationInfoByLogin> index;
+    private static volatile MockAuthInfoByLoginDAO instance;
 
-    private static class LazyHolder {
-        static final MockAuthenticationInfoByLoginDAO INSTANCE = new MockAuthenticationInfoByLoginDAO();
-    }
+    private Map<Long, AuthInfoByLogin> index;
 
-    public static MockAuthenticationInfoByLoginDAO getInstance() {
-        return LazyHolder.INSTANCE;
+    public static MockAuthInfoByLoginDAO getInstance() {
+        if (instance == null) {
+            synchronized (MockAuthInfoByLoginDAO.class) {
+                if (instance == null)
+                    instance = new MockAuthInfoByLoginDAO();
+            }
+        }
+        return instance;
     }
 
     private MockAuthInfoByLoginDAO() {
