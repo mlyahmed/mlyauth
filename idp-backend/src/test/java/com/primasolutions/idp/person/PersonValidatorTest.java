@@ -3,8 +3,12 @@ package com.primasolutions.idp.person;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomName;
@@ -15,40 +19,45 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class PersonValidatorTest {
+class PersonValidatorTest {
 
 
     private PersonValidator validator;
     private PersonBean person;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         validator = new PersonValidator();
         setField(validator, "personLookuper", MockPersonLookuper.getInstance());
     }
 
     @Test
-    public void when_a_new_person_is_valid_then_no_error() {
+    void when_a_new_person_is_valid_then_no_error() {
         given_valid_person_to_create();
         validator.validateNew(person);
     }
 
     @Test
-    public void when_validate_new_person_and_null_then_error() {
+    void when_validate_new_person_and_null_then_error() {
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(null));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_IS_NULL"));
     }
 
-    @Test
-    public void when_email_is_null_then_error() {
+    private static Stream<String> emptyEmails() {
+        return Stream.of(null, "");
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyEmails")
+    void when_email_is_empty_then_error(final String email) {
         given_valid_person_to_create();
-        given_the_person_email_is_null();
+        person.setEmail(email);
         final IDPException ex = assertThrows(IDPException.class, () -> validator.validateNew(person));
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
-        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_NULL"));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_EMAIL_IS_EMPTY"));
 
     }
 
@@ -58,10 +67,6 @@ public class PersonValidatorTest {
                 .setLastname(randomName().getLastName())
                 .setRole(RoleCode.CLIENT)
                 .setEmail(randomEmail());
-    }
-
-    private void given_the_person_email_is_null() {
-        person.setEmail(null);
     }
 
 }
