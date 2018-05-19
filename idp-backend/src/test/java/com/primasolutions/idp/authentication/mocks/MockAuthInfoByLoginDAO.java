@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.mocks;
 
-import com.primasolutions.idp.authentication.AuthenticationInfoByLogin;
-import com.primasolutions.idp.authentication.AuthenticationInfoByLoginDAO;
+import com.primasolutions.idp.authentication.AuthInfoByLogin;
+import com.primasolutions.idp.authentication.AuthInfoByLoginDAO;
 import com.primasolutions.idp.sensitive.StringTokenizer;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInfoByLoginDAO, ResettableMock {
+public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, ResettableMock {
 
     private static final int INITIAL_VALUE = 908;
     private static long currentID = INITIAL_VALUE;
@@ -31,7 +31,7 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
         return LazyHolder.INSTANCE;
     }
 
-    private MockAuthenticationInfoByLoginDAO() {
+    private MockAuthInfoByLoginDAO() {
         MockReseter.register(this);
         index = new LinkedHashMap<>();
     }
@@ -42,28 +42,28 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     @Override
-    public Set<AuthenticationInfoByLogin> findByLogin(final String login) {
+    public Set<AuthInfoByLogin> findByLogin(final String login) {
         final String token = StringTokenizer.newInstance().tokenize(login);
         return index.values().stream().filter(a -> a.getLogin().equals(token)).collect(Collectors.toSet());
     }
 
     @Override
-    public List<AuthenticationInfoByLogin> findAll() {
+    public List<AuthInfoByLogin> findAll() {
         return null;
     }
 
     @Override
-    public List<AuthenticationInfoByLogin> findAll(final Sort sort) {
+    public List<AuthInfoByLogin> findAll(final Sort sort) {
         return null;
     }
 
     @Override
-    public Page<AuthenticationInfoByLogin> findAll(final Pageable pageable) {
+    public Page<AuthInfoByLogin> findAll(final Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<AuthenticationInfoByLogin> findAll(final Iterable<Long> longs) {
+    public List<AuthInfoByLogin> findAll(final Iterable<Long> longs) {
         return null;
     }
 
@@ -78,12 +78,12 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     @Override
-    public void delete(final AuthenticationInfoByLogin entity) {
+    public void delete(final AuthInfoByLogin entity) {
 
     }
 
     @Override
-    public void delete(final Iterable<? extends AuthenticationInfoByLogin> entities) {
+    public void delete(final Iterable<? extends AuthInfoByLogin> entities) {
 
     }
 
@@ -93,7 +93,7 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> S save(final S entity) {
+    public <S extends AuthInfoByLogin> S save(final S entity) {
         if (entity.getId() < 1) entity.setId(currentID++);
         entity.setLogin(StringTokenizer.newInstance().tokenize(entity.getLogin()));
         index.put(entity.getId(), entity);
@@ -101,12 +101,12 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> List<S> save(final Iterable<S> entities) {
+    public <S extends AuthInfoByLogin> List<S> save(final Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public AuthenticationInfoByLogin findOne(final Long aLong) {
+    public AuthInfoByLogin findOne(final Long aLong) {
         return index.get(aLong);
     }
 
@@ -121,12 +121,12 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> S saveAndFlush(final S entity) {
+    public <S extends AuthInfoByLogin> S saveAndFlush(final S entity) {
         return save(entity);
     }
 
     @Override
-    public void deleteInBatch(final Iterable<AuthenticationInfoByLogin> entities) {
+    public void deleteInBatch(final Iterable<AuthInfoByLogin> entities) {
 
     }
 
@@ -136,37 +136,37 @@ public final class MockAuthenticationInfoByLoginDAO implements AuthenticationInf
     }
 
     @Override
-    public AuthenticationInfoByLogin getOne(final Long aLong) {
+    public AuthInfoByLogin getOne(final Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> S findOne(final Example<S> example) {
+    public <S extends AuthInfoByLogin> S findOne(final Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> List<S> findAll(final Example<S> example) {
+    public <S extends AuthInfoByLogin> List<S> findAll(final Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> List<S> findAll(final Example<S> example, final Sort sort) {
+    public <S extends AuthInfoByLogin> List<S> findAll(final Example<S> example, final Sort sort) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> Page<S> findAll(final Example<S> example, final Pageable pageable) {
+    public <S extends AuthInfoByLogin> Page<S> findAll(final Example<S> example, final Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> long count(final Example<S> example) {
+    public <S extends AuthInfoByLogin> long count(final Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends AuthenticationInfoByLogin> boolean exists(final Example<S> example) {
+    public <S extends AuthInfoByLogin> boolean exists(final Example<S> example) {
         return false;
     }
 }

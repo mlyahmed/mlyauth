@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.sp.basic;
 
+import com.primasolutions.idp.authentication.AuthInfoDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
-import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
@@ -23,7 +23,7 @@ public class BasicUserDetailsService implements UserDetailsService {
     private IContextHolder contextHolder;
 
     @Autowired
-    private AuthenticationInfoDAO authenticationInfoDAO;
+    private AuthInfoDAO authInfoDAO;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {

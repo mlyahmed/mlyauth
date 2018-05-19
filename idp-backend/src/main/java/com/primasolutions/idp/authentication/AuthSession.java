@@ -21,7 +21,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "AUTHENTICATION_SESSION")
-public class AuthenticationSession implements Cloneable, Serializable {
+public class AuthSession implements Cloneable, Serializable {
 
     public static final int ID_INIT_VALUE = 9999;
     public static final int ID_INC_STEP = 1;
@@ -51,8 +51,8 @@ public class AuthenticationSession implements Cloneable, Serializable {
     @Column(name = "CLOSED_AT")
     private java.util.Date closedAt;
 
-    public static AuthenticationSession newInstance() {
-        return new AuthenticationSession();
+    public static AuthSession newInstance() {
+        return new AuthSession();
     }
 
     public long getId() {
@@ -67,7 +67,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return createdAt;
     }
 
-    public AuthenticationSession setCreatedAt(final Date createdAt) {
+    public AuthSession setCreatedAt(final Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -76,7 +76,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return status;
     }
 
-    public AuthenticationSession setStatus(final AuthenticationSessionStatus status) {
+    public AuthSession setStatus(final AuthenticationSessionStatus status) {
         this.status = status;
         return this;
     }
@@ -85,7 +85,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return contextId;
     }
 
-    public AuthenticationSession setContextId(final String contextId) {
+    public AuthSession setContextId(final String contextId) {
         this.contextId = contextId;
         return this;
     }
@@ -94,7 +94,7 @@ public class AuthenticationSession implements Cloneable, Serializable {
         return authenticationInfo;
     }
 
-    public AuthenticationSession setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
+    public AuthSession setAuthenticationInfo(final AuthenticationInfo authenticationInfo) {
         this.authenticationInfo = authenticationInfo;
         return this;
     }
@@ -107,9 +107,9 @@ public class AuthenticationSession implements Cloneable, Serializable {
         this.closedAt = closedAt;
     }
 
-    public AuthenticationSession clone() {
+    public AuthSession clone() {
         try {
-            return (AuthenticationSession) super.clone();
+            return (AuthSession) super.clone();
         } catch (CloneNotSupportedException e) {
             throw IDPException.newInstance(e);
         }

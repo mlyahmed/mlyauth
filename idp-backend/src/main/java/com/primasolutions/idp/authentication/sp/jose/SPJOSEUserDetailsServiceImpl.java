@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.sp.jose;
 
+import com.primasolutions.idp.authentication.AuthInfoDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
-import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfoLookuper;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.context.IContextHolder;
@@ -27,7 +27,7 @@ public class SPJOSEUserDetailsServiceImpl implements SPJOSEUserDetailsService {
     private AuthenticationInfoLookuper authenticationInfoLookuper;
 
     @Autowired
-    private AuthenticationInfoDAO authenticationInfoDAO;
+    private AuthInfoDAO authInfoDAO;
 
     @Autowired
     private IContextHolder contextHolder;

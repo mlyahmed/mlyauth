@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication.mocks;
 
+import com.primasolutions.idp.authentication.AuthInfoDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
-import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 import org.springframework.data.domain.Example;
@@ -13,27 +13,27 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public final class MockAuthenticationInfoDAO implements AuthenticationInfoDAO, ResettableMock {
+public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
 
 
     private static final int INITIAL_VALUE = 98;
     private static long lastID = INITIAL_VALUE;
 
-    private static volatile MockAuthenticationInfoDAO instance;
+    private static volatile MockAuthInfoDAO instance;
 
     private HashMap<Long, AuthenticationInfo> authentications;
 
-    public static MockAuthenticationInfoDAO getInstance() {
+    public static MockAuthInfoDAO getInstance() {
         if (instance == null) {
-            synchronized (MockAuthenticationInfoDAO.class) {
+            synchronized (MockAuthInfoDAO.class) {
                 if (instance == null)
-                    instance = new MockAuthenticationInfoDAO();
+                    instance = new MockAuthInfoDAO();
             }
         }
         return instance;
     }
 
-    private MockAuthenticationInfoDAO() {
+    private MockAuthInfoDAO() {
         authentications = new LinkedHashMap<>();
         MockReseter.register(this);
     }

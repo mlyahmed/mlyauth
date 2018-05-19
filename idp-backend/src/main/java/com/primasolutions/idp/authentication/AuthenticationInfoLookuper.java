@@ -9,13 +9,13 @@ import java.util.Set;
 public class AuthenticationInfoLookuper {
 
     @Autowired
-    protected AuthenticationInfoDAO authInfoDAO;
+    protected AuthInfoDAO authInfoDAO;
 
     @Autowired
-    protected AuthenticationInfoByLoginDAO authInfoByLoginDAO;
+    protected AuthInfoByLoginDAO authInfoByLoginDAO;
 
     public AuthenticationInfo byLogin(final String login) {
-        final Set<AuthenticationInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(login);
+        final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(login);
         return authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
     }
 

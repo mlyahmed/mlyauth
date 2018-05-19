@@ -14,7 +14,7 @@ import javax.persistence.TableGenerator;
 
 @Entity
 @Table(name = "AUTHENTICATION_INFO_BY_LOGIN")
-public class AuthenticationInfoByLogin implements EncryptedDomain, TokenizedDomain {
+public class AuthInfoByLogin implements EncryptedDomain, TokenizedDomain {
 
     public static final int ID_INIT_VALUE = 9999;
     public static final int ID_INC_STEP = 1;
@@ -37,15 +37,15 @@ public class AuthenticationInfoByLogin implements EncryptedDomain, TokenizedDoma
     @Type(type = TOKENIZED_LOGIN)
     private String login;
 
-    public static AuthenticationInfoByLogin newInstance() {
-        return new AuthenticationInfoByLogin();
+    public static AuthInfoByLogin newInstance() {
+        return new AuthInfoByLogin();
     }
 
     public long getId() {
         return id;
     }
 
-    public AuthenticationInfoByLogin setId(final long id) {
+    public AuthInfoByLogin setId(final long id) {
         this.id = id;
         return this;
     }
@@ -54,7 +54,7 @@ public class AuthenticationInfoByLogin implements EncryptedDomain, TokenizedDoma
         return authInfoId;
     }
 
-    public AuthenticationInfoByLogin setAuthInfoId(final long authInfoId) {
+    public AuthInfoByLogin setAuthInfoId(final long authInfoId) {
         this.authInfoId = authInfoId;
         return this;
     }
@@ -63,7 +63,7 @@ public class AuthenticationInfoByLogin implements EncryptedDomain, TokenizedDoma
         return login;
     }
 
-    public AuthenticationInfoByLogin setLogin(final String login) {
+    public AuthInfoByLogin setLogin(final String login) {
         this.login = login;
         return this;
     }

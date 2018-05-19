@@ -20,8 +20,8 @@ public final class MockAuthenticationInfoSaver extends AuthenticationInfoSaver i
 
     private MockAuthenticationInfoSaver() {
         MockReseter.register(this);
-        authenticationInfoDAO = MockAuthenticationInfoDAO.getInstance();
-        authInfoByLoginDAO = MockAuthenticationInfoByLoginDAO.getInstance();
+        authInfoDAO = MockAuthInfoDAO.getInstance();
+        authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
     }
 
     @Override

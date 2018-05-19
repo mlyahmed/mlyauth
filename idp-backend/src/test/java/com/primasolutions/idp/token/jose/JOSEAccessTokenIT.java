@@ -8,10 +8,10 @@ import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
 import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.application.ApplicationTypeDAO;
+import com.primasolutions.idp.authentication.AuthInfoByLogin;
+import com.primasolutions.idp.authentication.AuthInfoByLoginDAO;
+import com.primasolutions.idp.authentication.AuthInfoDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
-import com.primasolutions.idp.authentication.AuthenticationInfoByLogin;
-import com.primasolutions.idp.authentication.AuthenticationInfoByLoginDAO;
-import com.primasolutions.idp.authentication.AuthenticationInfoDAO;
 import com.primasolutions.idp.constants.ApplicationTypeCode;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AuthenticationInfoStatus;
@@ -98,10 +98,10 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
 
     @Autowired
-    private AuthenticationInfoDAO authenticationInfoDAO;
+    private AuthInfoDAO authInfoDAO;
 
     @Autowired
-    private AuthenticationInfoByLoginDAO authInfoByLoginDAO;
+    private AuthInfoByLoginDAO authInfoByLoginDAO;
 
     @Autowired
     private MockMvc mockMvc;
@@ -183,8 +183,8 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
         clientSpaceAuthInfo.setApplication(clientSpace);
         applicationDAO.save(clientSpace);
-        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(clientSpaceAuthInfo);
-        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
+        final AuthenticationInfo authInfo = authInfoDAO.saveAndFlush(clientSpaceAuthInfo);
+        authInfoByLoginDAO.saveAndFlush(AuthInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));
 
@@ -249,8 +249,8 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
 
         policyAuthInfo.setApplication(policy);
         applicationDAO.save(policy);
-        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(policyAuthInfo);
-        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
+        final AuthenticationInfo authInfo = authInfoDAO.saveAndFlush(policyAuthInfo);
+        authInfoByLoginDAO.saveAndFlush(AuthInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));
 

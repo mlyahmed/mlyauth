@@ -1,6 +1,6 @@
 package com.primasolutions.idp.navigation;
 
-import com.primasolutions.idp.authentication.AuthenticationSession;
+import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.constants.Direction;
 import com.primasolutions.idp.token.Token;
 
@@ -55,7 +55,7 @@ public class Navigation {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "AUTHENTICATION_SESSION_ID", nullable = false, updatable = false)
-    private AuthenticationSession session;
+    private AuthSession session;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TOKEN_ID", nullable = false, updatable = false)
@@ -125,11 +125,11 @@ public class Navigation {
         return this.getAttributes().stream().filter(att -> att.getCode().equals(code)).findFirst().orElse(null);
     }
 
-    public AuthenticationSession getSession() {
+    public AuthSession getSession() {
         return session;
     }
 
-    public Navigation setSession(final AuthenticationSession session) {
+    public Navigation setSession(final AuthSession session) {
         this.session = session;
         return this;
     }

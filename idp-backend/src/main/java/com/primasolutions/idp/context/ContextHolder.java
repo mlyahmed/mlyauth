@@ -1,9 +1,9 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthSession;
+import com.primasolutions.idp.authentication.AuthSessionDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
-import com.primasolutions.idp.authentication.AuthenticationSession;
-import com.primasolutions.idp.authentication.AuthenticationSessionDAO;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AuthenticationSessionStatus;
 import com.primasolutions.idp.person.Person;
@@ -32,7 +32,7 @@ public class ContextHolder implements IContextHolder {
     protected IContextIdGenerator idGenerator;
 
     @Autowired
-    protected AuthenticationSessionDAO authSessionDAO;
+    protected AuthSessionDAO authSessionDAO;
 
     @Override
     public String getId() {
@@ -93,7 +93,7 @@ public class ContextHolder implements IContextHolder {
     }
 
     @Override
-    public AuthenticationSession getAuthenticationSession() {
+    public AuthSession getAuthenticationSession() {
         return getContext() != null ? getContext().getAuthenticationSession() : null;
     }
 
@@ -138,7 +138,7 @@ public class ContextHolder implements IContextHolder {
     }
 
     private void closeCurrentSession() {
-        final AuthenticationSession currentAuthSession = getAuthenticationSession();
+        final AuthSession currentAuthSession = getAuthenticationSession();
         if (currentAuthSession != null) {
             currentAuthSession.setStatus(AuthenticationSessionStatus.CLOSED);
             currentAuthSession.setClosedAt(new Date());
@@ -146,8 +146,8 @@ public class ContextHolder implements IContextHolder {
         }
     }
 
-    private AuthenticationSession newAuthSession(final Person person, final String contextId) {
-        AuthenticationSession authSession = AuthenticationSession.newInstance()
+    private AuthSession newAuthSession(final Person person, final String contextId) {
+        AuthSession authSession = AuthSession.newInstance()
                 .setContextId(contextId)
                 .setStatus(AuthenticationSessionStatus.ACTIVE)
                 .setCreatedAt(new Date())
@@ -155,8 +155,8 @@ public class ContextHolder implements IContextHolder {
         return authSessionDAO.save(authSession);
     }
 
-    private AuthenticationSession newAuthSession(final Application application, final String contextId) {
-        AuthenticationSession authSession = AuthenticationSession.newInstance()
+    private AuthSession newAuthSession(final Application application, final String contextId) {
+        AuthSession authSession = AuthSession.newInstance()
                 .setContextId(contextId)
                 .setStatus(AuthenticationSessionStatus.ACTIVE)
                 .setCreatedAt(new Date())
@@ -174,10 +174,10 @@ public class ContextHolder implements IContextHolder {
         private final String id;
         private final Person person;
         private final Application application;
-        private final AuthenticationSession authSession;
+        private final AuthSession authSession;
         private Map<String, String> attributes = new HashMap<>();
 
-        protected Context(final String id, final Person person, final AuthenticationSession authSession) {
+        protected Context(final String id, final Person person, final AuthSession authSession) {
             this.id = id;
             this.person = person;
             this.application = null;
@@ -185,7 +185,7 @@ public class ContextHolder implements IContextHolder {
             getSession().setAttribute(CONTEXT_ID_ATTRIBUTE, id);
         }
 
-        protected Context(final String id, final Application application, final AuthenticationSession authSession) {
+        protected Context(final String id, final Application application, final AuthSession authSession) {
             this.id = id;
             this.person = null;
             this.application = application;
@@ -219,7 +219,7 @@ public class ContextHolder implements IContextHolder {
         }
 
         @Override
-        public AuthenticationSession getAuthenticationSession() {
+        public AuthSession getAuthenticationSession() {
             return authSession;
         }
 

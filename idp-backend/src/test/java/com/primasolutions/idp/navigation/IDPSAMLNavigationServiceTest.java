@@ -2,7 +2,7 @@ package com.primasolutions.idp.navigation;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.ApplicationDAO;
-import com.primasolutions.idp.authentication.AuthenticationSession;
+import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.exception.ApplicationNotFoundException;
@@ -70,7 +70,7 @@ public class IDPSAMLNavigationServiceTest {
         MockitoAnnotations.initMocks(this);
         DefaultBootstrap.bootstrap();
         application = new Application();
-        when(context.getAuthenticationSession()).thenReturn(AuthenticationSession.newInstance());
+        when(context.getAuthenticationSession()).thenReturn(AuthSession.newInstance());
         set_up_access();
         set_up_token();
     }

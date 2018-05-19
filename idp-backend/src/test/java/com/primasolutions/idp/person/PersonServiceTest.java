@@ -1,6 +1,9 @@
 package com.primasolutions.idp.person;
 
+import com.primasolutions.idp.authentication.AuthInfoByLogin;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
+import com.primasolutions.idp.authentication.mocks.MockAuthInfoByLoginDAO;
+import com.primasolutions.idp.authentication.mocks.MockAuthInfoDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoLookuper;
 import com.primasolutions.idp.constants.RoleCode;
@@ -19,12 +22,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -73,6 +78,19 @@ class PersonServiceTest {
         assertThat(result, notNullValue());
         assertThat(MockPersonDAO.getInstance().exists(result.getId()), equalTo(true));
     }
+
+    @Test
+    void when_create_a_new_valid_person_then_save_her_authentication() {
+        given_new_person_to_create();
+        when_create_new_person();
+
+        final Set<AuthInfoByLogin> byLogin = MockAuthInfoByLoginDAO.getInstance()
+                .findByLogin(person.getEmail());
+        assertThat(byLogin, hasSize(1));
+        assertThat(MockAuthInfoDAO.getInstance()
+                .findOne(byLogin.iterator().next().getAuthInfoId()), notNullValue());
+    }
+
 
     @Test
     void when_create_a_new_valid_person_then_save_her_auth_info() {

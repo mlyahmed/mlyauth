@@ -1,7 +1,7 @@
 package com.primasolutions.idp.token;
 
 import com.primasolutions.idp.application.Application;
-import com.primasolutions.idp.authentication.AuthenticationSession;
+import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.constants.TokenNorm;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenRefreshMode;
@@ -92,7 +92,7 @@ public class Token {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "AUTHENTICATION_SESSION_ID", nullable = false, updatable = false)
-    private AuthenticationSession session;
+    private AuthSession session;
 
     public static Token newInstance() {
         return new Token();
@@ -230,11 +230,11 @@ public class Token {
         return this;
     }
 
-    public AuthenticationSession getSession() {
+    public AuthSession getSession() {
         return session;
     }
 
-    public Token setSession(final AuthenticationSession session) {
+    public Token setSession(final AuthSession session) {
         this.session = session;
         return this;
     }

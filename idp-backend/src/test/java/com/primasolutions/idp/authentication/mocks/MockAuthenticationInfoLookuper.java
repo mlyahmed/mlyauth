@@ -18,8 +18,8 @@ public final class MockAuthenticationInfoLookuper extends AuthenticationInfoLook
     }
 
     private MockAuthenticationInfoLookuper() {
-        authInfoDAO = MockAuthenticationInfoDAO.getInstance();
-        authInfoByLoginDAO = MockAuthenticationInfoByLoginDAO.getInstance();
+        authInfoDAO = MockAuthInfoDAO.getInstance();
+        authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
     }
 
     @Override

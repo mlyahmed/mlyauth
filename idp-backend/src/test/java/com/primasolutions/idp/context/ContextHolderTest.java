@@ -1,11 +1,11 @@
 package com.primasolutions.idp.context;
 
 import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.authentication.AuthSession;
+import com.primasolutions.idp.authentication.AuthSessionDAO;
 import com.primasolutions.idp.authentication.AuthenticationInfo;
-import com.primasolutions.idp.authentication.AuthenticationSession;
-import com.primasolutions.idp.authentication.AuthenticationSessionDAO;
 import com.primasolutions.idp.authentication.Profile;
-import com.primasolutions.idp.authentication.mocks.MockAuthenticationSessionDAO;
+import com.primasolutions.idp.authentication.mocks.MockAuthSessionDAO;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.tools.MockReseter;
@@ -57,7 +57,7 @@ public class ContextHolderTest {
 
     private MockHttpServletRequest request;
 
-    private AuthenticationSessionDAO sessionDAO;
+    private AuthSessionDAO sessionDAO;
 
     @InjectMocks
     private ContextHolder holder;
@@ -66,7 +66,7 @@ public class ContextHolderTest {
 
     @Before
     public void setup() {
-        sessionDAO = MockAuthenticationSessionDAO.getInstance();
+        sessionDAO = MockAuthSessionDAO.getInstance();
         authenticationInfo = new AuthenticationInfo();
         authenticationInfo.setLogin(RANDOM_LOGIN);
         authenticationInfo.setPassword(RANDOM_PASSWORD);
@@ -140,8 +140,8 @@ public class ContextHolderTest {
     }
 
     private void then_a_new_auth_session_is_created() {
-        final AuthenticationSession holderSession = holder.getAuthenticationSession();
-        final AuthenticationSession contextSession = context.getAuthenticationSession();
+        final AuthSession holderSession = holder.getAuthenticationSession();
+        final AuthSession contextSession = context.getAuthenticationSession();
         assertThat(holderSession, notNullValue());
         assertThat(contextSession, notNullValue());
         assertThat(holderSession, equalTo(contextSession));
@@ -158,25 +158,25 @@ public class ContextHolderTest {
     @Test
     public void given_an_existing_context_when_create_a_new_person_context_then_the_old_session_is_closed() {
         context = holder.newPersonContext(person);
-        final AuthenticationSession firstSession = context.getAuthenticationSession();
+        final AuthSession firstSession = context.getAuthenticationSession();
         context = holder.newPersonContext(person);
-        final AuthenticationSession secondSession = context.getAuthenticationSession();
+        final AuthSession secondSession = context.getAuthenticationSession();
         then_the_first_session_is_closed_and_new_one_is_created(firstSession, secondSession);
     }
 
     @Test
     public void given_an_existing_context_when_create_a_new_application_context_then_the_old_session_is_closed() {
         context = holder.newApplicationContext(application);
-        final AuthenticationSession firstSession = context.getAuthenticationSession();
+        final AuthSession firstSession = context.getAuthenticationSession();
         context = holder.newApplicationContext(application);
-        final AuthenticationSession secondSession = context.getAuthenticationSession();
+        final AuthSession secondSession = context.getAuthenticationSession();
         then_the_first_session_is_closed_and_new_one_is_created(firstSession, secondSession);
     }
 
     @Test
     public void given_an_existing_person_context_when_reset_it_then_close_the_session() {
         context = holder.newPersonContext(person);
-        final AuthenticationSession authSession = context.getAuthenticationSession();
+        final AuthSession authSession = context.getAuthenticationSession();
         holder.reset();
         then_the_auth_session_is_closed(authSession);
     }
@@ -184,7 +184,7 @@ public class ContextHolderTest {
     @Test
     public void given_an_existing_application_context_when_reset_it_then_close_the_session() {
         context = holder.newApplicationContext(application);
-        final AuthenticationSession authSession = context.getAuthenticationSession();
+        final AuthSession authSession = context.getAuthenticationSession();
         holder.reset();
         then_the_auth_session_is_closed(authSession);
     }
@@ -397,8 +397,8 @@ public class ContextHolderTest {
         assertThat(holder.getProfiles().toArray(new Profile[]{})[0].getCode(), equalTo(ProfileCode.valueOf(profile)));
     }
 
-    private void then_the_first_session_is_closed_and_new_one_is_created(final AuthenticationSession firstSession,
-                                                                         final AuthenticationSession secondSession) {
+    private void then_the_first_session_is_closed_and_new_one_is_created(final AuthSession firstSession,
+                                                                         final AuthSession secondSession) {
         assertThat(firstSession, not(equalTo(secondSession)));
         assertThat(sessionDAO.findOne(firstSession.getId()).getStatus(), equalTo(CLOSED));
         assertThat(sessionDAO.findOne(firstSession.getId()).getClosedAt(), notNullValue());
@@ -406,7 +406,7 @@ public class ContextHolderTest {
                 < FIFTY_MILLISECONDS);
     }
 
-    private void then_the_auth_session_is_closed(final AuthenticationSession authSession) {
+    private void then_the_auth_session_is_closed(final AuthSession authSession) {
         assertThat(sessionDAO.findOne(authSession.getId()).getStatus(), equalTo(CLOSED));
         assertThat(sessionDAO.findOne(authSession.getId()).getClosedAt(), notNullValue());
         assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis()

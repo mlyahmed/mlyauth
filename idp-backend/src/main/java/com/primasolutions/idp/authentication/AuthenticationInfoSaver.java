@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 public class AuthenticationInfoSaver {
 
     @Autowired
-    protected AuthenticationInfoDAO authenticationInfoDAO;
+    protected AuthInfoDAO authInfoDAO;
 
     @Autowired
-    protected AuthenticationInfoByLoginDAO authInfoByLoginDAO;
+    protected AuthInfoByLoginDAO authInfoByLoginDAO;
 
     public void create(final AuthenticationInfo auth) {
-        final AuthenticationInfo authInfo = authenticationInfoDAO.saveAndFlush(auth);
-        authInfoByLoginDAO.saveAndFlush(AuthenticationInfoByLogin.newInstance()
+        final AuthenticationInfo authInfo = authInfoDAO.saveAndFlush(auth);
+        authInfoByLoginDAO.saveAndFlush(AuthInfoByLogin.newInstance()
                 .setAuthInfoId(authInfo.getId())
                 .setLogin(authInfo.getLogin()));
     }

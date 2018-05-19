@@ -1,6 +1,6 @@
 package com.primasolutions.idp.context.mocks;
 
-import com.primasolutions.idp.authentication.mocks.MockAuthenticationSessionDAO;
+import com.primasolutions.idp.authentication.mocks.MockAuthSessionDAO;
 import com.primasolutions.idp.context.ContextHolder;
 import com.primasolutions.idp.context.ContextIdGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -16,7 +16,7 @@ public class MockContextHolder extends ContextHolder {
         ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request);
         RequestContextHolder.setRequestAttributes(requestAttributes);
         idGenerator = new ContextIdGenerator();
-        authSessionDAO = MockAuthenticationSessionDAO.getInstance();
+        authSessionDAO = MockAuthSessionDAO.getInstance();
     }
 
 
