@@ -3,12 +3,14 @@ package com.primasolutions.idp.person.validator;
 import com.primasolutions.idp.authentication.RoleValidator;
 import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;
+import com.primasolutions.idp.person.Person;
 import com.primasolutions.idp.person.PersonBean;
 import com.primasolutions.idp.person.PersonLookuper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
 public class PersonValidator implements IPersonValidator {
@@ -27,6 +29,16 @@ public class PersonValidator implements IPersonValidator {
         theExternalIdMustBeNew(bean);
         theBirthDateMustBeValid(bean);
         theRoleMustBeValid(bean);
+    }
+
+    @Override
+    public void validateUpdate(final PersonBean bean) {
+        thePersonMustNotBeNull(bean);
+        if (isNotEmpty(bean.getEmail())) {
+            theEmailMustBeValid(bean);
+            final Person p = personLookuper.byExternalId(bean.getExternalId());
+            if (p == null || !p.getEmail().equals(bean.getEmail())) theEmailMustBeNew(bean);
+        }
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {

@@ -78,12 +78,12 @@ class PersonServiceTest {
     }
 
     @Test
-    void when_validation_is_ko_then_error() {
+    void when_create_null_then_error() {
         assertThrows(IDPException.class, () -> personService.createPerson(null));
     }
 
     @Test
-    void when_create_a_new_person_and_not_valid_then_error() {
+    void when_create_a_new_person_and_validation_ko_then_error() {
         personValidator.setForcedError(IDPException.newInstance());
         given_new_person_to_create();
         assertThrows(IDPException.class, this::when_create_new_person);
@@ -149,6 +149,12 @@ class PersonServiceTest {
         given_new_person_to_create_with_email(emailAddress);
         assertThrows(IDPException.class, this::when_create_new_person);
     }
+
+    @Test
+    void when_update_null_then_error() {
+        assertThrows(IDPException.class, () -> personService.updatePerson(null));
+    }
+
 
     private void given_an_existing_person_with_email(final String emailAddress) {
         final Person p = Person.newInstance().setExternalId(randomString()).setEmail(emailAddress);

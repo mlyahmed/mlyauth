@@ -43,6 +43,7 @@ public class PersonService implements IPersonService {
 
     @Override
     public PersonBean updatePerson(final PersonBean bean) {
+        personValidator.validateUpdate(bean);
         final Person person = personBuilder.toEntity(bean);
         personSaver.update(person);
         return personBuilder.toBean(personLookuper.byExternalId(person.getExternalId()));

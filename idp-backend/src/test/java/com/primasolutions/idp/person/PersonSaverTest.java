@@ -72,16 +72,17 @@ class PersonSaverTest {
     }
 
     @Test
-    void when_person_is_nul_then_error() {
+    void when_create_and_person_is_nul_then_error() {
         person = null;
         assertThrows(IllegalArgumentException.class, this::when_create_person);
     }
 
     @Test
-    void when_authentication_info_is_null_then_error() {
+    void when_create_and_authentication_info_is_null_then_error() {
         given_the_person_to_process();
         assertThrows(IllegalArgumentException.class, this::when_create_person);
     }
+
 
     private void given_the_person_to_process() {
         person = Person.newInstance()

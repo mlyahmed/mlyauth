@@ -61,18 +61,18 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_email_address_is_empty_then_error(final String email) {
+    void when_validate_new_and_email_address_is_empty_then_error(final String email) {
         and_email_address_is(email);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EMAIL_EMPTY"));
 
     }
 
     @Test
-    void when_email_address_is_not_valid_then_error() {
+    void when_validate_new_and_email_address_is_not_valid_then_error() {
         and_email_address_is(randomString());
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EMAIL_INVALID"));
     }
@@ -89,28 +89,26 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("tooLongEmails")
-    void when_email_address_is_too_long_then_error(final String tooLongEmail) {
+    void when_validate_new_and_email_address_is_too_long_then_error(final String tooLongEmail) {
         and_email_address_is(tooLongEmail);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EMAIL_TOO_LONG"));
     }
 
     @Test
-    void when_email_address_already_exists_then_error() {
-        final String emailAddress = randomEmail();
-        given_an_existing_person_with_email(emailAddress);
-        and_email_address_is(emailAddress);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+    void when_validate_new_and_email_address_already_exists_then_error() {
+        given_person_with_existing_email();
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EMAIL_ALREADY_EXISTS"));
     }
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_external_id_is_empty_then_error(final String externalId) {
+    void when_new_and_external_id_is_empty_then_error(final String externalId) {
         and_external_id_is(externalId);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EXTERNAL_ID_EMPTY"));
 
@@ -128,28 +126,28 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("tooLongExternalIds")
-    void when_external_id_is_too_long_then_error(final String tooLongExternalId) {
+    void when_new_and_external_id_is_too_long_then_error(final String tooLongExternalId) {
         and_external_id_is(tooLongExternalId);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EXTERNAL_ID_TOO_LONG"));
     }
 
     @Test
-    void when_external_id_already_exists_then_error() {
+    void when_new_and_external_id_already_exists_then_error() {
         final String externalId = randomString();
         given_an_existing_person_with_external_id(externalId);
         and_external_id_is(externalId);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EXTERNAL_ID_ALREADY_EXISTS"));
     }
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_first_name_is_empty_then_error(final String empty) {
+    void when_new_and_first_name_is_empty_then_error(final String empty) {
         and_first_name_is(empty);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("FIRST_NAME_EMPTY"));
     }
@@ -166,18 +164,18 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("tooLongFirstNames")
-    void when_first_name_is_too_long_then_error(final String tooLongFirstName) {
+    void when_new_and_first_name_is_too_long_then_error(final String tooLongFirstName) {
         and_first_name_is(tooLongFirstName);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("FIRST_NAME_TOO_LONG"));
     }
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_last_name_is_empty_then_error(final String empty) {
+    void when_new_and_last_name_is_empty_then_error(final String empty) {
         person.setLastname(empty);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("LAST_NAME_EMPTY"));
     }
@@ -194,9 +192,9 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("tooLongLastNames")
-    void when_last_name_is_too_long_then_error(final String tooLongLastName) {
+    void when_new_and_last_name_is_too_long_then_error(final String tooLongLastName) {
         person.setLastname(tooLongLastName);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("LAST_NAME_TOO_LONG"));
     }
@@ -205,7 +203,7 @@ class PersonValidatorTest {
     @MethodSource("emptyStrings")
     void the_birth_date_is_optional(final String empty) {
         person.setBirthdate(empty);
-        when_validate_the_person();
+        when_validate_the_new();
     }
 
     private static Stream<String> badFormattedBirthDates() {
@@ -218,9 +216,9 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("badFormattedBirthDates")
-    void when_birth_date_format_is_bad_then_error(final String badFormattedBirthDate) {
+    void when_new_and_birth_date_format_is_bad_then_error(final String badFormattedBirthDate) {
         person.setBirthdate(badFormattedBirthDate);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), Matchers.contains("BIRTH_DATE_BAD_FORMAT"));
@@ -229,23 +227,80 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_role_code_is_empty_then_error(final String empty) {
+    void when_new_and_role_code_is_empty_then_error(final String empty) {
         person.setRole(empty);
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("ROLE_EMPTY"));
     }
 
     @Test
-    void when_role_code_is_bad_then_error() {
+    void when_new_and_role_code_is_bad_then_error() {
         person.setRole(randomString());
-        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_person);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("ROLE_INVALID"));
     }
 
+    @Test
+    void when_validate_update_and_valid_then_ok() {
+        when_validate_the_update();
+    }
+
+    @Test
+    void when_validate_update_the_same_existing_person_then_ok() {
+        final Person p = given_and_existing_person();
+        this.person.setExternalId(p.getExternalId()).setEmail(p.getEmail());
+        when_validate_the_update();
+    }
+
+    @Test
+    void when_validate_update_person_and_null_then_error() {
+        final IDPException ex = assertThrows(IDPException.class, () -> validator.validateUpdate(null));
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_NULL"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_validate_update_and_email_address_is_empty_then_ok(final String email) {
+        and_email_address_is(email);
+        when_validate_the_update();
+    }
+
+    @Test
+    void when_validate_update_and_email_address_is_not_valid_then_error() {
+        and_email_address_is(randomString());
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), contains("EMAIL_INVALID"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("tooLongEmails")
+    void when_validate_update_and_email_address_is_too_long_then_error(final String tooLongEmail) {
+        and_email_address_is(tooLongEmail);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), contains("EMAIL_TOO_LONG"));
+    }
+
+    @Test
+    void when_validate_update_and_email_address_already_exists_then_error() {
+        given_person_with_existing_email();
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), contains("EMAIL_ALREADY_EXISTS"));
+    }
+
     private void and_email_address_is(final String email) {
         person.setEmail(email);
+    }
+
+    private void given_person_with_existing_email() {
+        final String emailAddress = randomEmail();
+        given_an_existing_person_with_email(emailAddress);
+        and_email_address_is(emailAddress);
     }
 
     private void given_an_existing_person_with_email(final String emailAddress) {
@@ -254,6 +309,15 @@ class PersonValidatorTest {
         MockPersonDAO.getInstance().save(p);
         MockPersonByEmailDAO.getInstance().save(pbe);
     }
+
+    private Person given_and_existing_person() {
+        final Person p = Person.newInstance().setExternalId(randomString()).setEmail(randomEmail());
+        final PersonByEmail pbe = PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail());
+        MockPersonDAO.getInstance().save(p);
+        MockPersonByEmailDAO.getInstance().save(pbe);
+        return p;
+    }
+
 
     private void and_external_id_is(final String tooLongExternalId) {
         person.setExternalId(tooLongExternalId);
@@ -280,8 +344,12 @@ class PersonValidatorTest {
                 .setEmail(randomEmail());
     }
 
-    private void when_validate_the_person() {
+    private void when_validate_the_new() {
         validator.validateNew(person);
+    }
+
+    private void when_validate_the_update() {
+        validator.validateUpdate(person);
     }
 
 }
