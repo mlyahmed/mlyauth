@@ -8,8 +8,10 @@ import com.primasolutions.idp.person.PersonByEmail;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
 import com.primasolutions.idp.person.mocks.MockPersonDAO;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
+import com.primasolutions.idp.tools.MockReseter;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,7 +33,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 class PersonValidatorTest {
 
-
     private PersonValidator validator;
     private PersonBean person;
 
@@ -40,6 +41,11 @@ class PersonValidatorTest {
         validator = new PersonValidator();
         setField(validator, "personLookuper", MockPersonLookuper.getInstance());
         given_the_person_is_valid();
+    }
+
+    @AfterEach
+    void tearsDown() {
+        MockReseter.resetAllMocks();
     }
 
     @Test
