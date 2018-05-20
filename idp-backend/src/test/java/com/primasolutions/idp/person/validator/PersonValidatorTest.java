@@ -55,10 +55,6 @@ class PersonValidatorTest {
         assertThat(ex.getErrors().stream().findFirst().get().getCode(), equalTo("PERSON_NULL"));
     }
 
-    private static Stream<String> emptyStrings() {
-        return Stream.of(null, "");
-    }
-
     @ParameterizedTest
     @MethodSource("emptyStrings")
     void when_validate_new_and_email_address_is_empty_then_error(final String email) {
@@ -77,20 +73,10 @@ class PersonValidatorTest {
         assertThat(ex.getErrorCodes(), contains("EMAIL_INVALID"));
     }
 
-    private static Stream<String> tooLongEmails() {
-        return Stream.of(
-                //CHECKSTYLE:OFF
-                leftPad("@yahoo.fr", 65, randomString().charAt(0)),
-                leftPad("@hotmail.com", 67, randomString().charAt(0)),
-                leftPad("@gmail.com", 100, randomString().charAt(0))
-                //CHECKSTYLE:ON
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("tooLongEmails")
-    void when_validate_new_and_email_address_is_too_long_then_error(final String tooLongEmail) {
-        and_the_person_email_address_is(tooLongEmail);
+    void when_validate_new_and_email_address_is_too_long_then_error(final String tooLong) {
+        and_the_person_email_address_is(tooLong);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EMAIL_TOO_LONG"));
@@ -113,27 +99,17 @@ class PersonValidatorTest {
         assertThat(ex.getErrorCodes(), contains("EXTERNAL_ID_EMPTY"));
     }
 
-    private static Stream<String> tooLongExternalIds() {
-        return Stream.of(
-                //CHECKSTYLE:OFF
-                RandomStringUtils.random(101, true, true),
-                RandomStringUtils.random(102, true, true),
-                RandomStringUtils.random(230, true, true)
-                //CHECKSTYLE:ON
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("tooLongExternalIds")
-    void when_new_and_external_id_is_too_long_then_error(final String tooLongExternalId) {
-        and_the_person_external_id_is(tooLongExternalId);
+    void when_validate_new_and_external_id_is_too_long_then_error(final String tooLong) {
+        and_the_person_external_id_is(tooLong);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EXTERNAL_ID_TOO_LONG"));
     }
 
     @Test
-    void when_new_and_external_id_already_exists_then_error() {
+    void when_validate_new_and_external_id_already_exists_then_error() {
         final String externalId = randomString();
         given_an_existing_person_with_external_id(externalId);
         and_the_person_external_id_is(externalId);
@@ -144,27 +120,17 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_new_and_first_name_is_empty_then_error(final String empty) {
+    void when_validate_new_and_first_name_is_empty_then_error(final String empty) {
         and_the_person_first_name_is(empty);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("FIRST_NAME_EMPTY"));
     }
 
-    private static Stream<String> tooLongFirstNames() {
-        return Stream.of(
-                //CHECKSTYLE:OFF
-                RandomStringUtils.random(101, true, true),
-                RandomStringUtils.random(301, true, true),
-                RandomStringUtils.random(201, true, true)
-                //CHECKSTYLE:ON
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("tooLongFirstNames")
-    void when_new_and_first_name_is_too_long_then_error(final String tooLongFirstName) {
-        and_the_person_first_name_is(tooLongFirstName);
+    void when_validate_new_and_first_name_is_too_long_then_error(final String tooLong) {
+        and_the_person_first_name_is(tooLong);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("FIRST_NAME_TOO_LONG"));
@@ -172,27 +138,17 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_new_and_last_name_is_empty_then_error(final String empty) {
-        person.setLastname(empty);
+    void when_validate_new_and_last_name_is_empty_then_error(final String empty) {
+        and_the_person_last_name_is(empty);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("LAST_NAME_EMPTY"));
     }
 
-    private static Stream<String> tooLongLastNames() {
-        return Stream.of(
-                //CHECKSTYLE:OFF
-                RandomStringUtils.random(101, true, true),
-                RandomStringUtils.random(105, true, true),
-                RandomStringUtils.random(501, true, true)
-                //CHECKSTYLE:ON
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("tooLongLastNames")
-    void when_new_and_last_name_is_too_long_then_error(final String tooLongLastName) {
-        person.setLastname(tooLongLastName);
+    void when_new_and_last_name_is_too_long_then_error(final String tooLong) {
+        and_the_person_last_name_is(tooLong);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("LAST_NAME_TOO_LONG"));
@@ -205,18 +161,10 @@ class PersonValidatorTest {
         when_validate_the_new();
     }
 
-    private static Stream<String> badFormattedBirthDates() {
-        return Stream.of(
-                randomString(),
-                "19841112",
-                "891009"
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("badFormattedBirthDates")
-    void when_new_and_birth_date_format_is_bad_then_error(final String badFormattedBirthDate) {
-        person.setBirthdate(badFormattedBirthDate);
+    void when_new_and_birth_date_format_is_bad_then_error(final String badFormatted) {
+        person.setBirthdate(badFormatted);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
@@ -313,6 +261,84 @@ class PersonValidatorTest {
         assertThat(ex.getErrorCodes(), contains("PERSON_NOT_FOUND"));
     }
 
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_validate_update_and_first_name_is_empty_then_ok(final String empty) {
+        given_the_person_already_exists();
+        and_the_person_first_name_is(empty);
+        when_validate_the_update();
+    }
+
+    @ParameterizedTest
+    @MethodSource("tooLongFirstNames")
+    void when_validate_update_and_first_name_is_too_long_then_error(final String tooLong) {
+        given_the_person_already_exists();
+        and_the_person_first_name_is(tooLong);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), contains("FIRST_NAME_TOO_LONG"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_validate_update_and_last_name_is_empty_then_ok(final String empty) {
+        given_the_person_already_exists();
+        and_the_person_last_name_is(empty);
+        when_validate_the_update();
+    }
+
+    private static Stream<String> emptyStrings() {
+        return Stream.of(null, "");
+    }
+
+    private static Stream<String> tooLongEmails() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                leftPad("@yahoo.fr", 65, randomString().charAt(0)),
+                leftPad("@hotmail.com", 67, randomString().charAt(0)),
+                leftPad("@gmail.com", 100, randomString().charAt(0))
+                //CHECKSTYLE:ON
+        );
+    }
+
+    private static Stream<String> tooLongExternalIds() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                RandomStringUtils.random(101, true, true),
+                RandomStringUtils.random(102, true, true),
+                RandomStringUtils.random(230, true, true)
+                //CHECKSTYLE:ON
+        );
+    }
+
+    private static Stream<String> tooLongFirstNames() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                RandomStringUtils.random(101, true, true),
+                RandomStringUtils.random(301, true, true),
+                RandomStringUtils.random(201, true, true)
+                //CHECKSTYLE:ON
+        );
+    }
+
+    private static Stream<String> tooLongLastNames() {
+        return Stream.of(
+                //CHECKSTYLE:OFF
+                RandomStringUtils.random(101, true, true),
+                RandomStringUtils.random(105, true, true),
+                RandomStringUtils.random(501, true, true)
+                //CHECKSTYLE:ON
+        );
+    }
+
+    private static Stream<String> badFormattedBirthDates() {
+        return Stream.of(
+                randomString(),
+                "19841112",
+                "891009"
+        );
+    }
+
     private void given_the_person_already_exists() {
         final Person p = given_an_existing_person();
         person.setExternalId(p.getExternalId());
@@ -343,7 +369,6 @@ class PersonValidatorTest {
         return p;
     }
 
-
     private void and_the_person_external_id_is(final String tooLongExternalId) {
         person.setExternalId(tooLongExternalId);
     }
@@ -357,6 +382,10 @@ class PersonValidatorTest {
 
     private void and_the_person_first_name_is(final String firstName) {
         person.setFirstname(firstName);
+    }
+
+    private void and_the_person_last_name_is(final String empty) {
+        person.setLastname(empty);
     }
 
     private void given_the_person_is_valid() {

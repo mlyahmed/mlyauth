@@ -42,6 +42,8 @@ public class PersonValidator implements IPersonValidator {
             theEmailMustBeNewToUpdate(bean);
         }
 
+        if (isNotEmpty(bean.getFirstname())) theFirstNameMustBeValid(bean);
+
     }
 
     private void thePersonMustExist(final PersonBean bean) {
@@ -65,8 +67,8 @@ public class PersonValidator implements IPersonValidator {
     }
 
     private void theEmailMustBeNewToUpdate(final PersonBean bean) {
-        final Person p2 = personLookuper.byExternalId(bean.getExternalId());
-        if (p2 == null || !p2.getEmail().equals(bean.getEmail())) theEmailMustBeNew(bean);
+        final Person person = personLookuper.byExternalId(bean.getExternalId());
+        if (person == null || !person.getEmail().equals(bean.getEmail())) theEmailMustBeNew(bean);
     }
 
     private void theFirstNameMustBeValid(final PersonBean bean) {
