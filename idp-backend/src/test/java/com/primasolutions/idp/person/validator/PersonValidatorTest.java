@@ -62,8 +62,8 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_validate_new_and_email_address_is_empty_then_error(final String email) {
-        and_the_person_email_address_is(email);
+    void when_validate_new_and_email_address_is_empty_then_error(final String empty) {
+        and_the_person_email_address_is(empty);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("EMAIL_EMPTY"));
