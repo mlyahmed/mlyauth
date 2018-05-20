@@ -147,7 +147,7 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("tooLongLastNames")
-    void when_new_and_last_name_is_too_long_then_error(final String tooLong) {
+    void when_validate_new_and_last_name_is_too_long_then_error(final String tooLong) {
         and_the_person_last_name_is(tooLong);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
@@ -156,15 +156,15 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void the_birth_date_is_optional(final String empty) {
-        person.setBirthdate(empty);
+    void when_validate_new_and_birth_date_is_empty_then_ok(final String empty) {
+        and_the_person_birth_date_is(empty);
         when_validate_the_new();
     }
 
     @ParameterizedTest
     @MethodSource("badFormattedBirthDates")
     void when_new_and_birth_date_format_is_bad_then_error(final String badFormatted) {
-        person.setBirthdate(badFormatted);
+        and_the_person_birth_date_is(badFormatted);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
@@ -287,6 +287,24 @@ class PersonValidatorTest {
         when_validate_the_update();
     }
 
+    @ParameterizedTest
+    @MethodSource("tooLongLastNames")
+    void when_validate_update_and_last_name_is_too_long_then_error(final String tooLong) {
+        given_the_person_already_exists();
+        and_the_person_last_name_is(tooLong);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), contains("LAST_NAME_TOO_LONG"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_validate_date_and_birth_date_is_empty_then_ok(final String empty) {
+        given_the_person_already_exists();
+        and_the_person_birth_date_is(empty);
+        when_validate_the_update();
+    }
+
     private static Stream<String> emptyStrings() {
         return Stream.of(null, "");
     }
@@ -386,6 +404,10 @@ class PersonValidatorTest {
 
     private void and_the_person_last_name_is(final String empty) {
         person.setLastname(empty);
+    }
+
+    private void and_the_person_birth_date_is(final String empty) {
+        person.setBirthdate(empty);
     }
 
     private void given_the_person_is_valid() {
