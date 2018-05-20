@@ -35,17 +35,19 @@ public class PersonValidator implements IPersonValidator {
     public void validateUpdate(final PersonBean bean) {
         thePersonMustNotBeNull(bean);
         theExternalIdMustBeValid(bean);
-
-        final Person p = personLookuper.byExternalId(bean.getExternalId());
-        if (p == null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_NOT_FOUND")));
-
+        thePersonMustExist(bean);
 
         if (isNotEmpty(bean.getEmail())) {
             theEmailMustBeValid(bean);
-
-            if (p == null || !p.getEmail().equals(bean.getEmail())) theEmailMustBeNew(bean);
+            theEmailMustBeNewToUpdate(bean);
         }
+
+    }
+
+    private void thePersonMustExist(final PersonBean bean) {
+        final Person p = personLookuper.byExternalId(bean.getExternalId());
+        if (p == null)
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_NOT_FOUND")));
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
@@ -60,6 +62,11 @@ public class PersonValidator implements IPersonValidator {
     private void theEmailMustBeNew(final PersonBean bean) {
         if (personLookuper.byEmail(bean.getEmail()) != null)
             throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_ALREADY_EXISTS")));
+    }
+
+    private void theEmailMustBeNewToUpdate(final PersonBean bean) {
+        final Person p2 = personLookuper.byExternalId(bean.getExternalId());
+        if (p2 == null || !p2.getEmail().equals(bean.getEmail())) theEmailMustBeNew(bean);
     }
 
     private void theFirstNameMustBeValid(final PersonBean bean) {
