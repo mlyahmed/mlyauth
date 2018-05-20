@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
 
     @Autowired
-    private INewPersonService newPersonService;
+    private IPersonService personService;
 
     @PostMapping
     @PreAuthorize("hasPermission(#person, T(com.primasolutions.idp.permission.IDPPermission).CREATE)")
-    public ResponseEntity newPerson(@RequestBody final PersonBean person) {
+    public ResponseEntity postPerson(@RequestBody final PersonBean person) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(newPersonService.createPerson(person));
+            return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(person));
         } catch (IDPException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
         }
@@ -33,14 +33,17 @@ public class PersonController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public @ResponseBody PersonBean updatePerson(@RequestBody final PersonBean person) {
-        return newPersonService.updatePerson(person);
+    public @ResponseBody PersonBean putPerson(@RequestBody final PersonBean person) {
+        if (personService.lookupPerson(person.getExternalId()) != null)
+            return personService.updatePerson(person);
+        else
+            return personService.createPerson(person);
     }
 
     @PutMapping("/_assign/{appname}/to/{personExternalId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void assignApplication(@PathVariable final String appname, @PathVariable final String personExternalId) {
-        newPersonService.assignApplication(appname, personExternalId);
+        personService.assignApplication(appname, personExternalId);
     }
 
 }

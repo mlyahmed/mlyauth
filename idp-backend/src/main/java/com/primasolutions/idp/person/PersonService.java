@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class NewPersonService implements INewPersonService {
+public class PersonService implements IPersonService {
 
     @Autowired
     private PersonSaver personSaver;
@@ -30,6 +30,11 @@ public class NewPersonService implements INewPersonService {
     private AuthenticationInfoBuilder authInfoBuilder;
 
     @Override
+    public PersonBean lookupPerson(final String externalId) {
+        return personBuilder.toBean(personLookuper.byExternalId(externalId));
+    }
+
+    @Override
     public PersonBean createPerson(final PersonBean bean) {
         personValidator.validateNew(bean);
         personSaver.create(personBuilder.toEntity(bean).setAuthenticationInfo(authInfoBuilder.toEntity(bean)));
@@ -38,13 +43,9 @@ public class NewPersonService implements INewPersonService {
 
     @Override
     public PersonBean updatePerson(final PersonBean bean) {
-        final Person person = personLookuper.byExternalId(bean.getExternalId());
-        if (person != null) {
-            personSaver.update(person);
-            return personBuilder.toBean(personLookuper.byExternalId(person.getExternalId()));
-        } else {
-            return createPerson(bean);
-        }
+        final Person person = personBuilder.toEntity(bean);
+        personSaver.update(person);
+        return personBuilder.toBean(personLookuper.byExternalId(person.getExternalId()));
     }
 
     @Override
