@@ -25,7 +25,6 @@ import static org.apache.commons.lang.StringUtils.leftPad;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -163,10 +162,9 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("badFormattedBirthDates")
-    void when_new_and_birth_date_format_is_bad_then_error(final String badFormatted) {
+    void when_validate_new_and_birth_date_format_is_bad_then_error(final String badFormatted) {
         and_the_person_birth_date_is(badFormatted);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
-        assertThat(ex, notNullValue());
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), Matchers.contains("BIRTH_DATE_BAD_FORMAT"));
     }
@@ -174,16 +172,16 @@ class PersonValidatorTest {
 
     @ParameterizedTest
     @MethodSource("emptyStrings")
-    void when_new_and_role_code_is_empty_then_error(final String empty) {
-        person.setRole(empty);
+    void when_validate_new_and_role_code_is_empty_then_error(final String empty) {
+        and_the_person_role_is(empty);
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("ROLE_EMPTY"));
     }
 
     @Test
-    void when_new_and_role_code_is_bad_then_error() {
-        person.setRole(randomString());
+    void when_validate_new_and_role_code_is_bad_then_error() {
+        and_the_person_role_is(randomString());
         final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_new);
         assertThat(ex.getErrors(), hasSize(1));
         assertThat(ex.getErrorCodes(), contains("ROLE_INVALID"));
@@ -305,6 +303,33 @@ class PersonValidatorTest {
         when_validate_the_update();
     }
 
+    @ParameterizedTest
+    @MethodSource("badFormattedBirthDates")
+    void when_validate_update_and_birth_date_format_is_bad_then_error(final String badFormatted) {
+        given_the_person_already_exists();
+        and_the_person_birth_date_is(badFormatted);
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), Matchers.contains("BIRTH_DATE_BAD_FORMAT"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyStrings")
+    void when_validate_update_and_role_code_is_empty_then_ok(final String empty) {
+        given_the_person_already_exists();
+        and_the_person_role_is(empty);
+        when_validate_the_update();
+    }
+
+    @Test
+    void when_validate_update_and_role_code_is_bad_then_error() {
+        given_the_person_already_exists();
+        and_the_person_role_is(randomString());
+        final IDPException ex = assertThrows(IDPException.class, this::when_validate_the_update);
+        assertThat(ex.getErrors(), hasSize(1));
+        assertThat(ex.getErrorCodes(), contains("ROLE_INVALID"));
+    }
+
     private static Stream<String> emptyStrings() {
         return Stream.of(null, "");
     }
@@ -408,6 +433,10 @@ class PersonValidatorTest {
 
     private void and_the_person_birth_date_is(final String empty) {
         person.setBirthdate(empty);
+    }
+
+    private void and_the_person_role_is(final String empty) {
+        person.setRole(empty);
     }
 
     private void given_the_person_is_valid() {

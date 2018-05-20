@@ -40,6 +40,8 @@ public class PersonValidator implements IPersonValidator {
         if (isNotEmpty(bean.getEmail())) theEmailMustBeNewToUpdate(bean);
         if (isNotEmpty(bean.getFirstname())) theFirstNameMustBeValid(bean);
         if (isNotEmpty(bean.getLastname())) theLastNameMustBeValid(bean);
+        if (isNotEmpty(bean.getBirthdate())) theBirthDateMustBeValid(bean);
+        if (isNotEmpty(bean.getRole())) theRoleMustBeValid(bean);
     }
 
     private void thePersonMustExist(final PersonBean bean) {
