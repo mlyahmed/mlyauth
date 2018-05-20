@@ -34,9 +34,16 @@ public class PersonValidator implements IPersonValidator {
     @Override
     public void validateUpdate(final PersonBean bean) {
         thePersonMustNotBeNull(bean);
+        theExternalIdMustBeValid(bean);
+
+        final Person p = personLookuper.byExternalId(bean.getExternalId());
+        if (p == null)
+            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_NOT_FOUND")));
+
+
         if (isNotEmpty(bean.getEmail())) {
             theEmailMustBeValid(bean);
-            final Person p = personLookuper.byExternalId(bean.getExternalId());
+
             if (p == null || !p.getEmail().equals(bean.getEmail())) theEmailMustBeNew(bean);
         }
     }
