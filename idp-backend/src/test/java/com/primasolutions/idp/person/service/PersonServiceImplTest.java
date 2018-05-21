@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoByLogin;
@@ -17,7 +17,6 @@ import com.primasolutions.idp.person.mocks.MockPersonValidator;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
 import com.primasolutions.idp.person.model.PersonByEmail;
-import com.primasolutions.idp.person.service.PersonServiceImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import org.exparity.hamcrest.date.DateMatchers;
 import org.junit.jupiter.api.AfterEach;

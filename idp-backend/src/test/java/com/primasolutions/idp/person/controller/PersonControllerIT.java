@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.primasolutions.idp.AbstractIntegrationTest;

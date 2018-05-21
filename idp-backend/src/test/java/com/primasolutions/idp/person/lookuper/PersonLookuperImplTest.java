@@ -1,7 +1,5 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.lookuper;
 
-import com.primasolutions.idp.person.lookuper.PersonLookuper;
-import com.primasolutions.idp.person.lookuper.PersonLookuperImpl;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonByEmail;
 import com.primasolutions.idp.person.model.PersonByEmailDAO;
