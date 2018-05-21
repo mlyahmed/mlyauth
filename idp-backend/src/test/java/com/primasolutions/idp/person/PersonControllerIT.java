@@ -8,6 +8,7 @@ import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.authentication.ProfileDAO;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.constants.RoleCode;
+import com.primasolutions.idp.person.lookuper.PersonLookuper;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
 import com.primasolutions.idp.person.model.PersonDAO;

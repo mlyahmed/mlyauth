@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person.mocks;
 
-import com.primasolutions.idp.person.PersonLookuperImpl;
+import com.primasolutions.idp.person.lookuper.PersonLookuperImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 

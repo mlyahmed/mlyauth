@@ -3,7 +3,7 @@ package com.primasolutions.idp.person.validator;
 import com.primasolutions.idp.authentication.RoleValidator;
 import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;
-import com.primasolutions.idp.person.PersonLookuper;
+import com.primasolutions.idp.person.lookuper.PersonLookuper;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.lookuper;
 
 import com.primasolutions.idp.person.model.Person;
 

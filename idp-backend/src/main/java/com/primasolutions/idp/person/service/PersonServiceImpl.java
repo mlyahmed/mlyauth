@@ -2,7 +2,7 @@ package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.application.ApplicationLookuper;
 import com.primasolutions.idp.authentication.AuthenticationInfoBuilder;
-import com.primasolutions.idp.person.PersonLookuper;
+import com.primasolutions.idp.person.lookuper.PersonLookuper;
 import com.primasolutions.idp.person.mapper.PersonMapper;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;

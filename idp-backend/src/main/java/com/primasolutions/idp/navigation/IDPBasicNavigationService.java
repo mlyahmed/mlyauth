@@ -4,7 +4,7 @@ import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.AttributeBean;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.exception.IDPException;
-import com.primasolutions.idp.person.PersonLookuper;
+import com.primasolutions.idp.person.lookuper.PersonLookuper;
 import com.primasolutions.idp.person.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
