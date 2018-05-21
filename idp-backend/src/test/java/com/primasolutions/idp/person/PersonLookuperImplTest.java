@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(DataProviderRunner.class)
-public class PersonLookuperTest {
+public class PersonLookuperImplTest {
 
     private PersonLookuper personLookuper;
     private PersonDAO personDAO;
@@ -32,7 +32,7 @@ public class PersonLookuperTest {
 
     @Before
     public void setup() {
-        personLookuper = new PersonLookuper();
+        personLookuper = new PersonLookuperImpl();
         personDAO = mock(PersonDAO.class);
         personByEmailDAO = mock(PersonByEmailDAO.class);
         ReflectionTestUtils.setField(personLookuper, "personDAO", personDAO);

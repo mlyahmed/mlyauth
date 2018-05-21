@@ -51,9 +51,9 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private static final long FATIMA_EZZAHRAE_ID = 9001L;
     private static final int EMAIL_INDEX = 4;
     private static final int EXTERNAL_ID_INDEX = 0;
-    private static final int FIRSTNAME_INDEX = 1;
-    private static final int LASTNAME_INDEX = 2;
-    private static final int BIRTHDATE_INDEX = 3;
+    private static final int FIRST_NAME_INDEX = 1;
+    private static final int LAST_NAME_INDEX = 2;
+    private static final int BIRTH_DATE_INDEX = 3;
     private static final int PASSWORD_INDEX = 5;
     private static final long POLICY_DEV_ID = 9000L;
 
@@ -79,6 +79,7 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     private WebApplicationContext context;
 
     protected MockMvc mockMvc;
+
     private ResultActions result;
 
     @Autowired
@@ -198,10 +199,10 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         assertThat(person.getAuthenticationInfo(), notNullValue());
         assertThat(person.getId(), notNullValue());
         assertThat(person.getExternalId(), equalTo(properties[EXTERNAL_ID_INDEX]));
-        assertThat(person.getFirstname(), equalTo(properties[FIRSTNAME_INDEX]));
-        assertThat(person.getLastname(), equalTo(properties[LASTNAME_INDEX]));
+        assertThat(person.getFirstname(), equalTo(properties[FIRST_NAME_INDEX]));
+        assertThat(person.getLastname(), equalTo(properties[LAST_NAME_INDEX]));
         assertThat(person.getBirthdate(), notNullValue());
-        assertThat(person.getBirthdate(), equalTo(formatter.parse(properties[BIRTHDATE_INDEX])));
+        assertThat(person.getBirthdate(), equalTo(formatter.parse(properties[BIRTH_DATE_INDEX])));
         assertThat(person.getAuthenticationInfo().getLogin(), equalTo(properties[EMAIL_INDEX]));
         assertThat(person.getEmail(), equalTo(properties[EMAIL_INDEX]));
         assertThat(person.getAuthenticationInfo().getPassword(), not(equalTo(properties[PASSWORD_INDEX])));
@@ -216,9 +217,9 @@ public class PersonControllerIT extends AbstractIntegrationTest {
         PersonBean personBean = new PersonBean();
         personBean.setRole(RoleCode.CLIENT.getValue());
         personBean.setExternalId(properties[EXTERNAL_ID_INDEX]);
-        personBean.setFirstname(properties[FIRSTNAME_INDEX]);
-        personBean.setLastname(properties[LASTNAME_INDEX]);
-        personBean.setBirthdate(properties[BIRTHDATE_INDEX]);
+        personBean.setFirstname(properties[FIRST_NAME_INDEX]);
+        personBean.setLastname(properties[LAST_NAME_INDEX]);
+        personBean.setBirthdate(properties[BIRTH_DATE_INDEX]);
         personBean.setEmail(properties[EMAIL_INDEX]);
         personBean.setPassword(properties[PASSWORD_INDEX].toCharArray());
         return personBean;
