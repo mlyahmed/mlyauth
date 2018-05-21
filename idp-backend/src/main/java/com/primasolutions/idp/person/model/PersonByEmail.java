@@ -1,5 +1,6 @@
 package com.primasolutions.idp.person.model;
 
+import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.sensitive.EncryptedDomain;
 import com.primasolutions.idp.sensitive.TokenizedDomain;
 import org.hibernate.annotations.Type;
@@ -11,10 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "PERSON_BY_EMAIL")
-public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
+public class PersonByEmail implements TokenizedDomain, EncryptedDomain, Cloneable, Serializable {
 
     public static final int ID_INIT_VALUE = 9999;
     public static final int ID_INC_STEP = 1;
@@ -64,5 +66,13 @@ public class PersonByEmail implements TokenizedDomain, EncryptedDomain {
     public PersonByEmail setEmail(final String email) {
         this.email = email;
         return this;
+    }
+
+    public PersonByEmail clone() {
+        try {
+            return (PersonByEmail) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw IDPException.newInstance(e);
+        }
     }
 }

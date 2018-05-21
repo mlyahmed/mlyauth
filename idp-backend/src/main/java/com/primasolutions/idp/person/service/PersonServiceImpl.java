@@ -49,9 +49,8 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonBean updatePerson(final PersonBean bean) {
         personValidator.validateUpdate(bean);
-        final Person person = personMapper.toEntity(bean);
-        personSaver.update(person);
-        return personMapper.toBean(personLookuper.byExternalId(person.getExternalId()));
+        personSaver.update(personMapper.toEntity(bean));
+        return personMapper.toBean(personLookuper.byExternalId(bean.getExternalId()));
     }
 
     @Override

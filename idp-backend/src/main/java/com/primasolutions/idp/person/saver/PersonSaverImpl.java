@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.Set;
+
 @Component
 public class PersonSaverImpl implements PersonSaver {
 
@@ -33,6 +35,14 @@ public class PersonSaverImpl implements PersonSaver {
 
     @Override
     public void update(final Person p) {
+        final Person existing = personDAO.findByExternalId(p.getExternalId());
+        final Set<PersonByEmail> byEmails = byEmailDAO.findByEmail(existing.getEmail());
+        final PersonByEmail byEmail = byEmails.stream().filter(pbe -> pbe.getPersonId().equals(p.getExternalId()))
+                .findFirst().get();
+
+        byEmailDAO.delete(byEmail.getId());
+
         personDAO.saveAndFlush(p);
+        byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
     }
 }

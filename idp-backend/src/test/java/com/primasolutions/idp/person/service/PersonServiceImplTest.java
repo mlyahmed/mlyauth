@@ -2,12 +2,14 @@ package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoByLogin;
+import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.authentication.mocks.MockAuthInfoByLoginDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthInfoDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
 import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
+import com.primasolutions.idp.person.mapper.PersonMapperImpl;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
 import com.primasolutions.idp.person.mocks.MockPersonDAO;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
@@ -18,6 +20,7 @@ import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
 import com.primasolutions.idp.person.model.PersonByEmail;
 import com.primasolutions.idp.tools.MockReseter;
+import org.apache.commons.lang.time.DateUtils;
 import org.exparity.hamcrest.date.DateMatchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +59,8 @@ class PersonServiceImplTest {
 
     private MockPersonValidator personValidator;
 
+    private MockPersonSaver personSaver;
+
     private PersonServiceImpl personService;
 
     private PersonBean person;
@@ -68,8 +73,9 @@ class PersonServiceImplTest {
         authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
         personService = new PersonServiceImpl();
         personValidator = MockPersonValidator.getInstance();
+        personSaver = MockPersonSaver.getInstance();
         setField(personService, "personValidator", personValidator);
-        setField(personService, "personSaver", MockPersonSaver.getInstance());
+        setField(personService, "personSaver", personSaver);
         setField(personService, "personMapper", MockPersonMapper.getInstance());
         setField(personService, "authInfoBuilder", MockAuthenticationInfoBuilder.getInstance());
         setField(personService, "personLookuper", MockPersonLookuper.getInstance());
@@ -103,46 +109,14 @@ class PersonServiceImplTest {
     void when_create_a_new_valid_person_then_save_her() throws ParseException {
         given_new_person_to_create();
         when_create_new_person();
-
-        final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(person.getEmail());
-        assertThat(byEmail, hasSize(1));
-
-        final Person p = personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
-        assertThat(p, notNullValue());
-        assertThat(p.getExternalId(), equalTo(person.getExternalId()));
-        assertThat(p.getEmail(), equalTo(person.getEmail()));
-        assertThat(p.getFirstname(), equalTo(person.getFirstname()));
-        assertThat(p.getLastname(), equalTo(person.getLastname()));
-        assertThat(p.getBirthdate(), equalTo(parseDate(person.getBirthdate(), new String[]{DATE_FORMAT})));
-        assertThat(p.getRole(), notNullValue());
-        assertThat(p.getRole().getCode().getValue(), equalTo(person.getRole()));
+        then_the_person_is_saved();
     }
 
     @Test
     void when_create_a_new_valid_person_then_save_her_authentication() {
         given_new_person_to_create();
         when_create_new_person();
-
-        final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
-        assertThat(byLogin, hasSize(1));
-
-        final AuthInfo authInfo = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
-        assertThat(authInfo, notNullValue());
-        assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
-        assertThat(authInfo.getEffectiveAt(), DateMatchers.before(new Date(System.currentTimeMillis() + ONE_SECOND)));
-        assertThat(authInfo.getStatus(), equalTo(AuthInfoStatus.ACTIVE));
-    }
-
-
-    private static Stream<String> emailAddresses() {
-        // @formatter:off
-        return Stream.of(
-                randomEmail(),
-                randomEmail(),
-                randomEmail(),
-                randomEmail()
-                );
-        // @formatter:on
+        then_the_authentication_info_is_created();
     }
 
     @ParameterizedTest
@@ -158,6 +132,41 @@ class PersonServiceImplTest {
         assertThrows(IDPException.class, () -> personService.updatePerson(null));
     }
 
+    @Test
+    void when_update_valid_person_then_ok() throws ParseException {
+        final Person p = Person.newInstance()
+                .setExternalId(randomString())
+                .setFirstname(randomString())
+                .setLastname(randomString())
+                .setBirthdate(DateUtils.parseDate(randomBirthdate(), new String[] {PersonMapperImpl.DATE_FORMAT}))
+                .setRole(Role.newInstance().setCode(RoleCode.MANAGER))
+                .setEmail(randomEmail());
+        p.setAuthenticationInfo(AuthInfo.newInstance().setLogin(p.getEmail()).setPerson(p));
+        personSaver.create(p);
+
+        person = PersonBean.newInstance()
+                .setExternalId(p.getExternalId())
+                .setFirstname(randomString())
+                .setLastname(randomString())
+                .setBirthdate(randomBirthdate())
+                .setRole(RoleCode.MANAGER.getValue())
+                .setEmail(randomEmail());
+
+        personService.updatePerson(person);
+        then_the_person_is_saved();
+    }
+
+
+    private static Stream<String> emailAddresses() {
+        // @formatter:off
+        return Stream.of(
+                randomEmail(),
+                randomEmail(),
+                randomEmail(),
+                randomEmail()
+        );
+        // @formatter:on
+    }
 
     private void given_an_existing_person_with_email(final String emailAddress) {
         final Person p = Person.newInstance().setExternalId(randomString()).setEmail(emailAddress);
@@ -184,4 +193,33 @@ class PersonServiceImplTest {
     private PersonBean when_create_new_person() {
         return personService.createPerson(person);
     }
+
+    private void then_the_person_is_saved() throws ParseException {
+        assertThat(personByEmailDAO.count(), equalTo(1L));
+        assertThat(personDAO.count(), equalTo(1L));
+        final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(person.getEmail());
+        assertThat(byEmail, hasSize(1));
+
+        final Person p = personDAO.findByExternalId(byEmail.iterator().next().getPersonId());
+        assertThat(p, notNullValue());
+        assertThat(p.getExternalId(), equalTo(person.getExternalId()));
+        assertThat(p.getEmail(), equalTo(person.getEmail()));
+        assertThat(p.getFirstname(), equalTo(person.getFirstname()));
+        assertThat(p.getLastname(), equalTo(person.getLastname()));
+        assertThat(p.getBirthdate(), equalTo(parseDate(person.getBirthdate(), new String[]{DATE_FORMAT})));
+        assertThat(p.getRole(), notNullValue());
+        assertThat(p.getRole().getCode().getValue(), equalTo(person.getRole()));
+    }
+
+    private void then_the_authentication_info_is_created() {
+        final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
+        assertThat(byLogin, hasSize(1));
+
+        final AuthInfo authInfo = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
+        assertThat(authInfo, notNullValue());
+        assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
+        assertThat(authInfo.getEffectiveAt(), DateMatchers.before(new Date(System.currentTimeMillis() + ONE_SECOND)));
+        assertThat(authInfo.getStatus(), equalTo(AuthInfoStatus.ACTIVE));
+    }
+
 }

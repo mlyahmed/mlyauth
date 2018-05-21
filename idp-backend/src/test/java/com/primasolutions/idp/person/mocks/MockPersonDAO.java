@@ -44,7 +44,10 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public Person findByExternalId(final String extId) {
-        return persons.values().stream().filter(p -> p.getExternalId().equals(extId)).findFirst().orElse(null);
+        final Person person = persons.values().stream()
+                .filter(p -> p.getExternalId().equals(extId))
+                .findFirst().orElse(null);
+        return person == null ? null : person.clone();
     }
 
     @Override
@@ -69,7 +72,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public long count() {
-        return 0;
+        return persons.size();
     }
 
     @Override
@@ -106,7 +109,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public Person findOne(final Long aLong) {
-        return persons.get(aLong);
+        return persons.get(aLong) == null ? null : persons.get(aLong).clone();
     }
 
     @Override
