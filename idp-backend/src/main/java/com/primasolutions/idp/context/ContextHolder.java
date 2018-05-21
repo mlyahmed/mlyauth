@@ -6,7 +6,7 @@ import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.authentication.AuthSessionDAO;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AuthenticationSessionStatus;
-import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;

@@ -7,7 +7,7 @@ import com.primasolutions.idp.authentication.AuthSessionDAO;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.authentication.mocks.MockAuthSessionDAO;
 import com.primasolutions.idp.constants.ProfileCode;
-import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.tools.MockReseter;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;

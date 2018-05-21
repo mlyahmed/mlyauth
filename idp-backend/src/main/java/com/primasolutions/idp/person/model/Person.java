@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.model;
 
 import com.google.common.collect.Sets;
 import com.primasolutions.idp.application.Application;

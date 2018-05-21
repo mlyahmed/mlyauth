@@ -2,7 +2,7 @@ package com.primasolutions.idp.permission.validators;
 
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.permission.IDPPermission;
-import com.primasolutions.idp.person.PersonBean;
+import com.primasolutions.idp.person.model.PersonBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;

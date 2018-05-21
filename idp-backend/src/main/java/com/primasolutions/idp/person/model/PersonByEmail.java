@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.model;
 
 import com.primasolutions.idp.sensitive.EncryptedDomain;
 import com.primasolutions.idp.sensitive.TokenizedDomain;

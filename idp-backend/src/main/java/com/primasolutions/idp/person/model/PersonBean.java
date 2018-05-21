@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.model;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;

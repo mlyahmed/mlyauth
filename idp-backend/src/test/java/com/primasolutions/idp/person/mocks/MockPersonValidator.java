@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person.mocks;
 
-import com.primasolutions.idp.person.PersonBean;
+import com.primasolutions.idp.person.model.PersonBean;
 import com.primasolutions.idp.person.validator.PersonValidator;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;

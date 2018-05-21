@@ -1,5 +1,9 @@
 package com.primasolutions.idp.person;
 
+import com.primasolutions.idp.person.model.Person;
+import com.primasolutions.idp.person.model.PersonByEmail;
+import com.primasolutions.idp.person.model.PersonByEmailDAO;
+import com.primasolutions.idp.person.model.PersonDAO;
 import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;

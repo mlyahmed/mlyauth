@@ -1,6 +1,6 @@
 package com.primasolutions.idp.atests.world;
 
-import com.primasolutions.idp.person.PersonBean;
+import com.primasolutions.idp.person.model.PersonBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person.validator;
 
-import com.primasolutions.idp.person.PersonBean;
+import com.primasolutions.idp.person.model.PersonBean;
 
 public interface IPersonValidator {
 

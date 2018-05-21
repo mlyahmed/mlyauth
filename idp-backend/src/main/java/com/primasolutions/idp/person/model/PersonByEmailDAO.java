@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.model;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

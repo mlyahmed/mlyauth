@@ -1,6 +1,7 @@
 package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.exception.IDPException;
+import com.primasolutions.idp.person.model.PersonBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,8 @@ public class PersonController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public @ResponseBody PersonBean putPerson(@RequestBody final PersonBean person) {
+    public @ResponseBody
+    PersonBean putPerson(@RequestBody final PersonBean person) {
         if (personService.lookupPerson(person.getExternalId()) != null)
             return personService.updatePerson(person);
         else

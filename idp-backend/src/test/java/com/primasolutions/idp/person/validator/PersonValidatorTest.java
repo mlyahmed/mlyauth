@@ -2,12 +2,12 @@ package com.primasolutions.idp.person.validator;
 
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
-import com.primasolutions.idp.person.Person;
-import com.primasolutions.idp.person.PersonBean;
-import com.primasolutions.idp.person.PersonByEmail;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
 import com.primasolutions.idp.person.mocks.MockPersonDAO;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
+import com.primasolutions.idp.person.model.Person;
+import com.primasolutions.idp.person.model.PersonBean;
+import com.primasolutions.idp.person.model.PersonByEmail;
 import com.primasolutions.idp.tools.MockReseter;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;

@@ -5,7 +5,7 @@ import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.model.Person;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;

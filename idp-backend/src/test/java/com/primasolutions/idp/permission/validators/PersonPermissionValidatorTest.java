@@ -2,7 +2,7 @@ package com.primasolutions.idp.permission.validators;
 
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.permission.IDPPermission;
-import com.primasolutions.idp.person.PersonBean;
+import com.primasolutions.idp.person.model.PersonBean;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;

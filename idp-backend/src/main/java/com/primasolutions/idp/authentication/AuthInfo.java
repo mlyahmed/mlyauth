@@ -2,7 +2,7 @@ package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.AuthInfoStatus;
-import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.sensitive.EncryptedDomain;
 import org.hibernate.annotations.Type;
 

@@ -6,7 +6,7 @@ import com.primasolutions.idp.authentication.Profile;
 import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.ProfileCode;
 import com.primasolutions.idp.context.mocks.MockContextHolder;
-import com.primasolutions.idp.person.Person;
+import com.primasolutions.idp.person.model.Person;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
