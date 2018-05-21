@@ -1,9 +1,12 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.application.ApplicationLookuper;
 import com.primasolutions.idp.authentication.AuthenticationInfoBuilder;
+import com.primasolutions.idp.person.PersonBuilder;
+import com.primasolutions.idp.person.PersonLookuper;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
+import com.primasolutions.idp.person.save.PersonSaver;
 import com.primasolutions.idp.person.validator.IPersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class PersonService implements IPersonService {
+public class PersonServiceImpl implements PersonService {
 
     @Autowired
     private PersonSaver personSaver;

@@ -2,6 +2,7 @@ package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.model.PersonBean;
+import com.primasolutions.idp.person.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
 
     @Autowired
-    private IPersonService personService;
+    private PersonService personService;
 
     @PostMapping
     @PreAuthorize("hasPermission(#person, T(com.primasolutions.idp.permission.IDPPermission).CREATE)")

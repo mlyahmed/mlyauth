@@ -1,8 +1,8 @@
-package com.primasolutions.idp.person;
+package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.person.model.PersonBean;
 
-public interface IPersonService {
+public interface PersonService {
 
     PersonBean lookupPerson(String externalId);
 

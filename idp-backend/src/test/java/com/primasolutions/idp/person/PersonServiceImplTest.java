@@ -17,6 +17,7 @@ import com.primasolutions.idp.person.mocks.MockPersonValidator;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
 import com.primasolutions.idp.person.model.PersonByEmail;
+import com.primasolutions.idp.person.service.PersonServiceImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import org.exparity.hamcrest.date.DateMatchers;
 import org.junit.jupiter.api.AfterEach;
@@ -42,7 +43,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-class PersonServiceTest {
+class PersonServiceImplTest {
 
     private  static final int ONE_SECOND = 1000;
 
@@ -56,7 +57,7 @@ class PersonServiceTest {
 
     private MockPersonValidator personValidator;
 
-    private PersonService personService;
+    private PersonServiceImpl personService;
 
     private PersonBean person;
 
@@ -66,7 +67,7 @@ class PersonServiceTest {
         personByEmailDAO = MockPersonByEmailDAO.getInstance();
         authInfoDAO = MockAuthInfoDAO.getInstance();
         authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
-        personService = new PersonService();
+        personService = new PersonServiceImpl();
         personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
         setField(personService, "personSaver", MockPersonSaver.getInstance());
