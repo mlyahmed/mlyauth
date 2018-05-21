@@ -1,7 +1,7 @@
 package com.primasolutions.idp.person.mocks;
 
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoSaver;
-import com.primasolutions.idp.person.PersonSaverImpl;
+import com.primasolutions.idp.person.saver.PersonSaverImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 
