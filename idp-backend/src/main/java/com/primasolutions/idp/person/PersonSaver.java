@@ -1,4 +1,4 @@
-package com.primasolutions.idp.person.save;
+package com.primasolutions.idp.person;
 
 import com.primasolutions.idp.authentication.AuthenticationInfoSaver;
 import com.primasolutions.idp.person.model.Person;

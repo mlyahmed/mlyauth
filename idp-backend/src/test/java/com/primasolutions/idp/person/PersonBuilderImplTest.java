@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(DataProviderRunner.class)
-public class PersonBuilderTest {
+public class PersonBuilderImplTest {
 
     private static final int ID_INDEX = 0;
     private static final int EXTERNAL_ID_INDEX = 1;
@@ -56,7 +56,7 @@ public class PersonBuilderTest {
     private RoleDAO roleDAO;
 
     @InjectMocks
-    private PersonBuilder mapper;
+    private PersonBuilderImpl builder;
 
     @Before
     public void setup() {
@@ -86,7 +86,7 @@ public class PersonBuilderTest {
 
     @Test
     public void when_map_to_bean_and_null_then_return_null() {
-        final PersonBean personBean = mapper.toBean(null);
+        final PersonBean personBean = builder.toBean(null);
         assertThat(personBean, Matchers.nullValue());
     }
 
@@ -121,7 +121,7 @@ public class PersonBuilderTest {
     }
 
     private void when_map_person_to_bean() {
-        bean = mapper.toBean(person);
+        bean = builder.toBean(person);
     }
 
     @DataProvider
@@ -181,7 +181,7 @@ public class PersonBuilderTest {
     @Test
     public void when_map_to_bean_and_one_application_then_map_application_to_code() {
         person.setApplications(Sets.newHashSet(Application.newInstance().setAppname("Policy")));
-        bean = mapper.toBean(person);
+        bean = builder.toBean(person);
         assertThat(bean, notNullValue());
         assertThat(bean.getApplications(), equalTo(Sets.newHashSet("Policy")));
     }
@@ -204,7 +204,7 @@ public class PersonBuilderTest {
 
     @Test
     public void when_map_bean_to_person_and_null_then_return_null() {
-        person = mapper.toEntity(null);
+        person = builder.toEntity(null);
         assertThat(person, nullValue());
     }
 
@@ -229,7 +229,7 @@ public class PersonBuilderTest {
     }
 
     private void when_map_bean_to_person() {
-        person = mapper.toEntity(bean);
+        person = builder.toEntity(bean);
     }
 
     private void given_bean(final Object... properties) {
