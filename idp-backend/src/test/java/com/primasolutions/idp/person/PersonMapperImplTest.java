@@ -6,6 +6,7 @@ import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.Role;
 import com.primasolutions.idp.authentication.RoleDAO;
 import com.primasolutions.idp.constants.RoleCode;
+import com.primasolutions.idp.person.mapper.PersonMapperImpl;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
 import com.primasolutions.idp.person.model.PersonDAO;

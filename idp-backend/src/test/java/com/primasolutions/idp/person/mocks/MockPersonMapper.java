@@ -1,7 +1,7 @@
 package com.primasolutions.idp.person.mocks;
 
 import com.primasolutions.idp.authentication.mocks.MockRoleDAO;
-import com.primasolutions.idp.person.PersonMapperImpl;
+import com.primasolutions.idp.person.mapper.PersonMapperImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 

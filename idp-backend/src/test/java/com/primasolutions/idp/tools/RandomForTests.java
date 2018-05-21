@@ -1,6 +1,6 @@
 package com.primasolutions.idp.tools;
 
-import com.primasolutions.idp.person.PersonMapperImpl;
+import com.primasolutions.idp.person.mapper.PersonMapperImpl;
 import org.ajbrown.namemachine.NameGenerator;
 import org.apache.commons.lang.RandomStringUtils;
 

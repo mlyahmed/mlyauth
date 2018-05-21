@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.primasolutions.idp.person.PersonMapperImpl.DATE_FORMAT;
+import static com.primasolutions.idp.person.mapper.PersonMapperImpl.DATE_FORMAT;
 import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
