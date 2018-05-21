@@ -11,7 +11,7 @@ import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
 import com.primasolutions.idp.person.mocks.MockPersonDAO;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
-import com.primasolutions.idp.person.mocks.MockPersonMapperImpl;
+import com.primasolutions.idp.person.mocks.MockPersonMapper;
 import com.primasolutions.idp.person.mocks.MockPersonSaver;
 import com.primasolutions.idp.person.mocks.MockPersonValidator;
 import com.primasolutions.idp.person.model.Person;
@@ -71,7 +71,7 @@ class PersonServiceImplTest {
         personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
         setField(personService, "personSaver", MockPersonSaver.getInstance());
-        setField(personService, "personMapper", MockPersonMapperImpl.getInstance());
+        setField(personService, "personMapper", MockPersonMapper.getInstance());
         setField(personService, "authInfoBuilder", MockAuthenticationInfoBuilder.getInstance());
         setField(personService, "personLookuper", MockPersonLookuper.getInstance());
     }

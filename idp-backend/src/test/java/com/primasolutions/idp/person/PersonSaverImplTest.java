@@ -29,7 +29,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-class PersonSaverTest {
+class PersonSaverImplTest {
 
     private MockPersonDAO personDAO;
 
@@ -41,7 +41,7 @@ class PersonSaverTest {
 
     private MockAuthenticationInfoSaver authenticationInfoSaver;
 
-    private PersonSaver saver;
+    private PersonSaverImpl saver;
     private Person person;
     private AuthInfo authInfo;
 
@@ -53,7 +53,7 @@ class PersonSaverTest {
         authInfoDAO = MockAuthInfoDAO.getInstance();
         authInfoByLoginDAO = MockAuthInfoByLoginDAO.getInstance();
         authenticationInfoSaver = MockAuthenticationInfoSaver.getInstance();
-        saver = new PersonSaver();
+        saver = new PersonSaverImpl();
         setField(saver, "personDAO", personDAO);
         setField(saver, "byEmailDAO", personByEmailDAO);
         setField(saver, "authenticationInfoSaver", authenticationInfoSaver);

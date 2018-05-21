@@ -5,21 +5,21 @@ import com.primasolutions.idp.person.PersonMapperImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 
-public final class MockPersonMapperImpl extends PersonMapperImpl implements ResettableMock {
+public final class MockPersonMapper extends PersonMapperImpl implements ResettableMock {
 
-    private static volatile MockPersonMapperImpl instance;
+    private static volatile MockPersonMapper instance;
 
-    public static MockPersonMapperImpl getInstance() {
+    public static MockPersonMapper getInstance() {
         if (instance == null) {
-            synchronized (MockPersonMapperImpl.class) {
+            synchronized (MockPersonMapper.class) {
                 if (instance == null)
-                    instance = new MockPersonMapperImpl();
+                    instance = new MockPersonMapper();
             }
         }
         return instance;
     }
 
-    private MockPersonMapperImpl() {
+    private MockPersonMapper() {
         MockReseter.register(this);
         this.personDAO = MockPersonDAO.getInstance();
         this.roleDAO = MockRoleDAO.getInstance();

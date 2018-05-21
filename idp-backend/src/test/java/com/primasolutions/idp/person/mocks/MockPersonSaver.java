@@ -1,11 +1,11 @@
 package com.primasolutions.idp.person.mocks;
 
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoSaver;
-import com.primasolutions.idp.person.PersonSaver;
+import com.primasolutions.idp.person.PersonSaverImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 
-public final class MockPersonSaver extends PersonSaver implements ResettableMock {
+public final class MockPersonSaver extends PersonSaverImpl implements ResettableMock {
 
     private static volatile MockPersonSaver instance;
 
