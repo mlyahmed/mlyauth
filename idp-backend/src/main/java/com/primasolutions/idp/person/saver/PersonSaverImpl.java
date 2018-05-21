@@ -40,9 +40,14 @@ public class PersonSaverImpl implements PersonSaver {
         final PersonByEmail byEmail = byEmails.stream().filter(pbe -> pbe.getPersonId().equals(p.getExternalId()))
                 .findFirst().get();
 
-        byEmailDAO.delete(byEmail.getId());
+        existing.setEmail(p.getEmail())
+                .setFirstname(p.getFirstname())
+                .setLastname(p.getLastname())
+                .setBirthdate(p.getBirthdate())
+                .setRole(p.getRole());
+        personDAO.saveAndFlush(existing);
 
-        personDAO.saveAndFlush(p);
+        byEmailDAO.delete(byEmail.getId());
         byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
     }
 }

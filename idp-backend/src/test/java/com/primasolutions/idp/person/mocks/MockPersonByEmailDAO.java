@@ -48,10 +48,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
     @Override
     public Set<PersonByEmail> findByEmail(final String email) {
         final String token = EmailTokenizer.newInstance().tokenizeEmailAddress(email);
-        return index.values().stream()
-                .filter(p -> p.getEmail().equals(token))
-                .map(PersonByEmail::clone)
-                .collect(Collectors.toSet());
+        return index.values().stream().filter(p -> p.getEmail().equals(token)).collect(Collectors.toSet());
     }
 
     @Override
@@ -114,7 +111,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
 
     @Override
     public PersonByEmail findOne(final Long aLong) {
-        return index.get(aLong) == null ? null : index.get(aLong).clone();
+        return index.get(aLong);
     }
 
     @Override

@@ -44,10 +44,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public Person findByExternalId(final String extId) {
-        final Person person = persons.values().stream()
-                .filter(p -> p.getExternalId().equals(extId))
-                .findFirst().orElse(null);
-        return person == null ? null : person.clone();
+        return persons.values().stream().filter(p -> p.getExternalId().equals(extId)).findFirst().orElse(null);
     }
 
     @Override

@@ -62,16 +62,16 @@ public class PersonMapperImpl implements PersonMapper {
                 .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
                 .setLastname(bean.getLastname())
-                .setBirthdate(parseBirthdate(bean))
+                .setBirthdate(parseBirthDate(bean))
                 .setEmail(bean.getEmail());
     }
 
     private Person createPerson(final PersonBean bean) {
         final Person person = personDAO.findByExternalId(bean.getExternalId());
-        return person != null ? person : Person.newInstance().setId(bean.getId());
+        return person != null ? person.clone() : Person.newInstance().setId(bean.getId());
     }
 
-    private Date parseBirthdate(final PersonBean bean) {
+    private Date parseBirthDate(final PersonBean bean) {
         try {
             return StringUtils.isNotBlank(bean.getBirthdate()) ? dateFormatter.parse(bean.getBirthdate()) : null;
         } catch (final ParseException e) {
