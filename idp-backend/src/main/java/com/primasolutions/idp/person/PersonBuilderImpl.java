@@ -1,7 +1,6 @@
 package com.primasolutions.idp.person;
 
 import com.google.common.collect.Sets;
-import com.primasolutions.idp.IDomainMapper;
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.authentication.RoleDAO;
 import com.primasolutions.idp.constants.RoleCode;
@@ -20,7 +19,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Component
-public class PersonBuilderImpl implements IDomainMapper<Person, PersonBean>, PersonBuilder {
+public class PersonBuilderImpl implements PersonBuilder {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
