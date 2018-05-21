@@ -1,6 +1,6 @@
 package com.primasolutions.idp.tools;
 
-import com.primasolutions.idp.person.PersonBuilderImpl;
+import com.primasolutions.idp.person.PersonMapperImpl;
 import org.ajbrown.namemachine.NameGenerator;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -59,7 +59,7 @@ public final class RandomForTests {
         final int minDay = (int) LocalDate.of(MIN_YEAR, 1, 1).toEpochDay();
         final int maxDay = (int) LocalDate.of(MAX_YEAR, 1, 1).toEpochDay();
         LocalDate randomBirthDate = LocalDate.ofEpochDay((long) (minDay + random.nextInt(maxDay - minDay)));
-        return randomBirthDate.format(DateTimeFormatter.ofPattern(PersonBuilderImpl.DATE_FORMAT));
+        return randomBirthDate.format(DateTimeFormatter.ofPattern(PersonMapperImpl.DATE_FORMAT));
     }
 
     public static NamePair randomName() {

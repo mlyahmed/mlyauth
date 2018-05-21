@@ -8,10 +8,10 @@ import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder
 import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.RoleCode;
 import com.primasolutions.idp.exception.IDPException;
-import com.primasolutions.idp.person.mocks.MockPersonBuilderImpl;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
 import com.primasolutions.idp.person.mocks.MockPersonDAO;
 import com.primasolutions.idp.person.mocks.MockPersonLookuper;
+import com.primasolutions.idp.person.mocks.MockPersonMapperImpl;
 import com.primasolutions.idp.person.mocks.MockPersonSaver;
 import com.primasolutions.idp.person.mocks.MockPersonValidator;
 import com.primasolutions.idp.person.model.Person;
@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.primasolutions.idp.person.PersonBuilderImpl.DATE_FORMAT;
+import static com.primasolutions.idp.person.PersonMapperImpl.DATE_FORMAT;
 import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
@@ -71,7 +71,7 @@ class PersonServiceImplTest {
         personValidator = MockPersonValidator.getInstance();
         setField(personService, "personValidator", personValidator);
         setField(personService, "personSaver", MockPersonSaver.getInstance());
-        setField(personService, "personBuilder", MockPersonBuilderImpl.getInstance());
+        setField(personService, "personMapper", MockPersonMapperImpl.getInstance());
         setField(personService, "authInfoBuilder", MockAuthenticationInfoBuilder.getInstance());
         setField(personService, "personLookuper", MockPersonLookuper.getInstance());
     }

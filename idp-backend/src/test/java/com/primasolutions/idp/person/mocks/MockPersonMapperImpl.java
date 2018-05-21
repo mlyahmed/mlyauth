@@ -1,25 +1,25 @@
 package com.primasolutions.idp.person.mocks;
 
 import com.primasolutions.idp.authentication.mocks.MockRoleDAO;
-import com.primasolutions.idp.person.PersonBuilderImpl;
+import com.primasolutions.idp.person.PersonMapperImpl;
 import com.primasolutions.idp.tools.MockReseter;
 import com.primasolutions.idp.tools.ResettableMock;
 
-public final class MockPersonBuilderImpl extends PersonBuilderImpl implements ResettableMock {
+public final class MockPersonMapperImpl extends PersonMapperImpl implements ResettableMock {
 
-    private static volatile MockPersonBuilderImpl instance;
+    private static volatile MockPersonMapperImpl instance;
 
-    public static MockPersonBuilderImpl getInstance() {
+    public static MockPersonMapperImpl getInstance() {
         if (instance == null) {
-            synchronized (MockPersonBuilderImpl.class) {
+            synchronized (MockPersonMapperImpl.class) {
                 if (instance == null)
-                    instance = new MockPersonBuilderImpl();
+                    instance = new MockPersonMapperImpl();
             }
         }
         return instance;
     }
 
-    private MockPersonBuilderImpl() {
+    private MockPersonMapperImpl() {
         MockReseter.register(this);
         this.personDAO = MockPersonDAO.getInstance();
         this.roleDAO = MockRoleDAO.getInstance();

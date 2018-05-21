@@ -4,7 +4,7 @@ import com.primasolutions.idp.exception.AuthError;
 import com.primasolutions.idp.exception.IDPException;
 import org.apache.commons.validator.routines.DateValidator;
 
-import static com.primasolutions.idp.person.PersonBuilderImpl.DATE_FORMAT;
+import static com.primasolutions.idp.person.PersonMapperImpl.DATE_FORMAT;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 

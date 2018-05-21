@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Component
-public class PersonBuilderImpl implements PersonBuilder {
+public class PersonMapperImpl implements PersonMapper {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(DataProviderRunner.class)
-public class PersonBuilderImplTest {
+public class PersonMapperImplTest {
 
     private static final int ID_INDEX = 0;
     private static final int EXTERNAL_ID_INDEX = 1;
@@ -56,7 +56,7 @@ public class PersonBuilderImplTest {
     private RoleDAO roleDAO;
 
     @InjectMocks
-    private PersonBuilderImpl builder;
+    private PersonMapperImpl builder;
 
     @Before
     public void setup() {

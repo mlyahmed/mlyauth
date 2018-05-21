@@ -2,8 +2,8 @@ package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.application.ApplicationLookuper;
 import com.primasolutions.idp.authentication.AuthenticationInfoBuilder;
-import com.primasolutions.idp.person.PersonBuilder;
 import com.primasolutions.idp.person.PersonLookuper;
+import com.primasolutions.idp.person.PersonMapper;
 import com.primasolutions.idp.person.PersonSaver;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonBean;
@@ -23,7 +23,7 @@ public class PersonServiceImpl implements PersonService {
     private PersonLookuper personLookuper;
 
     @Autowired
-    private PersonBuilder personBuilder;
+    private PersonMapper personMapper;
 
     @Autowired
     private IPersonValidator personValidator;
@@ -36,22 +36,22 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonBean lookupPerson(final String externalId) {
-        return personBuilder.toBean(personLookuper.byExternalId(externalId));
+        return personMapper.toBean(personLookuper.byExternalId(externalId));
     }
 
     @Override
     public PersonBean createPerson(final PersonBean bean) {
         personValidator.validateNew(bean);
-        personSaver.create(personBuilder.toEntity(bean).setAuthenticationInfo(authInfoBuilder.toEntity(bean)));
-        return personBuilder.toBean(personLookuper.byExternalId(bean.getExternalId()));
+        personSaver.create(personMapper.toEntity(bean).setAuthenticationInfo(authInfoBuilder.toEntity(bean)));
+        return personMapper.toBean(personLookuper.byExternalId(bean.getExternalId()));
     }
 
     @Override
     public PersonBean updatePerson(final PersonBean bean) {
         personValidator.validateUpdate(bean);
-        final Person person = personBuilder.toEntity(bean);
+        final Person person = personMapper.toEntity(bean);
         personSaver.update(person);
-        return personBuilder.toBean(personLookuper.byExternalId(person.getExternalId()));
+        return personMapper.toBean(personLookuper.byExternalId(person.getExternalId()));
     }
 
     @Override
