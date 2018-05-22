@@ -28,29 +28,43 @@ public class PersonSaverImpl implements PersonSaver {
         Assert.notNull(p, "The person arg is mandatory.");
         Assert.notNull(p.getAuthenticationInfo(), "The person authentication arg is mandatory.");
         personDAO.saveAndFlush(p);
-        byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
+        indexByEmail(p);
         authenticationInfoSaver.create(p.getAuthenticationInfo());
     }
 
 
     @Override
     public void update(final Person p) {
+        deleteByEmailIndex(p);
+        updatePerson(p);
+        indexByEmail(p);
+        updateAuthentication(p);
+    }
+
+    private void deleteByEmailIndex(final Person p) {
         final Person existing = personDAO.findByExternalId(p.getExternalId());
         final Set<PersonByEmail> byEmails = byEmailDAO.findByEmail(existing.getEmail());
         final PersonByEmail byEmail = byEmails.stream()
                 .filter(pbe -> pbe.getPersonId().equals(p.getExternalId()))
                 .findFirst().get();
         byEmailDAO.delete(byEmail.getId());
+    }
 
+    private void updatePerson(final Person p) {
         final Person existing2 = personDAO.findByExternalId(p.getExternalId());
         existing2.setEmail(p.getEmail())
                 .setFirstname(p.getFirstname())
                 .setLastname(p.getLastname())
                 .setBirthdate(p.getBirthdate())
                 .setRole(p.getRole());
-        personDAO.saveAndFlush(existing);
+        personDAO.saveAndFlush(existing2);
+    }
 
+    private void indexByEmail(final Person p) {
         byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
+    }
+
+    private void updateAuthentication(final Person p) {
         authenticationInfoSaver.update(p.getAuthenticationInfo().clone().setLogin(p.getEmail()));
     }
 }
