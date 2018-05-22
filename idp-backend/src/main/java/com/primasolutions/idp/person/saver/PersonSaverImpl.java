@@ -42,14 +42,15 @@ public class PersonSaverImpl implements PersonSaver {
                 .findFirst().get();
         byEmailDAO.delete(byEmail.getId());
 
-        existing.setEmail(p.getEmail())
+        final Person existing2 = personDAO.findByExternalId(p.getExternalId());
+        existing2.setEmail(p.getEmail())
                 .setFirstname(p.getFirstname())
                 .setLastname(p.getLastname())
                 .setBirthdate(p.getBirthdate())
                 .setRole(p.getRole());
-
         personDAO.saveAndFlush(existing);
+
         byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
-        authenticationInfoSaver.update(existing.getAuthenticationInfo().clone().setLogin(p.getEmail()));
+        authenticationInfoSaver.update(p.getAuthenticationInfo().clone().setLogin(p.getEmail()));
     }
 }
