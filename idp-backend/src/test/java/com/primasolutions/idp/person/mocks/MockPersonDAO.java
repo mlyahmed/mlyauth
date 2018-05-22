@@ -106,7 +106,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
     @Override
     public Person findOne(final Long aLong) {
-        return persons.get(aLong) == null ? null : persons.get(aLong).clone();
+        return persons.get(aLong);
     }
 
     @Override

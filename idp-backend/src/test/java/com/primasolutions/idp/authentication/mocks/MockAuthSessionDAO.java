@@ -42,7 +42,7 @@ public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock 
     public AuthSession save(final AuthSession entity) {
         entity.setId(++currentId);
         sessions.put(currentId, entity);
-        return entity.clone(); //Keep it to keep the tests valid
+        return entity;
     }
 
 
@@ -53,7 +53,7 @@ public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock 
 
     @Override
     public AuthSession findOne(final Long id) {
-        return sessions.get(id).clone();  //Keep it to keep the tests valid
+        return sessions.get(id);
     }
 
     @Override
