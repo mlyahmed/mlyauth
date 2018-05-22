@@ -177,6 +177,7 @@ public class Person  implements EncryptedDomain, Cloneable, Serializable {
         this.profiles = profiles;
     }
 
+    @Override
     public Person clone() {
         try {
             return (Person) super.clone();

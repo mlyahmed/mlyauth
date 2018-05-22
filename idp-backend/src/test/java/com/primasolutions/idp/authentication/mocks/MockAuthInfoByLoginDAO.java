@@ -73,12 +73,12 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
 
     @Override
     public long count() {
-        return 0;
+        return index.size();
     }
 
     @Override
-    public void delete(final Long aLong) {
-
+    public void delete(final Long id) {
+        index.remove(id);
     }
 
     @Override

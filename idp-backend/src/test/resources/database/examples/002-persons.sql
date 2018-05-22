@@ -29,7 +29,7 @@ VALUES (9000, 'ENC(ik4daTYQo/sLG4dH1a3cxNaxeSX4nloOoWNnXzxMoqsrWwUKz1T4RDiSYz4xZ
 '$2a$13$zEbHV1Wwiq/bEUyhOGhnyOkVvg/JzUOVIBN5a7gclZbgiV/2mGeNK', 'ACTIVE', '2018-01-14 18:28:39', '2222-02-14 18:28:56');
 
 INSERT INTO AUTHENTICATION_INFO_BY_LOGIN (ID, AUTHENTICATION_INFO_ID, LOGIN)
-VALUES (9000, '9000', 'moulay.attach@gmail.com');
+VALUES (9000, '9000', 'moul*********@gmail.com');
 
 INSERT INTO person (id, role, external_id, firstname, lastname, birthdate, email, authentication_info_id)
 VALUES (9000, 'MANAGER', '9000', 'Moulay', 'ATTACH', '1984-10-17', 'moulay.attach@gmail.com', 9000);
@@ -46,7 +46,7 @@ VALUES (9001, 'ENC(AXcinRf7B5mJqgZgBBUAo34Ul6ZKQ2e9oijawNmk/luEhxhb1uKLyqB88qCnP
 '$2a$13$zEbHV1Wwiq/bEUyhOGhnyOkVvg/JzUOVIBN5a7gclZbgiV/2mGeNK', 'ACTIVE', '2018-01-14 18:28:39', '2222-02-14 18:28:56');
 
 INSERT INTO AUTHENTICATION_INFO_BY_LOGIN (ID, AUTHENTICATION_INFO_ID, LOGIN)
-VALUES (9001, '9001', 'fatima.elidrissi@gmail.com');
+VALUES (9001, '9001', 'fatim***********@gmail.com');
 
 INSERT INTO person (id, role, external_id, firstname, lastname, birthdate, email, authentication_info_id)
 VALUES (9001, 'CLIENT', '9001', 'Fatima', 'EL IDRISSI', '1984-10-17', 'fatima.elidrissi@gmail.com', 9001);

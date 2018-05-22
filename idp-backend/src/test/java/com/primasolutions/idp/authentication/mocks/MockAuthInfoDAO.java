@@ -65,7 +65,7 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
 
     @Override
     public long count() {
-        return 0;
+        return authentications.size();
     }
 
     @Override
@@ -131,8 +131,8 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public AuthInfo getOne(final Long aLong) {
-        return null;
+    public AuthInfo getOne(final Long id) {
+        return authentications.get(id);
     }
 
     @Override

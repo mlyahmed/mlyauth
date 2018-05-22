@@ -37,7 +37,8 @@ public class PersonSaverImpl implements PersonSaver {
     public void update(final Person p) {
         final Person existing = personDAO.findByExternalId(p.getExternalId());
         final Set<PersonByEmail> byEmails = byEmailDAO.findByEmail(existing.getEmail());
-        final PersonByEmail byEmail = byEmails.stream().filter(pbe -> pbe.getPersonId().equals(p.getExternalId()))
+        final PersonByEmail byEmail = byEmails.stream()
+                .filter(pbe -> pbe.getPersonId().equals(p.getExternalId()))
                 .findFirst().get();
         byEmailDAO.delete(byEmail.getId());
 
@@ -46,7 +47,9 @@ public class PersonSaverImpl implements PersonSaver {
                 .setLastname(p.getLastname())
                 .setBirthdate(p.getBirthdate())
                 .setRole(p.getRole());
+
         personDAO.saveAndFlush(existing);
         byEmailDAO.saveAndFlush(PersonByEmail.newInstance().setPersonId(p.getExternalId()).setEmail(p.getEmail()));
+        authenticationInfoSaver.update(existing.getAuthenticationInfo().clone().setLogin(p.getEmail()));
     }
 }

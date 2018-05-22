@@ -2,6 +2,7 @@ package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.constants.AuthInfoStatus;
+import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.sensitive.EncryptedDomain;
 import org.hibernate.annotations.Type;
@@ -19,11 +20,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "AUTHENTICATION_INFO")
-public class AuthInfo implements EncryptedDomain {
+public class AuthInfo implements EncryptedDomain, Cloneable, Serializable {
 
     private static final int ID_INIT_VALUE = 9999;
     private static final int ID_INC_STEP = 1;
@@ -142,5 +144,14 @@ public class AuthInfo implements EncryptedDomain {
     @Transient
     public boolean isPerson() {
         return this.getPerson() != null;
+    }
+
+    @Override
+    public AuthInfo clone() {
+        try {
+            return (AuthInfo) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw IDPException.newInstance(e);
+        }
     }
 }
