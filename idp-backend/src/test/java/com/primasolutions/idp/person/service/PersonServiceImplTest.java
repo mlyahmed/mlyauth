@@ -106,7 +106,7 @@ class PersonServiceImplTest {
     }
 
     @Test
-    void when_create_a_new_valid_person_then_save_her() throws ParseException {
+    void when_create_a_new_valid_person_then_save_her() {
         given_new_person_to_create();
         when_create_new_person();
         then_the_person_is_created();
@@ -139,6 +139,12 @@ class PersonServiceImplTest {
         when_update_the_person();
         then_the_person_is_updated();
         then_the_authentication_info_is_updated();
+    }
+
+    @Test
+    void when_update_and_all_properties_empty_then_do_not_update() {
+        given_the_person_already_exists();
+        given_the_person_empty_updates();
     }
 
     private static Stream<String> emailAddresses() {
@@ -174,17 +180,25 @@ class PersonServiceImplTest {
                 .setEmail(randomEmail());
     }
 
-    private void given_the_person_already_exists() throws ParseException {
+    private void given_the_person_already_exists() {
         final Person p = Person.newInstance()
                 .setExternalId(randomString())
                 .setFirstname(randomString())
                 .setLastname(randomString())
-                .setBirthdate(DateUtils.parseDate(randomBirthdate(), new String[] {PersonMapperImpl.DATE_FORMAT}))
+                .setBirthdate(parseBirthDate(randomBirthdate()))
                 .setRole(Role.newInstance().setCode(RoleCode.MANAGER))
                 .setEmail(randomEmail());
         p.setAuthenticationInfo(AuthInfo.newInstance().setLogin(p.getEmail()).setPerson(p));
         personSaver.create(p);
         person = PersonBean.newInstance().setExternalId(p.getExternalId());
+    }
+
+    private Date parseBirthDate(final String date) {
+        try {
+            return DateUtils.parseDate(date, new String[] {PersonMapperImpl.DATE_FORMAT});
+        } catch (Exception e) {
+            throw IDPException.newInstance(e);
+        }
     }
 
     private void given_the_person_updates() {
@@ -195,6 +209,14 @@ class PersonServiceImplTest {
                 .setEmail(randomEmail());
     }
 
+    private void given_the_person_empty_updates() {
+        person = person.setFirstname("")
+                .setLastname("")
+                .setBirthdate("")
+                .setRole("")
+                .setEmail("");
+    }
+
     private PersonBean when_create_new_person() {
         return personService.createPerson(person);
     }
@@ -203,7 +225,7 @@ class PersonServiceImplTest {
         personService.updatePerson(person);
     }
 
-    private void then_the_person_is_created() throws ParseException {
+    private void then_the_person_is_created() {
         final Set<PersonByEmail> byEmail = personByEmailDAO.findByEmail(person.getEmail());
         assertThat(byEmail, hasSize(1));
 
@@ -213,7 +235,7 @@ class PersonServiceImplTest {
         assertThat(p.getEmail(), equalTo(person.getEmail()));
         assertThat(p.getFirstname(), equalTo(person.getFirstname()));
         assertThat(p.getLastname(), equalTo(person.getLastname()));
-        assertThat(p.getBirthdate(), equalTo(parseDate(person.getBirthdate(), new String[]{DATE_FORMAT})));
+        assertThat(p.getBirthdate(), equalTo(parseBirthDate(person.getBirthdate())));
         assertThat(p.getRole(), notNullValue());
         assertThat(p.getRole().getCode().getValue(), equalTo(person.getRole()));
     }
