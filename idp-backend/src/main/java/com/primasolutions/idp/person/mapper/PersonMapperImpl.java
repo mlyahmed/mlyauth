@@ -57,7 +57,7 @@ public class PersonMapperImpl implements PersonMapper {
 
     @Override
     public Person toEntity(final PersonBean bean) {
-        return bean == null ? null : createPerson(bean)
+        return bean == null ? null : initPerson(bean)
                 .setRole(roleDAO.getOne(RoleCode.create(bean.getRole())))
                 .setExternalId(bean.getExternalId())
                 .setFirstname(bean.getFirstname())
@@ -66,7 +66,7 @@ public class PersonMapperImpl implements PersonMapper {
                 .setEmail(bean.getEmail());
     }
 
-    private Person createPerson(final PersonBean bean) {
+    private Person initPerson(final PersonBean bean) {
         final Person person = personDAO.findByExternalId(bean.getExternalId());
         return person != null ? person.clone() : Person.newInstance().setId(bean.getId());
     }

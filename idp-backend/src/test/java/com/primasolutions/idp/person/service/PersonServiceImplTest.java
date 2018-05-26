@@ -41,6 +41,7 @@ import static org.apache.commons.lang.time.DateUtils.parseDate;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -64,6 +65,7 @@ class PersonServiceImplTest {
     private PersonServiceImpl personService;
 
     private PersonBean person;
+    private Person origin;
 
     @BeforeEach
     void setup() {
@@ -145,6 +147,8 @@ class PersonServiceImplTest {
     void when_update_and_all_properties_empty_then_do_not_update() {
         given_the_person_already_exists();
         given_the_person_empty_updates();
+        when_update_the_person();
+        then_the_person_is_not_updated();
     }
 
     private static Stream<String> emailAddresses() {
@@ -181,16 +185,17 @@ class PersonServiceImplTest {
     }
 
     private void given_the_person_already_exists() {
-        final Person p = Person.newInstance()
+        origin = Person.newInstance()
                 .setExternalId(randomString())
                 .setFirstname(randomString())
                 .setLastname(randomString())
                 .setBirthdate(parseBirthDate(randomBirthdate()))
                 .setRole(Role.newInstance().setCode(RoleCode.MANAGER))
                 .setEmail(randomEmail());
-        p.setAuthenticationInfo(AuthInfo.newInstance().setLogin(p.getEmail()).setPerson(p));
-        personSaver.create(p);
-        person = PersonBean.newInstance().setExternalId(p.getExternalId());
+        origin.setAuthenticationInfo(AuthInfo.newInstance().setLogin(origin.getEmail()).setPerson(origin));
+        personSaver.create(origin);
+        person = PersonBean.newInstance().setExternalId(origin.getExternalId());
+        origin = origin.clone();
     }
 
     private Date parseBirthDate(final String date) {
@@ -211,10 +216,10 @@ class PersonServiceImplTest {
 
     private void given_the_person_empty_updates() {
         person = person.setFirstname("")
-                .setLastname("")
-                .setBirthdate("")
-                .setRole("")
-                .setEmail("");
+                .setLastname(null)
+                .setBirthdate(null)
+                .setRole(null)
+                .setEmail(null);
     }
 
     private PersonBean when_create_new_person() {
@@ -279,5 +284,20 @@ class PersonServiceImplTest {
         assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
     }
 
+    private void then_the_person_is_not_updated() {
+        final Person p = personDAO.findByExternalId(person.getExternalId());
+        assertThat(p, notNullValue());
+        assertThat(p.getFirstname(), equalTo(origin.getFirstname()));
+        assertThat(p.getLastname(), equalTo(origin.getLastname()));
+        assertThat(p.getBirthdate(), equalTo(origin.getBirthdate()));
+        assertThat(p.getEmail(), equalTo(origin.getEmail()));
+        assertThat(p.getRole(), equalTo(origin.getRole()));
+        assertThat(p.getRole(), sameInstance(origin.getRole()));
+        assertThat(personByEmailDAO.findByEmail(origin.getEmail()), hasSize(1));
+
+        final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(p.getEmail());
+        assertThat(byLogin, hasSize(1));
+        assertThat(authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId()), equalTo(p.getAuthenticationInfo()));
+    }
 
 }

@@ -1,5 +1,7 @@
 package com.primasolutions.idp.sensitive;
 
+import org.springframework.util.Assert;
+
 import static org.apache.commons.lang3.StringUtils.rightPad;
 
 public class EmailTokenizer {
@@ -9,6 +11,7 @@ public class EmailTokenizer {
     }
 
     public String tokenizeEmailAddress(final String value) {
+        Assert.notNull(value, "email value mut not be null.");
         final String plain = getUsername(value).substring(0, getUsername(value).length() / 3);
         return rightPad(plain, getUsername(value).length(), '*')  + "@" + getDomain(value);
     }

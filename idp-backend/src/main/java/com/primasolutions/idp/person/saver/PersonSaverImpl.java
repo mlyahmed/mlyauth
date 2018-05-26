@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
 
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Component
 public class PersonSaverImpl implements PersonSaver {
 
@@ -35,10 +37,21 @@ public class PersonSaverImpl implements PersonSaver {
 
     @Override
     public void update(final Person p) {
+        Assert.notNull(p, "The person arg is mandatory.");
+        ignoreBlankAndEmptyUpdates(p);
         deleteByEmailIndex(p);
         updatePerson(p);
         indexByEmail(p);
         updateAuthentication(p);
+    }
+
+    private void ignoreBlankAndEmptyUpdates(final Person p) {
+        final Person origin = personDAO.findByExternalId(p.getExternalId());
+        p.setFirstname(isEmpty(p.getFirstname()) ? origin.getFirstname() : p.getFirstname());
+        p.setLastname(isEmpty(p.getLastname()) ? origin.getLastname() : p.getLastname());
+        p.setEmail(isEmpty(p.getEmail()) ? origin.getEmail() : p.getEmail());
+        p.setRole(p.getRole() == null ? origin.getRole() : p.getRole());
+        p.setBirthdate(p.getBirthdate() == null ? origin.getBirthdate() : p.getBirthdate());
     }
 
     private void deleteByEmailIndex(final Person p) {
@@ -51,13 +64,13 @@ public class PersonSaverImpl implements PersonSaver {
     }
 
     private void updatePerson(final Person p) {
-        final Person existing2 = personDAO.findByExternalId(p.getExternalId());
-        existing2.setEmail(p.getEmail())
+        final Person person = personDAO.findByExternalId(p.getExternalId());
+        person.setEmail(p.getEmail())
                 .setFirstname(p.getFirstname())
                 .setLastname(p.getLastname())
                 .setBirthdate(p.getBirthdate())
                 .setRole(p.getRole());
-        personDAO.saveAndFlush(existing2);
+        personDAO.saveAndFlush(person);
     }
 
     private void indexByEmail(final Person p) {

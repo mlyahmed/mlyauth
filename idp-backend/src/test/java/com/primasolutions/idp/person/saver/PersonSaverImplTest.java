@@ -42,9 +42,10 @@ class PersonSaverImplTest {
     private MockAuthenticationInfoSaver authenticationInfoSaver;
 
     private PersonSaverImpl saver;
-    private Person person;
-    private AuthInfo authInfo;
 
+    private Person person;
+
+    private AuthInfo authInfo;
 
     @BeforeEach
     void before() {
@@ -85,6 +86,12 @@ class PersonSaverImplTest {
         assertThrows(IllegalArgumentException.class, this::when_create_person);
     }
 
+    @Test
+    void when_update_and_person_is_null_then_error() {
+        person = null;
+        assertThrows(IllegalArgumentException.class, this::when_update_person);
+    }
+
 
     private void given_the_person_to_process() {
         person = Person.newInstance()
@@ -102,6 +109,10 @@ class PersonSaverImplTest {
 
     private void when_create_person() {
         saver.create(person);
+    }
+
+    private void when_update_person() {
+        saver.update(person);
     }
 
     private void then_the_person_is_created() {
