@@ -6,7 +6,8 @@ spring:
     hibernate:
       ddl-auto: none
       use-new-id-generator-mappings: true
-
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 idp:
   saml:
