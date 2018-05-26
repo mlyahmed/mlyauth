@@ -2,7 +2,7 @@ package com.primasolutions.idp.person.service;
 
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.mocks.MockApplicationDAO;
-import com.primasolutions.idp.application.mocks.MockApplicationLookuper;
+import com.primasolutions.idp.application.mocks.MockApplicationLookuperImpl;
 import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoByLogin;
 import com.primasolutions.idp.authentication.Role;
@@ -92,7 +92,7 @@ class PersonServiceImplTest {
         setField(personService, "personMapper", MockPersonMapper.getInstance());
         setField(personService, "authInfoBuilder", MockAuthenticationInfoBuilder.getInstance());
         setField(personService, "personLookuper", MockPersonLookuper.getInstance());
-        setField(personService, "applicationLookuper", MockApplicationLookuper.getInstance());
+        setField(personService, "applicationLookuper", MockApplicationLookuperImpl.getInstance());
     }
 
     @AfterEach

@@ -3,8 +3,6 @@ package com.primasolutions.idp.person.service;
 import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.ApplicationLookuper;
 import com.primasolutions.idp.authentication.AuthenticationInfoBuilder;
-import com.primasolutions.idp.exception.ApplicationNotFoundExc;
-import com.primasolutions.idp.exception.PersonNotFoundExc;
 import com.primasolutions.idp.person.lookuper.PersonLookuper;
 import com.primasolutions.idp.person.mapper.PersonMapper;
 import com.primasolutions.idp.person.model.Person;
@@ -58,14 +56,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void assignApplication(final String appname, final String personExternalId) {
-        final Person person = personLookuper.byExternalId(personExternalId);
-        if (person == null)
-            throw PersonNotFoundExc.newInstance();
-
-        final Application application = applicationLookuper.byName(appname);
-        if (application == null)
-            throw ApplicationNotFoundExc.newInstance();
-
+        final Person person = personLookuper.byExternalIdOrError(personExternalId);
+        final Application application = applicationLookuper.byNameOrError(appname);
         person.getApplications().add(application);
         personSaver.update(person);
     }

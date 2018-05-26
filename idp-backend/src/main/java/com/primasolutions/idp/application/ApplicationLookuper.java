@@ -1,15 +1,16 @@
 package com.primasolutions.idp.application;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.primasolutions.idp.exception.ApplicationNotFoundExc;
 
-@Component
-public class ApplicationLookuper {
+public interface ApplicationLookuper {
 
-    @Autowired
-    protected ApplicationDAO applicationDAO;
-
-    public Application byName(final String appname) {
-        return applicationDAO.findByAppname(appname);
+    default Application byNameOrError(final String appname) {
+        final Application application = byName(appname);
+        if (application == null) throw ApplicationNotFoundExc.newInstance();
+        return application;
     }
+
+    Application byName(String appname);
+
+
 }
