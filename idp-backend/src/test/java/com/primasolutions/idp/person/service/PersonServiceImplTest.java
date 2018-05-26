@@ -76,6 +76,7 @@ class PersonServiceImplTest {
     private PersonBean person;
 
     private Person origin;
+    private Application application;
 
     @BeforeEach
     void setup() {
@@ -167,9 +168,12 @@ class PersonServiceImplTest {
     @ValueSource(strings = {"policy", "claims", "sefas", "lens"})
     void when_assign_existing_application_to_existing_person_then_link_them(final String appname) {
         given_the_person_already_exists();
-        final Application application = Application.newInstance().setAppname(appname);
-        applicationDAO.save(application);
+        given_the_application_already_exists(appname);
         personService.assignApplication(appname, person.getExternalId());
+        then_only_the_application_is_assigned_to_the_person();
+    }
+
+    private void then_only_the_application_is_assigned_to_the_person() {
         final Person p = personDAO.findByExternalId(person.getExternalId());
         assertThat(p.getApplications(), hasSize(1));
         assertThat(p.getApplications().iterator().next(), sameInstance(application));
@@ -188,8 +192,7 @@ class PersonServiceImplTest {
 
     @Test
     void when_assign_existing_application_to_unexisting_person_then_error() {
-        final Application application = Application.newInstance().setAppname(randomString());
-        applicationDAO.save(application);
+        given_the_application_already_exists(randomString());
 
         final PersonNotFoundExc exc = assertThrows(PersonNotFoundExc.class,
                 () -> personService.assignApplication(application.getAppname(), randomString()));
@@ -198,6 +201,14 @@ class PersonServiceImplTest {
         assertThat(exc.getErrorCodes(), contains("PERSON_NOT_FOUND"));
     }
 
+    @Test
+    void when_the_application_is_already_assigned_then_do_nothing() {
+        given_the_person_already_exists();
+        given_the_application_already_exists(randomString());
+        given_the_application_is_assigned_to_the_person();
+        when_assign_the_application_to_the_person();
+        then_only_the_application_is_assigned_to_the_person();
+    }
 
     private static Stream<String> emailAddresses() {
         // @formatter:off
@@ -270,12 +281,27 @@ class PersonServiceImplTest {
                 .setEmail(null);
     }
 
+    private void given_the_application_already_exists(final String appname) {
+        application = Application.newInstance().setAppname(appname);
+        applicationDAO.save(application);
+    }
+
+    private void given_the_application_is_assigned_to_the_person() {
+        final Person p = personDAO.findByExternalId(person.getExternalId());
+        p.getApplications().add(application);
+        personDAO.save(p);
+    }
+
     private PersonBean when_create_new_person() {
         return personService.createPerson(person);
     }
 
     private void when_update_the_person() {
         personService.updatePerson(person);
+    }
+
+    private void when_assign_the_application_to_the_person() {
+        personService.assignApplication(application.getAppname(), person.getExternalId());
     }
 
     private void then_the_person_is_created() {
