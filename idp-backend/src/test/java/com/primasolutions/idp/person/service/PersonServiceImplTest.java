@@ -1,5 +1,8 @@
 package com.primasolutions.idp.person.service;
 
+import com.primasolutions.idp.application.Application;
+import com.primasolutions.idp.application.mocks.MockApplicationDAO;
+import com.primasolutions.idp.application.mocks.MockApplicationLookuper;
 import com.primasolutions.idp.authentication.AuthInfo;
 import com.primasolutions.idp.authentication.AuthInfoByLogin;
 import com.primasolutions.idp.authentication.Role;
@@ -27,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -50,6 +54,8 @@ class PersonServiceImplTest {
 
     private  static final int ONE_SECOND = 1000;
 
+    private MockApplicationDAO applicationDAO;
+
     private MockPersonDAO personDAO;
 
     private MockPersonByEmailDAO personByEmailDAO;
@@ -65,10 +71,12 @@ class PersonServiceImplTest {
     private PersonServiceImpl personService;
 
     private PersonBean person;
+
     private Person origin;
 
     @BeforeEach
     void setup() {
+        applicationDAO = MockApplicationDAO.getInstance();
         personDAO = MockPersonDAO.getInstance();
         personByEmailDAO = MockPersonByEmailDAO.getInstance();
         authInfoDAO = MockAuthInfoDAO.getInstance();
@@ -81,6 +89,7 @@ class PersonServiceImplTest {
         setField(personService, "personMapper", MockPersonMapper.getInstance());
         setField(personService, "authInfoBuilder", MockAuthenticationInfoBuilder.getInstance());
         setField(personService, "personLookuper", MockPersonLookuper.getInstance());
+        setField(personService, "applicationLookuper", MockApplicationLookuper.getInstance());
     }
 
     @AfterEach
@@ -150,6 +159,19 @@ class PersonServiceImplTest {
         when_update_the_person();
         then_the_person_is_not_updated();
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"policy", "claims", "sefas", "lens"})
+    void when_assign_existing_application_to_existing_person_then_link_them(final String appname) {
+        given_the_person_already_exists();
+        final Application app = Application.newInstance().setAppname(appname);
+        applicationDAO.save(app);
+        personService.assignApplication(appname, person.getExternalId());
+        final Person p = personDAO.findByExternalId(person.getExternalId());
+        assertThat(p.getApplications(), hasSize(1));
+        assertThat(p.getApplications().iterator().next(), sameInstance(app));
+    }
+
 
     private static Stream<String> emailAddresses() {
         // @formatter:off

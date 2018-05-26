@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class ApplicationLookuper {
 
     @Autowired
-    private ApplicationDAO applicationDAO;
+    protected ApplicationDAO applicationDAO;
 
     public Application byName(final String appname) {
         return applicationDAO.findByAppname(appname);
