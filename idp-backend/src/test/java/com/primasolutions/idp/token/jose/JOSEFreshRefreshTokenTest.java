@@ -9,8 +9,8 @@ import com.primasolutions.idp.constants.TokenProcessingStatus;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenType;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.TokenNotCipheredException;
-import com.primasolutions.idp.exception.TokenUnmodifiableException;
+import com.primasolutions.idp.exception.TokenNotCipheredExc;
+import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.token.Claims;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
@@ -484,67 +484,67 @@ public class JOSEFreshRefreshTokenTest {
         assertThat(first, not(equalTo(second)));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_stamp_and_the_refresh_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setStamp(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_subject_and_the_refresh_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setSubject(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_scopes_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setScopes(Collections.emptySet());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_BP_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setBP(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Issuer_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setIssuer(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Audience_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setAudience(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Target_URL_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setTargetURL(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Delegator_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setDelegator(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Delegate_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setDelegate(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Verdict_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setVerdict(TokenVerdict.FAIL);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_Claim_and_the_refresh_token_is_already_ciphered_then_error() {
         refreshToken.cypher();
         refreshToken.setClaim(RandomForTests.randomString(), RandomForTests.randomString());
@@ -567,13 +567,13 @@ public class JOSEFreshRefreshTokenTest {
         assertThat(refreshToken.getStatus(), equalTo(TokenProcessingStatus.CYPHERED));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_cypher_a_fresh_access_token_and_decypher_it_then_error() {
         refreshToken.cypher();
         refreshToken.decipher();
     }
 
-    @Test(expected = TokenNotCipheredException.class)
+    @Test(expected = TokenNotCipheredExc.class)
     public void when_serialize_a_non_cyphered_refresh_token_then_error() {
         refreshToken.serialize();
     }

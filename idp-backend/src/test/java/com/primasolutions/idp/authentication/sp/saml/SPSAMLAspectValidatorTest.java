@@ -6,9 +6,9 @@ import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
 import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.exception.BadSPSAMLAspectAttributeValueException;
-import com.primasolutions.idp.exception.MissingSPSAMLAspectAttributeException;
-import com.primasolutions.idp.exception.NotSPSAMLApplicationException;
+import com.primasolutions.idp.exception.BadSPSAMLAspectAttributeValueExc;
+import com.primasolutions.idp.exception.MissingSPSAMLAspectAttributeExc;
+import com.primasolutions.idp.exception.NotSPSAMLApplicationExc;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.tools.KeysForTests;
 import javafx.util.Pair;
@@ -61,7 +61,7 @@ public class SPSAMLAspectValidatorTest {
         validator.validate(null);
     }
 
-    @Test(expected = NotSPSAMLApplicationException.class)
+    @Test(expected = NotSPSAMLApplicationExc.class)
     public void when_the_application_has_not_the_SP_SAML_aspect_then_error() {
         validator.validate(Application.newInstance());
     }
@@ -73,21 +73,21 @@ public class SPSAMLAspectValidatorTest {
         validator.validate(application);
     }
 
-    @Test(expected = MissingSPSAMLAspectAttributeException.class)
+    @Test(expected = MissingSPSAMLAspectAttributeExc.class)
     public void when_the_entity_id_is_absent_then_error() throws Exception {
         given_the_application_holds_encryption_certificate();
         given_the_application_holds_sso_url();
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_entity_id_attribute_value_is_null_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         entityIdAttribute.setValue(null);
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_entity_id_attribute_value_is_blank_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         entityIdAttribute.setValue("");
@@ -95,49 +95,49 @@ public class SPSAMLAspectValidatorTest {
     }
 
 
-    @Test(expected = MissingSPSAMLAspectAttributeException.class)
+    @Test(expected = MissingSPSAMLAspectAttributeExc.class)
     public void when_the_sso_url_is_absent_then_error() throws Exception {
         given_the_application_holds_encryption_certificate();
         given_the_application_holds_the_entity_id();
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_sso_url_attribute_value_is_null_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         ssoUrlAttribute.setValue(null);
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_sso_url_attribute_value_is_blank_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         ssoUrlAttribute.setValue("");
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_sso_url_attribute_value_is_not_valid_url_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         ssoUrlAttribute.setValue("badurl");
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_encryption_certificate_attribute_value_is_null_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         certificateAttribute.setValue(null);
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_encryption_certificate_attribute_value_is_blank_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         certificateAttribute.setValue("");
         validator.validate(application);
     }
 
-    @Test(expected = BadSPSAMLAspectAttributeValueException.class)
+    @Test(expected = BadSPSAMLAspectAttributeValueExc.class)
     public void when_the_encryption_certificate_attribute_value_is_bad_then_error() throws Exception {
         given_the_application_holds_all_the_required_attributes();
         certificateAttribute.setValue("dsdsdsdsds");

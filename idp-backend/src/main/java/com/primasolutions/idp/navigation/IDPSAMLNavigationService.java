@@ -7,8 +7,8 @@ import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.exception.ApplicationNotFoundException;
-import com.primasolutions.idp.exception.NotSPSAMLApplicationException;
+import com.primasolutions.idp.exception.ApplicationNotFoundExc;
+import com.primasolutions.idp.exception.NotSPSAMLApplicationExc;
 import com.primasolutions.idp.token.Token;
 import com.primasolutions.idp.token.TokenDAO;
 import com.primasolutions.idp.token.TokenMapper;
@@ -84,7 +84,7 @@ public class IDPSAMLNavigationService extends AbstractIDPNavigationService {
     }
 
     private void checkApplication(final Application application) {
-        if (application == null) throw ApplicationNotFoundException.newInstance();
-        if (!application.getAspects().contains(SP_SAML)) throw NotSPSAMLApplicationException.newInstance();
+        if (application == null) throw ApplicationNotFoundExc.newInstance();
+        if (!application.getAspects().contains(SP_SAML)) throw NotSPSAMLApplicationExc.newInstance();
     }
 }

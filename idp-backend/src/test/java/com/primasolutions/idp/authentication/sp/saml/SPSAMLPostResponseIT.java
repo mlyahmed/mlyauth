@@ -2,7 +2,7 @@ package com.primasolutions.idp.authentication.sp.saml;
 
 import com.google.common.collect.Iterators;
 import com.primasolutions.idp.AbstractIntegrationTest;
-import com.primasolutions.idp.exception.IDPSAMLErrorException;
+import com.primasolutions.idp.exception.IDPSAMLErrorExc;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
 import com.primasolutions.idp.token.TokenIdGenerator;
@@ -375,7 +375,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
             EncryptedAssertion encryptedAssertion = encrypter.encrypt(assertion);
             response.getEncryptedAssertions().add(encryptedAssertion);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -389,7 +389,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
             Configuration.getMarshallerFactory().getMarshaller(response).marshall(response);
             Signer.signObject(signature);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -405,7 +405,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
                     .contentType(APPLICATION_FORM_URLENCODED_VALUE)
                     .param("SAMLResponse", serialized));
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -416,7 +416,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
                     .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
                     .andExpect(redirectedUrl("/home.html"));
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -426,7 +426,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
                     .andExpect(request().attribute(SECU_EXCP_ATTR, nullValue()))
                     .andExpect(redirectedUrl("/navigate/forward/to/PolicyDev"));
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -436,7 +436,7 @@ public class SPSAMLPostResponseIT extends AbstractIntegrationTest {
                     .andExpect(unauthenticated())
                     .andExpect(request().attribute(SECU_EXCP_ATTR, hasProperty("message", notNullValue())));
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 

@@ -2,7 +2,7 @@ package com.primasolutions.idp.token;
 
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.IDPSAMLErrorException;
+import com.primasolutions.idp.exception.IDPSAMLErrorExc;
 import com.primasolutions.idp.token.saml.SAMLAccessToken;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.tools.KeysForTests;
@@ -286,7 +286,7 @@ public class TokenMapperTest {
             access.setVerdict(TokenVerdict.SUCCESS);
             return access;
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 

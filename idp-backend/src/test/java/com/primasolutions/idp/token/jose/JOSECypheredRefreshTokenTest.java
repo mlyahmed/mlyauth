@@ -18,9 +18,9 @@ import com.primasolutions.idp.constants.TokenRefreshMode;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenValidationMode;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.InvalidTokenException;
-import com.primasolutions.idp.exception.JOSEErrorException;
-import com.primasolutions.idp.exception.TokenUnmodifiableException;
+import com.primasolutions.idp.exception.InvalidTokenExc;
+import com.primasolutions.idp.exception.JOSEErrorExc;
+import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.token.Claims;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
@@ -140,7 +140,7 @@ public class JOSECypheredRefreshTokenTest {
         assertThat(refreshToken.getIssuer(), equalTo(refreshClaims.getIssuer()));
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_refresh_issuer_in_header_and_in_claims_are_different_then_error() throws JOSEException {
         given_the_refresh_claims_are_cyphered_with_mismatch_issuer_in_header();
         when_decipher_the_refresh_token();
@@ -207,14 +207,14 @@ public class JOSECypheredRefreshTokenTest {
                 LocalDateTime.ofInstant(refreshClaims.getIssueTime().toInstant(), ZoneId.systemDefault())));
     }
 
-    @Test(expected = JOSEErrorException.class)
+    @Test(expected = JOSEErrorExc.class)
     public void when_the_refresh_decryption_key_does_not_match_then_error() {
         Pair<PrivateKey, RSAPublicKey> wrongCred = given_wrong_Credential();
         refreshToken = new JOSERefreshToken(cyphered.serialize(), wrongCred.getKey(), decipherCred.getValue());
         refreshToken.decipher();
     }
 
-    @Test(expected = JOSEErrorException.class)
+    @Test(expected = JOSEErrorExc.class)
     public void when_the_refresh_signature_key_does_not_match_then_error() {
         Pair<PrivateKey, RSAPublicKey> wrongCred = given_wrong_Credential();
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), wrongCred.getValue());
@@ -226,12 +226,12 @@ public class JOSECypheredRefreshTokenTest {
         new JOSERefreshToken(null, decipherCred.getKey(), decipherCred.getValue());
     }
 
-    @Test(expected = JOSEErrorException.class)
+    @Test(expected = JOSEErrorExc.class)
     public void when_the_cyphered_refresh_token_is_not_well_formatted_then_error() {
         new JOSERefreshToken(RandomForTests.randomString(), decipherCred.getKey(), decipherCred.getValue());
     }
 
-    @Test(expected = JOSEErrorException.class)
+    @Test(expected = JOSEErrorExc.class)
     public void when_the_refresh_token_is_not_signed_then_error() throws JOSEException {
         final JWEHeader tokenHeader = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
         EncryptedJWT tokenHolder = new EncryptedJWT(tokenHeader, refreshClaims);
@@ -240,7 +240,7 @@ public class JOSECypheredRefreshTokenTest {
         refreshToken.decipher();
     }
 
-    @Test(expected = JOSEErrorException.class)
+    @Test(expected = JOSEErrorExc.class)
     public void when_the_refresh_token_is_signed_but_not_encrypted_then_error() throws JOSEException {
         SignedJWT tokenSigned = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), refreshClaims);
         tokenSigned.sign(new RSASSASigner(cypherCred.getKey()));
@@ -257,157 +257,157 @@ public class JOSECypheredRefreshTokenTest {
         new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), null);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_validation_mode_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setValidationMode(TokenValidationMode.STANDARD);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_validation_mode_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setValidationMode(TokenValidationMode.STRICT);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_refresh_mode_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setRefreshMode(TokenRefreshMode.EACH_TIME);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_refresh_mode_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setRefreshMode(TokenRefreshMode.WHEN_EXPIRES);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_stamp_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setStamp(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_stamp_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setStamp(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_subject_is_not_modifiable_before_deciphing_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setSubject(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_subject_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setSubject(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_scopes_are_not_modifiable_before_deciphing_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_scopes_are_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_bp_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setBP(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_bp_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setBP(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_state_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setState(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_state_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setState(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_issuer_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setIssuer(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_issuer_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setIssuer(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_audience_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setAudience(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_audience_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setAudience(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_target_url_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setTargetURL(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_target_url_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setTargetURL(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegator_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setDelegator(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegator_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setDelegator(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegate_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setDelegate(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegate_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setDelegate(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_verdict_is_not_modifiable_before_deciphering_the_refresh() {
         refreshToken = new JOSERefreshToken(cyphered.serialize(), decipherCred.getKey(), decipherCred.getValue());
         refreshToken.setVerdict(TokenVerdict.SUCCESS);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_verdict_is_not_modifiable_after_deciphering_the_refresh() {
         when_decipher_the_refresh_token();
         refreshToken.setVerdict(TokenVerdict.SUCCESS);

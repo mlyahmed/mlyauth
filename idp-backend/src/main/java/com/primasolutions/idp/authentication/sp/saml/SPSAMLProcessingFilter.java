@@ -5,7 +5,7 @@ import com.primasolutions.idp.constants.Direction;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.exception.IDPSAMLErrorException;
+import com.primasolutions.idp.exception.IDPSAMLErrorExc;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationAttribute;
 import com.primasolutions.idp.navigation.NavigationDAO;
@@ -109,7 +109,7 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
             processor.retrieveMessage(messageContext);
             return messageContext;
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -149,7 +149,7 @@ public class SPSAMLProcessingFilter extends SAMLProcessingFilter {
 
             return decipherCred;
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 

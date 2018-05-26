@@ -6,7 +6,7 @@ import com.primasolutions.idp.constants.Direction;
 import com.primasolutions.idp.constants.TokenPurpose;
 import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.exception.JOSEErrorException;
+import com.primasolutions.idp.exception.JOSEErrorExc;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationAttribute;
 import com.primasolutions.idp.navigation.NavigationDAO;
@@ -84,8 +84,8 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
             final JOSEAccessToken token = tokenDecoder.decodeAccess(getRawBearer(request), AspectType.IDP_JOSE);
             accessTokenValidator.validate(token);
 
-            if (!"SSO".equals(token.getBP())) throw JOSEErrorException.newInstance("The Token BP must be SSO");
-            if (!isTheRightTarget(request, token)) throw JOSEErrorException.newInstance("The target URL doesn't match");
+            if (!"SSO".equals(token.getBP())) throw JOSEErrorExc.newInstance("The Token BP must be SSO");
+            if (!isTheRightTarget(request, token)) throw JOSEErrorExc.newInstance("The target URL doesn't match");
 
             final Authentication auth = getAuthenticationManager().authenticate(new JOSEAuthenticationToken(token));
             traceNavigation(request, started, token);
@@ -109,7 +109,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
         else if (StringUtils.isNotBlank(asForm))
             return asForm;
         else
-            throw JOSEErrorException.newInstance();
+            throw JOSEErrorExc.newInstance();
     }
 
     private String getFullURL(final HttpServletRequest request) {

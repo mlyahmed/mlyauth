@@ -1,6 +1,6 @@
 package com.primasolutions.idp.tools;
 
-import com.primasolutions.idp.exception.EncryptionCredentialException;
+import com.primasolutions.idp.exception.EncryptionCredentialExc;
 import javafx.util.Pair;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -87,7 +87,7 @@ public final class KeysForTests {
             return new Pair<>(pair.getPrivate(), certificate);
 
         } catch (Exception e) {
-            throw EncryptionCredentialException.newInstance(e);
+            throw EncryptionCredentialExc.newInstance(e);
         }
     }
 
@@ -177,7 +177,7 @@ public final class KeysForTests {
             removeCryptographyRestrictions();
             return generateSecretKey("AES", KEY_256_SIZE);
         } catch (Exception e) {
-            throw EncryptionCredentialException.newInstance(e);
+            throw EncryptionCredentialExc.newInstance(e);
         }
     }
 

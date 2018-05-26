@@ -1,7 +1,7 @@
 package com.primasolutions.idp.token.jose;
 
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.InvalidTokenException;
+import com.primasolutions.idp.exception.InvalidTokenExc;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,31 +35,31 @@ public class JOSEAccessTokenValidator {
 
     private void assertClaimNotBlank(final String claim, final String message) {
         if (StringUtils.isBlank(claim))
-            throw InvalidTokenException.newInstance(message);
+            throw InvalidTokenExc.newInstance(message);
     }
 
     private void checkVerdict(final JOSEAccessToken access) {
         if (access.getVerdict() == null || access.getVerdict() == TokenVerdict.FAIL)
-            throw InvalidTokenException.newInstance("The token verdict is not acceptable");
+            throw InvalidTokenExc.newInstance("The token verdict is not acceptable");
     }
 
     private void checkAudience(final JOSEAccessToken access) {
         if (!localEntityId.equalsIgnoreCase(access.getAudience()))
-            throw InvalidTokenException.newInstance("The token audience is not acceptable");
+            throw InvalidTokenExc.newInstance("The token audience is not acceptable");
     }
 
     private void checkExpiryTime(final JOSEAccessToken access) {
         if (LocalDateTime.now().isAfter(access.getExpiryTime()))
-            throw InvalidTokenException.newInstance("The token is expired");
+            throw InvalidTokenExc.newInstance("The token is expired");
     }
 
     private void checkIssuanceTime(final JOSEAccessToken access) {
         if (LocalDateTime.now().isBefore(access.getIssuanceTime()))
-            throw InvalidTokenException.newInstance("The token issuance time is inconsistency");
+            throw InvalidTokenExc.newInstance("The token issuance time is inconsistency");
     }
 
     private void checkEffectiveTime(final JOSEAccessToken access) {
         if (LocalDateTime.now().isBefore(access.getEffectiveTime()))
-            throw InvalidTokenException.newInstance("The token effective time is inconsistency");
+            throw InvalidTokenExc.newInstance("The token effective time is inconsistency");
     }
 }

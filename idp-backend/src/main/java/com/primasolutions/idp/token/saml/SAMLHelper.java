@@ -1,6 +1,6 @@
 package com.primasolutions.idp.token.saml;
 
-import com.primasolutions.idp.exception.IDPSAMLErrorException;
+import com.primasolutions.idp.exception.IDPSAMLErrorExc;
 import org.opensaml.Configuration;
 import org.opensaml.common.SignableSAMLObject;
 import org.opensaml.common.xml.SAMLConstants;
@@ -135,7 +135,7 @@ public class SAMLHelper {
             criteriaSet.add(new KeyInfoCriteria(keyDes.getKeyInfo()));
             return keyRes.resolveSingle(criteriaSet);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -146,7 +146,7 @@ public class SAMLHelper {
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             return (X509Certificate) certFactory.generateCertificate(inputStream);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -164,7 +164,7 @@ public class SAMLHelper {
             decrypter.setRootInNewDocument(true);
             return decrypter.decrypt(encryptedAssertion);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -179,7 +179,7 @@ public class SAMLHelper {
             encrypter.setKeyPlacement(Encrypter.KeyPlacement.INLINE);
             return encrypter.encrypt(assertion);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -193,7 +193,7 @@ public class SAMLHelper {
             getMarshallerFactory().getMarshaller(object).marshall(object);
             Signer.signObject(signature);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -204,7 +204,7 @@ public class SAMLHelper {
             SignatureValidator sigValidator = new SignatureValidator(credential);
             sigValidator.validate(object.getSignature());
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -215,7 +215,7 @@ public class SAMLHelper {
             credential.setPrivateKey(privateKey);
             return credential;
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -227,7 +227,7 @@ public class SAMLHelper {
             Unmarshaller unmarshaller = getUnmarshallerFactory().getUnmarshaller(messageElem);
             return unmarshaller.unmarshall(messageElem);
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -250,7 +250,7 @@ public class SAMLHelper {
             stringWriter.close();
             return stringWriter.toString();
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 }

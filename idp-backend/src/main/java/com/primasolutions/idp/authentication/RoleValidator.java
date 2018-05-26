@@ -1,7 +1,7 @@
 package com.primasolutions.idp.authentication;
 
 import com.primasolutions.idp.constants.RoleCode;
-import com.primasolutions.idp.exception.AuthError;
+import com.primasolutions.idp.exception.Error;
 import com.primasolutions.idp.exception.IDPException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,10 +15,10 @@ public class RoleValidator {
 
     public void validate(final String role) {
         if (StringUtils.isEmpty(role))
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("ROLE_EMPTY")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("ROLE_EMPTY")));
 
         if (RoleCode.create(role) == null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("ROLE_INVALID")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("ROLE_INVALID")));
     }
 
 }

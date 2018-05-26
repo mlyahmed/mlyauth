@@ -3,8 +3,8 @@ package com.primasolutions.idp.token.saml;
 import com.primasolutions.idp.constants.TokenProcessingStatus;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.IDPSAMLErrorException;
-import com.primasolutions.idp.exception.TokenUnmodifiableException;
+import com.primasolutions.idp.exception.IDPSAMLErrorExc;
+import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import javafx.util.Pair;
@@ -201,7 +201,7 @@ public class SAMLCypheredAccessTokenTest {
         assertThat(token.getIssuanceTime(), within(0, ChronoUnit.SECONDS, expected));
     }
 
-    @Test(expected = IDPSAMLErrorException.class)
+    @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_decryption_key_does_not_match_then_error() {
         final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
         BasicX509Credential credential = (BasicX509Credential) decipherCred;
@@ -210,7 +210,7 @@ public class SAMLCypheredAccessTokenTest {
         token.decipher();
     }
 
-    @Test(expected = IDPSAMLErrorException.class)
+    @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_signature_key_does_not_match_then_error() {
         final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
         BasicX509Credential credential = (BasicX509Credential) decipherCred;
@@ -243,152 +243,152 @@ public class SAMLCypheredAccessTokenTest {
         new SAMLAccessToken(serialized, decipherCred);
     }
 
-    @Test(expected = IDPSAMLErrorException.class)
+    @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_cyphered_token_is_not_well_formatted_then_error() {
         new SAMLAccessToken(RandomForTests.randomString(), decipherCred);
     }
 
-    @Test(expected = IDPSAMLErrorException.class)
+    @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_token_is_not_signed_then_error() {
         given_the_claims_are_encrypted_and_not_signed_and_serialized();
         token = new SAMLAccessToken(serialized, decipherCred);
         token.decipher();
     }
 
-    @Test(expected = IDPSAMLErrorException.class)
+    @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_token_is_signed_but_not_encrypted_then_error() {
         given_the_claims_are_not_encrypted_but_signed_and_serialized();
         token = new SAMLAccessToken(serialized, decipherCred);
         token.decipher();
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_stamp_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setStamp(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_stamp_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setStamp(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_subject_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setSubject(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_subject_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setSubject(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_scopes_are_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_scopes_are_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_bp_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setBP(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_bp_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setBP(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_state_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setState(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_state_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setState(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_issuer_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setIssuer(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_issuer_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setIssuer(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_audience_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setAudience(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_audience_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setAudience(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_target_url_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setTargetURL(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_target_url_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setTargetURL(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegator_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setDelegator(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegator_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setDelegator(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegate_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setDelegate(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_delegate_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setDelegate(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_verdict_is_not_modifiable_before_decipher() {
         token = new SAMLAccessToken(serialized, decipherCred);
         token.setVerdict(TokenVerdict.SUCCESS);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void the_verdict_is_not_modifiable_after_decipher() {
         when_decipher_the_token();
         token.setVerdict(TokenVerdict.SUCCESS);
@@ -496,7 +496,7 @@ public class SAMLCypheredAccessTokenTest {
 
             serialized = encodeBytes(samlHelper.toString(response).getBytes());
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -514,7 +514,7 @@ public class SAMLCypheredAccessTokenTest {
 
             serialized = encodeBytes(samlHelper.toString(response).getBytes());
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 
@@ -532,7 +532,7 @@ public class SAMLCypheredAccessTokenTest {
 
             serialized = encodeBytes(samlHelper.toString(response).getBytes());
         } catch (Exception e) {
-            throw IDPSAMLErrorException.newInstance(e);
+            throw IDPSAMLErrorExc.newInstance(e);
         }
     }
 

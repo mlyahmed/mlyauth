@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person.validator;
 
-import com.primasolutions.idp.exception.AuthError;
+import com.primasolutions.idp.exception.Error;
 import com.primasolutions.idp.exception.IDPException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -17,12 +17,12 @@ public final class PersonEmailValidator {
 
     public void validate(final String email) {
         if (StringUtils.isEmpty(email))
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_EMPTY")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("EMAIL_EMPTY")));
 
         if (email.length() > MAX_EMAIL_LENGTH)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_TOO_LONG")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("EMAIL_TOO_LONG")));
 
         if (!EmailValidator.getInstance().isValid(email))
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_INVALID")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("EMAIL_INVALID")));
     }
 }

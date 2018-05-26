@@ -1,7 +1,7 @@
 package com.primasolutions.idp.person.validator;
 
 import com.primasolutions.idp.authentication.RoleValidator;
-import com.primasolutions.idp.exception.AuthError;
+import com.primasolutions.idp.exception.Error;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.lookuper.PersonLookuper;
 import com.primasolutions.idp.person.model.Person;
@@ -47,12 +47,12 @@ public class PersonValidator implements IPersonValidator {
     private void thePersonMustExist(final PersonBean bean) {
         final Person p = personLookuper.byExternalId(bean.getExternalId());
         if (p == null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_NOT_FOUND")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("PERSON_NOT_FOUND")));
     }
 
     private void thePersonMustNotBeNull(final PersonBean bean) {
         if (bean == null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("PERSON_NULL")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("PERSON_NULL")));
     }
 
     private void theEmailMustBeValid(final PersonBean bean) {
@@ -61,7 +61,7 @@ public class PersonValidator implements IPersonValidator {
 
     private void theEmailMustBeNew(final PersonBean bean) {
         if (personLookuper.byEmail(bean.getEmail()) != null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EMAIL_ALREADY_EXISTS")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("EMAIL_ALREADY_EXISTS")));
     }
 
     private void theEmailMustBeNewToUpdate(final PersonBean bean) {
@@ -83,7 +83,7 @@ public class PersonValidator implements IPersonValidator {
 
     private void theExternalIdMustBeNew(final PersonBean bean) {
         if (personLookuper.byExternalId(bean.getExternalId()) != null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("EXTERNAL_ID_ALREADY_EXISTS")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("EXTERNAL_ID_ALREADY_EXISTS")));
     }
 
     private void theBirthDateMustBeValid(final PersonBean bean) {

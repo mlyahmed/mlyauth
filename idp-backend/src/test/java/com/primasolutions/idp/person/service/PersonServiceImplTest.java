@@ -11,7 +11,9 @@ import com.primasolutions.idp.authentication.mocks.MockAuthInfoDAO;
 import com.primasolutions.idp.authentication.mocks.MockAuthenticationInfoBuilder;
 import com.primasolutions.idp.constants.AuthInfoStatus;
 import com.primasolutions.idp.constants.RoleCode;
+import com.primasolutions.idp.exception.ApplicationNotFoundExc;
 import com.primasolutions.idp.exception.IDPException;
+import com.primasolutions.idp.exception.PersonNotFoundExc;
 import com.primasolutions.idp.person.mapper.PersonMapperImpl;
 import com.primasolutions.idp.person.mocks.MockPersonByEmailDAO;
 import com.primasolutions.idp.person.mocks.MockPersonDAO;
@@ -42,6 +44,7 @@ import static com.primasolutions.idp.tools.RandomForTests.randomBirthdate;
 import static com.primasolutions.idp.tools.RandomForTests.randomEmail;
 import static com.primasolutions.idp.tools.RandomForTests.randomString;
 import static org.apache.commons.lang.time.DateUtils.parseDate;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -164,12 +167,35 @@ class PersonServiceImplTest {
     @ValueSource(strings = {"policy", "claims", "sefas", "lens"})
     void when_assign_existing_application_to_existing_person_then_link_them(final String appname) {
         given_the_person_already_exists();
-        final Application app = Application.newInstance().setAppname(appname);
-        applicationDAO.save(app);
+        final Application application = Application.newInstance().setAppname(appname);
+        applicationDAO.save(application);
         personService.assignApplication(appname, person.getExternalId());
         final Person p = personDAO.findByExternalId(person.getExternalId());
         assertThat(p.getApplications(), hasSize(1));
-        assertThat(p.getApplications().iterator().next(), sameInstance(app));
+        assertThat(p.getApplications().iterator().next(), sameInstance(application));
+    }
+
+    @Test
+    void when_assign_unexisting_application_to_existing_user_then_error() {
+        given_the_person_already_exists();
+
+        final ApplicationNotFoundExc exc = assertThrows(ApplicationNotFoundExc.class,
+                () -> personService.assignApplication(randomString(), person.getExternalId()));
+
+        assertThat(exc.getErrorCodes(), hasSize(1));
+        assertThat(exc.getErrorCodes(), contains("APPLICATION_NOT_FOUND"));
+    }
+
+    @Test
+    void when_assign_existing_application_to_unexisting_person_then_error() {
+        final Application application = Application.newInstance().setAppname(randomString());
+        applicationDAO.save(application);
+
+        final PersonNotFoundExc exc = assertThrows(PersonNotFoundExc.class,
+                () -> personService.assignApplication(application.getAppname(), randomString()));
+
+        assertThat(exc.getErrorCodes(), hasSize(1));
+        assertThat(exc.getErrorCodes(), contains("PERSON_NOT_FOUND"));
     }
 
 

@@ -1,6 +1,6 @@
 package com.primasolutions.idp.idp.saml;
 
-import com.primasolutions.idp.exception.AuthError;
+import com.primasolutions.idp.exception.Error;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import org.opensaml.common.xml.SAMLConstants;
@@ -42,7 +42,7 @@ public class IDPSAMLMetadataGenerator {
             return metadata;
         } catch (Exception e) {
             throw IDPException.newInstance()
-                    .setErrors(Arrays.asList(new AuthError("IDP_SAML_METADATA_ERROR", e.getMessage())));
+                    .setErrors(Arrays.asList(new Error("IDP_SAML_METADATA_ERROR", e.getMessage())));
         }
 
     }

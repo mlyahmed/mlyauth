@@ -1,6 +1,6 @@
 package com.primasolutions.idp.person.validator;
 
-import com.primasolutions.idp.exception.AuthError;
+import com.primasolutions.idp.exception.Error;
 import com.primasolutions.idp.exception.IDPException;
 import org.apache.commons.validator.routines.DateValidator;
 
@@ -16,7 +16,7 @@ public class PersonBirthDateValidator {
 
     public void validate(final String birthDate) {
         if (isNotEmpty(birthDate) && DateValidator.getInstance().validate(birthDate, DATE_FORMAT) == null)
-            throw IDPException.newInstance().setErrors(asList(AuthError.newInstance("BIRTH_DATE_BAD_FORMAT")));
+            throw IDPException.newInstance().setErrors(asList(Error.newInstance("BIRTH_DATE_BAD_FORMAT")));
     }
 
 }

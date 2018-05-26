@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 
 public class IDPException extends RuntimeException {
 
-    private Collection<AuthError> errors = new LinkedHashSet<>();
+    private Collection<Error> errors = new LinkedHashSet<>();
+
+    protected IDPException() {
+    }
 
     protected IDPException(final Exception e) {
         super(e);
@@ -14,10 +17,6 @@ public class IDPException extends RuntimeException {
 
     protected IDPException(final String message) {
         super(message);
-    }
-
-    protected IDPException() {
-
     }
 
     public static IDPException newInstance() {
@@ -32,7 +31,7 @@ public class IDPException extends RuntimeException {
         return new IDPException(message);
     }
 
-    public Collection<AuthError> getErrors() {
+    public Collection<Error> getErrors() {
         return errors;
     }
 
@@ -40,7 +39,7 @@ public class IDPException extends RuntimeException {
         return errors.stream().map(err -> err.getCode()).collect(Collectors.toList());
     }
 
-    public IDPException setErrors(final Collection<AuthError> errors) {
+    public IDPException setErrors(final Collection<Error> errors) {
         this.errors = errors;
         return this;
     }

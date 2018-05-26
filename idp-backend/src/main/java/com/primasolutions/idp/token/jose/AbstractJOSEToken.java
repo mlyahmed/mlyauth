@@ -17,9 +17,9 @@ import com.primasolutions.idp.constants.TokenRefreshMode;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenValidationMode;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.InvalidTokenException;
-import com.primasolutions.idp.exception.JOSEErrorException;
-import com.primasolutions.idp.exception.TokenNotCipheredException;
+import com.primasolutions.idp.exception.InvalidTokenExc;
+import com.primasolutions.idp.exception.JOSEErrorExc;
+import com.primasolutions.idp.exception.TokenNotCipheredExc;
 import com.primasolutions.idp.token.AbstractToken;
 import org.apache.commons.lang.StringUtils;
 
@@ -80,7 +80,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
         try {
             token = JWEObject.parse(serialize);
         } catch (ParseException e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -141,7 +141,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
             status = TokenProcessingStatus.CYPHERED;
             committed = true;
         } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -162,7 +162,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     @Override
     public String serialize() {
         if (getStatus() != TokenProcessingStatus.CYPHERED)
-            throw TokenNotCipheredException.newInstance();
+            throw TokenNotCipheredExc.newInstance();
         return token.serialize();
     }
 
@@ -327,7 +327,7 @@ public abstract class AbstractJOSEToken extends AbstractToken {
             builder = new JWTClaimsSet.Builder(decipherClaims().getJWTClaimsSet());
             status = TokenProcessingStatus.DECIPHERED;
         } catch (JOSEException | ParseException e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -342,11 +342,11 @@ public abstract class AbstractJOSEToken extends AbstractToken {
     private void checkIssuerMatch(final SignedJWT signedJWT) throws ParseException {
         if (!String.valueOf(signedJWT.getHeader().getCustomParam(ISSUER.getValue()))
                 .equals(signedJWT.getJWTClaimsSet().getIssuer()))
-            throw InvalidTokenException.newInstance("Issuer mismatch");
+            throw InvalidTokenExc.newInstance("Issuer mismatch");
     }
 
     private void checkSignature(final SignedJWT signedJWT) throws JOSEException {
         if (signedJWT == null || !signedJWT.verify(new RSASSAVerifier((RSAPublicKey) publicKey)))
-            throw JOSEErrorException.newInstance(new JOSEException("Failed to verify signature"));
+            throw JOSEErrorExc.newInstance(new JOSEException("Failed to verify signature"));
     }
 }

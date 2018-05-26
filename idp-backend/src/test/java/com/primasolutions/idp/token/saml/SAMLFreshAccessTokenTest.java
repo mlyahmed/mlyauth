@@ -5,8 +5,8 @@ import com.primasolutions.idp.constants.TokenProcessingStatus;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenType;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.TokenNotCipheredException;
-import com.primasolutions.idp.exception.TokenUnmodifiableException;
+import com.primasolutions.idp.exception.TokenNotCipheredExc;
+import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -524,97 +524,97 @@ public class SAMLFreshAccessTokenTest {
         assertThat(first, not(equalTo(second)));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_create_a_fresh_token_and_cypher_then_we_cannot_decipher_it() {
         given_forged_token();
         when_cypher_the_token();
         when_decipher_the_token();
     }
 
-    @Test(expected = TokenNotCipheredException.class)
+    @Test(expected = TokenNotCipheredExc.class)
     public void when_serialize_a_not_ciphered_token_then_error() {
         given_forged_token();
         when_serialize_the_token();
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_stamp_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setStamp(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_subject_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setSubject(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_scopes_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setScopes(new HashSet<>(Arrays.asList(PERSON)));
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_BP_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setBP(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_state_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setState(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_issuer_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setIssuer(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_audience_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setAudience(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_target_URL_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setTargetURL(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_delegator_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setDelegator(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_delegate_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setDelegate(RandomForTests.randomString());
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_verdict_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();
         token.setVerdict(TokenVerdict.FAIL);
     }
 
-    @Test(expected = TokenUnmodifiableException.class)
+    @Test(expected = TokenUnmodifiableExc.class)
     public void when_set_claim_and_already_ciphered_then_error() {
         given_forged_token();
         when_cypher_the_token();

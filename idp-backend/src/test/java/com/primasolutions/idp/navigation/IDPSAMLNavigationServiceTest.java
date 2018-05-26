@@ -5,8 +5,8 @@ import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
-import com.primasolutions.idp.exception.ApplicationNotFoundException;
-import com.primasolutions.idp.exception.NotSPSAMLApplicationException;
+import com.primasolutions.idp.exception.ApplicationNotFoundExc;
+import com.primasolutions.idp.exception.NotSPSAMLApplicationExc;
 import com.primasolutions.idp.token.Token;
 import com.primasolutions.idp.token.TokenDAO;
 import com.primasolutions.idp.token.TokenMapper;
@@ -101,14 +101,14 @@ public class IDPSAMLNavigationServiceTest {
         assertThat(navigation.getAttribute("SAMLResponse").getValue(), equalTo(access.serialize()));
     }
 
-    @Test(expected = NotSPSAMLApplicationException.class)
+    @Test(expected = NotSPSAMLApplicationExc.class)
     public void when_create_new_navigation_to_unexisting_then_error() {
         application.setAspects(new HashSet<>(Arrays.asList()));
         when(applicationDAO.findByAppname(TARGET_APP)).thenReturn(application);
         service.newNavigation(TARGET_APP);
     }
 
-    @Test(expected = ApplicationNotFoundException.class)
+    @Test(expected = ApplicationNotFoundExc.class)
     public void when_application_does_not_exist_then_error() {
         service.newNavigation(TARGET_APP);
     }

@@ -14,7 +14,7 @@ import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.credentials.CredentialManager;
-import com.primasolutions.idp.exception.JOSEErrorException;
+import com.primasolutions.idp.exception.JOSEErrorExc;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
@@ -191,7 +191,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
             appAspectAttrDAO.save(asList(entityIdAttribute, ssoUrlAttribute, certificateAttribute));
         } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -259,7 +259,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                     .contentType(APPLICATION_FORM_URLENCODED_VALUE)
                     .header("Authorization", "Bearer " + serialized));
         } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -269,7 +269,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                     .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", nullValue()))
                     .andExpect(redirectedUrl("/home.html"));
         } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -279,7 +279,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                     .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", nullValue()))
                     .andExpect(redirectedUrl("/navigate/forward/to/PolicyDev"));
         } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 
@@ -289,7 +289,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                     .andExpect(request().attribute("SPRING_SECURITY_LAST_EXCEPTION", notNullValue()))
                     .andExpect(forwardedUrl("/401.html"));
         } catch (Exception e) {
-            throw JOSEErrorException.newInstance(e);
+            throw JOSEErrorExc.newInstance(e);
         }
     }
 }

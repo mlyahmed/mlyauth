@@ -1,7 +1,7 @@
 package com.primasolutions.idp.token;
 
 import com.primasolutions.idp.constants.TokenScope;
-import com.primasolutions.idp.exception.TokenUnmodifiableException;
+import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -13,11 +13,11 @@ public abstract class AbstractToken implements IToken {
     protected boolean locked = false;
 
     protected void checkCommitted() {
-        if (committed) throw TokenUnmodifiableException.newInstance();
+        if (committed) throw TokenUnmodifiableExc.newInstance();
     }
 
     protected void checkLocked() {
-        if (locked) throw TokenUnmodifiableException.newInstance();
+        if (locked) throw TokenUnmodifiableExc.newInstance();
     }
 
 

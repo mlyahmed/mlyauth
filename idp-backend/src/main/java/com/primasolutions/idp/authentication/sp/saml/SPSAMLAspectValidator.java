@@ -5,9 +5,9 @@ import com.primasolutions.idp.application.Application;
 import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.exception.BadSPSAMLAspectAttributeValueException;
-import com.primasolutions.idp.exception.MissingSPSAMLAspectAttributeException;
-import com.primasolutions.idp.exception.NotSPSAMLApplicationException;
+import com.primasolutions.idp.exception.BadSPSAMLAspectAttributeValueExc;
+import com.primasolutions.idp.exception.MissingSPSAMLAspectAttributeExc;
+import com.primasolutions.idp.exception.NotSPSAMLApplicationExc;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -39,7 +39,7 @@ public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
 
     private void validateIsAnSPSAML(final Application application) {
         if (application.getAspects() == null || !application.getAspects().contains(AspectType.SP_SAML))
-            throw NotSPSAMLApplicationException.newInstance();
+            throw NotSPSAMLApplicationExc.newInstance();
     }
 
     private AppAspAttr validateAttributeExists(final List<AppAspAttr> attributes,
@@ -49,10 +49,10 @@ public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
                 .findFirst().orElse(null);
 
         if (found == null)
-            throw MissingSPSAMLAspectAttributeException.newInstance();
+            throw MissingSPSAMLAspectAttributeExc.newInstance();
 
         if (StringUtils.isBlank(found.getValue()))
-            throw BadSPSAMLAspectAttributeValueException.newInstance();
+            throw BadSPSAMLAspectAttributeValueExc.newInstance();
 
         return found;
     }
@@ -60,14 +60,14 @@ public class SPSAMLAspectValidator implements ISPSAMLAspectValidator {
     private void validateURL(final AppAspAttr ssoUrl) {
         UrlValidator urlValidator = new UrlValidator(new String[]{"http", "https"}, UrlValidator.ALLOW_LOCAL_URLS);
         if (!urlValidator.isValid(ssoUrl.getValue()))
-            throw BadSPSAMLAspectAttributeValueException.newInstance();
+            throw BadSPSAMLAspectAttributeValueExc.newInstance();
     }
 
     private void validateCertificate(final AppAspAttr certificateAtt) {
         try {
             samlHelper.toX509Certificate(certificateAtt.getValue());
         } catch (Exception e) {
-            throw BadSPSAMLAspectAttributeValueException.newInstance(e);
+            throw BadSPSAMLAspectAttributeValueExc.newInstance(e);
         }
     }
 

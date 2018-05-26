@@ -2,7 +2,7 @@ package com.primasolutions.idp.token.jose;
 
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.InvalidTokenException;
+import com.primasolutions.idp.exception.InvalidTokenExc;
 import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessToken;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
@@ -45,70 +45,70 @@ public class JOSEAccessTokenValidatorTest {
         Assert.assertThat(valid, Matchers.equalTo(true));
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_id_is_null_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setStamp(null);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_subject_is_null_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setSubject(null);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_bp_is_null_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setBP(null);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_issuer_is_null_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setIssuer(null);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_audience_is_not_valid_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setAudience(RandomForTests.randomString());
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_target_url_is_not_valid_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setTargetURL(null);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_verdict_is_not_valid_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setVerdict(null);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_verdict_is_a_fail_then_error() {
         JOSEAccessToken access = given_access_token();
         access.setVerdict(TokenVerdict.FAIL);
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_token_is_expired_then_error() {
         MockJOSEAccessToken access = given_access_token();
         access.setExpiryTime(LocalDateTime.now().minusSeconds(1));
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_token_issuance_is_issuance_time_is_later_then_error() {
         MockJOSEAccessToken access = given_access_token();
         access.cypher();
@@ -116,7 +116,7 @@ public class JOSEAccessTokenValidatorTest {
         validator.validate(access);
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test(expected = InvalidTokenExc.class)
     public void when_the_token_issuance_is_effective_time_is_later_then_error() {
         MockJOSEAccessToken access = given_access_token();
         access.cypher();

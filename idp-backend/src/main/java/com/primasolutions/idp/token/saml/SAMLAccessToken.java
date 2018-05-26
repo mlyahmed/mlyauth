@@ -7,7 +7,7 @@ import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenType;
 import com.primasolutions.idp.constants.TokenValidationMode;
 import com.primasolutions.idp.constants.TokenVerdict;
-import com.primasolutions.idp.exception.TokenNotCipheredException;
+import com.primasolutions.idp.exception.TokenNotCipheredExc;
 import com.primasolutions.idp.token.AbstractToken;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -390,7 +390,7 @@ public class SAMLAccessToken extends AbstractToken {
 
     @Override
     public String serialize() {
-        if (status != TokenProcessingStatus.CYPHERED) throw TokenNotCipheredException.newInstance();
+        if (status != TokenProcessingStatus.CYPHERED) throw TokenNotCipheredExc.newInstance();
         return encodeBytes(samlHelper.toString(response).getBytes());
     }
 
