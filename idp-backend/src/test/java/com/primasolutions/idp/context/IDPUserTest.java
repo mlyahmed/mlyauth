@@ -31,17 +31,17 @@ import static org.junit.Assert.assertThat;
 @RunWith(DataProviderRunner.class)
 public class IDPUserTest {
 
-    public static final Date PASSED_TIME = new Date(System.currentTimeMillis() - (1000 * 60));
-    public static final Date FUTURE_TIME = new Date(System.currentTimeMillis() + (1000 * 60));
-    public static final String RANDOM_LOGIN = RandomStringUtils.random(20, true, true) + "@gmail.com";
-    public static final String RANDOM_PASSWORD = RandomStringUtils.random(30, true, true);
+    private static final String RANDOM_LOGIN = RandomStringUtils.random(20, true, true) + "@gmail.com";
+    private static final String RANDOM_PASSWORD = RandomStringUtils.random(30, true, true);
+    private static final int SIXTY_SECONDS = 1000 * 60;
+    private static final int TEN_MINUTES = 1000 * 600;
 
     private IContextHolder contextHolder;
     private Person person;
     private Application application;
     private AuthInfo authInfo;
     private IContext personContext;
-    private IContext applicationContext;
+    private IContext context;
 
     @Before
     public void setup() {
@@ -54,12 +54,12 @@ public class IDPUserTest {
         person.setAuthenticationInfo(authInfo);
         application.setAuthenticationInfo(authInfo);
         personContext = contextHolder.newPersonContext(person);
-        applicationContext = contextHolder.newApplicationContext(application);
+        context = contextHolder.newApplicationContext(application);
     }
 
     @Test
     public void when_create_a_person_user_then_must_be_set() {
-        authInfo.setExpireAt(FUTURE_TIME);
+        authInfo.setExpireAt(futureTime());
         IDPUser user = new IDPUser(personContext);
         assertThat(user.getContext(), equalTo(personContext));
         assertThat(user.getPerson(), equalTo(person));
@@ -74,9 +74,9 @@ public class IDPUserTest {
 
     @Test
     public void when_create_an_application_user_then_must_be_set() {
-        authInfo.setExpireAt(FUTURE_TIME);
-        IDPUser user = new IDPUser(applicationContext);
-        assertThat(user.getContext(), equalTo(applicationContext));
+        authInfo.setExpireAt(futureTime());
+        IDPUser user = new IDPUser(context);
+        assertThat(user.getContext(), equalTo(context));
         assertThat(user.getPerson(), nullValue());
         assertThat(user.isAPerson(), equalTo(false));
         assertThat(user.getApplication(), equalTo(application));
@@ -89,21 +89,21 @@ public class IDPUserTest {
 
     @Test
     public void when_the_expiring_time_is_passed_then_the_person_accound_is_expired() {
-        authInfo.setExpireAt(PASSED_TIME);
+        authInfo.setExpireAt(passedTime());
         IDPUser user = new IDPUser(personContext);
         assertThat(user.isAccountNonExpired(), equalTo(false));
     }
 
     @Test
     public void when_the_expiring_time_is_passed_then_the_application_accound_is_expired() {
-        authInfo.setExpireAt(PASSED_TIME);
-        IDPUser user = new IDPUser(applicationContext);
+        authInfo.setExpireAt(passedTime());
+        IDPUser user = new IDPUser(context);
         assertThat(user.isAccountNonExpired(), equalTo(false));
     }
 
     @Test
     public void when_the_person_account_status_is_not_active_then_is_locked() {
-        authInfo.setExpireAt(FUTURE_TIME);
+        authInfo.setExpireAt(futureTime());
         authInfo.setStatus(AuthInfoStatus.LOCKED);
         IDPUser user = new IDPUser(personContext);
         assertThat(user.isAccountNonLocked(), equalTo(false));
@@ -111,9 +111,9 @@ public class IDPUserTest {
 
     @Test
     public void when_the_application_account_status_is_not_active_then_is_locked() {
-        authInfo.setExpireAt(FUTURE_TIME);
+        authInfo.setExpireAt(futureTime());
         authInfo.setStatus(AuthInfoStatus.LOCKED);
-        IDPUser user = new IDPUser(applicationContext);
+        IDPUser user = new IDPUser(context);
         assertThat(user.isAccountNonLocked(), equalTo(false));
     }
 
@@ -130,12 +130,20 @@ public class IDPUserTest {
     @Test
     @UseDataProvider("profiles")
     public void the_profiles_must_be_loaded(final String profile) {
-        authInfo.setExpireAt(FUTURE_TIME);
+        authInfo.setExpireAt(futureTime());
         person.setProfiles(new HashSet<>(Arrays.asList(Profile.newInstance().setCode(ProfileCode.valueOf(profile)))));
         IDPUser user = new IDPUser(personContext);
         assertThat(user.getAuthorities(), notNullValue());
         assertThat(user.getAuthorities(), hasSize(1));
         assertThat(user.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority(),
                 equalTo(ProfileCode.valueOf(profile).name()));
+    }
+
+    private Date futureTime() {
+        return new Date(System.currentTimeMillis() + TEN_MINUTES);
+    }
+
+    private Date passedTime() {
+        return new Date(System.currentTimeMillis() - SIXTY_SECONDS);
     }
 }
