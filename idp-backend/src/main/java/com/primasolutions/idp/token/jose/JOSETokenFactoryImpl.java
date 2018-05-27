@@ -10,7 +10,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 @Configuration
-public class JOSETokenFactory {
+public class JOSETokenFactoryImpl {
 
     @Bean("JOSEAccessToken")
     @Lazy

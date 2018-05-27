@@ -18,7 +18,7 @@ import com.primasolutions.idp.exception.JOSEErrorExc;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
-import com.primasolutions.idp.token.jose.JOSETokenFactory;
+import com.primasolutions.idp.token.jose.JOSETokenFactoryImpl;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import javafx.util.Pair;
@@ -78,7 +78,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private ApplicationAspectAttributeDAO appAspectAttrDAO;
 
     @Autowired
-    private JOSETokenFactory tokenFactory;
+    private JOSETokenFactoryImpl tokenFactory;
 
     @Autowired
     private WebApplicationContext wac;

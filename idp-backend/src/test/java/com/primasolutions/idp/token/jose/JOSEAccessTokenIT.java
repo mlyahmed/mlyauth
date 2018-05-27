@@ -74,7 +74,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
     private String localEntityId;
 
     @Autowired
-    private JOSETokenFactory tokenFactory;
+    private JOSETokenFactoryImpl tokenFactory;
 
     @Autowired
     private TokenMapper tokenMapper;

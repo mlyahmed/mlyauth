@@ -3,7 +3,7 @@ package com.primasolutions.idp.tools;
 import com.primasolutions.idp.AbstractIntegrationTest;
 import com.primasolutions.idp.credentials.CredentialManager;
 import com.primasolutions.idp.token.jose.JOSERefreshToken;
-import com.primasolutions.idp.token.jose.JOSETokenFactory;
+import com.primasolutions.idp.token.jose.JOSETokenFactoryImpl;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class AccessTokenForTests {
     protected MockMvc mockMvc;
 
     @Autowired
-    protected JOSETokenFactory tokenFactory;
+    protected JOSETokenFactoryImpl tokenFactory;
 
 
     public final String generateMasterToken()  {

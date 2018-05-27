@@ -52,7 +52,7 @@ public class JOSETokenServiceImpl {
     private ApplicationAspectAttributeDAO attributeDAO;
 
     @Autowired
-    private JOSETokenFactory tokenFactory;
+    private JOSETokenFactoryImpl tokenFactory;
 
     @Autowired
     private TokenDAO tokenDAO;

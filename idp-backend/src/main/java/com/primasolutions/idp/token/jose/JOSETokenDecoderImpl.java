@@ -13,7 +13,7 @@ import java.security.PublicKey;
 public class JOSETokenDecoderImpl {
 
     @Autowired
-    private JOSETokenFactory tokenFactory;
+    private JOSETokenFactoryImpl tokenFactory;
 
     @Autowired
     private JOSEHelper joseHelper;
