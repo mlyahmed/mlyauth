@@ -1,11 +1,11 @@
 package com.primasolutions.idp.token;
 
-public class TokenBean {
+public class AccessTokenBean {
 
     private final String serialized;
     private final String expiryTime;
 
-    public TokenBean(final String serialized, final String expiryTime) {
+    public AccessTokenBean(final String serialized, final String expiryTime) {
         this.serialized = serialized;
         this.expiryTime = expiryTime;
     }

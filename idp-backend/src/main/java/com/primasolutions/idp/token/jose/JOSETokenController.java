@@ -1,7 +1,7 @@
 package com.primasolutions.idp.token.jose;
 
 import com.primasolutions.idp.constants.AspectType;
-import com.primasolutions.idp.token.TokenBean;
+import com.primasolutions.idp.token.AccessTokenBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +25,7 @@ public class JOSETokenController {
     @PostMapping(value = "/access", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    TokenBean newAccessToken(@RequestBody final String refresh) {
+    AccessTokenBean newAccessToken(@RequestBody final String refresh) {
         return tokenService.refreshAccess(tokenDecoder.decodeRefresh(refresh, AspectType.CL_JOSE));
     }
 
