@@ -116,8 +116,8 @@ class PersonServiceImplTest {
     @Test
     void when_create_a_new_valid_person_then_return_valid_result() {
         given_new_person_to_create();
-        final PersonBean result = when_create_new_person();
-        assertThat(result, notNullValue());
+        when_create_new_person();
+        assertThat(personDAO.findByExternalId(person.getExternalId()), notNullValue());
     }
 
     @Test
@@ -292,8 +292,8 @@ class PersonServiceImplTest {
         personDAO.save(p);
     }
 
-    private PersonBean when_create_new_person() {
-        return personService.createPerson(person);
+    private void when_create_new_person() {
+        personService.createPerson(person);
     }
 
     private void when_update_the_person() {

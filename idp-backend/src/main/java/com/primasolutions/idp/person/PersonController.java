@@ -27,7 +27,8 @@ public class PersonController {
     @PreAuthorize("hasPermission(#person, T(com.primasolutions.idp.permission.IDPPermission).CREATE)")
     public ResponseEntity postPerson(@RequestBody final PersonBean person) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(person));
+            personService.createPerson(person);
+            return ResponseEntity.status(HttpStatus.CREATED).body(personService.lookupPerson(person.getExternalId()));
         } catch (IDPException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
         }
@@ -38,9 +39,10 @@ public class PersonController {
     public @ResponseBody
     PersonBean putPerson(@RequestBody final PersonBean person) {
         if (personService.lookupPerson(person.getExternalId()) != null)
-            return personService.updatePerson(person);
+            personService.updatePerson(person);
         else
-            return personService.createPerson(person);
+            personService.createPerson(person);
+        return personService.lookupPerson(person.getExternalId());
     }
 
     @PutMapping("/_assign/{appname}/to/{personExternalId}")

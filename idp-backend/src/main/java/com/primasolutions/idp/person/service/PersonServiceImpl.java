@@ -41,17 +41,15 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonBean createPerson(final PersonBean bean) {
+    public void createPerson(final PersonBean bean) {
         personValidator.validateNew(bean);
         personSaver.create(personMapper.toEntity(bean).setAuthenticationInfo(authInfoBuilder.toEntity(bean)));
-        return personMapper.toBean(personLookuper.byExternalId(bean.getExternalId()));
     }
 
     @Override
-    public PersonBean updatePerson(final PersonBean bean) {
+    public void updatePerson(final PersonBean bean) {
         personValidator.validateUpdate(bean);
         personSaver.update(personMapper.toEntity(bean));
-        return personMapper.toBean(personLookuper.byExternalId(bean.getExternalId()));
     }
 
     @Override

@@ -6,9 +6,9 @@ public interface PersonService {
 
     PersonBean lookupPerson(String externalId);
 
-    PersonBean createPerson(PersonBean bean);
+    void createPerson(PersonBean bean);
 
-    PersonBean updatePerson(PersonBean bean);
+    void updatePerson(PersonBean bean);
 
     void assignApplication(String appname, String personExternalId);
 
