@@ -2,7 +2,7 @@ package com.primasolutions.idp.exception;
 
 import java.util.Arrays;
 
-public final class PersonNotFoundExc extends IDPException {
+public final class PersonNotFoundExc extends NotFoundExc {
 
     private PersonNotFoundExc() {
         this.setErrors(Arrays.asList(Error.newInstance("PERSON_NOT_FOUND")));
