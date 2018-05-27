@@ -67,7 +67,7 @@ public class AccessTokenForTests {
 
             JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
             JSONObject jsonObject = (JSONObject) parser.parse(result.andReturn().getResponse().getContentAsString());
-            return jsonObject.getAsString("serialized");
+            return jsonObject.getAsString("access_token");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -12,7 +12,7 @@ import com.primasolutions.idp.constants.TokenStatus;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.credentials.CredentialManager;
-import com.primasolutions.idp.token.AccessTokenBean;
+import com.primasolutions.idp.token.OAuthAccessToken;
 import com.primasolutions.idp.token.Token;
 import com.primasolutions.idp.token.TokenDAO;
 import com.primasolutions.idp.token.TokenIdGenerator;
@@ -25,10 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.security.PublicKey;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
-import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
 
@@ -63,7 +64,7 @@ public class JOSETokenServiceImpl {
     @Autowired
     private ApplicationDAO applicationDAO;
 
-    public AccessTokenBean refreshAccess(final JOSERefreshToken refresh) {
+    public OAuthAccessToken refreshAccess(final JOSERefreshToken refresh) {
         final Application client = context.getApplication();
         final List<AppAspAttr> at = attributeDAO.findByAppAndAspect(client.getId(), AspectType.CL_JOSE.getValue());
         notNull(getClientEntityId(at), "The Client Entity ID not found");
@@ -75,8 +76,9 @@ public class JOSETokenServiceImpl {
 
         final JOSEAccessToken accessToken = newAccessToken(refresh, rsEntityId);
         saveToken(rsEntityId, accessToken);
-        return new AccessTokenBean(accessToken.serialize(),
-                accessToken.getExpiryTime().format(ofPattern("YYYYMMddHHmmss")));
+
+        return new OAuthAccessToken(accessToken.serialize(),
+                ChronoUnit.SECONDS.between(LocalDateTime.now(), accessToken.getExpiryTime()));
     }
 
     private JOSEAccessToken newAccessToken(final JOSERefreshToken refresh, final AppAspAttr rsEntityId) {

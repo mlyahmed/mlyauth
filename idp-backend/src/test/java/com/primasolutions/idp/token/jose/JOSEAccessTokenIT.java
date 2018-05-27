@@ -315,7 +315,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
         JSONParser parser = new JSONParser(MODE_JSON_SIMPLE);
         JSONObject jsonObject = (JSONObject) parser.parse(resultActions.andReturn().getResponse().getContentAsString());
-        serialized = jsonObject.getAsString("serialized");
+        serialized = jsonObject.getAsString("access_token");
         assertThat(serialized, notNullValue());
     }
 
