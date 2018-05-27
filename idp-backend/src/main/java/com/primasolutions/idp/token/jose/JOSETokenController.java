@@ -17,21 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class JOSETokenController {
 
     @Autowired
-    private JOSETokenDecoder tokenDecoder;
+    private JOSETokenDecoderImpl tokenDecoder;
 
     @Autowired
-    private JOSETokenService joseTokenService;
+    private JOSETokenServiceImpl tokenService;
 
     @PostMapping(value = "/access", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     TokenBean newAccessToken(@RequestBody final String refresh) {
-        return joseTokenService.refreshAccess(tokenDecoder.decodeRefresh(refresh, AspectType.CL_JOSE));
+        return tokenService.refreshAccess(tokenDecoder.decodeRefresh(refresh, AspectType.CL_JOSE));
     }
 
     @PostMapping(value = "/access/_check", consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void checkAccessToken(@RequestBody final String access) {
-        joseTokenService.checkAccess(access);
+        tokenService.checkAccess(access);
     }
 }

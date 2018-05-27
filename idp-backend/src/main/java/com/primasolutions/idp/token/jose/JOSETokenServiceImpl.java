@@ -34,7 +34,7 @@ import static org.springframework.util.Assert.notNull;
 
 @Service
 @Transactional
-public class JOSETokenService {
+public class JOSETokenServiceImpl {
 
     @Value("${idp.jose.entityId}")
     private String localEntityId;

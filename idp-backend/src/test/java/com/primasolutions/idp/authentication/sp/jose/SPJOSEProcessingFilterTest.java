@@ -11,7 +11,7 @@ import com.primasolutions.idp.token.TokenDAO;
 import com.primasolutions.idp.token.TokenMapper;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import com.primasolutions.idp.token.jose.JOSEHelper;
-import com.primasolutions.idp.token.jose.JOSETokenDecoder;
+import com.primasolutions.idp.token.jose.JOSETokenDecoderImpl;
 import com.primasolutions.idp.token.jose.JOSETokenFactory;
 import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessTokenValidator;
 import com.primasolutions.idp.tools.KeysForTests;
@@ -210,7 +210,7 @@ public class SPJOSEProcessingFilterTest {
     private void set_up_filter() {
         final TokenMapper tokenMapper = new TokenMapper();
 
-        final JOSETokenDecoder tokenDecoder = new JOSETokenDecoder();
+        final JOSETokenDecoderImpl tokenDecoder = new JOSETokenDecoderImpl();
         setField(tokenDecoder, "tokenFactory", new JOSETokenFactory());
         setField(tokenDecoder, "joseHelper", new JOSEHelper());
         setField(tokenDecoder, "credentialManager", credentialManager);

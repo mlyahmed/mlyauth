@@ -9,7 +9,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 @Component
-public class JOSETokenDecoder {
+public class JOSETokenDecoderImpl {
 
     @Autowired
     private JOSETokenFactory tokenFactory;

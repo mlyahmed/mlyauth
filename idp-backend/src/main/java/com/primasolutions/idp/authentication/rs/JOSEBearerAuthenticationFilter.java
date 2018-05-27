@@ -2,7 +2,7 @@ package com.primasolutions.idp.authentication.rs;
 
 import com.primasolutions.idp.authentication.sp.jose.JOSEAuthenticationToken;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
-import com.primasolutions.idp.token.jose.JOSETokenDecoder;
+import com.primasolutions.idp.token.jose.JOSETokenDecoderImpl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class JOSEBearerAuthenticationFilter extends OncePerRequestFilter {
     private RequestMatcher authenticationRequestMatcher;
 
     @Autowired
-    private JOSETokenDecoder tokenDecoder;
+    private JOSETokenDecoderImpl tokenDecoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;

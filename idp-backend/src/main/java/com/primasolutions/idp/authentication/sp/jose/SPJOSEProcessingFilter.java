@@ -15,7 +15,7 @@ import com.primasolutions.idp.token.TokenDAO;
 import com.primasolutions.idp.token.TokenMapper;
 import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import com.primasolutions.idp.token.jose.JOSEAccessTokenValidator;
-import com.primasolutions.idp.token.jose.JOSETokenDecoder;
+import com.primasolutions.idp.token.jose.JOSETokenDecoderImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class SPJOSEProcessingFilter extends AbstractAuthenticationProcessingFilt
     private static final String BEARER_PREFIX = "Bearer";
 
     @Autowired
-    private JOSETokenDecoder tokenDecoder;
+    private JOSETokenDecoderImpl tokenDecoder;
 
     @Autowired
     private IContext context;
