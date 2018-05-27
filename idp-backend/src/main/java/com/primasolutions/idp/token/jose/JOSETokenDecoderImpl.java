@@ -2,6 +2,7 @@ package com.primasolutions.idp.token.jose;
 
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.credentials.CredentialManager;
+import com.primasolutions.idp.token.IToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,21 +22,20 @@ public class JOSETokenDecoderImpl {
     private CredentialManager credentialManager;
 
     public JOSERefreshToken decodeRefresh(final String serialized, final AspectType peerAspect) {
-        JOSERefreshToken tkn = tokenFactory.newRefreshToken(serialized, localKey(), peerKey(serialized, peerAspect));
-        tkn.decipher();
-        return tkn;
+        return decipher(tokenFactory.newRefreshToken(serialized, localKey(), peerKey(serialized, peerAspect)));
     }
 
     public JOSEAccessToken decodeAccess(final String serialized, final AspectType peerAspect) {
-        JOSEAccessToken tkn = tokenFactory.newAccessToken(serialized, localKey(), peerKey(serialized, peerAspect));
-        tkn.decipher();
-        return tkn;
+        return decipher(tokenFactory.newAccessToken(serialized, localKey(), peerKey(serialized, peerAspect)));
     }
 
     public JOSEAccessToken decodeAccess(final String serialized) {
-        JOSEAccessToken tkn = tokenFactory.newAccessToken(serialized, localKey(), localPublicKey());
-        tkn.decipher();
-        return tkn;
+        return decipher(tokenFactory.newAccessToken(serialized, localKey(), localPublicKey()));
+    }
+
+    private <T extends IToken> T decipher(final T token) {
+        token.decipher();
+        return token;
     }
 
     private PrivateKey localKey() {
