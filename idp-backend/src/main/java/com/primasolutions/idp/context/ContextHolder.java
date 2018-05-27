@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Function;
 
 import static org.springframework.web.context.request.RequestAttributes.REFERENCE_SESSION;
 
@@ -46,18 +47,18 @@ public class ContextHolder implements IContextHolder {
 
     @Override
     public IContext newPersonContext(final Person person) {
-        final String contextId = newId();
-        closeCurrentSession();
-        final Context context = new Context(contextId, person, newAuthSession(person, contextId));
-        contexts.put(contextId, context);
-        return context;
+        return newContext(id -> new Context(id, person, newAuthSession(person, id)));
     }
 
     @Override
     public IContext newApplicationContext(final Application application) {
+        return newContext(id -> new Context(id, application, newAuthSession(application, id)));
+    }
+
+    public IContext newContext(final Function<String, Context> producer) {
         final String contextId = newId();
         closeCurrentSession();
-        final Context context = new Context(contextId, application, newAuthSession(application, contextId));
+        final Context context = producer.apply(contextId);
         contexts.put(contextId, context);
         return context;
     }
