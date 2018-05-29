@@ -54,6 +54,7 @@ public class Main extends SpringBootServletInitializer {
         encryptor.setPassword(System.getProperty(START_UP_PASSPHRASE_PROPERTY));
         encryptor.setAlgorithm("PBEWITHSHA256AND128BITAES-CBC-BC");
         encryptor.setProviderName(BouncyCastleProvider.PROVIDER_NAME);
+
         return encryptor;
     }
 
