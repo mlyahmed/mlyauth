@@ -48,22 +48,16 @@ class PersonAPISpec extends SpecificationsConfig {
         access_token = accessTokenGenerator.generateMasterToken()
     }
 
-
-
-
-    def "Person creation"() {
+    def "Person creation throw POST on /domain/person"() {
         given:
-            given_person()
-
+            new_person()
         when:
-            when_create_new_person()
-
+            create_the_new_person()
         then:
-            then_is_created()
-
+            the_person_is_created()
     }
 
-    def given_person() {
+    def new_person() {
         person =  PersonBean.newInstance()
         .setRole(RoleCode.CLIENT.getValue())
         .setExternalId(RandomForTests.randomString())
@@ -73,7 +67,7 @@ class PersonAPISpec extends SpecificationsConfig {
         .setEmail(RandomForTests.randomEmail())
     }
 
-    def when_create_new_person() {
+    def create_the_new_person() {
         result = mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(person))
                 .header("Authorization", "Bearer " + access_token)
@@ -81,7 +75,7 @@ class PersonAPISpec extends SpecificationsConfig {
                 .characterEncoding("UTF-8"))
     }
 
-    def then_is_created() {
+    def the_person_is_created() {
         result.andExpect(status().isCreated())
     }
 
