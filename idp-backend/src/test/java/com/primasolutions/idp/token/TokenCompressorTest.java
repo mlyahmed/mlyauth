@@ -8,8 +8,9 @@ import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
 import javafx.util.Pair;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.credential.Credential;
@@ -24,18 +25,20 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class TokenCompressorTest {
+@DisplayName("Token Compression")
+class TokenCompressorTest {
 
 
     private TokenCompressor compressor;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         compressor = new TokenCompressor();
     }
 
     @Test
-    public void when_compress_a_saml_token_then_compress_it() throws IOException, ConfigurationException {
+    @DisplayName("Compress a SAML Token")
+    void when_compress_a_saml_token_then_compress_it() throws IOException, ConfigurationException {
         SAMLAccessToken samlAccessToken = given_cyphered_saml_token();
         final String serialize = samlAccessToken.serialize();
         final byte[] compress = compressor.compress(serialize);
@@ -44,7 +47,7 @@ public class TokenCompressorTest {
     }
 
     @Test
-    public void when_compress_a_token_then_compress_it() throws IOException {
+    void when_compress_a_token_then_compress_it() throws IOException {
         JOSEAccessToken joseAccess = given_cyphered_jose_token();
         final String serialize = joseAccess.serialize();
         final byte[] compress = compressor.compress(serialize);

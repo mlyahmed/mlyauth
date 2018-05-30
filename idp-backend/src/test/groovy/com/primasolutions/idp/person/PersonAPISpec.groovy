@@ -50,24 +50,26 @@ class PersonAPISpec extends SpecificationsConfig {
 
     def "Person creation throw POST on /domain/person"() {
         given:
-            new_person()
+        new_person
+
         when:
-            create_the_new_person()
+        create_the_new_person
+
         then:
-            the_person_is_created()
+        the_person_is_created
     }
 
-    def new_person() {
-        person =  PersonBean.newInstance()
-        .setRole(RoleCode.CLIENT.getValue())
-        .setExternalId(RandomForTests.randomString())
-        .setFirstname(RandomForTests.randomName().firstName)
-        .setLastname(RandomForTests.randomName().lastName)
-        .setBirthdate(RandomForTests.randomBirthdate())
-        .setEmail(RandomForTests.randomEmail())
+    def new_person = { ->
+        person = PersonBean.newInstance()
+                .setRole(RoleCode.CLIENT.getValue())
+                .setExternalId(RandomForTests.randomString())
+                .setFirstname(RandomForTests.randomName().firstName)
+                .setLastname(RandomForTests.randomName().lastName)
+                .setBirthdate(RandomForTests.randomBirthdate())
+                .setEmail(RandomForTests.randomEmail())
     }
 
-    def create_the_new_person() {
+    def create_the_new_person = { ->
         result = mockMvc.perform(post("/domain/person")
                 .content(mapper.writeValueAsString(person))
                 .header("Authorization", "Bearer " + access_token)
@@ -75,7 +77,7 @@ class PersonAPISpec extends SpecificationsConfig {
                 .characterEncoding("UTF-8"))
     }
 
-    def the_person_is_created() {
+    def the_person_is_created = { ->
         result.andExpect(status().isCreated())
     }
 

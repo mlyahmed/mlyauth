@@ -20,6 +20,7 @@ plugins {
     id "jacoco"
     id "checkstyle"
     id "pmd"
+    id 'com.adarshr.test-logger' version '1.2.0'
     id "org.unbroken-dome.test-sets" version "1.4.2"
     id "io.spring.dependency-management" version "1.0.4.RELEASE"
     id "org.springframework.boot" version "1.5.9.RELEASE"
@@ -120,6 +121,11 @@ configurations {
     }
 }
 
+testlogger {
+    theme 'mocha'
+    slowThreshold 500
+}
+
 test {
 
     useJUnitPlatform {
@@ -127,16 +133,6 @@ test {
         includeEngines 'junit-vintage'
     }
 
-    testLogging {
-        afterSuite { desc, result ->
-            if (!desc.parent) {
-                println "    Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
-            }
-        }
-        afterTest { desc, result ->
-            println "    Test : ${desc.name} [${desc.className}] with result: ${result.resultType} (${result.endTime - result.startTime} ms)"
-        }
-    }
 }
 test.finalizedBy(jacocoTestReport)
 
