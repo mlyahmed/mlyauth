@@ -123,16 +123,15 @@ configurations {
 
 testlogger {
     theme 'mocha'
-    slowThreshold 500
+    slowThreshold 300
+    showStandardStreams false
 }
 
 test {
-
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
         includeEngines 'junit-vintage'
     }
-
 }
 test.finalizedBy(jacocoTestReport)
 
