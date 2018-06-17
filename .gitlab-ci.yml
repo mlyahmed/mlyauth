@@ -1,3 +1,11 @@
+# to improve performance
+variables:
+  DOCKER_DRIVER: overlay2
+
+# we need DinD service
+services:
+  - docker:dind
+
 image: openjdk:10-jdk
 
 stages:
