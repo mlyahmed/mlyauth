@@ -5,6 +5,7 @@ import com.primasolutions.idp.application.ApplicationDAO;
 import com.primasolutions.idp.authentication.AuthSession;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.ApplicationNotFoundExc;
 import com.primasolutions.idp.exception.NotSPSAMLApplicationExc;
 import com.primasolutions.idp.token.Token;
@@ -14,7 +15,6 @@ import com.primasolutions.idp.token.saml.SAMLAccessToken;
 import com.primasolutions.idp.token.saml.SAMLAccessTokenProducer;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.tools.KeysForTests;
-import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,8 +24,6 @@ import org.mockito.Spy;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.xml.ConfigurationException;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -76,8 +74,8 @@ public class IDPSAMLNavigationServiceTest {
     }
 
     private void set_up_access() {
-        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
-        access = new SAMLAccessToken(samlHelper.toCredential(pair.getKey(), pair.getValue()));
+        final CredentialsPair pair = KeysForTests.generateRSACredential();
+        access = new SAMLAccessToken(samlHelper.toCredential(pair.getPrivateKey(), pair.getCertificate()));
         access.setTargetURL(TARGET_APP_URL);
         access.cypher();
         when(responseGenerator.produce(application)).thenReturn(access);

@@ -3,11 +3,11 @@ package com.primasolutions.idp.token.saml;
 import com.primasolutions.idp.constants.TokenProcessingStatus;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.IDPSAMLErrorExc;
 import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
-import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -45,8 +45,6 @@ import org.opensaml.xml.signature.SignatureConstants;
 import org.opensaml.xml.signature.Signer;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -203,18 +201,18 @@ public class SAMLCypheredAccessTokenTest {
 
     @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_decryption_key_does_not_match_then_error() {
-        final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
+        final CredentialsPair rsaCred = KeysForTests.generateRSACredential();
         BasicX509Credential credential = (BasicX509Credential) decipherCred;
-        credential.setPrivateKey(rsaCred.getKey());
+        credential.setPrivateKey(rsaCred.getPrivateKey());
         token = new SAMLAccessToken(serialized, credential);
         token.decipher();
     }
 
     @Test(expected = IDPSAMLErrorExc.class)
     public void when_the_signature_key_does_not_match_then_error() {
-        final Pair<PrivateKey, X509Certificate> rsaCred = KeysForTests.generateRSACredential();
+        final CredentialsPair rsaCred = KeysForTests.generateRSACredential();
         BasicX509Credential credential = (BasicX509Credential) decipherCred;
-        credential.setEntityCertificate(rsaCred.getValue());
+        credential.setEntityCertificate(rsaCred.getCertificate());
         token = new SAMLAccessToken(serialized, credential);
         token.decipher();
     }
@@ -400,10 +398,10 @@ public class SAMLCypheredAccessTokenTest {
     }
 
     private void set_up_credentials() {
-        final Pair<PrivateKey, X509Certificate> pair1 = KeysForTests.generateRSACredential();
-        final Pair<PrivateKey, X509Certificate> pair2 = KeysForTests.generateRSACredential();
-        cypherCred = samlHelper.toCredential(pair1.getKey(), pair2.getValue());
-        decipherCred = samlHelper.toCredential(pair2.getKey(), pair1.getValue());
+        final CredentialsPair pair1 = KeysForTests.generateRSACredential();
+        final CredentialsPair pair2 = KeysForTests.generateRSACredential();
+        cypherCred = samlHelper.toCredential(pair1.getPrivateKey(), pair2.getCertificate());
+        decipherCred = samlHelper.toCredential(pair2.getPrivateKey(), pair1.getCertificate());
     }
 
     private void set_up_assertion() {

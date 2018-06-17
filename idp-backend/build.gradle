@@ -15,6 +15,7 @@ buildscript {
 }
 
 plugins {
+    id "idea"
     id "java-library"
     id "java"
     id "groovy"
@@ -28,6 +29,7 @@ plugins {
     id "org.asciidoctor.convert" version "1.5.7"
     id "org.liquibase.gradle" version "1.2.4"
     id "com.palantir.docker" version "0.13.0"
+    id 'net.ltgt.apt' version '0.15'
 }
 
 ext["snippetsDir"] = new File (project.buildDir ,"generated-snippets")
@@ -40,8 +42,11 @@ repositories {
 }
 
 dependencies {
+    compile('org.projectlombok:lombok:1.18.0')
 
-    compile("org.codehaus.groovy:groovy-all:2.4.7")
+    annotationProcessor('org.projectlombok:lombok:1.18.0')
+
+    compile("org.codehaus.groovy:groovy-all:2.4.12")
     compile("javax.inject:javax.inject:1")
     compile("org.springframework.boot:spring-boot-starter")
     compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.0.0")
@@ -100,12 +105,11 @@ dependencies {
     testRuntime("cglib:cglib-nodep:3.2.4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
     testRuntime("org.springframework.boot:spring-boot-devtools")
-
 }
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 
 bootRun{
     systemProperties = new HashMap<String, String>(System.properties)
@@ -140,7 +144,7 @@ test {
 test.finalizedBy(jacocoTestReport)
 
 jacoco {
-    toolVersion = "0.7.9"
+    toolVersion = "0.8.1"
     reportsDir = file("$buildDir/coverage")
 }
 

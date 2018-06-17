@@ -1,6 +1,7 @@
 package com.primasolutions.idp.authentication.sp.saml;
 
 import com.primasolutions.idp.context.IContext;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
 import com.primasolutions.idp.token.Token;
@@ -14,7 +15,6 @@ import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import javafx.util.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,8 +58,6 @@ import org.springframework.security.saml.processor.SAMLProcessor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertThat;
@@ -228,19 +226,19 @@ public class SPSAMLProcessingFilterTest {
     }
 
     private void set_up_idp() throws SecurityException {
-        final Pair<PrivateKey, X509Certificate> localPair = KeysForTests.generateRSACredential();
-        final Credential localCredential = samlHelper.toCredential(localPair.getKey(), localPair.getValue());
-        when(keyManager.getDefaultCredential()).thenReturn(localCredential);
+        final CredentialsPair localPair = KeysForTests.generateRSACredential();
+        final Credential localCred = samlHelper.toCredential(localPair.getPrivateKey(), localPair.getCertificate());
+        when(keyManager.getDefaultCredential()).thenReturn(localCred);
 
-        final Pair<PrivateKey, X509Certificate> peerPair = KeysForTests.generateRSACredential();
-        final Credential peerCredential = samlHelper.toCredential(peerPair.getKey(), peerPair.getValue());
+        final CredentialsPair peerPair = KeysForTests.generateRSACredential();
+        final Credential peerCred = samlHelper.toCredential(peerPair.getPrivateKey(), peerPair.getCertificate());
 
         X509KeyInfoGeneratorFactory keyInfoGeneratorFactory = new X509KeyInfoGeneratorFactory();
         keyInfoGeneratorFactory.setEmitEntityCertificate(true);
         KeyInfoGenerator keyInfoGenerator = keyInfoGeneratorFactory.newInstance();
         KeyDescriptor signKeyDescriptor = samlHelper.buildSAMLObject(KeyDescriptor.class);
         signKeyDescriptor.setUse(UsageType.SIGNING);
-        signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(peerCredential));
+        signKeyDescriptor.setKeyInfo(keyInfoGenerator.generate(peerCred));
 
 
         idpMetadata = samlHelper.buildSAMLObject(EntityDescriptor.class);

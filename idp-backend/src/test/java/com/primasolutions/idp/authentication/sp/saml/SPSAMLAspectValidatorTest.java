@@ -6,12 +6,12 @@ import com.primasolutions.idp.application.ApplicationAspectAttributeDAO;
 import com.primasolutions.idp.application.ApplicationAspectAttributeId;
 import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.BadSPSAMLAspectAttributeValueExc;
 import com.primasolutions.idp.exception.MissingSPSAMLAspectAttributeExc;
 import com.primasolutions.idp.exception.NotSPSAMLApplicationExc;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.tools.KeysForTests;
-import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -20,9 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.opensaml.xml.util.Base64;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -155,8 +153,8 @@ public class SPSAMLAspectValidatorTest {
                 .setApplicationId(APPLICATION_ID)
                 .setAspectCode(AspectType.SP_SAML.name())
                 .setAttributeCode(AspectAttribute.SP_SAML_ENCRYPTION_CERTIFICATE.getValue());
-        final Pair<PrivateKey, X509Certificate> credentialPair = KeysForTests.generateRSACredential();
-        final String certificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
+        final CredentialsPair credentialPair = KeysForTests.generateRSACredential();
+        final String certificate = Base64.encodeBytes(credentialPair.getCertificate().getEncoded());
         certificateAttribute = AppAspAttr.newInstance()
                 .setId(encryptionCertificateId)
                 .setValue(certificate);

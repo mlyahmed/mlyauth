@@ -21,14 +21,12 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.tools.KeysForTests;
-import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.crypto.SecretKey;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 import java.util.Date;
@@ -43,11 +41,11 @@ import static org.junit.Assert.assertTrue;
 
 public class JOSEJWTTest {
 
-    public static final String PAYLOAD_STRING_EXAMPLE = "A text to check the process";
-    public static final String ISSUER_URI = "https://idp.prima-solutions.com";
-    public static final String SUB = "BA0000000000001";
-    public static final String AUD_ID = "https://policy.clients.boursorama-assurances.com";
-    public static final int TEN_MINUTES = 1000 * 60 * 10;
+    private static final String PAYLOAD_STRING_EXAMPLE = "A text to check the process";
+    private static final String ISSUER_URI = "https://idp.prima-solutions.com";
+    private static final String SUB = "BA0000000000001";
+    private static final String AUD_ID = "https://policy.clients.boursorama-assurances.com";
+    private static final int TEN_MINUTES = 1000 * 60 * 10;
 
     private JWTClaimsSet claims;
 
@@ -66,28 +64,28 @@ public class JOSEJWTTest {
 
     @Test
     public void the_way_to_sign_a_token_using_RSA() throws JOSEException, ParseException {
-        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
+        final CredentialsPair pair = KeysForTests.generateRSACredential();
         JWSObject tokenHolder = new JWSObject(new JWSHeader(JWSAlgorithm.RS256), new Payload(PAYLOAD_STRING_EXAMPLE));
-        tokenHolder.sign(new RSASSASigner(pair.getKey()));
+        tokenHolder.sign(new RSASSASigner(pair.getPrivateKey()));
         String signedToken = tokenHolder.serialize();
         assertThat(signedToken, notNullValue());
         //CHECKSTYLE:OFF
         assertThat(signedToken.split("\\.").length, equalTo(3));
         //CHECKSTYLE:ON
         tokenHolder = JWSObject.parse(signedToken);
-        JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey) pair.getValue().getPublicKey());
+        JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey) pair.getPublicKey());
         assertTrue(tokenHolder.verify(verifier));
         assertEquals(PAYLOAD_STRING_EXAMPLE, tokenHolder.getPayload().toString());
     }
 
     @Test
     public void the_way_to_encrypt_a_token_using_RSA() throws Exception {
-        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
+        final CredentialsPair pair = KeysForTests.generateRSACredential();
         JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
         EncryptedJWT tokenHolder = new EncryptedJWT(header, claims);
-        tokenHolder.encrypt(new RSAEncrypter((RSAPublicKey) pair.getValue().getPublicKey()));
+        tokenHolder.encrypt(new RSAEncrypter((RSAPublicKey) pair.getPublicKey()));
         tokenHolder = EncryptedJWT.parse(tokenHolder.serialize());
-        tokenHolder.decrypt(new RSADecrypter(pair.getKey()));
+        tokenHolder.decrypt(new RSADecrypter(pair.getPrivateKey()));
     }
 
     @Test
@@ -110,22 +108,22 @@ public class JOSEJWTTest {
 
     @Test
     public void sign_and_encrypt_using_rsa() throws Exception {
-        final Pair<PrivateKey, X509Certificate> issuerCredential = KeysForTests.generateRSACredential();
-        final Pair<PrivateKey, X509Certificate> audienceCredential = KeysForTests.generateRSACredential();
+        final CredentialsPair issuerCredential = KeysForTests.generateRSACredential();
+        final CredentialsPair audienceCredential = KeysForTests.generateRSACredential();
         SignedJWT tokenSigned = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claims);
-        tokenSigned.sign(new RSASSASigner(issuerCredential.getKey()));
+        tokenSigned.sign(new RSASSASigner(issuerCredential.getPrivateKey()));
         JWEObject tokenEncrypted = new JWEObject(
                 new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM).contentType("JWT").build(),
                 new Payload(tokenSigned));
-        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) audienceCredential.getValue().getPublicKey()));
+        tokenEncrypted.encrypt(new RSAEncrypter((RSAPublicKey) audienceCredential.getPublicKey()));
 
 
         //Peer side
         JWEObject jweObject = JWEObject.parse(tokenEncrypted.serialize());
-        jweObject.decrypt(new RSADecrypter(audienceCredential.getKey()));
+        jweObject.decrypt(new RSADecrypter(audienceCredential.getPrivateKey()));
         final SignedJWT signedJWT = jweObject.getPayload().toSignedJWT();
         assertNotNull("Payload not a signed JWT", signedJWT);
-        assertTrue(signedJWT.verify(new RSASSAVerifier((RSAPublicKey) issuerCredential.getValue().getPublicKey())));
+        assertTrue(signedJWT.verify(new RSASSAVerifier((RSAPublicKey) issuerCredential.getPublicKey())));
         assertEquals(SUB, signedJWT.getJWTClaimsSet().getSubject());
     }
 

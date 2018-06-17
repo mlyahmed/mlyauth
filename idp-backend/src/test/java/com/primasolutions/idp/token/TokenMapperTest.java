@@ -2,12 +2,12 @@ package com.primasolutions.idp.token;
 
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.IDPSAMLErrorExc;
 import com.primasolutions.idp.token.saml.SAMLAccessToken;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
-import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +15,6 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.credential.Credential;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -249,8 +247,8 @@ public class TokenMapperTest {
     public void when_map_a_saml_access_without_claims_then_claims_set_must_ne_empty() throws ConfigurationException {
         DefaultBootstrap.bootstrap();
         SAMLHelper samlHelper = new SAMLHelper();
-        final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
-        final Credential credential = samlHelper.toCredential(pair.getKey(), pair.getValue());
+        final CredentialsPair pair = KeysForTests.generateRSACredential();
+        final Credential credential = samlHelper.toCredential(pair.getPrivateKey(), pair.getCertificate());
         SAMLAccessToken access = new SAMLAccessToken(credential);
         access.setStamp(RandomForTests.randomString());
         final Token token = mapper.toToken(access);
@@ -270,8 +268,8 @@ public class TokenMapperTest {
         try {
             DefaultBootstrap.bootstrap();
             SAMLHelper samlHelper = new SAMLHelper();
-            final Pair<PrivateKey, X509Certificate> pair = KeysForTests.generateRSACredential();
-            final Credential credential = samlHelper.toCredential(pair.getKey(), pair.getValue());
+            final CredentialsPair pair = KeysForTests.generateRSACredential();
+            final Credential credential = samlHelper.toCredential(pair.getPrivateKey(), pair.getCertificate());
             SAMLAccessToken access = new SAMLAccessToken(credential);
             access.setStamp(RandomForTests.randomString());
             access.setSubject(RandomForTests.randomString());

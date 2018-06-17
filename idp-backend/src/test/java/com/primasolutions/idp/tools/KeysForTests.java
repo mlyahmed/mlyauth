@@ -1,7 +1,7 @@
 package com.primasolutions.idp.tools;
 
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.EncryptionCredentialExc;
-import javafx.util.Pair;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -56,17 +56,16 @@ public final class KeysForTests {
 
     }
 
-    public static Pair<PrivateKey, X509Certificate> generateRSACredential() {
+    public static CredentialsPair generateRSACredential() {
         return generatePairCredential("RSA", KEY_1024_SIZE, "SHA1WithRSA");
     }
 
-    public static Pair<PrivateKey, X509Certificate> generatePairCredential(final String algorithm, final int keysize,
-                                                                           final String signatureAlgorithm) {
+    public static CredentialsPair generatePairCredential(final String algorithm, final int keySize, final String alg) {
         try {
 
             final BouncyCastleProvider provider = new BouncyCastleProvider();
             Security.addProvider(provider);
-            final KeyPair pair = generateKeyPair(algorithm, keysize);
+            final KeyPair pair = generateKeyPair(algorithm, keySize);
 
             final Date notBefore = new Date(System.currentTimeMillis() - VALIDITY);
             final Date notAfter = new Date(System.currentTimeMillis() + VALIDITY);
@@ -80,11 +79,11 @@ public final class KeysForTests {
                     extUtils.createSubjectKeyIdentifier(pair.getPublic()));
             certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false,
                     extUtils.createAuthorityKeyIdentifier(pair.getPublic()));
-            X509CertificateHolder certHldr = certificateBuilder.build(new JcaContentSignerBuilder(signatureAlgorithm)
+            X509CertificateHolder certHldr = certificateBuilder.build(new JcaContentSignerBuilder(alg)
                     .setProvider(provider.getName()).build(pair.getPrivate()));
             X509Certificate certificate = new JcaX509CertificateConverter().setProvider(provider.getName())
                     .getCertificate(certHldr);
-            return new Pair<>(pair.getPrivate(), certificate);
+            return new CredentialsPair(pair.getPrivate(), certificate);
 
         } catch (Exception e) {
             throw EncryptionCredentialExc.newInstance(e);

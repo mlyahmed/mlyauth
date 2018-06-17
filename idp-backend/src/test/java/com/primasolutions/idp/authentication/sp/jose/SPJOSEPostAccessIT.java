@@ -14,6 +14,7 @@ import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.credentials.CredentialManager;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.JOSEErrorExc;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
@@ -21,7 +22,6 @@ import com.primasolutions.idp.token.jose.JOSEAccessToken;
 import com.primasolutions.idp.token.jose.JOSETokenFactoryImpl;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
-import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +32,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.HashSet;
 
 import static com.primasolutions.idp.application.Application.newInstance;
@@ -90,7 +88,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     private ResultActions resultActions;
 
     private Application application;
-    private Pair<PrivateKey, X509Certificate> applicationCredentials;
+    private CredentialsPair applicationCredentials;
     private String appname;
     private String entityId;
     private String ssoUrl;
@@ -186,7 +184,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                             .setApplicationId(application.getId())
                             .setAspectCode(IDP_JOSE.name())
                             .setAttributeCode(AspectAttribute.IDP_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
-                    .setValue(Base64URL.encode(applicationCredentials.getValue().getEncoded()).toString());
+                    .setValue(Base64URL.encode(applicationCredentials.getCertificate().getEncoded()).toString());
 
 
             appAspectAttrDAO.save(asList(entityIdAttribute, ssoUrlAttribute, certificateAttribute));
@@ -196,7 +194,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_success_token() {
-        token = tokenFactory.newAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
+        token = tokenFactory.newAccessToken(applicationCredentials.getPrivateKey(), credentialManager.getPublicKey());
         token.setStamp(RandomForTests.randomString());
         token.setSubject(MASTER_EMAIL);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
@@ -216,7 +214,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_fail_token() {
-        token = tokenFactory.newAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
+        token = tokenFactory.newAccessToken(applicationCredentials.getPrivateKey(), credentialManager.getPublicKey());
         token.setStamp(RandomForTests.randomString());
         token.setSubject(MASTER_EMAIL);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));
@@ -232,7 +230,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
     }
 
     private void given_success_token_with_application_claim_already_assigned() {
-        token = tokenFactory.newAccessToken(applicationCredentials.getKey(), credentialManager.getPublicKey());
+        token = tokenFactory.newAccessToken(applicationCredentials.getPrivateKey(), credentialManager.getPublicKey());
         token.setStamp(RandomForTests.randomString());
         token.setSubject(MASTER_EMAIL);
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));

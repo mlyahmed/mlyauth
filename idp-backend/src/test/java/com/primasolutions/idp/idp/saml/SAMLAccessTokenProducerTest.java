@@ -10,6 +10,7 @@ import com.primasolutions.idp.constants.AspectAttribute;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.context.IContext;
 import com.primasolutions.idp.context.mocks.MockContext;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.token.IToken;
 import com.primasolutions.idp.token.TokenIdGeneratorImpl;
@@ -17,7 +18,6 @@ import com.primasolutions.idp.token.saml.SAMLAccessTokenProducer;
 import com.primasolutions.idp.token.saml.SAMLHelper;
 import com.primasolutions.idp.token.saml.SAMLTokenFactory;
 import com.primasolutions.idp.tools.KeysForTests;
-import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -48,9 +48,7 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -104,7 +102,7 @@ public class SAMLAccessTokenProducerTest {
     private Response response;
     private Assertion assertion;
 
-    private Pair<PrivateKey, X509Certificate> credentialPair;
+    private CredentialsPair credentialPair;
     private String encodedCertificate;
 
     @Before
@@ -266,7 +264,7 @@ public class SAMLAccessTokenProducerTest {
 
     private void given_application_credentials() throws Exception {
         credentialPair = KeysForTests.generateRSACredential();
-        encodedCertificate = Base64.encodeBytes(credentialPair.getValue().getEncoded());
+        encodedCertificate = Base64.encodeBytes(credentialPair.getCertificate().getEncoded());
     }
 
     private void given_an_application(final long applicationId, final AspectType[] supportedAspects) {
@@ -311,7 +309,7 @@ public class SAMLAccessTokenProducerTest {
 
     private void and_decrypt_Assertion() {
         BasicX509Credential credential = samlHelper.toBasicX509Credential(encodedCertificate);
-        credential.setPrivateKey(credentialPair.getKey());
+        credential.setPrivateKey(credentialPair.getPrivateKey());
         assertion = samlHelper.decryptAssertion(response.getEncryptedAssertions().get(0), credential);
     }
 

@@ -10,6 +10,7 @@ import com.primasolutions.idp.constants.TokenRefreshMode;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenType;
 import com.primasolutions.idp.constants.TokenVerdict;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.TokenNotCipheredExc;
 import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.token.Claims;
@@ -18,15 +19,12 @@ import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import javafx.util.Pair;
 import org.exparity.hamcrest.date.DateMatchers;
 import org.exparity.hamcrest.date.LocalDateTimeMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -71,28 +69,28 @@ import static org.junit.Assert.assertTrue;
 public class JOSEFreshAccessTokenTest {
 
     private JOSEAccessToken accessToken;
-    private Pair<PrivateKey, RSAPublicKey> cypherCred;
-    private Pair<PrivateKey, RSAPublicKey> decipherCred;
+    private CredentialsPair cypherCred;
+    private CredentialsPair decipherCred;
 
     @Before
     public void setup() {
-        final Pair<PrivateKey, X509Certificate> peerCred = KeysForTests.generateRSACredential();
-        final Pair<PrivateKey, X509Certificate> localCred = KeysForTests.generateRSACredential();
-        cypherCred = new Pair<>(localCred.getKey(), (RSAPublicKey) peerCred.getValue().getPublicKey());
-        decipherCred = new Pair<>(peerCred.getKey(), (RSAPublicKey) localCred.getValue().getPublicKey());
-        accessToken = new JOSEAccessToken(cypherCred.getKey(), cypherCred.getValue());
+        final CredentialsPair peerCred = KeysForTests.generateRSACredential();
+        final CredentialsPair localCred = KeysForTests.generateRSACredential();
+        cypherCred = new CredentialsPair(localCred.getPrivateKey(), peerCred.getCertificate());
+        decipherCred = new CredentialsPair(peerCred.getPrivateKey(), localCred.getCertificate());
+        accessToken = new JOSEAccessToken(cypherCred.getPrivateKey(), cypherCred.getPublicKey());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_create_a_fresh_access_token_and_private_key_is_null_then_error() {
-        final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        new JOSEAccessToken(null, credential.getValue().getPublicKey());
+        final CredentialsPair credential = KeysForTests.generateRSACredential();
+        new JOSEAccessToken(null, credential.getPublicKey());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void when_create_a_fresh_access_token_and_public_key_is_null_then_error() {
-        final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        new JOSEAccessToken(credential.getKey(), null);
+        final CredentialsPair credential = KeysForTests.generateRSACredential();
+        new JOSEAccessToken(credential.getPrivateKey(), null);
     }
 
     @Test
@@ -135,7 +133,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setRefreshMode(WHEN_EXPIRES);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(REFRESH_MODE.getValue()), equalTo(WHEN_EXPIRES.name()));
     }
@@ -158,7 +156,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setValidationMode(STANDARD);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(VALIDATION_MODE.getValue()), equalTo(STANDARD.name()));
     }
@@ -178,7 +176,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setStamp(id);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getJWTID(), equalTo(id));
     }
@@ -198,7 +196,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setSubject(subject);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getSubject(), equalTo(subject));
     }
@@ -234,7 +232,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setScopes(scopes);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(SCOPES.getValue()),
                 equalTo(scopes.stream().map(TokenScope::name).collect(Collectors.joining("|"))));
@@ -255,7 +253,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setBP(bp);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(BP.getValue()), equalTo(bp));
     }
@@ -275,7 +273,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setState(state);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(STATE.getValue()), equalTo(state));
     }
@@ -295,7 +293,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setIssuer(issuer);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getIssuer(), equalTo(issuer));
         assertThat(signedJWT.getHeader().getCustomParam(Claims.ISSUER.getValue()), equalTo(issuer));
@@ -316,7 +314,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setAudience(audienceURI);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getAudience().get(0), equalTo(audienceURI));
     }
@@ -336,7 +334,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setTargetURL(targetURL);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(TARGET_URL.getValue()), equalTo(targetURL));
     }
@@ -356,7 +354,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setDelegator(delegator);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(DELEGATOR.getValue()), equalTo(delegator));
     }
@@ -376,7 +374,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setDelegate(delegate);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(DELEGATE.getValue()), equalTo(delegate));
     }
@@ -393,7 +391,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setVerdict(FAIL);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(VERDICT.getValue()), equalTo(FAIL.name()));
     }
@@ -426,7 +424,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setClaim(claimPair[0], claimPair[1]);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getClaim(claimPair[0]), equalTo(claimPair[1]));
     }
@@ -446,7 +444,7 @@ public class JOSEFreshAccessTokenTest {
         //CHECKSTYLE:OFF
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         assertThat(expirationTime, DateMatchers.within(3, ChronoUnit.MINUTES, new Date()));
@@ -461,7 +459,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setRefreshMode(TokenRefreshMode.EACH_TIME);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         assertThat(expirationTime, DateMatchers.within(3, ChronoUnit.MINUTES, new Date()));
@@ -476,7 +474,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.setRefreshMode(TokenRefreshMode.WHEN_EXPIRES);
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         final Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         assertThat(expirationTime, DateMatchers.within(30, ChronoUnit.MINUTES, new Date()));
@@ -497,7 +495,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.cypher();
         Instant twoSecondsAgo = now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getNotBeforeTime().after(from(twoSecondsAgo)), equalTo(true));
         assertThat(signedJWT.getJWTClaimsSet().getNotBeforeTime().before(new Date()), equalTo(true));
@@ -516,7 +514,7 @@ public class JOSEFreshAccessTokenTest {
         accessToken.cypher();
         Instant twoSecondsAgo = now().minusSeconds(2).atZone(ZoneId.systemDefault()).toInstant();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().after(from(twoSecondsAgo)), equalTo(true));
         assertThat(signedJWT.getJWTClaimsSet().getIssueTime().before(new Date()), equalTo(true));
@@ -616,10 +614,10 @@ public class JOSEFreshAccessTokenTest {
     public void when_cypher_a_fresh_access_token_then_it_must_be_signed_and_encrypted() throws Exception {
         accessToken.cypher();
         JWEObject loadedToken = JWEObject.parse(accessToken.serialize());
-        loadedToken.decrypt(new RSADecrypter(decipherCred.getKey()));
+        loadedToken.decrypt(new RSADecrypter(decipherCred.getPrivateKey()));
         final SignedJWT signedJWT = loadedToken.getPayload().toSignedJWT();
         assertThat(signedJWT, notNullValue());
-        assertTrue(signedJWT.verify(new RSASSAVerifier(decipherCred.getValue())));
+        assertTrue(signedJWT.verify(new RSASSAVerifier((RSAPublicKey) decipherCred.getPublicKey())));
     }
 
     @Test

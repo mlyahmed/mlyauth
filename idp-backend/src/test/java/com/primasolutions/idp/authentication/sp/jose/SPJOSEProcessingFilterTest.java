@@ -3,6 +3,7 @@ package com.primasolutions.idp.authentication.sp.jose;
 import com.primasolutions.idp.constants.AspectType;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.context.mocks.MockContext;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.credentials.mocks.MockCredentialManager;
 import com.primasolutions.idp.navigation.Navigation;
 import com.primasolutions.idp.navigation.NavigationDAO;
@@ -19,7 +20,6 @@ import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import javafx.util.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +35,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 import javax.servlet.http.HttpServletResponse;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -81,8 +79,8 @@ public class SPJOSEProcessingFilterTest {
     private Authentication expectedAuthentication;
 
     private JOSEAccessToken token;
-    private Pair<PrivateKey, X509Certificate> localCred;
-    private Pair<PrivateKey, X509Certificate> peerCredential;
+    private CredentialsPair localCred;
+    private CredentialsPair peerCredential;
 
     @Before
     public void setup() {
@@ -187,8 +185,8 @@ public class SPJOSEProcessingFilterTest {
     private void set_up_credentials() {
         localCred = KeysForTests.generateRSACredential();
         peerCredential = KeysForTests.generateRSACredential();
-        credentialManager = new MockCredentialManager(localCred.getKey(), localCred.getValue().getPublicKey());
-        credentialManager.setPeerCertificate(PEER_IDP_ID, AspectType.IDP_JOSE, peerCredential.getValue());
+        credentialManager = new MockCredentialManager(localCred.getPrivateKey(), localCred.getPublicKey());
+        credentialManager.setPeerCertificate(PEER_IDP_ID, AspectType.IDP_JOSE, peerCredential.getCertificate());
     }
 
     private void set_up_authentication_manager() {
@@ -197,7 +195,7 @@ public class SPJOSEProcessingFilterTest {
     }
 
     private void set_up_token() {
-        token = new JOSEAccessToken(peerCredential.getKey(), credentialManager.getPublicKey());
+        token = new JOSEAccessToken(peerCredential.getPrivateKey(), credentialManager.getPublicKey());
     }
 
     private void set_up_request_response() {

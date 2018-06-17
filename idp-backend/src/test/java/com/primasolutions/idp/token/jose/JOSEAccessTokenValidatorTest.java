@@ -2,19 +2,17 @@ package com.primasolutions.idp.token.jose;
 
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenVerdict;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.InvalidTokenExc;
 import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessToken;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
-import javafx.util.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -125,8 +123,8 @@ public class JOSEAccessTokenValidatorTest {
     }
 
     private MockJOSEAccessToken given_access_token() {
-        final Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        MockJOSEAccessToken access = new MockJOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
+        final CredentialsPair credential = KeysForTests.generateRSACredential();
+        MockJOSEAccessToken access = new MockJOSEAccessToken(credential.getPrivateKey(), credential.getPublicKey());
         access.setStamp(RandomForTests.randomString());
         access.setSubject(RandomForTests.randomString());
         access.setScopes(new HashSet<>(Arrays.asList(TokenScope.values())));

@@ -5,6 +5,7 @@ import com.primasolutions.idp.constants.TokenProcessingStatus;
 import com.primasolutions.idp.constants.TokenScope;
 import com.primasolutions.idp.constants.TokenType;
 import com.primasolutions.idp.constants.TokenVerdict;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.TokenNotCipheredExc;
 import com.primasolutions.idp.exception.TokenUnmodifiableExc;
 import com.primasolutions.idp.tools.KeysForTests;
@@ -12,7 +13,6 @@ import com.primasolutions.idp.tools.RandomForTests;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -30,8 +30,6 @@ import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.security.credential.Credential;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -73,10 +71,10 @@ public class SAMLFreshAccessTokenTest {
     public void setup() throws ConfigurationException {
         DefaultBootstrap.bootstrap();
         samlHelper = new SAMLHelper();
-        final Pair<PrivateKey, X509Certificate> pair1 = KeysForTests.generateRSACredential();
-        final Pair<PrivateKey, X509Certificate> pair2 = KeysForTests.generateRSACredential();
-        cypherCred = samlHelper.toCredential(pair1.getKey(), pair2.getValue());
-        decipherCred = samlHelper.toCredential(pair2.getKey(), pair1.getValue());
+        final CredentialsPair pair1 = KeysForTests.generateRSACredential();
+        final CredentialsPair pair2 = KeysForTests.generateRSACredential();
+        cypherCred = samlHelper.toCredential(pair1.getPrivateKey(), pair2.getCertificate());
+        decipherCred = samlHelper.toCredential(pair2.getPrivateKey(), pair1.getCertificate());
         token = new SAMLAccessToken(cypherCred);
         ReflectionTestUtils.setField(token, "samlHelper", samlHelper);
     }
@@ -91,7 +89,7 @@ public class SAMLFreshAccessTokenTest {
     @Test(expected = IllegalArgumentException.class)
     public void when_credential_private_key_is_null_then_error() {
         final BasicCredential credential = new BasicCredential();
-        credential.setPublicKey(KeysForTests.generateRSACredential().getValue().getPublicKey());
+        credential.setPublicKey(KeysForTests.generateRSACredential().getPublicKey());
         credential.setPrivateKey(null);
         new SAMLAccessToken(credential);
     }
@@ -99,7 +97,7 @@ public class SAMLFreshAccessTokenTest {
     @Test(expected = IllegalArgumentException.class)
     public void when_credential_public_key_is_null_then_error() {
         final BasicCredential credential = new BasicCredential();
-        credential.setPrivateKey(KeysForTests.generateRSACredential().getKey());
+        credential.setPrivateKey(KeysForTests.generateRSACredential().getPrivateKey());
         credential.setPublicKey(null);
         new SAMLAccessToken(credential);
     }

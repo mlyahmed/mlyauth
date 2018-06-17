@@ -8,13 +8,13 @@ import com.primasolutions.idp.constants.TokenVerdict;
 import com.primasolutions.idp.context.IContextHolder;
 import com.primasolutions.idp.context.IDPUser;
 import com.primasolutions.idp.context.mocks.MockContextHolder;
+import com.primasolutions.idp.credentials.CredentialsPair;
 import com.primasolutions.idp.exception.IDPException;
 import com.primasolutions.idp.person.model.Person;
 import com.primasolutions.idp.person.model.PersonDAO;
 import com.primasolutions.idp.token.jose.mocks.MockJOSEAccessToken;
 import com.primasolutions.idp.tools.KeysForTests;
 import com.primasolutions.idp.tools.RandomForTests;
-import javafx.util.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +23,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -199,8 +197,8 @@ public class SPJOSEUserDetailsServiceImplTest {
     }
 
     private void given_the_token() {
-        Pair<PrivateKey, X509Certificate> credential = KeysForTests.generateRSACredential();
-        token = new MockJOSEAccessToken(credential.getKey(), credential.getValue().getPublicKey());
+        CredentialsPair credential = KeysForTests.generateRSACredential();
+        token = new MockJOSEAccessToken(credential.getPrivateKey(), credential.getPublicKey());
         token.setStamp(RandomForTests.randomString());
         token.setSubject(RandomForTests.randomString());
         token.setScopes(new HashSet<>(asList(TokenScope.PERSON)));

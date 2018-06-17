@@ -1,14 +1,14 @@
-image: java:8-jdk
+image: openjdk:10-jdk
 
 stages:
   - build
   - test
 
 before_script:
-#  - echo `pwd` # debug
-#  - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
+  - echo `pwd`
+  - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE"
   - apt-get update
-  - apt-get install -y openjfx
+  #- apt-get install -y openjfx
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 cache:
@@ -27,10 +27,10 @@ build:
   only:
     - master
 
-#test:
-#  stage: test
-#  script:
-#    - ./gradlew check
+test:
+  stage: test
+  script:
+    - ./gradlew check
 
 after_script:
   - echo "End CI"
