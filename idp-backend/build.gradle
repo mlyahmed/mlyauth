@@ -15,6 +15,7 @@ buildscript {
 }
 
 plugins {
+    id "java-library"
     id "java"
     id "groovy"
     id "jacoco"
@@ -66,6 +67,9 @@ dependencies {
     compile('org.webjars:font-awesome:5.0.6')
     compile("org.jasypt:jasypt-hibernate4:1.9.2")
     compile("org.bouncycastle:bcpkix-jdk15on:1.47")
+    compile("org.slf4j:slf4j-api:1.7.25")
+    compile("ch.qos.logback:logback-core:1.2.3")
+    compile("ch.qos.logback:logback-classic:1.2.3")
 
     asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
 
