@@ -1,17 +1,13 @@
+image: openjdk:10-jdk
+
 # to improve performance
 variables:
-  DOCKER_HOST: tcp://docker:2375
+  #DOCKER_HOST: tcp://docker:2375
   #DOCKER_DRIVER: overlay2
 
 # we need DinD service
 services:
   - docker:dind
-
-image: openjdk:10-jdk
-
-stages:
-  - build
-  - test
 
 before_script:
   - echo `pwd`
@@ -19,6 +15,10 @@ before_script:
   - apt-get update
   #- apt-get install -y openjfx
   - export GRADLE_USER_HOME=`pwd`/.gradle
+
+stages:
+  - build
+  - test
 
 cache:
   paths:
