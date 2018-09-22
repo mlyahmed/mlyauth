@@ -46,7 +46,7 @@ dependencies {
 
     annotationProcessor('org.projectlombok:lombok:1.18.0')
 
-    compile("org.codehaus.groovy:groovy-all:2.4.12")
+    compile("org.codehaus.groovy:groovy-all:2.4.14")
     compile("javax.inject:javax.inject:1")
     compile("org.springframework.boot:spring-boot-starter")
     compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.0.0")
@@ -108,16 +108,12 @@ dependencies {
 }
 
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-bootRun{
-    systemProperties = new HashMap<String, String>(System.properties)
-}
+bootRun { systemProperties = new HashMap<String, String>(System.properties) }
 
-jar {
-    baseName = 'primaidp'
-}
+jar { baseName = 'primaidp' }
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
