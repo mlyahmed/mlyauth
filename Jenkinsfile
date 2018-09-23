@@ -1,23 +1,25 @@
 node {
-    def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
+    // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
+    def server = Artifactory.server "SERVER_ID"
+    // Create an Artifactory Gradle instance.
     def rtGradle = Artifactory.newGradleBuild()
-    def buildInfo = Artifactory.newBuildInfo()
+    def buildInfo
 
-
-    stage('Clone the branch'){
+    stage('Clone sources') {
         checkout scm
     }
 
-    stage('Build') {
-        sh './gradlew clean install -x test'
+    stage('Artifactory configuration') {
+        rtGradle.tool = "Gradle-2.4"
+        rtGradle.deployer repo:'ext-release-local', server: server
+        rtGradle.resolver repo:'remote-repos', server: server
     }
 
-    stage('Test') {
-        echo 'Testing..'
+    stage('Gradle build') {
+        buildInfo = rtGradle.run rootDir: ".", buildFile: 'build.gradle', tasks: 'clean artifactoryPublish'
     }
 
-    stage('Deploy') {
-        echo 'Deploying....'
+    stage('Publish build info') {
+        server.publishBuildInfo buildInfo
     }
-
 }
