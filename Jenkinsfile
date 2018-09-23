@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
+    def rtGradle = Artifactory.newGradleBuild()
+    def buildInfo = Artifactory.newBuildInfo()
 
     stages {
 
@@ -11,7 +14,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew clean build -x test'
+                sh './gradlew clean install -x test'
             }
         }
 
