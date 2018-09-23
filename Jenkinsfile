@@ -1,17 +1,21 @@
-node {
+pipeline {
+    agent any
 
-    stage('Gradle Build') {
-
-        if (isUnix()) {
-
-            sh './gradlew clean build -x test'
-
-        } else {
-
-            bat 'gradlew.bat clean build -x test'
-
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
         }
-
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
     }
-
 }
