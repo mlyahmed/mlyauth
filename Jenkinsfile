@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
-    def rtGradle = Artifactory.newGradleBuild()
-    def buildInfo = Artifactory.newBuildInfo()
 
     stages {
 
