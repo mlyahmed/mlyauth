@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('checkout the branch'){
+        stage('Clone the branch'){
             steps {
                 checkout scm
             }
