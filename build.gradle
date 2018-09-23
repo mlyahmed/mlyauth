@@ -9,8 +9,9 @@ task wrapper(type: Wrapper) {
         File wrapperBatFile = file("gradlew.bat")
         wrapperBatFile.text = wrapperBatFile.text.replace("set DEFAULT_JVM_OPTS=", "set GRADLE_OPTS=$gradleBatOpts %GRADLE_OPTS%\nset DEFAULT_JVM_OPTS=")
     }
-
 }
+
+
 
 repositories {
     mavenLocal()

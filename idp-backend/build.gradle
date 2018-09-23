@@ -16,6 +16,7 @@ buildscript {
 
 plugins {
     id "idea"
+    id "maven"
     id "java-library"
     id "java"
     id "groovy"
