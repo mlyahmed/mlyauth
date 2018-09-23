@@ -1,7 +1,13 @@
 pipeline {
     agent any
+    def rtGradle = Artifactory.newGradleBuild()
+    def buildInfo = Artifactory.newBuildInfo()
 
     stages {
+       stage ('Configuration') {
+           rtGradle.tool = GRADLE_TOOL // Tool name from Jenkins configuration
+       }
+
         stage('Clone the branch'){
             steps {
                 checkout scm
@@ -11,6 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
+                rtGradle.run rootDir: ".", buildFile: 'build.gradle', tasks: 'clean build -x test', buildInfo: buildInfo
             }
         }
 
