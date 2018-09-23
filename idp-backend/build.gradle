@@ -191,5 +191,9 @@ docker {
     buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
 
+artifacts {
+    archives jar
+}
+
 task runAll {}
 runAll.dependsOn(bootRun)
