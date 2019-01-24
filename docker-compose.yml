@@ -3,11 +3,8 @@ services:
 
   idp-database:
     image: mysql
-    container_name: idp-database
     deploy:
       replicas: 1
-      placement:
-        constraints: [node.role == manager]
       resources:
         reservations:
           memory: 128M
@@ -23,24 +20,16 @@ services:
       - 3316:3306
     networks:
       - backend
-    volumes:
-      - idp-data:/var/lib/mysql:rw
   idp-backend:
-    image: mlyahmed/primaidp
-    container_name: idp-backend
+    image: mlyahmed/primaidp:latest
     deploy:
       replicas: 1
-      placement:
-        constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
     ports:
       - 8998:16666
     networks:
       - backend
-    volumes:
-      - "/tmp:/tmp"
-      - "/opt:/opt"
     links:
       - idp-database:idp-database
     depends_on:
@@ -48,6 +37,3 @@ services:
 
 networks:
   backend:
-
-volumes:
-  idp-data: {}

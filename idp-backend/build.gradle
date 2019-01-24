@@ -15,8 +15,8 @@ buildscript {
 }
 
 plugins {
+    id "application"
     id "idea"
-    id "maven"
     id "java-library"
     id "java"
     id "groovy"
@@ -112,9 +112,14 @@ dependencies {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+
+mainClassName = "com.primasolutions.idp.Main"
+
 bootRun { systemProperties = new HashMap<String, String>(System.properties) }
 
-jar { baseName = 'primaidp' }
+jar {
+    baseName = 'mlyidp'
+}
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
