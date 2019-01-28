@@ -23,7 +23,7 @@ import static org.springframework.util.Assert.notNull;
 @EnableEncryptableProperties
 public class Main extends SpringBootServletInitializer {
 
-    public  static final String START_UP_PASSPHRASE_PROPERTY = "startup.passphrase";
+    public  static final String START_UP_PASSPHRASE_PROPERTY = "STARTUP_PASSPHRASE";
     private static final String ENCODED_PASSPHRASE = "$2a$13$n.UA0h5.4Shz4awT4EMAT.KDxri//akqZV/NyixLRgsUtbjGmM7he";
     private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(13);
 

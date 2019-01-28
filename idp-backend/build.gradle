@@ -93,7 +93,7 @@ dependencies {
     testCompile("io.cucumber:cucumber-jvm:2.3.1")
     testCompile("pl.pragmatists:JUnitParams:1.1.1")
     testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
-    testCompile("org.mockito:mockito-core:2.13.0")
+    testCompile("org.mockito:mockito-core:2.23.4")
     testCompile("org.hamcrest:hamcrest-all:1.3")
     testCompile("org.exparity:hamcrest-date:2.0.4")
     testCompile("org.ajbrown:name-machine:1.0.0")
@@ -109,8 +109,8 @@ dependencies {
 }
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 
 mainClassName = "com.primasolutions.idp.Main"
@@ -146,7 +146,7 @@ test {
 test.finalizedBy(jacocoTestReport)
 
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = "0.8.3"
     reportsDir = file("$buildDir/coverage")
 }
 

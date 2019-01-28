@@ -1,39 +1,42 @@
 version: "3"
 services:
 
-  idp-database:
-    image: mysql
-    deploy:
-      replicas: 1
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
+  psm-idp-database:
+    image: mysql:5.7.25
     environment:
-      ON_CREATE_DB: mlyauth
-      MYSQL_DATABASE: mlyauth
+      ON_CREATE_DB: idp
+      MYSQL_DATABASE: idp
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: root
       EXTRA_OPTS: "--lower_case_table_names=1"
+    volumes:
+      - datavolume:/var/lib/mysql
     ports:
       - 3316:3306
     networks:
-      - backend
-  idp-backend:
+      - psm-idp-private
+  psm-idp-backend:
     image: mlyahmed/primaidp:latest
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    environment:
+      - "JAVA_OPTS=-Xmx512m -Xms256m"
+      - SPRING_PROFILES_ACTIVE=runtime,prod
+      - STARTUP_PASSPHRASE=cM7g+:S*DY7m>c.D3{8jHtr6tH%^L~3t
+      - SPRING_DATASOURCE_URL=jdbc:mysql://psm-idp-database:3306/idp?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
     ports:
       - 8998:16666
     networks:
-      - backend
+      - psm-idp-private
+      - psm-idp-public
     links:
-      - idp-database:idp-database
+      - psm-idp-database:psm-idp-database
     depends_on:
-      - idp-database
+      - psm-idp-database
 
 networks:
-  backend:
+  psm-idp-private:
+  psm-idp-public:
+
+volumes:
+  datavolume: {}
