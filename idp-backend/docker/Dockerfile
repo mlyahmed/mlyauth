@@ -7,7 +7,7 @@ ENV STARTUP_PASSPHRASE="" \
 
 ARG JAR_FILE
 
-RUN adduser -D -s /bin/sh idp
+RUN useradd -ms /bin/bash idp
 WORKDIR /home/idp
 
 ADD docker/entrypoint.sh entrypoint.sh
