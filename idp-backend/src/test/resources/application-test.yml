@@ -8,6 +8,10 @@ spring:
       username: ${embedded.mariadb.user}
       password: ${embedded.mariadb.password}
       driver-class-name: org.mariadb.jdbc.Driver
+    liquibase:
+      change-log: classpath:database/db-changelog-test.yaml
+      contexts: test
+      drop-first: true
 
 keystore:
   path: classpath:keys/keystore-test.jks
@@ -27,8 +31,3 @@ logging:
     org.opensaml: INFO
     org.springframework.core: INFO
     org.springframework.security.saml: INFO
-
-liquibase:
-  change-log: classpath:database/db-changelog-test.yaml
-  contexts: test
-  drop-first: true

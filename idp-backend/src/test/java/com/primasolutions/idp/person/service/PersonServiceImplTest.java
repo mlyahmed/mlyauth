@@ -340,7 +340,7 @@ class PersonServiceImplTest {
         final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
         assertThat(byLogin, hasSize(1));
 
-        final AuthInfo authInfo = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
+        final AuthInfo authInfo = authInfoDAO.findById(byLogin.iterator().next().getAuthInfoId()).get();
         assertThat(authInfo, notNullValue());
         assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
         assertThat(authInfo.getEffectiveAt(), DateMatchers.before(new Date(System.currentTimeMillis() + ONE_SECOND)));
@@ -353,7 +353,7 @@ class PersonServiceImplTest {
         final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
         assertThat(byLogin, hasSize(1));
 
-        final AuthInfo authInfo = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
+        final AuthInfo authInfo = authInfoDAO.findById(byLogin.iterator().next().getAuthInfoId()).get();
         assertThat(authInfo, notNullValue());
         assertThat(authInfo.getLogin(), equalTo(person.getEmail()));
     }
@@ -371,7 +371,8 @@ class PersonServiceImplTest {
 
         final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(p.getEmail());
         assertThat(byLogin, hasSize(1));
-        assertThat(authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId()), equalTo(p.getAuthenticationInfo()));
+        assertThat(authInfoDAO.findById(byLogin.iterator().next().getAuthInfoId()).get(),
+                equalTo(p.getAuthenticationInfo()));
     }
 
 }

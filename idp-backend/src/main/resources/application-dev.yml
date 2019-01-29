@@ -14,12 +14,11 @@ spring:
         hibernate:
           naming:
             physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    liquibase:
+      contexts: dev
 
 
 keystore:
   path: classpath:keys/keystore.jks
   alias: sgi.prima-solutions.com
   password: Bourso$17
-
-liquibase:
-  contexts: dev

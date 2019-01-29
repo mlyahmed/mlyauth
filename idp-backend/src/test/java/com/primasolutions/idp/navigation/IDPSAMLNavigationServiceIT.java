@@ -64,7 +64,7 @@ public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
     public void when_generate_a_saml_navigation_then_trace_the_navigation() {
         final NavigationBean navigationBean = navigationService.newNavigation(POLICY_DEV);
         assertThat(navigationBean.getId(), notNullValue());
-        final Navigation navigation = navigationDAO.findOne(navigationBean.getId());
+        final Navigation navigation = navigationDAO.findById(navigationBean.getId()).get();
         final NavigationAttribute samlResponse = navigation.getAttribute("SAMLResponse");
         assertThat(navigation, notNullValue());
         assertThat(navigation.getCreatedAt(), notNullValue());
@@ -79,7 +79,7 @@ public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
     @Test
     public void when_generate_a_saml_navigation_then_trace_the_navigation_attribute() {
         final NavigationBean navigationBean = navigationService.newNavigation(POLICY_DEV);
-        final Navigation navigation = navigationDAO.findOne(navigationBean.getId());
+        final Navigation navigation = navigationDAO.findById(navigationBean.getId()).get();
         final NavigationAttribute samlResponse = navigation.getAttribute("SAMLResponse");
         assertThat(samlResponse, notNullValue());
         assertThat(navigation.getAttribute("SAMLResponse").getValue(), equalTo(samlResponse.getValue()));
@@ -89,7 +89,7 @@ public class IDPSAMLNavigationServiceIT extends AbstractIntegrationTest {
     public void when_generate_a_saml_navigation_then_trace_the_token() {
         final NavigationBean navigation = navigationService.newNavigation(POLICY_DEV);
         assertThat(navigation.getTokenId(), notNullValue());
-        final Token token = tokenDAO.findOne(navigation.getTokenId());
+        final Token token = tokenDAO.findById(navigation.getTokenId()).get();
         assertThat(token, notNullValue());
         assertThat(token.getNorm(), equalTo(SAML));
         assertThat(token.getType(), equalTo(ACCESS));

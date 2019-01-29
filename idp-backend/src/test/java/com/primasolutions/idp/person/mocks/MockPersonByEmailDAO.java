@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,12 +63,27 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
     }
 
     @Override
-    public Page<PersonByEmail> findAll(final Pageable pageable) {
+    public List<PersonByEmail> findAllById(final Iterable<Long> longs) {
         return null;
     }
 
     @Override
-    public List<PersonByEmail> findAll(final Iterable<Long> longs) {
+    public <S extends PersonByEmail> List<S> saveAll(final Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<PersonByEmail> findById(final Long aLong) {
+        return Optional.of(index.get(aLong));
+    }
+
+    @Override
+    public boolean existsById(final Long aLong) {
+        return false;
+    }
+
+    @Override
+    public Page<PersonByEmail> findAll(final Pageable pageable) {
         return null;
     }
 
@@ -77,7 +93,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
     }
 
     @Override
-    public void delete(final Long id) {
+    public void deleteById(final Long id) {
         index.remove(id);
     }
 
@@ -87,7 +103,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
     }
 
     @Override
-    public void delete(final Iterable<? extends PersonByEmail> entities) {
+    public void deleteAll(final Iterable<? extends PersonByEmail> entities) {
 
     }
 
@@ -102,21 +118,6 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
         entity.setEmail(EmailTokenizer.newInstance().tokenizeEmailAddress(entity.getEmail()));
         index.put(entity.getId(), entity);
         return entity;
-    }
-
-    @Override
-    public <S extends PersonByEmail> List<S> save(final Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public PersonByEmail findOne(final Long aLong) {
-        return index.get(aLong);
-    }
-
-    @Override
-    public boolean exists(final Long aLong) {
-        return false;
     }
 
     @Override
@@ -145,7 +146,7 @@ public final class MockPersonByEmailDAO implements PersonByEmailDAO, ResettableM
     }
 
     @Override
-    public <S extends PersonByEmail> S findOne(final Example<S> example) {
+    public <S extends PersonByEmail> Optional<S> findOne(final Example<S> example) {
         return null;
     }
 

@@ -100,7 +100,7 @@ public class JOSETokenServiceImpl {
         token.setStatus(TokenStatus.READY);
         token.setChecksum(DigestUtils.sha256Hex(accessToken.serialize()));
         token.setSession(context.getAuthenticationSession());
-        token.setApplication(applicationDAO.findOne(rsEntityId.getId().getApplicationId()));
+        token.setApplication(applicationDAO.findById(rsEntityId.getId().getApplicationId()).orElse(null));
         tokenDAO.saveAndFlush(token);
     }
 

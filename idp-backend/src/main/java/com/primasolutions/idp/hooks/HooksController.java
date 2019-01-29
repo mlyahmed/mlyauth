@@ -31,7 +31,7 @@ public class HooksController {
 
     @RequestMapping("/home")
     public String home(final Model model) {
-        final Person person = personDAO.findOne(context.getPerson().getId());
+        final Person person = personDAO.findById(context.getPerson().getId()).orElse(null);
         final Set<Application> applications = person.getApplications();
         final Set<ApplicationBean> beans = new HashSet<>();
         applications.stream().forEach(app -> beans.add(ApplicationBean.newInstance()

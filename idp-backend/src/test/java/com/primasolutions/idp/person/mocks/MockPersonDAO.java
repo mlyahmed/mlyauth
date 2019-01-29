@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 public final class MockPersonDAO implements PersonDAO, ResettableMock {
 
@@ -58,12 +59,27 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
     }
 
     @Override
-    public Page<Person> findAll(final Pageable pageable) {
+    public List<Person> findAllById(final Iterable<Long> longs) {
         return null;
     }
 
     @Override
-    public List<Person> findAll(final Iterable<Long> longs) {
+    public <S extends Person> List<S> saveAll(final Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<Person> findById(final Long personId) {
+        return Optional.of(persons.get(personId));
+    }
+
+    @Override
+    public boolean existsById(final Long personId) {
+        return persons.get(personId) != null;
+    }
+
+    @Override
+    public Page<Person> findAll(final Pageable pageable) {
         return null;
     }
 
@@ -73,7 +89,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final Long aLong) {
+    public void deleteById(final Long aLong) {
 
     }
 
@@ -83,7 +99,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final Iterable<? extends Person> entities) {
+    public void deleteAll(final Iterable<? extends Person> entities) {
 
     }
 
@@ -97,21 +113,6 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
         if (entity.getId() < 1) entity.setId(++currentID);
         persons.put(entity.getId(), entity);
         return entity;
-    }
-
-    @Override
-    public <S extends Person> List<S> save(final Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public Person findOne(final Long aLong) {
-        return persons.get(aLong);
-    }
-
-    @Override
-    public boolean exists(final Long aLong) {
-        return persons.get(aLong) != null;
     }
 
     @Override
@@ -140,7 +141,7 @@ public final class MockPersonDAO implements PersonDAO, ResettableMock {
     }
 
     @Override
-    public <S extends Person> S findOne(final Example<S> example) {
+    public <S extends Person> Optional<S> findOne(final Example<S> example) {
         return null;
     }
 

@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -64,7 +65,7 @@ public class PersonMapperImplTest {
         role = Role.newInstance().setCode(RoleCode.CLIENT);
         person = Person.newInstance().setRole(role);
         bean = PersonBean.newInstance();
-        when(roleDAO.findOne(Mockito.any(RoleCode.class))).thenReturn(role);
+        when(roleDAO.findById(Mockito.any(RoleCode.class))).thenReturn(Optional.of(role));
     }
 
 

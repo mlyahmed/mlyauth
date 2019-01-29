@@ -20,7 +20,6 @@ public class ContextIdGeneratorTest {
 
     @Before
     public void setup() {
-
         generator = new ContextIdGenerator();
     }
 

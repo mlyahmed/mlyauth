@@ -8,6 +8,10 @@ spring:
       use-new-id-generator-mappings: true
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  liquibase:
+    change-log: classpath:database/db-changelog.yaml
+    drop-first: true
+
 
 idp:
   saml:
@@ -53,7 +57,3 @@ info:
 management:
   security:
     enabled: false
-
-liquibase:
-  change-log: classpath:database/db-changelog.yaml
-  drop-first: true

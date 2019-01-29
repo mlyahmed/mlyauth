@@ -60,7 +60,7 @@ public class PersonSaverImpl implements PersonSaver {
         final PersonByEmail byEmail = byEmails.stream()
                 .filter(pbe -> pbe.getPersonId().equals(p.getExternalId()))
                 .findFirst().get();
-        byEmailDAO.delete(byEmail.getId());
+        byEmailDAO.deleteById(byEmail.getId());
     }
 
     private void updatePerson(final Person p) {

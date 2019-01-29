@@ -153,13 +153,13 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void given_Fatima_Ezzahrare_an_existing_person_without_an_application() {
-        fatimaEzzahrae = personDAO.findOne(FATIMA_EZZAHRAE_ID);
+        fatimaEzzahrae = personDAO.findById(FATIMA_EZZAHRAE_ID).get();
         fatimaEzzahrae.getApplications().clear();
         personDAO.saveAndFlush(fatimaEzzahrae);
     }
 
     private void given_PolicyDev_an_existing_application() {
-        policy = applicationDAO.findOne(POLICY_DEV_ID);
+        policy = applicationDAO.findById(POLICY_DEV_ID).get();
     }
 
     private void when_assign_PolicyDev_to_Fatima_Ezzahrae() throws Exception {
@@ -175,14 +175,14 @@ public class PersonControllerIT extends AbstractIntegrationTest {
     }
 
     private void then_PolicyDEV_is_assigned_to_Fatima_Ezzahrae() {
-        final Person expected = personDAO.findOne(FATIMA_EZZAHRAE_ID);
+        final Person expected = personDAO.findById(FATIMA_EZZAHRAE_ID).get();
         Assert.assertThat(expected.getApplications(), Matchers.is(Matchers.not(Matchers.empty())));
         Assert.assertThat(expected.getApplications(), Matchers.contains(policy));
     }
 
     private void given_the_root_is_a_master() {
         final Person master = personLookuper.byEmail(MASTER_EMAIL);
-        final Profile masterProfile = profileDAO.findOne(ProfileCode.MASTER);
+        final Profile masterProfile = profileDAO.findById(ProfileCode.MASTER).get();
         master.setProfiles(new HashSet<>(Arrays.asList(masterProfile)));
         personDAO.save(master);
     }

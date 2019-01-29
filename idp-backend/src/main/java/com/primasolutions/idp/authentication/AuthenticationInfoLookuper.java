@@ -16,7 +16,7 @@ public class AuthenticationInfoLookuper {
 
     public AuthInfo byLogin(final String login) {
         final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(login);
-        return authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
+        return authInfoDAO.findById(byLogin.iterator().next().getAuthInfoId()).orElse(null);
     }
 
 }

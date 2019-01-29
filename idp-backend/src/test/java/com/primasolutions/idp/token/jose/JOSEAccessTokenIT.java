@@ -174,7 +174,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setStatus(AuthInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         clientSpace = Application.newInstance()
-                .setType(applicationTypeDAO.findOne(ApplicationTypeCode.CLIENT_SPACE))
+                .setType(applicationTypeDAO.findById(ApplicationTypeCode.CLIENT_SPACE).get())
                 .setAppname("clientSpace")
                 .setAspects(new HashSet<>(Arrays.asList(CL_JOSE)))
                 .setTitle("The Client Space")
@@ -214,7 +214,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                         .setAttributeCode(AspectAttribute.CL_JOSE_ENCRYPTION_CERTIFICATE.getValue()))
                 .setValue(Base64URL.encode(clientCred.getCertificate().getEncoded()).toString());
 
-        appAspectAttrDAO.save(asList(entityId, context, certificate));
+        appAspectAttrDAO.saveAll(asList(entityId, context, certificate));
     }
 
     private void given_the_client_space_refresh_token_is_ready() {
@@ -240,7 +240,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setStatus(AuthInfoStatus.ACTIVE)
                 .setEffectiveAt(new Date());
         policy = Application.newInstance()
-                .setType(applicationTypeDAO.findOne(ApplicationTypeCode.POLICY))
+                .setType(applicationTypeDAO.findById(ApplicationTypeCode.POLICY).get())
                 .setAppname("policy")
                 .setAspects(new HashSet<>(Arrays.asList(RS_JOSE)))
                 .setTitle("The Prima Policy")
@@ -281,7 +281,7 @@ public class JOSEAccessTokenIT extends AbstractIntegrationTest {
                 .setValue(Base64URL.encode(policyCred.getCertificate().getEncoded()).toString());
 
 
-        appAspectAttrDAO.save(asList(policyEntityIdAttribute, policyContextAttribute, policyCertificateAttribute));
+        appAspectAttrDAO.saveAll(asList(policyEntityIdAttribute, policyContextAttribute, policyCertificateAttribute));
     }
 
     private void given_a_token_to_ask_access_to_the_policy_app() {

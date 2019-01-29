@@ -7,6 +7,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock {
@@ -45,19 +46,18 @@ public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock 
         return entity;
     }
 
-
     @Override
-    public <S extends AuthSession> Iterable<S> save(final Iterable<S> entities) {
+    public <S extends AuthSession> Iterable<S> saveAll(final Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public AuthSession findOne(final Long id) {
-        return sessions.get(id);
+    public Optional<AuthSession> findById(final Long sessionsId) {
+        return Optional.of(sessions.get(sessionsId));
     }
 
     @Override
-    public boolean exists(final Long aLong) {
+    public boolean existsById(final Long aLong) {
         return false;
     }
 
@@ -67,7 +67,7 @@ public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock 
     }
 
     @Override
-    public Iterable<AuthSession> findAll(final Iterable<Long> longs) {
+    public Iterable<AuthSession> findAllById(final Iterable<Long> longs) {
         return null;
     }
 
@@ -77,7 +77,7 @@ public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock 
     }
 
     @Override
-    public void delete(final Long aLong) {
+    public void deleteById(final Long aLong) {
 
     }
 
@@ -87,7 +87,7 @@ public final class MockAuthSessionDAO implements AuthSessionDAO, ResettableMock 
     }
 
     @Override
-    public void delete(final Iterable<? extends AuthSession> entities) {
+    public void deleteAll(final Iterable<? extends AuthSession> entities) {
 
     }
 

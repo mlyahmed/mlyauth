@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,12 +63,27 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
     }
 
     @Override
-    public Page<AuthInfoByLogin> findAll(final Pageable pageable) {
+    public List<AuthInfoByLogin> findAllById(final Iterable<Long> longs) {
         return null;
     }
 
     @Override
-    public List<AuthInfoByLogin> findAll(final Iterable<Long> longs) {
+    public <S extends AuthInfoByLogin> List<S> saveAll(final Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<AuthInfoByLogin> findById(final Long aLong) {
+        return Optional.of(index.get(aLong));
+    }
+
+    @Override
+    public boolean existsById(final Long aLong) {
+        return false;
+    }
+
+    @Override
+    public Page<AuthInfoByLogin> findAll(final Pageable pageable) {
         return null;
     }
 
@@ -77,7 +93,7 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
     }
 
     @Override
-    public void delete(final Long id) {
+    public void deleteById(final Long id) {
         index.remove(id);
     }
 
@@ -87,7 +103,7 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
     }
 
     @Override
-    public void delete(final Iterable<? extends AuthInfoByLogin> entities) {
+    public void deleteAll(final Iterable<? extends AuthInfoByLogin> entities) {
 
     }
 
@@ -102,21 +118,6 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
         entity.setLogin(StringTokenizer.newInstance().tokenize(entity.getLogin()));
         index.put(entity.getId(), entity);
         return entity;
-    }
-
-    @Override
-    public <S extends AuthInfoByLogin> List<S> save(final Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public AuthInfoByLogin findOne(final Long aLong) {
-        return index.get(aLong);
-    }
-
-    @Override
-    public boolean exists(final Long aLong) {
-        return false;
     }
 
     @Override
@@ -145,7 +146,7 @@ public final class MockAuthInfoByLoginDAO implements AuthInfoByLoginDAO, Resetta
     }
 
     @Override
-    public <S extends AuthInfoByLogin> S findOne(final Example<S> example) {
+    public <S extends AuthInfoByLogin> Optional<S> findOne(final Example<S> example) {
         return null;
     }
 

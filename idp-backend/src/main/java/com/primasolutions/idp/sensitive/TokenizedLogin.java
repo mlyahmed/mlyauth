@@ -2,7 +2,7 @@ package com.primasolutions.idp.sensitive;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Objects;
 
 public final class TokenizedLogin implements UserType {
     private static final int SQL_TYPE = Types.VARCHAR;
@@ -26,7 +27,7 @@ public final class TokenizedLogin implements UserType {
 
     @Override
     public boolean equals(final Object x, final Object y) throws HibernateException {
-        return x == y || (x != null && x.equals(y));
+        return Objects.equals(x, y);
     }
 
     @Override
@@ -35,14 +36,14 @@ public final class TokenizedLogin implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session,
+    public Object nullSafeGet(final ResultSet rs, final String[] names, final SharedSessionContractImplementor session,
                               final Object owner) throws HibernateException, SQLException {
         return rs.getString(names[0]);
     }
 
     @Override
     public void nullSafeSet(final PreparedStatement st, final Object value, final int index,
-                            final SessionImplementor session) throws HibernateException, SQLException {
+                            final SharedSessionContractImplementor session) throws HibernateException, SQLException {
         if (value == null) {
             st.setNull(index, SQL_TYPE);
         } else {

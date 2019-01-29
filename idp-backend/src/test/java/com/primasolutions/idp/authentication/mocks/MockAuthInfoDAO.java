@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
 
@@ -54,12 +55,27 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public Page<AuthInfo> findAll(final Pageable pageable) {
+    public List<AuthInfo> findAllById(final Iterable<Long> longs) {
         return null;
     }
 
     @Override
-    public List<AuthInfo> findAll(final Iterable<Long> longs) {
+    public <S extends AuthInfo> List<S> saveAll(final Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<AuthInfo> findById(final Long authId) {
+        return Optional.of(authentications.get(authId));
+    }
+
+    @Override
+    public boolean existsById(final Long aLong) {
+        return false;
+    }
+
+    @Override
+    public Page<AuthInfo> findAll(final Pageable pageable) {
         return null;
     }
 
@@ -69,7 +85,7 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final Long aLong) {
+    public void deleteById(final Long aLong) {
 
     }
 
@@ -79,7 +95,7 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final Iterable<? extends AuthInfo> entities) {
+    public void deleteAll(final Iterable<? extends AuthInfo> entities) {
 
     }
 
@@ -93,21 +109,6 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
         if (entity.getId() < 1) entity.setId(++lastID);
         authentications.put(entity.getId(), entity);
         return entity;
-    }
-
-    @Override
-    public <S extends AuthInfo> List<S> save(final Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public AuthInfo findOne(final Long aLong) {
-        return authentications.get(aLong);
-    }
-
-    @Override
-    public boolean exists(final Long aLong) {
-        return false;
     }
 
     @Override
@@ -136,7 +137,7 @@ public final class MockAuthInfoDAO implements AuthInfoDAO, ResettableMock {
     }
 
     @Override
-    public <S extends AuthInfo> S findOne(final Example<S> example) {
+    public <S extends AuthInfo> Optional<S> findOne(final Example<S> example) {
         return null;
     }
 

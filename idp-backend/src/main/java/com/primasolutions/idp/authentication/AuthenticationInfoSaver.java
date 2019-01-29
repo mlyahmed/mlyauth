@@ -31,7 +31,7 @@ public class AuthenticationInfoSaver {
         final AuthInfoByLogin target = byLoginSet.stream()
                 .filter(l -> l.getAuthInfoId() == authInfo.getId())
                 .findFirst().get();
-        authInfoByLoginDAO.delete(target.getId());
+        authInfoByLoginDAO.deleteById(target.getId());
     }
 
     private void updateAuthInfo(final AuthInfo authInfo) {

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class MockRoleDAO implements RoleDAO, ResettableMock {
 
@@ -45,12 +46,27 @@ public final class MockRoleDAO implements RoleDAO, ResettableMock {
     }
 
     @Override
-    public Page<Role> findAll(final Pageable pageable) {
+    public List<Role> findAllById(final Iterable<RoleCode> roleCodes) {
         return null;
     }
 
     @Override
-    public List<Role> findAll(final Iterable<RoleCode> roleCodes) {
+    public <S extends Role> List<S> saveAll(final Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<Role> findById(final RoleCode roleCode) {
+        return Optional.of(roleCode == null ? null : Role.newInstance().setCode(roleCode));
+    }
+
+    @Override
+    public boolean existsById(final RoleCode roleCode) {
+        return false;
+    }
+
+    @Override
+    public Page<Role> findAll(final Pageable pageable) {
         return null;
     }
 
@@ -60,7 +76,7 @@ public final class MockRoleDAO implements RoleDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final RoleCode roleCode) {
+    public void deleteById(final RoleCode roleCode) {
 
     }
 
@@ -70,7 +86,7 @@ public final class MockRoleDAO implements RoleDAO, ResettableMock {
     }
 
     @Override
-    public void delete(final Iterable<? extends Role> entities) {
+    public void deleteAll(final Iterable<? extends Role> entities) {
 
     }
 
@@ -82,21 +98,6 @@ public final class MockRoleDAO implements RoleDAO, ResettableMock {
     @Override
     public <S extends Role> S save(final S entity) {
         return null;
-    }
-
-    @Override
-    public <S extends Role> List<S> save(final Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public Role findOne(final RoleCode roleCode) {
-        return roleCode == null ? null : Role.newInstance().setCode(roleCode);
-    }
-
-    @Override
-    public boolean exists(final RoleCode roleCode) {
-        return false;
     }
 
     @Override
@@ -125,7 +126,7 @@ public final class MockRoleDAO implements RoleDAO, ResettableMock {
     }
 
     @Override
-    public <S extends Role> S findOne(final Example<S> example) {
+    public <S extends Role> Optional<S> findOne(final Example<S> example) {
         return null;
     }
 

@@ -19,7 +19,7 @@ public class ApplicationService implements IApplicationService {
     public ApplicationBean newApplication(final ApplicationBean application) {
         Application app = new Application();
         BeanUtils.copyProperties(application, app);
-        app.setType(applicationTypeDAO.findOne(application.getType()));
+        app.setType(applicationTypeDAO.findById(application.getType()).orElse(null));
         app = applicationDAO.save(app);
         application.setId(app.getId());
         return application;

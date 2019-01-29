@@ -8,11 +8,11 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.security.PrivateKey;
 
@@ -36,7 +36,7 @@ public class AccessTokenForTests {
     protected String idpJoseEntityId;
 
     @Value("${test.cl-prima-client-dev.private-key}")
-    protected File privateKeyFile;
+    protected Resource privateKeyFile;
 
     @Autowired
     protected CredentialManager credManager;
@@ -51,7 +51,8 @@ public class AccessTokenForTests {
     public final String generateMasterToken()  {
 
         try {
-            final PrivateKey privateKey = decodeRSAPrivateKey(new String(Files.readAllBytes(privateKeyFile.toPath())));
+            final String encodedPrivateKey = new String(Files.readAllBytes(privateKeyFile.getFile().toPath()));
+            final PrivateKey privateKey = decodeRSAPrivateKey(encodedPrivateKey);
             JOSERefreshToken refreshToken = tokenFactory.newRefreshToken(privateKey, credManager.getPublicKey());
             refreshToken.setStamp(CL_REFRESH_TOKEN_ID);
             refreshToken.setSubject(AbstractIntegrationTest.MASTER_EMAIL);

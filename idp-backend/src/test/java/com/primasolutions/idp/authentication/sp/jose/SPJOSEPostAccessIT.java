@@ -156,7 +156,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
 
     private void given_a_peer_jose_idp_app() {
         application = newInstance()
-                .setType(applicationTypeDAO.findOne(ApplicationTypeCode.STORE))
+                .setType(applicationTypeDAO.findById(ApplicationTypeCode.STORE).get())
                 .setAppname(appname)
                 .setTitle(appname)
                 .setAspects(new HashSet<>(asList(IDP_JOSE)));
@@ -187,7 +187,7 @@ public class SPJOSEPostAccessIT extends AbstractIntegrationTest {
                     .setValue(Base64URL.encode(applicationCredentials.getCertificate().getEncoded()).toString());
 
 
-            appAspectAttrDAO.save(asList(entityIdAttribute, ssoUrlAttribute, certificateAttribute));
+            appAspectAttrDAO.saveAll(asList(entityIdAttribute, ssoUrlAttribute, certificateAttribute));
         } catch (Exception e) {
             throw JOSEErrorExc.newInstance(e);
         }

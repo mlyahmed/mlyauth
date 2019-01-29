@@ -49,7 +49,7 @@ public abstract class AbstractIDPNavigationService implements IDPNavigationServi
                 .setAttributes(buildNavigationAttributes(navigationBean))
                 .setDirection(OUTBOUND)
                 .setTargetURL(navigationBean.getTarget())
-                .setToken(tokenDAO.findOne(navigationBean.getTokenId()))
+                .setToken(tokenDAO.findById(navigationBean.getTokenId()).orElse(null))
                 .setSession(context.getAuthenticationSession());
     }
 

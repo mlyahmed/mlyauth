@@ -7,6 +7,7 @@ import com.primasolutions.idp.tools.ResettableMock;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 public final class MockApplicationDAO implements ApplicationDAO, ResettableMock {
 
@@ -51,17 +52,17 @@ public final class MockApplicationDAO implements ApplicationDAO, ResettableMock 
     }
 
     @Override
-    public <S extends Application> Iterable<S> save(final Iterable<S> entities) {
+    public <S extends Application> Iterable<S> saveAll(final Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public Application findOne(final Long id) {
-        return applications.get(id);
+    public Optional<Application> findById(final Long applicationId) {
+        return Optional.of(applications.get(applicationId));
     }
 
     @Override
-    public boolean exists(final Long aLong) {
+    public boolean existsById(final Long aLong) {
         return false;
     }
 
@@ -71,7 +72,7 @@ public final class MockApplicationDAO implements ApplicationDAO, ResettableMock 
     }
 
     @Override
-    public Iterable<Application> findAll(final Iterable<Long> longs) {
+    public Iterable<Application> findAllById(final Iterable<Long> longs) {
         return null;
     }
 
@@ -81,7 +82,7 @@ public final class MockApplicationDAO implements ApplicationDAO, ResettableMock 
     }
 
     @Override
-    public void delete(final Long aLong) {
+    public void deleteById(final Long aLong) {
 
     }
 
@@ -91,7 +92,7 @@ public final class MockApplicationDAO implements ApplicationDAO, ResettableMock 
     }
 
     @Override
-    public void delete(final Iterable<? extends Application> entities) {
+    public void deleteAll(final Iterable<? extends Application> entities) {
 
     }
 

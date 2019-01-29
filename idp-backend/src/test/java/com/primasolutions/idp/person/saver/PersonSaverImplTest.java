@@ -134,7 +134,7 @@ class PersonSaverImplTest {
         final Set<AuthInfoByLogin> byLogin = authInfoByLoginDAO.findByLogin(person.getEmail());
         assertThat(byLogin, hasSize(1));
 
-        final AuthInfo auth = authInfoDAO.findOne(byLogin.iterator().next().getAuthInfoId());
+        final AuthInfo auth = authInfoDAO.findById(byLogin.iterator().next().getAuthInfoId()).get();
         assertThat(auth, sameInstance(person.getAuthenticationInfo()));
     }
 

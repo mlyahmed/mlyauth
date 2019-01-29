@@ -146,7 +146,7 @@ public class ContextHolderTest {
         assertThat(contextSession, notNullValue());
         assertThat(holderSession, equalTo(contextSession));
         assertThat(contextSession.getId(), notNullValue());
-        assertThat(sessionDAO.findOne(contextSession.getId()), notNullValue());
+        assertThat(sessionDAO.findById(contextSession.getId()).get(), notNullValue());
         assertThat(contextSession.getContextId(), equalTo(context.getId()));
         assertThat(contextSession.getStatus(), equalTo(ACTIVE));
         assertThat(contextSession.getCreatedAt(), notNullValue());
@@ -400,16 +400,16 @@ public class ContextHolderTest {
     private void then_the_first_session_is_closed_and_new_one_is_created(final AuthSession firstSession,
                                                                          final AuthSession secondSession) {
         assertThat(firstSession, not(equalTo(secondSession)));
-        assertThat(sessionDAO.findOne(firstSession.getId()).getStatus(), equalTo(CLOSED));
-        assertThat(sessionDAO.findOne(firstSession.getId()).getClosedAt(), notNullValue());
-        assertTrue(sessionDAO.findOne(firstSession.getId()).getClosedAt().getTime() - currentTimeMillis()
+        assertThat(sessionDAO.findById(firstSession.getId()).get().getStatus(), equalTo(CLOSED));
+        assertThat(sessionDAO.findById(firstSession.getId()).get().getClosedAt(), notNullValue());
+        assertTrue(sessionDAO.findById(firstSession.getId()).get().getClosedAt().getTime() - currentTimeMillis()
                 < FIFTY_MILLISECONDS);
     }
 
     private void then_the_auth_session_is_closed(final AuthSession authSession) {
-        assertThat(sessionDAO.findOne(authSession.getId()).getStatus(), equalTo(CLOSED));
-        assertThat(sessionDAO.findOne(authSession.getId()).getClosedAt(), notNullValue());
-        assertTrue(sessionDAO.findOne(authSession.getId()).getClosedAt().getTime() - currentTimeMillis()
+        assertThat(sessionDAO.findById(authSession.getId()).get().getStatus(), equalTo(CLOSED));
+        assertThat(sessionDAO.findById(authSession.getId()).get().getClosedAt(), notNullValue());
+        assertTrue(sessionDAO.findById(authSession.getId()).get().getClosedAt().getTime() - currentTimeMillis()
                 < FIFTY_MILLISECONDS);
     }
 
