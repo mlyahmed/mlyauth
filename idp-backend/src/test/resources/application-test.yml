@@ -4,10 +4,6 @@ spring:
       database-platform: org.hibernate.dialect.MySQL5Dialect
     datasource:
       generate-unique-name: true
-      url: jdbc:mysql://${embedded.mariadb.host}:${embedded.mariadb.port}/${embedded.mariadb.schema}
-      username: ${embedded.mariadb.user}
-      password: ${embedded.mariadb.password}
-      driver-class-name: org.mariadb.jdbc.Driver
     liquibase:
       change-log: classpath:database/db-changelog-test.yaml
       contexts: test

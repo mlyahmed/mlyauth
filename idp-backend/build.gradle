@@ -19,7 +19,6 @@ plugins {
     id "idea"
     id "java-library"
     id "java"
-    id "groovy"
     id "jacoco"
     id "checkstyle"
     id "pmd"
@@ -49,7 +48,6 @@ dependencies {
     compile('com.sun.xml.bind:jaxb-impl:2.3.0.1')
     compile('javax.activation:activation:1.1.1')
 
-    compile("org.codehaus.groovy:groovy-all:2.5.5")
     compile("javax.inject:javax.inject:1")
 
     compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
@@ -101,12 +99,11 @@ dependencies {
     testCompile("org.hamcrest:hamcrest-all:1.3")
     testCompile("org.exparity:hamcrest-date:2.0.4")
     testCompile("org.ajbrown:name-machine:1.0.0")
-    testCompile("com.playtika.testcontainers:testcontainers-common:1.7")
-    testCompile("com.playtika.testcontainers:embedded-mariadb:1.7")
-    testCompile("org.springframework.cloud:spring-cloud-starter:2.1.0.RELEASE")
 
-    testCompile('org.spockframework:spock-core:1.2-groovy-2.5')
-    testCompile('org.spockframework:spock-spring:1.2-groovy-2.5')
+    testCompile('org.testcontainers:testcontainers:1.10.2')
+    testCompile('org.testcontainers:mariadb:1.10.2')
+
+    testCompile("org.springframework.cloud:spring-cloud-starter:2.1.0.RELEASE")
 
     testRuntime("cglib:cglib-nodep:3.2.4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
