@@ -22,14 +22,11 @@ plugins {
     id "jacoco"
     id "checkstyle"
     id "pmd"
-    id 'com.adarshr.test-logger' version '1.2.0'
-    id "org.unbroken-dome.test-sets" version "1.4.2"
-    id "io.spring.dependency-management" version "1.0.4.RELEASE"
+    id 'com.adarshr.test-logger' version "1.6.0"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id "org.springframework.boot" version "2.1.2.RELEASE"
     id "org.asciidoctor.convert" version "1.5.7"
-    id "org.liquibase.gradle" version "2.0.1"
-    id "com.palantir.docker" version "0.13.0"
-    id 'net.ltgt.apt' version '0.15'
+    id "com.palantir.docker" version "0.21.0"
 }
 
 repositories {
@@ -94,7 +91,6 @@ dependencies {
     testImplementation('org.testcontainers:testcontainers:1.10.2')
     testImplementation('org.testcontainers:mariadb:1.10.2')
 
-
     testRuntime("cglib:cglib-nodep:3.2.4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
     testRuntime("org.springframework.boot:spring-boot-devtools")
@@ -117,9 +113,17 @@ tasks.withType(JavaCompile) {
 }
 
 testlogger {
-    theme 'mocha'
-    slowThreshold 300
-    showStandardStreams false
+    theme 'standard'
+    showExceptions false
+    slowThreshold 200
+    showSummary true
+    showPassed false
+    showSkipped true
+    showFailed true
+    showStandardStreams true
+    showPassedStandardStreams true
+    showSkippedStandardStreams true
+    showFailedStandardStreams true
 }
 
 test.useJUnitPlatform()

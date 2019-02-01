@@ -3,7 +3,7 @@ spring:
         url: jdbc:mysql://database:3306/idp?useSSL=false
         username: root
         password: ENC(wZFqK9UYnPg9+LDCv5bq4t9KW50924ZBdXMoHIoZe50=)
-        driver-class-name: com.mysql.jdbc.Driver
+        driver-class-name: org.mariadb.jdbc.Driver
         testWhileIdle: true
         validationQuery: SELECT 1
     jpa:
