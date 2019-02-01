@@ -1,4 +1,4 @@
-image: openjdk:10-jdk
+image: openjdk:11-jdk
 
 # to improve performance
 variables:
