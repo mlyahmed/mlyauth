@@ -1,13 +1,12 @@
 image: openjdk:11-jdk
 
-# to improve performance
-variables:
-  #DOCKER_HOST: tcp://docker:2375
-  #DOCKER_DRIVER: overlay2
-
-# we need DinD service
 services:
   - docker:dind
+
+variables:
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
 
 before_script:
   - echo `pwd`
