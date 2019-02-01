@@ -32,8 +32,6 @@ plugins {
     id 'net.ltgt.apt' version '0.15'
 }
 
-ext["snippetsDir"] = new File (project.buildDir ,"generated-snippets")
-
 repositories {
     maven {
         url 'http://repo.spring.io/milestone'
@@ -58,12 +56,10 @@ dependencies {
     compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
     compile("org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE")
 
-    compile('com.google.guava:guava:27.0.1-jre')
-    compile('org.apache.commons:commons-lang3:3.8.1')
-
-
-    compile("mysql:mysql-connector-java")
     compile("org.mariadb.jdbc:mariadb-java-client")
+
+    api('com.google.guava:guava:27.0.1-jre')
+    compile('org.apache.commons:commons-lang3:3.8.1')
     compile("joda-time:joda-time:2.2")
     compile("com.jayway.jsonpath:json-path:2.0.0")
     compile("org.liquibase:liquibase-core:3.6.2")
