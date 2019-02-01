@@ -1,5 +1,5 @@
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10'
+wrapper {
+    gradleVersion = '5.1.1'
 
     doLast() {
         def gradleOpts = "-Xmx2024m"
