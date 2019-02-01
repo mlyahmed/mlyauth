@@ -33,7 +33,6 @@ plugins {
 }
 
 ext["snippetsDir"] = new File (project.buildDir ,"generated-snippets")
-ext["spring-restdocs.version"] = "2.0.0.RELEASE"
 
 repositories {
     maven {
@@ -47,10 +46,8 @@ dependencies {
     compile('com.sun.xml.bind:jaxb-core:2.3.0.1')
     compile('com.sun.xml.bind:jaxb-impl:2.3.0.1')
     compile('javax.activation:activation:1.1.1')
-
     compile("javax.inject:javax.inject:1")
 
-    compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
     compile("org.springframework.boot:spring-boot-starter")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-jdbc")
@@ -58,10 +55,13 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
     compile("org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE")
 
-    compile("io.rest-assured:rest-assured:3.0.3")
-    compile("io.rest-assured:json-schema-validator:3.0.3")
+    compile('com.google.guava:guava:27.0.1-jre')
+    compile('org.apache.commons:commons-lang3:3.8.1')
+
+
     compile("mysql:mysql-connector-java")
     compile("org.mariadb.jdbc:mariadb-java-client")
     compile("joda-time:joda-time:2.2")
@@ -78,8 +78,6 @@ dependencies {
     compile("org.slf4j:slf4j-api:1.7.25")
     compile("ch.qos.logback:logback-core:1.2.3")
     compile("ch.qos.logback:logback-classic:1.2.3")
-
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
 
     testCompile("junit:junit:4.12")
     testCompile("org.junit.vintage:junit-vintage-engine:5.2.0")
