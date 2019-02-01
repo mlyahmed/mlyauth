@@ -39,60 +39,61 @@ repositories {
 }
 
 dependencies {
-    compile('org.javassist:javassist:3.23.1-GA')
-    compile('javax.xml.bind:jaxb-api:2.3.0')
-    compile('com.sun.xml.bind:jaxb-core:2.3.0.1')
-    compile('com.sun.xml.bind:jaxb-impl:2.3.0.1')
-    compile('javax.activation:activation:1.1.1')
-    compile("javax.inject:javax.inject:1")
+    api('org.javassist:javassist:3.23.1-GA')
+    api('javax.xml.bind:jaxb-api:2.3.0')
+    api('com.sun.xml.bind:jaxb-core:2.3.0.1')
+    api('com.sun.xml.bind:jaxb-impl:2.3.0.1')
+    api('javax.activation:activation:1.1.1')
+    api("javax.inject:javax.inject:1")
 
-    compile("org.springframework.boot:spring-boot-starter")
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-    compile("org.springframework.boot:spring-boot-starter-jdbc")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
-    compile("org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE")
+    api("org.springframework.boot:spring-boot-starter")
+    api("org.springframework.boot:spring-boot-starter-thymeleaf")
+    api("org.springframework.boot:spring-boot-starter-jdbc")
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    api("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-actuator")
+    api("org.springframework.boot:spring-boot-starter-security")
+    api("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
+    api("org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE")
 
-    compile("org.mariadb.jdbc:mariadb-java-client")
+    api("org.mariadb.jdbc:mariadb-java-client")
 
     api('com.google.guava:guava:27.0.1-jre')
-    compile('org.apache.commons:commons-lang3:3.8.1')
-    compile("joda-time:joda-time:2.2")
-    compile("com.jayway.jsonpath:json-path:2.0.0")
-    compile("org.liquibase:liquibase-core:3.6.2")
-    compile("commons-validator:commons-validator:1.6")
-    compile("com.nimbusds:nimbus-jose-jwt:4.23")
+    api('org.apache.commons:commons-lang3:3.8.1')
+    api("joda-time:joda-time:2.2")
+    api("com.jayway.jsonpath:json-path:2.0.0")
+    api("org.liquibase:liquibase-core:3.6.2")
+    api("commons-validator:commons-validator:1.6")
+    api("com.nimbusds:nimbus-jose-jwt:4.23")
 
-    compile('org.webjars:bootstrap:3.3.7')
-    compile('org.webjars:jquery:2.2.1')
-    compile('org.webjars:font-awesome:5.0.6')
-    compile("org.jasypt:jasypt-hibernate4:1.9.2")
-    compile("org.bouncycastle:bcpkix-jdk15on:1.47")
-    compile("org.slf4j:slf4j-api:1.7.25")
-    compile("ch.qos.logback:logback-core:1.2.3")
-    compile("ch.qos.logback:logback-classic:1.2.3")
+    api('org.webjars:bootstrap:3.3.7')
+    api('org.webjars:jquery:2.2.1')
+    api('org.webjars:font-awesome:5.0.6')
+    api("org.jasypt:jasypt-hibernate4:1.9.2")
+    api("org.bouncycastle:bcpkix-jdk15on:1.47")
+    api("org.slf4j:slf4j-api:1.7.25")
+    api("ch.qos.logback:logback-core:1.2.3")
+    api("ch.qos.logback:logback-classic:1.2.3")
 
-    testCompile("junit:junit:4.12")
-    testCompile("org.junit.vintage:junit-vintage-engine:5.2.0")
-    testCompile("org.junit.jupiter:junit-jupiter-api:5.2.0")
-    testCompile("org.junit.jupiter:junit-jupiter-params:5.2.0")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("org.springframework.security:spring-security-test")
+    testImplementation("junit:junit:4.12")
+    testImplementation("org.junit.vintage:junit-vintage-engine:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.2.0")
 
-    testCompile("pl.pragmatists:JUnitParams:1.1.1")
-    testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
-    testCompile("org.mockito:mockito-core:2.23.4")
-    testCompile("org.hamcrest:hamcrest-all:1.3")
-    testCompile("org.exparity:hamcrest-date:2.0.4")
-    testCompile("org.ajbrown:name-machine:1.0.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.cloud:spring-cloud-starter:2.1.0.RELEASE")
 
-    testCompile('org.testcontainers:testcontainers:1.10.2')
-    testCompile('org.testcontainers:mariadb:1.10.2')
+    testImplementation("org.hamcrest:hamcrest-all:1.3")
+    testImplementation("org.exparity:hamcrest-date:2.0.4")
+    testImplementation("pl.pragmatists:JUnitParams:1.1.1")
+    testImplementation("com.tngtech.java:junit-dataprovider:1.12.0")
+    testImplementation("org.mockito:mockito-core:2.23.4")
+    testImplementation("org.ajbrown:name-machine:1.0.0")
 
-    testCompile("org.springframework.cloud:spring-cloud-starter:2.1.0.RELEASE")
+    testImplementation('org.testcontainers:testcontainers:1.10.2')
+    testImplementation('org.testcontainers:mariadb:1.10.2')
+
 
     testRuntime("cglib:cglib-nodep:3.2.4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
@@ -102,27 +103,17 @@ dependencies {
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
-
-
 mainClassName = "com.primasolutions.idp.Main"
+jar.baseName = 'mlyidp'
 
 bootRun {
     systemProperties = new HashMap<String, String>(System.properties)
     systemProperties.remove("java.endorsed.dirs") //https://youtrack.jetbrains.com/issue/IDEA-193219
 }
 
-jar {
-    baseName = 'mlyidp'
-}
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
-}
-
-configurations {
-    cucumberRuntime {
-        extendsFrom testRuntime
-    }
 }
 
 testlogger {
@@ -131,12 +122,7 @@ testlogger {
     showStandardStreams false
 }
 
-test {
-    useJUnitPlatform {
-        includeEngines 'junit-jupiter'
-        includeEngines 'junit-vintage'
-    }
-}
+test.useJUnitPlatform()
 test.finalizedBy(jacocoTestReport)
 
 jacoco {
