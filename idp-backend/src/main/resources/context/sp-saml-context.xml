@@ -81,7 +81,15 @@
     <bean id="logoutprofile" class="org.springframework.security.saml.websso.SingleLogoutProfileImpl"/>
 
 
-    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
+    <!--bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/-->
+
+    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderLB">
+        <property name="scheme" value="${sp.saml.proxy.scheme}"/>
+        <property name="serverName" value="${sp.saml.proxy.serverName}"/>
+        <property name="serverPort" value="${sp.saml.proxy.serverPort}"/>
+        <property name="includeServerPortInRequestURL" value="${sp.saml.proxy.includeServerPortInRequestURL}"/>
+        <property name="contextPath" value="${sp.saml.proxy.contextPath}"/>
+    </bean>
 
     <bean class="org.springframework.security.saml.SAMLBootstrap" lazy-init="false" />
 

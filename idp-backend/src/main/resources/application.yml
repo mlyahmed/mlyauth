@@ -25,6 +25,12 @@ sp:
     entityId: primainsure4sgi
   saml:
     entityId: primainsure4sgi
+    proxy:
+      scheme: http
+      serverName: localhost
+      serverPort: 80
+      includeServerPortInRequestURL: false
+      contextPath: /
 
 
 server:

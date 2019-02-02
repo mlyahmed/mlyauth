@@ -17,6 +17,17 @@ spring:
     liquibase:
       contexts: prod
 
+
+sp:
+  saml:
+    proxy:
+      scheme: http
+      serverName: idp.localcloud.mlyahmed.net
+      serverPort: 80
+      includeServerPortInRequestURL: false
+      contextPath: /
+
+
 keystore:
   path: classpath:keys/keystore.jks
   alias: sgi.prima-solutions.com
