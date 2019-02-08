@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -169,7 +170,7 @@ public class ContextHolder implements IContextHolder {
         return getContext() != null ? getContext().getId() : idGenerator.generateId();
     }
 
-    private static class Context implements IContext {
+    private static class Context implements IContext, Serializable {
 
 
         private final String id;

@@ -50,6 +50,9 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-security")
+    api("org.springframework.boot:spring-boot-starter-data-redis")
+    api("org.springframework.session:spring-session-data-redis")
+    api("io.lettuce:lettuce-core")
     api("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
     api("org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE")
 
@@ -100,7 +103,7 @@ dependencies {
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 mainClassName = "com.primasolutions.idp.Main"
-jar.baseName = 'mlyidp'
+jar.archiveBaseName = 'mlyidp'
 
 bootRun {
     systemProperties = new HashMap<String, String>(System.properties)

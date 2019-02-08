@@ -8,10 +8,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "APPLICATION_TYPE")
-public class ApplicationType {
+public class ApplicationType implements Serializable {
 
     @Id
     @Column(name = "CODE", nullable = false)
