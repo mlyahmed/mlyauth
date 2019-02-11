@@ -116,7 +116,7 @@ tasks.withType(JavaCompile) {
 }
 
 testlogger {
-    theme 'standard'
+    theme 'mocha-parallel'
     showExceptions false
     slowThreshold 200
     showSummary true
