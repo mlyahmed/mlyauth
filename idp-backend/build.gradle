@@ -9,31 +9,25 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE")
         classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
     }
 }
 
 plugins {
+    id "application"
     id "idea"
     id "java-library"
     id "java"
-    id "groovy"
     id "jacoco"
     id "checkstyle"
-    id "pmd"
-    id 'com.adarshr.test-logger' version '1.2.0'
-    id "org.unbroken-dome.test-sets" version "1.4.2"
-    id "io.spring.dependency-management" version "1.0.4.RELEASE"
-    id "org.springframework.boot" version "1.5.9.RELEASE"
+//    id "pmd"
+    id 'com.adarshr.test-logger' version "1.6.0"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "org.springframework.boot" version "2.1.2.RELEASE"
     id "org.asciidoctor.convert" version "1.5.7"
-    id "org.liquibase.gradle" version "1.2.4"
-    id "com.palantir.docker" version "0.13.0"
-    id 'net.ltgt.apt' version '0.15'
+    id "com.palantir.docker" version "0.21.0"
 }
-
-ext["snippetsDir"] = new File (project.buildDir ,"generated-snippets")
-ext["spring-restdocs.version"] = "2.0.0.RELEASE"
 
 repositories {
     maven {
@@ -42,65 +36,63 @@ repositories {
 }
 
 dependencies {
-    compile('org.projectlombok:lombok:1.18.0')
+    api('org.javassist:javassist:3.23.1-GA')
+    api('javax.xml.bind:jaxb-api:2.3.0')
+    api('com.sun.xml.bind:jaxb-core:2.3.0.1')
+    api('com.sun.xml.bind:jaxb-impl:2.3.0.1')
+    api('javax.activation:activation:1.1.1')
+    api("javax.inject:javax.inject:1")
 
-    annotationProcessor('org.projectlombok:lombok:1.18.0')
+    api("org.springframework.boot:spring-boot-starter")
+    api("org.springframework.boot:spring-boot-starter-thymeleaf")
+    api("org.springframework.boot:spring-boot-starter-jdbc")
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    api("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-actuator")
+    api("org.springframework.boot:spring-boot-starter-security")
+    api("org.springframework.boot:spring-boot-starter-data-redis")
+    api("org.springframework.session:spring-session-data-redis")
+    api("io.lettuce:lettuce-core")
+    api("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.0")
+    api("org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE")
 
-    compile("org.codehaus.groovy:groovy-all:2.4.14")
-    compile("javax.inject:javax.inject:1")
-    compile("org.springframework.boot:spring-boot-starter")
-    compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.0.0")
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-    compile("org.springframework.boot:spring-boot-starter-jdbc")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4")
-    compile 'org.springframework.security.extensions:spring-security-saml2-core:1.0.2.RELEASE'
-    compile("io.rest-assured:rest-assured:3.0.3")
-    compile("io.rest-assured:json-schema-validator:3.0.3")
-    compile("mysql:mysql-connector-java")
-    compile("org.mariadb.jdbc:mariadb-java-client")
-    compile("joda-time:joda-time:2.2")
-    compile("com.jayway.jsonpath:json-path:2.0.0")
-    compile("org.liquibase:liquibase-core:3.5.3")
-    compile("commons-validator:commons-validator:1.6")
-    compile("com.nimbusds:nimbus-jose-jwt:4.23")
-    compile('org.webjars:bootstrap:3.3.7')
-    compile('org.webjars:jquery:2.2.1')
-    compile('org.webjars:font-awesome:5.0.6')
-    compile("org.jasypt:jasypt-hibernate4:1.9.2")
-    compile("org.bouncycastle:bcpkix-jdk15on:1.47")
-    compile("org.slf4j:slf4j-api:1.7.25")
-    compile("ch.qos.logback:logback-core:1.2.3")
-    compile("ch.qos.logback:logback-classic:1.2.3")
+    api("org.mariadb.jdbc:mariadb-java-client")
 
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}")
+    api('com.google.guava:guava:27.0.1-jre')
+    api('org.apache.commons:commons-lang3:3.8.1')
+    api("joda-time:joda-time:2.2")
+    api("com.jayway.jsonpath:json-path:2.0.0")
+    api("org.liquibase:liquibase-core:3.6.2")
+    api("commons-validator:commons-validator:1.6")
+    api("com.nimbusds:nimbus-jose-jwt:4.23")
 
-    testCompile("junit:junit:4.12")
-    testCompile("org.junit.vintage:junit-vintage-engine:5.2.0")
-    testCompile("org.junit.jupiter:junit-jupiter-api:5.2.0")
-    testCompile("org.junit.jupiter:junit-jupiter-params:5.2.0")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("org.springframework.security:spring-security-test")
-    testCompile("org.springframework.restdocs:spring-restdocs-restassured")
-    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testCompile("io.cucumber:cucumber-java:2.3.1")
-    testCompile("io.cucumber:cucumber-junit:2.3.1")
-    testCompile("io.cucumber:cucumber-spring:2.3.1")
-    testCompile("io.cucumber:cucumber-jvm:2.3.1")
-    testCompile("pl.pragmatists:JUnitParams:1.1.1")
-    testCompile("com.tngtech.java:junit-dataprovider:1.12.0")
-    testCompile("org.mockito:mockito-core:2.13.0")
-    testCompile("org.hamcrest:hamcrest-all:1.3")
-    testCompile("org.exparity:hamcrest-date:2.0.4")
-    testCompile("org.ajbrown:name-machine:1.0.0")
-    testCompile("com.playtika.testcontainers:testcontainers-common:1.7")
-    testCompile("com.playtika.testcontainers:embedded-mariadb:1.7")
-    testCompile("org.springframework.cloud:spring-cloud-starter:1.3.3.RELEASE")
-    testCompile("org.spockframework:spock-core:1.1-groovy-2.4")
-    testCompile("org.spockframework:spock-spring:1.1-groovy-2.4")
+    api('org.webjars:bootstrap:3.3.7')
+    api('org.webjars:jquery:2.2.1')
+    api('org.webjars:font-awesome:5.0.6')
+    api("org.jasypt:jasypt-hibernate4:1.9.2")
+    api("org.bouncycastle:bcpkix-jdk15on:1.47")
+    api("org.slf4j:slf4j-api:1.7.25")
+    api("ch.qos.logback:logback-core:1.2.3")
+    api("ch.qos.logback:logback-classic:1.2.3")
+
+    testImplementation("junit:junit:4.12")
+    testImplementation("org.junit.vintage:junit-vintage-engine:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.2.0")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.cloud:spring-cloud-starter:2.1.0.RELEASE")
+
+    testImplementation("org.hamcrest:hamcrest-all:1.3")
+    testImplementation("org.exparity:hamcrest-date:2.0.4")
+    testImplementation("pl.pragmatists:JUnitParams:1.1.1")
+    testImplementation("com.tngtech.java:junit-dataprovider:1.12.0")
+    testImplementation("org.mockito:mockito-core:2.23.4")
+    testImplementation("org.ajbrown:name-machine:1.0.0")
+
+    testImplementation('org.testcontainers:testcontainers:1.10.2')
+    testImplementation('org.testcontainers:mariadb:1.10.2')
 
     testRuntime("cglib:cglib-nodep:3.2.4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
@@ -108,39 +100,40 @@ dependencies {
 }
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+mainClassName = "com.hohou.federation.idp.Main"
+jar.archiveBaseName = 'mlyidp'
 
-bootRun { systemProperties = new HashMap<String, String>(System.properties) }
+bootRun {
+    systemProperties = new HashMap<String, String>(System.properties)
+    systemProperties.remove("java.endorsed.dirs") //https://youtrack.jetbrains.com/issue/IDEA-193219
+}
 
-jar { baseName = 'primaidp' }
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
-configurations {
-    cucumberRuntime {
-        extendsFrom testRuntime
-    }
-}
-
 testlogger {
-    theme 'mocha'
-    slowThreshold 300
-    showStandardStreams false
+    theme 'standard'
+    showExceptions false
+    slowThreshold 200
+    showSummary true
+    showPassed false
+    showSkipped true
+    showFailed true
+    showStandardStreams true
+    showPassedStandardStreams true
+    showSkippedStandardStreams true
+    showFailedStandardStreams true
 }
 
-test {
-    useJUnitPlatform {
-        includeEngines 'junit-jupiter'
-        includeEngines 'junit-vintage'
-    }
-}
+test.useJUnitPlatform()
 test.finalizedBy(jacocoTestReport)
 
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = "0.8.3"
     reportsDir = file("$buildDir/coverage")
 }
 
@@ -165,30 +158,14 @@ checkstyle {
     }
 }
 
-
-asciidoctor {
-    def docAttributes = [:]
-    docAttributes.put("generated-snippets", project.ext["snippetsDir"])
-    attributes docAttributes
-    outputDir "build/apidoc"
-    inputs.dir project.ext["snippetsDir"]
-    sourceDir  "src/test/resources/apidoc"
-}
-asciidoctor.dependsOn(test)
-
-task installApiDoc(type: Copy){
-    File target = new File(project.buildDir, "resources/main/static/apidoc")
-    project.mkdir(target)
-    from "${asciidoctor.outputDir}/html5"
-    into  target.getAbsolutePath()
-}
-installApiDoc.dependsOn(asciidoctor)
-jar.dependsOn(installApiDoc)
-
 docker {
     name "${project.group}/${jar.baseName}"
     files jar.archivePath
     buildArgs(['JAR_FILE': "${jar.archiveName}"])
+}
+
+artifacts {
+    archives jar
 }
 
 task runAll {}
