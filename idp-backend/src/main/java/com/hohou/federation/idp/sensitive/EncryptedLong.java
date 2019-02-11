@@ -15,22 +15,19 @@ import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 public class EncryptedLong extends AbstractEncryptedType {
 
     @Override
-    public Object nullSafeGet(final ResultSet rs, final String[] names,
-                              final SharedSessionContractImplementor session, final Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
             throws HibernateException, SQLException {
         return doNullSafeGet(rs, rs.getString(names[0]));
     }
 
     @Override
-    public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session,
-                              final Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
         return doNullSafeGet(rs, rs.getString(names[0]));
     }
 
-    private Object doNullSafeGet(final ResultSet rs, final String string) throws SQLException {
+    private Object doNullSafeGet(final ResultSet rs, final String value) throws SQLException {
         checkInitialization();
-        final String v = string;
-        return rs.wasNull() ? null : convertToObject(!isWrapped(v) ? v : unNoise(encryptor.decrypt(unwrap(v))));
+        return rs.wasNull() ? null : convertToObject(!isWrapped(value) ? value : unNoise(encryptor.decrypt(unwrap(value))));
     }
 
     @Override

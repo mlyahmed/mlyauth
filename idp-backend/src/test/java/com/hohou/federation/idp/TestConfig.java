@@ -10,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MariaDBContainer;
 
 import java.security.Security;
@@ -18,19 +19,26 @@ import java.security.Security;
 @Profile("test")
 public class TestConfig {
 
+    private static final int CACHE_PORT = 6379;
     private static final MariaDBContainer DB_CONTAINER = new MariaDBContainer("mariadb:10.3.6");
+    private static final GenericContainer CACHE_CONTAINER = new GenericContainer("redis:3.0.6").withExposedPorts(CACHE_PORT);
+
+
     static {
         DB_CONTAINER.start();
-    }
-
-    static MariaDBContainer dbContainer() {
-        return DB_CONTAINER;
+        CACHE_CONTAINER.start();
     }
 
     @Bean(destroyMethod = "stop")
     public MariaDBContainer databaseContainer() {
-        return dbContainer();
+        return DB_CONTAINER;
     }
+
+    @Bean
+    public GenericContainer cacheContainer() {
+        return CACHE_CONTAINER;
+    }
+
 
 
     @Bean(name = "jasyptStringEncryptor")
@@ -46,26 +54,42 @@ public class TestConfig {
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         public void initialize(ConfigurableApplicationContext appConf) {
-            TestPropertyValues.of(driver(), url(), username(), password()).applyTo(appConf.getEnvironment());
+            TestPropertyValues.of(
+                    dbDriver(),
+                    dbUrl(),
+                    dbUsername(),
+                    dbPassword(),
+                    cacheHost(),
+                    cachePort()
+            ).applyTo(appConf.getEnvironment());
         }
 
         @NotNull
-        private String password() {
-            return "spring.datasource.password=" + dbContainer().getPassword();
+        private String dbPassword() {
+            return "spring.datasource.password=" + DB_CONTAINER.getPassword();
         }
 
         @NotNull
-        private String username() {
-            return "spring.datasource.username=" + dbContainer().getUsername();
+        private String dbUsername() {
+            return "spring.datasource.username=" + DB_CONTAINER.getUsername();
         }
 
         @NotNull
-        private String url() {
-            return "spring.datasource.url=" + dbContainer().getJdbcUrl();
+        private String dbUrl() {
+            return "spring.datasource.url=" + DB_CONTAINER.getJdbcUrl();
         }
 
-        private String driver() {
-            return "spring.datasource.driver-class-name=" + dbContainer().getDriverClassName();
+        private String dbDriver() {
+            return "spring.datasource.driver-class-name=" + DB_CONTAINER.getDriverClassName();
+        }
+
+
+        private String cacheHost() {
+            return "spring.redis.host=" + CACHE_CONTAINER.getContainerIpAddress();
+        }
+
+        private String cachePort() {
+            return "spring.redis.port=" + CACHE_CONTAINER.getMappedPort(CACHE_PORT);
         }
 
     }

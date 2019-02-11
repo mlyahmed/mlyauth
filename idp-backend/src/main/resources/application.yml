@@ -11,7 +11,9 @@ spring:
   liquibase:
     change-log: classpath:database/db-changelog.yaml
     drop-first: true
-
+  redis:
+    host: localhost
+    port: 6379
 
 idp:
   saml:
