@@ -54,7 +54,7 @@ public class EncryptedLong extends AbstractEncryptedType {
 
     @Override
     protected Object convertToObject(final String string) {
-        return new Long(string);
+        return Long.parseLong(string);
     }
 
     @Override

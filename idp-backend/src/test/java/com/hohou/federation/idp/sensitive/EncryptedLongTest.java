@@ -65,7 +65,7 @@ public class EncryptedLongTest {
     @Test
     @UseDataProvider("longAsString")
     public void convert_the_object_to_long(final String value) {
-        assertThat(encryptedLong.convertToObject(value), equalTo(new Long(value)));
+        assertThat(encryptedLong.convertToObject(value), equalTo(Long.parseLong(value)));
     }
 
     @Test
