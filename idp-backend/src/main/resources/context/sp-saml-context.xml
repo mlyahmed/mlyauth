@@ -27,14 +27,14 @@
         </sec:filter-chain-map>
     </bean>
 
-    <bean id="samlWebSSOProcessingFilter" class="com.primasolutions.idp.authentication.sp.saml.SPSAMLProcessingFilter">
+    <bean id="samlWebSSOProcessingFilter" class="com.hohou.federation.idp.authentication.sp.saml.SPSAMLProcessingFilter">
         <property name="filterProcessesUrl" value="/sp/saml/sso"/>
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationSuccessHandler" ref="SPUrlAuthenticationSuccessHandler"/>
         <property name="authenticationFailureHandler" ref="SPUrlAuthenticationFailureHandler"/>
     </bean>
 
-    <bean id="metadataDisplayFilter" class="com.primasolutions.idp.authentication.sp.saml.SPSAMLMetadataDisplayFilter">
+    <bean id="metadataDisplayFilter" class="com.hohou.federation.idp.authentication.sp.saml.SPSAMLMetadataDisplayFilter">
         <property name="filterProcessesUrl" value="/sp/saml/metadata"/>
     </bean>
 
@@ -69,7 +69,7 @@
     </bean>
 
 
-    <bean id="webSSOprofileConsumer" class="com.primasolutions.idp.authentication.sp.saml.SPSAMLWebSSOProfileConsumerImpl">
+    <bean id="webSSOprofileConsumer" class="com.hohou.federation.idp.authentication.sp.saml.SPSAMLWebSSOProfileConsumerImpl">
         <property name="includeAllAttributes" value="true"/>
         <property name="responseSkew" value="600"/> <!-- 10 minutes -->
         <property name="maxAuthenticationAge" value="72000"/> <!-- 20 heures -->
@@ -81,7 +81,15 @@
     <bean id="logoutprofile" class="org.springframework.security.saml.websso.SingleLogoutProfileImpl"/>
 
 
-    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
+    <!--bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/-->
+
+    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderLB">
+        <property name="scheme" value="${sp.saml.proxy.scheme}"/>
+        <property name="serverName" value="${sp.saml.proxy.serverName}"/>
+        <property name="serverPort" value="${sp.saml.proxy.serverPort}"/>
+        <property name="includeServerPortInRequestURL" value="${sp.saml.proxy.includeServerPortInRequestURL}"/>
+        <property name="contextPath" value="${sp.saml.proxy.contextPath}"/>
+    </bean>
 
     <bean class="org.springframework.security.saml.SAMLBootstrap" lazy-init="false" />
 

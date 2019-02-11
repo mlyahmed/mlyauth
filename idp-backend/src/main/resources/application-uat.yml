@@ -3,7 +3,7 @@ spring:
         url: jdbc:mysql://idp-database:3306/idp?useSSL=false
         username: root
         password: root
-        driver-class-name: com.mysql.jdbc.Driver
+        driver-class-name: org.mariadb.jdbc.Driver
         testWhileIdle: true
         validationQuery: SELECT 1
     jpa:
@@ -15,11 +15,10 @@ spring:
           naming:
             physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
+    liquibase:
+      contexts: uat
 
 keystore:
   path: classpath:keys/keystore.jks
   alias: sgi.prima-solutions.com
   password: Bourso$17
-
-liquibase:
-  contexts: uat

@@ -8,6 +8,12 @@ spring:
       use-new-id-generator-mappings: true
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  liquibase:
+    change-log: classpath:database/db-changelog.yaml
+    drop-first: true
+  redis:
+    host: localhost
+    port: 6379
 
 idp:
   saml:
@@ -21,6 +27,12 @@ sp:
     entityId: primainsure4sgi
   saml:
     entityId: primainsure4sgi
+    proxy:
+      scheme: http
+      serverName: localhost
+      serverPort: 80
+      includeServerPortInRequestURL: false
+      contextPath: /
 
 
 server:
@@ -53,7 +65,3 @@ info:
 management:
   security:
     enabled: false
-
-liquibase:
-  change-log: classpath:database/db-changelog.yaml
-  drop-first: true
